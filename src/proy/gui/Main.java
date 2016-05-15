@@ -5,7 +5,9 @@ import java.util.logging.Level;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import proy.datos.servicios.implementacion.HibernateUtil;
@@ -39,17 +41,20 @@ public class Main extends Application {
 		}; //TODO cambiar en el futuro
 		primaryStage.getIcons().add(new IconoAplicacion());
 		primaryStage.setOnCloseRequest((WindowEvent e) -> {
-			apilador.desapilarScene();
-			if(!apilador.isEmpty()){
-				e.consume();
-			}
-			else{
-				HibernateUtil.close();
-			}
+			//TODO cambiar en el futuro
+			//			apilador.desapilarScene();
+			//			if(!apilador.isEmpty()){
+			//				e.consume();
+			//			}
+			//			else{
+			HibernateUtil.close();
+			//			}
 		});
 		iniciarHibernate();
 		//TODO cambiar en el futuro
 		//		ControladorIva.nuevaSceneIva(InicioController.URLVista, apilador, coordinador);
+		stagePrincipal.setScene(new Scene(new GridPane()));
+		stagePrincipal.show();
 	}
 
 	private void iniciarHibernate() {
