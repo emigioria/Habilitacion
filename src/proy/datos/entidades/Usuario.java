@@ -20,7 +20,7 @@ import proy.datos.clases.Estado;
 public abstract class Usuario {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
 	private Integer codigo;
 
