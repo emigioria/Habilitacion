@@ -1,6 +1,7 @@
 package proy.gui;
 
 import java.util.List;
+import java.util.logging.Level;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
@@ -24,11 +25,10 @@ public class Main extends Application {
 	private Stage stagePrincipal;
 
 	public static void main(String[] args) {
-		java.util.Enumeration<String> loggers = java.util.logging.LogManager.getLogManager().getLoggerNames();
-		while(loggers.hasMoreElements()){
-			String log = loggers.nextElement();
-			java.util.logging.Logger.getLogger(log).setLevel(java.util.logging.Level.WARNING);
-		}
+		java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.WARNING);
+		java.util.logging.Logger.getLogger("com.mchange.v2.c3p0").setLevel(Level.WARNING);
+		java.util.logging.Logger.getLogger("com.mchange.v2.log.MLog").setLevel(Level.WARNING);
+		java.util.logging.Logger.getLogger("com.mchange.v2.log.FallbackMLog.DEFAULT_CUTOFF_LEVEL").setLevel(Level.WARNING);
 		launch(args);
 	}
 
