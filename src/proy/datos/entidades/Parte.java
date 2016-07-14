@@ -40,9 +40,8 @@ public class Parte {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Maquina maquina;
 
-	public Parte(Integer codigo, Long version, String nombre, Integer cantidad, Estado estado, Maquina maquina) {
+	public Parte(Long version, String nombre, Integer cantidad, Estado estado, Maquina maquina) {
 		super();
-		this.codigo = codigo;
 		this.version = version;
 		this.nombre = nombre;
 		this.cantidad = cantidad;
@@ -52,10 +51,6 @@ public class Parte {
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {

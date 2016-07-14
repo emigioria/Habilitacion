@@ -2,11 +2,15 @@ package proy.datos.entidades;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import proy.datos.clases.Estado;
 
 @Entity
 @Table(name = "material")
@@ -27,9 +31,12 @@ public class Material {
 	@Column(name = "medidas", length = 100)
 	private String medidas;
 
-	public Material(Integer codigo, Long version, String nombre, String medidas) {
+	@Enumerated(EnumType.STRING)
+	@Column(name = "estado", length = 10, nullable = false)
+	private Estado estado;
+
+	public Material(Long version, String nombre, String medidas) {
 		super();
-		this.codigo = codigo;
 		this.version = version;
 		this.nombre = nombre;
 		this.medidas = medidas;
@@ -37,10 +44,6 @@ public class Material {
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {

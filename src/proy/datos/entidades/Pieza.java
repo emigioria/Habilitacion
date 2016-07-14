@@ -61,9 +61,8 @@ public class Pieza {
 		procesos = new ArrayList<Proceso>();
 	}
 
-	public Pieza(Integer codigo, Long version, String nombre, String codigoPlano, Integer cantidad, Estado estado, Parte parte, Material material) {
+	public Pieza(Long version, String nombre, String codigoPlano, Integer cantidad, Estado estado, Parte parte, Material material) {
 		this();
-		this.codigo = codigo;
 		this.version = version;
 		this.nombre = nombre;
 		this.codigoPlano = codigoPlano;
@@ -75,10 +74,6 @@ public class Pieza {
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {

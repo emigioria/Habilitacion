@@ -48,9 +48,8 @@ public class Pausa implements Serializable {
 	@Column(name = "fecha_hora_fin", nullable = false)
 	Date fechaHoraFin;
 
-	public Pausa(Integer codigo, Tarea tarea, Long version, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
+	public Pausa(Tarea tarea, Long version, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
 		super();
-		this.codigo = codigo;
 		this.tarea = tarea;
 		this.version = version;
 		this.causa = causa;
@@ -60,10 +59,6 @@ public class Pausa implements Serializable {
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Tarea getTarea() {

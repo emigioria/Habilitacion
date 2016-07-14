@@ -12,8 +12,8 @@ import proy.datos.clases.Estado;
 @Table(name = "operario")
 public class Operario extends Usuario {
 
-	public Operario(Integer codigo, Long version, String nombre, Estado estado) {
-		super(codigo, version, nombre, estado);
+	public Operario(Long version, String nombre, Estado estado) {
+		super(version, nombre, estado);
 	}
 
 }

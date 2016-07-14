@@ -31,13 +31,15 @@ public abstract class Usuario {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
+	@Column(name = "apellido", length = 100, nullable = false)
+	private String apellido;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "estado", length = 10, nullable = false)
 	private Estado estado;
 
-	public Usuario(Integer codigo, Long version, String nombre, Estado estado) {
+	public Usuario(Long version, String nombre, Estado estado) {
 		super();
-		this.codigo = codigo;
 		this.version = version;
 		this.nombre = nombre;
 		this.estado = estado;
@@ -45,10 +47,6 @@ public abstract class Usuario {
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {

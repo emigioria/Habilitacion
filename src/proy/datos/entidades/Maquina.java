@@ -24,18 +24,13 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
-	public Maquina(Integer codigo, Long version, String nombre) {
-		this.codigo = codigo;
+	public Maquina(Long version, String nombre) {
 		this.version = version;
 		this.nombre = nombre;
 	}
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {

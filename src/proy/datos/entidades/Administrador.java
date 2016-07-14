@@ -1,5 +1,6 @@
 package proy.datos.entidades;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -12,8 +13,19 @@ import proy.datos.clases.Estado;
 @Table(name = "administrador")
 public class Administrador extends Usuario {
 
-	public Administrador(Integer codigo, Long version, String nombre, Estado estado) {
-		super(codigo, version, nombre, estado);
+	@Column(name = "contrasenia", length = 100, nullable = false)
+	private String contrasenia;
+
+	public Administrador(Long version, String nombre, Estado estado, String contrasenia) {
+		super(version, nombre, estado);
+		this.contrasenia = contrasenia;
 	}
 
+	public String getContrasenia() {
+		return contrasenia;
+	}
+
+	public void setContrasenia(String contrasenia) {
+		this.contrasenia = contrasenia;
+	}
 }

@@ -1,5 +1,5 @@
 package proy.datos.clases;
 
 public enum EstadoTarea {
-	PLANIFICADA, PAUSADA, FINALIZADA;
+	PLANIFICADA, EJECUTANDO, PAUSADA, FINALIZADA, CANCELADA;
 }

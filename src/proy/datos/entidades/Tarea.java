@@ -37,8 +37,8 @@ public class Tarea {
 	@Column(name = "version")
 	private Long version;
 
-	@Column(name = "cantidad_teorica", nullable = false)
-	private Integer cantidadTeorica;
+	@Column(name = "cantidad_solicitada", nullable = false)
+	private Integer cantidadSolicitada;
 
 	@Column(name = "cantidad_real", nullable = false)
 	private Integer cantidadReal;
@@ -77,11 +77,10 @@ public class Tarea {
 		pausas = new ArrayList<Pausa>();
 	}
 
-	public Tarea(Integer codigo, Long version, Integer cantidadTeorica, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
+	public Tarea(Long version, Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
 		super();
-		this.codigo = codigo;
 		this.version = version;
-		this.cantidadTeorica = cantidadTeorica;
+		this.cantidadSolicitada = cantidadSolicitada;
 		this.cantidadReal = cantidadReal;
 		this.fechaPlanificada = fechaPlanificada;
 		this.fechaHoraInicio = fechaHoraInicio;
@@ -96,10 +95,6 @@ public class Tarea {
 		return codigo;
 	}
 
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
-	}
-
 	public Long getVersion() {
 		return version;
 	}
@@ -109,11 +104,11 @@ public class Tarea {
 	}
 
 	public Integer getCantidadTeorica() {
-		return cantidadTeorica;
+		return cantidadSolicitada;
 	}
 
-	public void setCantidadTeorica(Integer cantidadTeorica) {
-		this.cantidadTeorica = cantidadTeorica;
+	public void setCantidadTeorica(Integer cantidadSolicitada) {
+		this.cantidadSolicitada = cantidadSolicitada;
 	}
 
 	public Integer getCantidadReal() {

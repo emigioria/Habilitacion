@@ -36,19 +36,14 @@ public class Herramienta {
 		procesos = new ArrayList<Proceso>();
 	}
 
-	public Herramienta(Integer codigo, Long version, String nombre) {
+	public Herramienta(Long version, String nombre) {
 		this();
-		this.codigo = codigo;
 		this.version = version;
 		this.nombre = nombre;
 	}
 
 	public Integer getCodigo() {
 		return codigo;
-	}
-
-	public void setCodigo(Integer codigo) {
-		this.codigo = codigo;
 	}
 
 	public Long getVersion() {
