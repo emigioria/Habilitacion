@@ -16,6 +16,10 @@ public class Administrador extends Usuario {
 	@Column(name = "contrasenia", length = 100, nullable = false)
 	private String contrasenia;
 
+	public Administrador() {
+		super();
+	}
+
 	public Administrador(Long version, String nombre, Estado estado, String contrasenia) {
 		super(version, nombre, estado);
 		this.contrasenia = contrasenia;

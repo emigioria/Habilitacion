@@ -38,6 +38,10 @@ public abstract class Usuario {
 	@Column(name = "estado", length = 10, nullable = false)
 	private Estado estado;
 
+	public Usuario() {
+		super();
+	}
+
 	public Usuario(Long version, String nombre, Estado estado) {
 		super();
 		this.version = version;
