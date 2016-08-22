@@ -40,25 +40,13 @@ public abstract class Usuario {
 
 	public Usuario() {
 		super();
+		estado = Estado.ALTA;
 	}
 
-	public Usuario(Long version, String nombre, Estado estado) {
+	public Usuario(String nombre, String apellido) {
 		super();
-		this.version = version;
 		this.nombre = nombre;
-		this.estado = estado;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
+		this.apellido = apellido;
 	}
 
 	public String getNombre() {
@@ -81,7 +69,11 @@ public abstract class Usuario {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((apellido == null) ? 0 : apellido.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -97,12 +89,39 @@ public abstract class Usuario {
 			return false;
 		}
 		Usuario other = (Usuario) obj;
+		if(apellido == null){
+			if(other.apellido != null){
+				return false;
+			}
+		}
+		else if(!apellido.equals(other.apellido)){
+			return false;
+		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(estado != other.estado){
+			return false;
+		}
+		if(nombre == null){
+			if(other.nombre != null){
+				return false;
+			}
+		}
+		else if(!nombre.equals(other.nombre)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;

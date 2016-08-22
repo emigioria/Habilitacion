@@ -43,7 +43,7 @@ public class Tarea {
 	@Column(name = "cantidad_real", nullable = false)
 	private Integer cantidadReal;
 
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha_planificada", nullable = false)
 	Date fechaPlanificada;
 
@@ -77,9 +77,8 @@ public class Tarea {
 		pausas = new ArrayList<Pausa>();
 	}
 
-	public Tarea(Long version, Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
+	public Tarea(Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
 		super();
-		this.version = version;
 		this.cantidadSolicitada = cantidadSolicitada;
 		this.cantidadReal = cantidadReal;
 		this.fechaPlanificada = fechaPlanificada;
@@ -89,18 +88,6 @@ public class Tarea {
 		this.estado = estado;
 		this.proceso = proceso;
 		this.operario = operario;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public Integer getCantidadTeorica() {
@@ -179,15 +166,19 @@ public class Tarea {
 		return pausas;
 	}
 
-	public void setPausas(List<Pausa> pausas) {
-		this.pausas = pausas;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((cantidadReal == null) ? 0 : cantidadReal.hashCode());
+		result = prime * result + ((cantidadSolicitada == null) ? 0 : cantidadSolicitada.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
+		result = prime * result + ((fechaHoraFin == null) ? 0 : fechaHoraFin.hashCode());
+		result = prime * result + ((fechaHoraInicio == null) ? 0 : fechaHoraInicio.hashCode());
+		result = prime * result + ((fechaPlanificada == null) ? 0 : fechaPlanificada.hashCode());
+		result = prime * result + ((observaciones == null) ? 0 : observaciones.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -203,12 +194,71 @@ public class Tarea {
 			return false;
 		}
 		Tarea other = (Tarea) obj;
+		if(cantidadReal == null){
+			if(other.cantidadReal != null){
+				return false;
+			}
+		}
+		else if(!cantidadReal.equals(other.cantidadReal)){
+			return false;
+		}
+		if(cantidadSolicitada == null){
+			if(other.cantidadSolicitada != null){
+				return false;
+			}
+		}
+		else if(!cantidadSolicitada.equals(other.cantidadSolicitada)){
+			return false;
+		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(estado != other.estado){
+			return false;
+		}
+		if(fechaHoraFin == null){
+			if(other.fechaHoraFin != null){
+				return false;
+			}
+		}
+		else if(!fechaHoraFin.equals(other.fechaHoraFin)){
+			return false;
+		}
+		if(fechaHoraInicio == null){
+			if(other.fechaHoraInicio != null){
+				return false;
+			}
+		}
+		else if(!fechaHoraInicio.equals(other.fechaHoraInicio)){
+			return false;
+		}
+		if(fechaPlanificada == null){
+			if(other.fechaPlanificada != null){
+				return false;
+			}
+		}
+		else if(!fechaPlanificada.equals(other.fechaPlanificada)){
+			return false;
+		}
+		if(observaciones == null){
+			if(other.observaciones != null){
+				return false;
+			}
+		}
+		else if(!observaciones.equals(other.observaciones)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;

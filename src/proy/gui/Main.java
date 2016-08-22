@@ -2,6 +2,10 @@ package proy.gui;
 
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.Scene;
@@ -9,90 +13,111 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import proy.datos.servicios.implementacion.HibernateUtil;
-import proy.excepciones.ConnectionException;
 import proy.gui.componentes.IconoAplicacion;
-import proy.gui.componentes.VentanaErrorExcepcion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
-import proy.logica.gestores.Coordinador;
+import proy.gui.controladores.ControladorRomano;
+import proy.logica.gestores.CoordinadorRomano;
 
 public class Main extends Application {
 
 	private PilaScene apilador;
-	private Coordinador coordinador;
+	private CoordinadorRomano coordinador;
 	private Stage stagePrincipal;
+	private ApplicationContext appContext;
+	private ControladorRomano controladorVentanaInicio;
 
 	public static void main(String[] args) {
+		//Ocultar logs
 		java.util.Enumeration<String> loggers = java.util.logging.LogManager.getLogManager().getLoggerNames();
 		while(loggers.hasMoreElements()){
 			String log = loggers.nextElement();
 			java.util.logging.Logger.getLogger(log).setLevel(java.util.logging.Level.WARNING);
 		}
+		//Iniciar aplicacion
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
+		//Analizar parámetros de entrada
 		verParametros(getParameters().getRaw());
+
+		//Inicializar parametros
 		stagePrincipal = primaryStage;
 		apilador = new PilaScene(primaryStage);
-		coordinador = new Coordinador() {
-		}; //TODO cambiar en el futuro
+
+		//Setear icono y titulo de aplicacion
 		primaryStage.getIcons().add(new IconoAplicacion());
+		primaryStage.setTitle("Aplicacion Romano");
+
+		//Setear acción de cierre
 		primaryStage.setOnCloseRequest((WindowEvent e) -> {
-			//TODO cambiar en el futuro
-			//			apilador.desapilarScene();
-			//			if(!apilador.isEmpty()){
-			//				e.consume();
-			//			}
-			//			else{
-			HibernateUtil.close();
-			//			}
+			apilador.desapilarScene();
+			if(!apilador.isEmpty()){
+				e.consume();
+			}
+			else{
+				SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
+				sessionFact.close();
+			}
 		});
+
 		iniciarHibernate();
-		//TODO cambiar en el futuro
-		//		ControladorIva.nuevaSceneIva(InicioController.URLVista, apilador, coordinador);
+
+		//Crear primera ventana
+		//		controladorVentanaInicio = ControladorRomano.nuevaScene(InicioController.URLVista, apilador, coordinador);
 		stagePrincipal.setScene(new Scene(new GridPane()));
 		stagePrincipal.show();
 	}
 
 	private void iniciarHibernate() {
+		//Crear ventana de espera
 		VentanaEsperaBaseDeDatos ventanaEspera = new VentanaEsperaBaseDeDatos(stagePrincipal.getOwner());
+
+		//Crear tarea para iniciar hibernate y el coordinador de la aplicacion
 		Task<Boolean> task = new Task<Boolean>() {
 			@Override
-			public Boolean call() throws ConnectionException {
-				HibernateUtil.getSessionFactory();
+			public Boolean call() throws Exception {
+				appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+				coordinador = appContext.getBean(CoordinadorRomano.class);
+				if(controladorVentanaInicio != null){
+					controladorVentanaInicio.setCoordinador(coordinador);
+				}
 				return true;
 			}
 		};
 
+		//mientras se muestra una ventana de espera
 		task.setOnRunning(
 				(event) -> {
 					ventanaEspera.showAndWait();
 				});
 
+		//que se cierra al terminar.
 		task.setOnSucceeded(
 				(event) -> {
 					ventanaEspera.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 					ventanaEspera.hide();
 				});
 
+		//Si falla, informa al usuario del error y cierra la aplicacion
 		task.setOnFailed(
 				(event) -> {
 					try{
 						throw task.getException();
-					} catch(ConnectionException e){
-						HibernateUtil.close();
-						new VentanaErrorExcepcion(e.getMessage(), stagePrincipal);
-						System.exit(1);
 					} catch(Throwable e){
-						HibernateUtil.close();
+						e.printStackTrace();
+						if(appContext != null){
+							SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
+							sessionFact.close();
+						}
 						new VentanaErrorExcepcionInesperada(stagePrincipal);
 						System.exit(1);
 					}
 				});
 
+		//Iniciar tarea
 		Thread hiloHibernate = new Thread(task);
 		hiloHibernate.setDaemon(false);
 		hiloHibernate.start();

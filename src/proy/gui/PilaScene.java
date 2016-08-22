@@ -11,15 +11,15 @@ public class PilaScene {
 
 	private Stack<Scene> scenes;
 
-	private Stack<SceneApilable> controllers;
+	private Stack<ControladorApilable> controllers;
 
 	public PilaScene(Stage stagePrincipal) {
 		this.stagePrincipal = stagePrincipal;
 		scenes = new Stack<Scene>();
-		controllers = new Stack<SceneApilable>();
+		controllers = new Stack<ControladorApilable>();
 	}
 
-	public void apilarScene(Scene scene, SceneApilable controller) {
+	public void apilarScene(Scene scene, ControladorApilable controller) {
 		scenes.push(scene);
 		controllers.push(controller);
 		stagePrincipal.setScene(scene);
@@ -31,11 +31,12 @@ public class PilaScene {
 		controllers.pop();
 		if(!isEmpty()){
 			stagePrincipal.setScene(scenes.peek());
+			controllers.peek().actualizar();
 			stagePrincipal.show();
 		}
 	}
 
-	public void cambiarScene(Scene scene, SceneApilable controller) {
+	public void cambiarScene(Scene scene, ControladorApilable controller) {
 		scenes.pop();
 		controllers.pop();
 		scenes.push(scene);
@@ -48,7 +49,7 @@ public class PilaScene {
 		return scenes.isEmpty();
 	}
 
-	public SceneApilable getPeekSceneApilable() {
-		return controllers.peek();
+	public Stage getStage() {
+		return stagePrincipal;
 	}
 }

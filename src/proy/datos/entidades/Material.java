@@ -35,23 +35,10 @@ public class Material {
 	@Column(name = "estado", length = 10, nullable = false)
 	private Estado estado;
 
-	public Material(Long version, String nombre, String medidas) {
+	public Material(String nombre, String medidas) {
 		super();
-		this.version = version;
 		this.nombre = nombre;
 		this.medidas = medidas;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public String getNombre() {
@@ -75,6 +62,10 @@ public class Material {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
+		result = prime * result + ((medidas == null) ? 0 : medidas.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -96,6 +87,33 @@ public class Material {
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(estado != other.estado){
+			return false;
+		}
+		if(medidas == null){
+			if(other.medidas != null){
+				return false;
+			}
+		}
+		else if(!medidas.equals(other.medidas)){
+			return false;
+		}
+		if(nombre == null){
+			if(other.nombre != null){
+				return false;
+			}
+		}
+		else if(!nombre.equals(other.nombre)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;

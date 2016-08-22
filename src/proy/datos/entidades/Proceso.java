@@ -1,7 +1,7 @@
 package proy.datos.entidades;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,20 +59,19 @@ public class Proceso {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "pieza_proceso", joinColumns = @JoinColumn(name = "codproceso"), foreignKey = @ForeignKey(name = "pieza_proceso_codproceso_fk"), inverseJoinColumns = @JoinColumn(name = "codpieza"), inverseForeignKey = @ForeignKey(name = "pieza_proceso_codpieza_fk"))
-	private List<Pieza> piezas;
+	private Set<Pieza> piezas;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "herramienta_proceso", joinColumns = @JoinColumn(name = "codproceso"), foreignKey = @ForeignKey(name = "herramienta_proceso_codproceso_fk"), inverseJoinColumns = @JoinColumn(name = "codherramienta"), inverseForeignKey = @ForeignKey(name = "herramienta_proceso_codherramienta_fk"))
-	private List<Herramienta> herramientas;
+	private Set<Herramienta> herramientas;
 
 	public Proceso() {
-		herramientas = new ArrayList<Herramienta>();
-		piezas = new ArrayList<Pieza>();
+		herramientas = new HashSet<Herramienta>();
+		piezas = new HashSet<Pieza>();
 	}
 
-	public Proceso(Long version, String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
+	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
 		this();
-		this.version = version;
 		this.descripcion = descripcion;
 		this.tiempoTeoricoProceso = tiempoTeoricoProceso;
 		this.tiempoTeoricoPreparacion = tiempoTeoricoPreparacion;
@@ -80,18 +79,6 @@ public class Proceso {
 		this.tipo = tipo;
 		this.estado = estado;
 		this.parte = parte;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public String getDescripcion() {
@@ -150,20 +137,12 @@ public class Proceso {
 		this.parte = parte;
 	}
 
-	public List<Pieza> getPiezas() {
+	public Set<Pieza> getPiezas() {
 		return piezas;
 	}
 
-	public void setPiezas(List<Pieza> piezas) {
-		this.piezas = piezas;
-	}
-
-	public List<Herramienta> getHerramientas() {
+	public Set<Herramienta> getHerramientas() {
 		return herramientas;
-	}
-
-	public void setHerramientas(List<Herramienta> herramientas) {
-		this.herramientas = herramientas;
 	}
 
 	@Override
@@ -171,6 +150,13 @@ public class Proceso {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
+		result = prime * result + ((observaciones == null) ? 0 : observaciones.hashCode());
+		result = prime * result + ((tiempoTeoricoPreparacion == null) ? 0 : tiempoTeoricoPreparacion.hashCode());
+		result = prime * result + ((tiempoTeoricoProceso == null) ? 0 : tiempoTeoricoProceso.hashCode());
+		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -192,6 +178,57 @@ public class Proceso {
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(descripcion == null){
+			if(other.descripcion != null){
+				return false;
+			}
+		}
+		else if(!descripcion.equals(other.descripcion)){
+			return false;
+		}
+		if(estado != other.estado){
+			return false;
+		}
+		if(observaciones == null){
+			if(other.observaciones != null){
+				return false;
+			}
+		}
+		else if(!observaciones.equals(other.observaciones)){
+			return false;
+		}
+		if(tiempoTeoricoPreparacion == null){
+			if(other.tiempoTeoricoPreparacion != null){
+				return false;
+			}
+		}
+		else if(!tiempoTeoricoPreparacion.equals(other.tiempoTeoricoPreparacion)){
+			return false;
+		}
+		if(tiempoTeoricoProceso == null){
+			if(other.tiempoTeoricoProceso != null){
+				return false;
+			}
+		}
+		else if(!tiempoTeoricoProceso.equals(other.tiempoTeoricoProceso)){
+			return false;
+		}
+		if(tipo == null){
+			if(other.tipo != null){
+				return false;
+			}
+		}
+		else if(!tipo.equals(other.tipo)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;

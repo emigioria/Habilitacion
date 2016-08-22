@@ -24,21 +24,8 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
-	public Maquina(Long version, String nombre) {
-		this.version = version;
+	public Maquina(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public String getNombre() {
@@ -54,6 +41,8 @@ public class Maquina {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -75,6 +64,22 @@ public class Maquina {
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(nombre == null){
+			if(other.nombre != null){
+				return false;
+			}
+		}
+		else if(!nombre.equals(other.nombre)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;

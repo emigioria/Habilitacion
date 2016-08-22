@@ -5,15 +5,13 @@ import javax.persistence.ForeignKey;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import proy.datos.clases.Estado;
-
 @Entity
 @PrimaryKeyJoinColumn(name = "codusuario", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "operario_codusuario_fk"))
 @Table(name = "operario")
 public class Operario extends Usuario {
 
-	public Operario(Long version, String nombre, Estado estado) {
-		super(version, nombre, estado);
+	public Operario(String nombre, String apellido) {
+		super(nombre, apellido);
 	}
 
 }

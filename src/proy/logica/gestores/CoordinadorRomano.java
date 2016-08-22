@@ -1,5 +1,5 @@
 package proy.logica.gestores;
 
-public interface Coordinador {
+public interface CoordinadorRomano {
 
 }

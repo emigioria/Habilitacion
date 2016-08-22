@@ -1,7 +1,9 @@
 package proy.gui;
 
-public interface SceneApilable {
+public interface ControladorApilable {
 
 	public void setApilador(PilaScene apilador);
+
+	public void actualizar();
 
 }

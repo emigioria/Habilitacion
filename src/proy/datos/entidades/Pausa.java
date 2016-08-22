@@ -48,17 +48,12 @@ public class Pausa implements Serializable {
 	@Column(name = "fecha_hora_fin", nullable = false)
 	Date fechaHoraFin;
 
-	public Pausa(Tarea tarea, Long version, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
+	public Pausa(Tarea tarea, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
 		super();
 		this.tarea = tarea;
-		this.version = version;
 		this.causa = causa;
 		this.fechaHoraInicio = fechaHoraInicio;
 		this.fechaHoraFin = fechaHoraFin;
-	}
-
-	public Integer getCodigo() {
-		return codigo;
 	}
 
 	public Tarea getTarea() {
@@ -67,14 +62,6 @@ public class Pausa implements Serializable {
 
 	public void setTarea(Tarea tarea) {
 		this.tarea = tarea;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public String getCausa() {
@@ -105,7 +92,11 @@ public class Pausa implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((causa == null) ? 0 : causa.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((fechaHoraFin == null) ? 0 : fechaHoraFin.hashCode());
+		result = prime * result + ((fechaHoraInicio == null) ? 0 : fechaHoraInicio.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -121,12 +112,44 @@ public class Pausa implements Serializable {
 			return false;
 		}
 		Pausa other = (Pausa) obj;
+		if(causa == null){
+			if(other.causa != null){
+				return false;
+			}
+		}
+		else if(!causa.equals(other.causa)){
+			return false;
+		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(fechaHoraFin == null){
+			if(other.fechaHoraFin != null){
+				return false;
+			}
+		}
+		else if(!fechaHoraFin.equals(other.fechaHoraFin)){
+			return false;
+		}
+		if(fechaHoraInicio == null){
+			if(other.fechaHoraInicio != null){
+				return false;
+			}
+		}
+		else if(!fechaHoraInicio.equals(other.fechaHoraInicio)){
+			return false;
+		}
+		if(version == null){
+			if(other.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(other.version)){
 			return false;
 		}
 		return true;
