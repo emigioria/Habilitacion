@@ -1,4 +1,4 @@
-package proy.logica.gestores.filtros;
+package proy.datos.servicios;
 
 import proy.datos.servicios.implementacion.FiltroHibernate;
 

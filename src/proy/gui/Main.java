@@ -17,12 +17,12 @@ import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
 import proy.gui.controladores.ControladorRomano;
-import proy.logica.gestores.CoordinadorRomano;
+import proy.logica.gestores.CoordinadorJavaFX;
 
 public class Main extends Application {
 
 	private PilaScene apilador;
-	private CoordinadorRomano coordinador;
+	private CoordinadorJavaFX coordinador;
 	private Stage stagePrincipal;
 	private ApplicationContext appContext;
 	private ControladorRomano controladorVentanaInicio;
@@ -80,7 +80,7 @@ public class Main extends Application {
 			@Override
 			public Boolean call() throws Exception {
 				appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
-				coordinador = appContext.getBean(CoordinadorRomano.class);
+				coordinador = appContext.getBean(CoordinadorJavaFX.class);
 				if(controladorVentanaInicio != null){
 					controladorVentanaInicio.setCoordinador(coordinador);
 				}

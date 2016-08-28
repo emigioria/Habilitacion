@@ -11,24 +11,24 @@ import javafx.stage.WindowEvent;
 import proy.excepciones.ManejadorExcepciones;
 import proy.gui.ControladorApilable;
 import proy.gui.PilaScene;
-import proy.logica.gestores.CoordinadorRomano;
+import proy.logica.gestores.CoordinadorJavaFX;
 
 public abstract class ControladorRomano implements ControladorApilable {
 
 	protected PilaScene apilador;
 
-	protected CoordinadorRomano coordinador;
+	protected CoordinadorJavaFX coordinador;
 
 	@Override
 	public void setApilador(PilaScene apilador) {
 		this.apilador = apilador;
 	}
 
-	public void setCoordinador(CoordinadorRomano coordinador) {
+	public void setCoordinador(CoordinadorJavaFX coordinador) {
 		this.coordinador = coordinador;
 	}
 
-	public static ControladorRomano nuevaSceneIva(String URLVista, PilaScene apilador, CoordinadorRomano coordinador) {
+	public static ControladorRomano nuevaSceneIva(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(ControladorRomano.class.getResource(URLVista));

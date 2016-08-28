@@ -21,7 +21,7 @@ public class Maquina {
 	@Column(name = "version")
 	private Long version;
 
-	@Column(name = "nombre", length = 100, nullable = false)
+	@Column(name = "nombre", length = 100, nullable = false, unique = true)
 	private String nombre;
 
 	public Maquina(String nombre) {
