@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMMaquinaController">
    <children>
       <Label prefHeight="17.0" prefWidth="180.0" text="Nueva Máquina">
          <font>
@@ -22,7 +22,7 @@
       <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="600.0" spacing="10.0">
          <children>
             <Label text="Nombre de la Maquina" />
-            <TextField />
+            <TextField fx:id="nombreMaquina" />
          </children>
       </HBox>
       <SplitPane dividerPositions="0.36505190311418684" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -34,13 +34,13 @@
                         <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="600.0" spacing="10.0">
                            <children>
                               <Label text="Parte" />
-                              <TextField HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="nombreParte" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
-                        <TableView prefHeight="158.0" prefWidth="237.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tablaPartes" prefHeight="158.0" prefWidth="237.0" VBox.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn prefWidth="75.0" text="Parte" />
-                            <TableColumn prefWidth="75.0" text="Cantidad" />
+                            <TableColumn fx:id="columnaNombreParte" prefWidth="75.0" text="Parte" />
+                            <TableColumn fx:id="columnaCantidadParte" prefWidth="75.0" text="Cantidad" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -48,8 +48,8 @@
                         </TableView>
                         <HBox prefHeight="9.0" prefWidth="230.0" spacing="10.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Nueva" />
-                              <Button mnemonicParsing="false" text="Eliminar" />
+                              <Button fx:id="botonNuevaParte" mnemonicParsing="false" onAction="#nuevaParte" text="Nueva" />
+                              <Button fx:id="botonEliminarParte" mnemonicParsing="false" onAction="#eliminarParte" text="Eliminar" />
                            </children>
                         </HBox>
                      </children>
@@ -61,15 +61,15 @@
                   <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="600.0" spacing="10.0">
                      <children>
                         <Label text="Pieza" />
-                        <TextField HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="nombrePieza" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <TableView prefHeight="158.0" prefWidth="237.0" VBox.vgrow="ALWAYS">
+                  <TableView fx:id="tablaPiezas" prefHeight="158.0" prefWidth="237.0" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn prefWidth="75.0" text="Pieza" />
-                        <TableColumn prefWidth="75.0" text="Cantidad" />
-                        <TableColumn prefWidth="75.0" text="Material" />
-                        <TableColumn prefWidth="75.0" text="Cod. Plano" />
+                        <TableColumn fx:id="columnaNombrePieza" prefWidth="75.0" text="Pieza" />
+                        <TableColumn fx:id="columnaCantidadPieza" prefWidth="75.0" text="Cantidad" />
+                        <TableColumn fx:id="columnaMaterialPieza" prefWidth="75.0" text="Material" />
+                        <TableColumn fx:id="columnaCodigoPlanoPieza" prefWidth="75.0" text="Cod. Plano" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -77,8 +77,8 @@
                   </TableView>
                   <HBox prefHeight="9.0" prefWidth="230.0" spacing="10.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Nueva" />
-                        <Button mnemonicParsing="false" text="Eliminar" />
+                        <Button fx:id="botonNuevaPieza" mnemonicParsing="false" onAction="#nuevaPieza" text="Nueva" />
+                        <Button fx:id="botonEliminarPieza" mnemonicParsing="false" onAction="#eliminarPieza" text="Eliminar" />
                      </children>
                   </HBox>
                </children>
@@ -87,8 +87,8 @@
       </SplitPane>
       <HBox alignment="CENTER_RIGHT" prefHeight="13.0" prefWidth="580.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" text="Guardar" />
-            <Button mnemonicParsing="false" text="Salir" />
+            <Button fx:id="botonGuardar" mnemonicParsing="false" onAction="#guardar" text="Guardar" />
+            <Button fx:id="botonSalir" mnemonicParsing="false" onAction="#salir" text="Salir" />
          </children>
       </HBox>
    </children>

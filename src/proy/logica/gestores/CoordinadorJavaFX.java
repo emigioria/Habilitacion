@@ -16,7 +16,7 @@ import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
-import proy.gui.modelos.DatosLogin;
+import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;
@@ -61,8 +61,8 @@ public class CoordinadorJavaFX {
 	@Resource
 	private ProcesoGestor gestorProceso;
 
-	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
-		return gestorUsuario.autenticarAdministrador(login);
+	public ResultadoAutenticacion autenticarAdministrador(FiltroAdministrador filtro) throws PersistenciaException {
+		return gestorUsuario.autenticarAdministrador(filtro);
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {

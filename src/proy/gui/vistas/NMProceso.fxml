@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMProcesoController">
    <children>
       <Label text="Nuevo Proceso">
          <font>
@@ -45,37 +45,37 @@
               </rowConstraints>
                <children>
                   <Label text="Máquina:" />
-                  <ComboBox maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione la Máquina)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                  <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione la Máquina)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
                   <Label text="Parte:" GridPane.rowIndex="1" />
-                  <ComboBox maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione la Parte)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-                  <Label text="Observaciones:" GridPane.rowIndex="10" />
-                  <TextArea minHeight="71.0" prefHeight="71.0" GridPane.columnSpan="2" GridPane.rowIndex="11" />
-                  <Label text="Tipo de Proceso:" GridPane.rowIndex="3" />
-                  <ComboBox editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione o escriba el tipo)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                  <Label text="Tiempo teórico de Preparación:" GridPane.rowIndex="4" />
-                  <TextField prefHeight="25.0" prefWidth="175.0" promptText="(Escriba el tiempo teórico de preparación)" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
-                  <Label text="Tiempo teórico de Proceso:" GridPane.rowIndex="5" />
-                  <TextField prefHeight="25.0" prefWidth="175.0" promptText="(Escriba el tiempo teórico de proceso)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
-                  <Label text="Piezas:" GridPane.rowIndex="6" />
-                  <ListView minHeight="71.0" prefHeight="71.0" prefWidth="578.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                  <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione la Parte)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                   <Label text="Descripción:" GridPane.rowIndex="2" />
-                  <ComboBox editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione o escriba la descripción)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="cbDescripcion" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione o escriba la descripción)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <Label text="Tipo de Proceso:" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="cbTipo" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="(Seleccione o escriba el tipo)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                  <Label text="Tiempo teórico de Preparación:" GridPane.rowIndex="4" />
+                  <TextField fx:id="tiempoTeoricoPreparacion" prefHeight="25.0" prefWidth="175.0" promptText="(Escriba el tiempo teórico de preparación)" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+                  <Label text="Tiempo teórico de Proceso:" GridPane.rowIndex="5" />
+                  <TextField fx:id="tiempoTeoricoProceso" prefHeight="25.0" prefWidth="175.0" promptText="(Escriba el tiempo teórico de proceso)" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+                  <Label text="Piezas:" GridPane.rowIndex="6" />
                   <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                      <children>
-                        <ComboBox maxWidth="1.7976931348623157E308" promptText="(Seleccionar Pieza)" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" text="(+) Agregar" />
-                        <Button mnemonicParsing="false" text="(-) Quitar" />
+                        <ComboBox fx:id="cbPieza" maxWidth="1.7976931348623157E308" promptText="(Seleccionar Pieza)" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="botonAgregarPieza" mnemonicParsing="false" onAction="#agregarPieza" text="(+) Agregar" />
+                        <Button fx:id="botonQuitarPieza" mnemonicParsing="false" onAction="#quitarPieza" text="(-) Quitar" />
                      </children>
                   </HBox>
+                  <ListView fx:id="listaPiezas" minHeight="71.0" prefHeight="71.0" prefWidth="578.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   <Label text="Herramientas:" GridPane.rowIndex="8" />
                   <HBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
                      <children>
-                        <ComboBox maxWidth="1.7976931348623157E308" promptText="(Seleccionar Herramienta)" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" text="(+) Agregar" />
-                        <Button mnemonicParsing="false" text="(-) Quitar" />
+                        <ComboBox fx:id="cbHerramienta" maxWidth="1.7976931348623157E308" promptText="(Seleccionar Herramienta)" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="botonAgregarHerramienta" mnemonicParsing="false" onAction="#agregarHerramienta" text="(+) Agregar" />
+                        <Button fx:id="botonQuitarHerramienta" mnemonicParsing="false" onAction="#quitarHerramienta" text="(-) Quitar" />
                      </children>
                   </HBox>
-                  <ListView minHeight="71.0" prefHeight="71.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <ListView fx:id="listaHerramientas" minHeight="71.0" prefHeight="71.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <Label text="Observaciones:" GridPane.rowIndex="10" />
+                  <TextArea fx:id="observacionesProceso" minHeight="71.0" prefHeight="71.0" GridPane.columnSpan="2" GridPane.rowIndex="11" />
                </children>
                <padding>
                   <Insets bottom="10.0" right="10.0" />
@@ -85,8 +85,8 @@
       </ScrollPane>
       <HBox alignment="BOTTOM_RIGHT" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" text="Guardar" />
-            <Button mnemonicParsing="false" text="Salir" />
+            <Button fx:id="botonGuardar" mnemonicParsing="false" onAction="#guardar" text="Guardar" />
+            <Button fx:id="botonSalir" mnemonicParsing="false" onAction="#salir" text="Salir" />
          </children>
       </HBox>
    </children>

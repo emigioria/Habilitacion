@@ -11,7 +11,7 @@ import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.PersistenciaException;
-import proy.gui.modelos.DatosLogin;
+import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
@@ -25,7 +25,7 @@ public class UsuarioGestor {
 	@Resource
 	private UsuarioService persistidorDocumento;
 
-	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
+	public ResultadoAutenticacion autenticarAdministrador(FiltroAdministrador filtro) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 

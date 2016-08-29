@@ -234,4 +234,8 @@ public class Proceso {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return descripcion + " - " + tipo;
+	}
 }

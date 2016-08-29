@@ -61,4 +61,9 @@ public class Operario extends Usuario {
 		}
 		return super.equals(obj);
 	}
+
+	@Override
+	public String toString() {
+		return this.getNombre() + " " + this.getApellido();
+	}
 }
