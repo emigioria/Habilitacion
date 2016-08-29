@@ -2,6 +2,8 @@ package proy.logica.gestores;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import proy.datos.entidades.Comentario;
@@ -20,6 +22,8 @@ import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;
 import proy.logica.gestores.filtros.FiltroMaterial;
 import proy.logica.gestores.filtros.FiltroOperario;
+import proy.logica.gestores.filtros.FiltroParte;
+import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.filtros.FiltroProceso;
 import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
@@ -48,139 +52,156 @@ import proy.logica.gestores.resultados.ResultadoModificarTarea;
 @Service
 public class CoordinadorJavaFX {
 
+	@Resource
+	private UsuarioGestor gestorUsuario;
+
+	@Resource
+	private TallerGestor gestorTaller;
+
+	@Resource
+	private ProcesoGestor gestorProceso;
+
 	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
-		return null;
+		return gestorUsuario.autenticarAdministrador(login);
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {
-		return null;
+		return gestorUsuario.crearComentario(comentario);
 	}
 
 	public ArrayList<Comentario> listarComentarios(FiltroComentario filtro) throws PersistenciaException {
-		return null;
-	}
-
-	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoModificarMaquina modificarMaquina(Maquina maquinaNueva, Maquina maquinaVieja) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoCrearParte crearParte(Parte parte) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoModificarParte modificarParte(Parte parteNueva, Parte parteVieja) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
-		return null;
-	}
-
-	public ResultadoEliminarPieza eliminarPieza(Pieza pieza) throws PersistenciaException {
-		return null;
+		return gestorUsuario.listarComentarios(filtro);
 	}
 
 	public ArrayList<Operario> listarOperarios(FiltroOperario filtro) throws PersistenciaException {
-		return null;
+		return gestorUsuario.listarOperarios(filtro);
 	}
 
 	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {
-		return null;
+		return gestorUsuario.crearOperario(operario);
 	}
 
 	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
-		return null;
+		return gestorUsuario.eliminarOperario(operario);
+	}
+
+	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
+		return gestorTaller.listarMaquinas(filtro);
+	}
+
+	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
+		return gestorTaller.crearMaquina(maquina);
+	}
+
+	public ResultadoModificarMaquina modificarMaquina(Maquina maquinaNueva, Maquina maquinaVieja) throws PersistenciaException {
+		return gestorTaller.modificarMaquina(maquinaNueva, maquinaVieja);
+	}
+
+	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
+		return gestorTaller.eliminarMaquina(maquina);
+	}
+
+	public ArrayList<Parte> listarPartes(FiltroParte filtro) throws PersistenciaException {
+		return gestorTaller.listarPartes(filtro);
+	}
+
+	public ResultadoCrearParte crearParte(Parte parte) throws PersistenciaException {
+		return gestorTaller.crearParte(parte);
+	}
+
+	public ResultadoModificarParte modificarParte(Parte parteNueva, Parte parteVieja) throws PersistenciaException {
+		return gestorTaller.modificarParte(parteNueva, parteVieja);
+	}
+
+	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
+		return gestorTaller.eliminarParte(parte);
+	}
+
+	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
+		return gestorTaller.listarPiezas(filtro);
+	}
+
+	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
+		return gestorTaller.crearPieza(pieza);
+	}
+
+	public ResultadoEliminarPieza eliminarPieza(Pieza pieza) throws PersistenciaException {
+		return gestorTaller.eliminarPieza(pieza);
 	}
 
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
-		return null;
+		return gestorTaller.listarHerramientas(filtro);
 	}
 
 	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		return null;
+		return gestorTaller.crearHerramienta(herramienta);
 	}
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		return null;
+		return gestorTaller.eliminarHerramienta(herramienta);
 	}
 
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {
-		return null;
+		return gestorTaller.listarMateriales(filtro);
 	}
 
 	public ResultadoCrearMaterial crearMaterial(Material material) throws PersistenciaException {
-		return null;
+		return gestorTaller.crearMaterial(material);
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
-		return null;
+		return gestorTaller.eliminarMaterial(material);
 	}
 
 	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {
-		return null;
+		return gestorProceso.listarProcesos(filtro);
 	}
 
 	public ResultadoCrearProceso crearProceso(Proceso proceso) throws PersistenciaException {
-		return null;
+		return gestorProceso.crearProceso(proceso);
 	}
 
 	public ResultadoModificarProceso modificarProceso(Proceso procesoNuevo, Proceso procesoViejo) throws PersistenciaException {
-		return null;
+		return gestorProceso.modificarProceso(procesoNuevo, procesoViejo);
 	}
 
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
-		return null;
+		return gestorProceso.eliminarProceso(proceso);
 	}
 
 	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
-		return null;
+		return gestorProceso.listarTareas(filtro);
 	}
 
 	public ResultadoCrearTarea crearTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.crearTarea(tarea);
 	}
 
 	public ResultadoModificarTarea modificarTarea(Tarea tareaNueva, Tarea tareaVieja) throws PersistenciaException {
-		return null;
+		return gestorProceso.modificarTarea(tareaNueva, tareaVieja);
 	}
 
 	public ResultadoEliminarTarea eliminarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.eliminarTarea(tarea);
 	}
 
 	public ResultadoModificarTarea ComenzarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.ComenzarTarea(tarea);
 	}
 
 	public ResultadoModificarTarea PausarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.PausarTarea(tarea);
 	}
 
 	public ResultadoModificarTarea ReanudarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.ReanudarTarea(tarea);
 	}
 
 	public ResultadoModificarTarea TerminarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.TerminarTarea(tarea);
 	}
 
 	public ResultadoModificarTarea CancelarTarea(Tarea tarea) throws PersistenciaException {
-		return null;
+		return gestorProceso.CancelarTarea(tarea);
 	}
 }
