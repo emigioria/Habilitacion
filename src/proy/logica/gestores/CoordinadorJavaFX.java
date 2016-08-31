@@ -93,8 +93,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearMaquina(maquina);
 	}
 
-	public ResultadoModificarMaquina modificarMaquina(Maquina maquinaNueva, Maquina maquinaVieja) throws PersistenciaException {
-		return gestorTaller.modificarMaquina(maquinaNueva, maquinaVieja);
+	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
+		return gestorTaller.modificarMaquina(maquina);
 	}
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
@@ -109,8 +109,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearParte(parte);
 	}
 
-	public ResultadoModificarParte modificarParte(Parte parteNueva, Parte parteVieja) throws PersistenciaException {
-		return gestorTaller.modificarParte(parteNueva, parteVieja);
+	public ResultadoModificarParte modificarParte(Parte parte) throws PersistenciaException {
+		return gestorTaller.modificarParte(parte);
 	}
 
 	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
@@ -161,8 +161,8 @@ public class CoordinadorJavaFX {
 		return gestorProceso.crearProceso(proceso);
 	}
 
-	public ResultadoModificarProceso modificarProceso(Proceso procesoNuevo, Proceso procesoViejo) throws PersistenciaException {
-		return gestorProceso.modificarProceso(procesoNuevo, procesoViejo);
+	public ResultadoModificarProceso modificarProceso(Proceso proceso) throws PersistenciaException {
+		return gestorProceso.modificarProceso(proceso);
 	}
 
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
@@ -177,8 +177,8 @@ public class CoordinadorJavaFX {
 		return gestorProceso.crearTarea(tarea);
 	}
 
-	public ResultadoModificarTarea modificarTarea(Tarea tareaNueva, Tarea tareaVieja) throws PersistenciaException {
-		return gestorProceso.modificarTarea(tareaNueva, tareaVieja);
+	public ResultadoModificarTarea modificarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.modificarTarea(tarea);
 	}
 
 	public ResultadoEliminarTarea eliminarTarea(Tarea tarea) throws PersistenciaException {

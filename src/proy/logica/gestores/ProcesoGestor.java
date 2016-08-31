@@ -34,7 +34,7 @@ public class ProcesoGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarProceso modificarProceso(Proceso procesoNuevo, Proceso procesoViejo) throws PersistenciaException {
+	public ResultadoModificarProceso modificarProceso(Proceso proceso) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
@@ -50,7 +50,7 @@ public class ProcesoGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea modificarTarea(Tarea tareaNueva, Tarea tareaVieja) throws PersistenciaException {
+	public ResultadoModificarTarea modificarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 

@@ -46,7 +46,7 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarMaquina modificarMaquina(Maquina maquinaNueva, Maquina maquinaVieja) throws PersistenciaException {
+	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
@@ -62,7 +62,7 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarParte modificarParte(Parte parteNueva, Parte parteVieja) throws PersistenciaException {
+	public ResultadoModificarParte modificarParte(Parte parte) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
