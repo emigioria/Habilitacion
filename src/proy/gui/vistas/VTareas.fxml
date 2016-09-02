@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane prefHeight="485.0" prefWidth="573.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareaController">
+<GridPane prefHeight="485.0" prefWidth="573.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1000.0" minWidth="0.0" prefWidth="81.0" />
       <ColumnConstraints />

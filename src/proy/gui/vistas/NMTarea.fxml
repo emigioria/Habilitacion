@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -69,11 +70,11 @@
       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
             <Label text="Cantidad" />
-            <TextField fx:id="cantidad" />
+            <Spinner fx:id="cantidad" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
             <Label text="Operario" />
-            <ComboBox fx:id="cbOperario" prefWidth="150.0" />
+            <ComboBox fx:id="cbOperario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
             <Label text="Fecha" />
-            <DatePicker fx:id="fechaTarea" />
+            <DatePicker fx:id="fechaTarea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
             <Label text="Observaciones" />
             <TextArea fx:id="observaciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
          </children>

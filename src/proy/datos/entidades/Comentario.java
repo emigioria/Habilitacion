@@ -4,9 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,14 +32,19 @@ public class Comentario {
 	@Column(name = "texto", length = 500, nullable = false)
 	private String texto;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"))
+	private Operario operario;
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha", nullable = false)
 	Date fechaComentario;
 
-	public Comentario(String texto, Date fecha) {
+	public Comentario(String texto, Date fecha, Operario operario) {
 		super();
 		this.texto = texto;
 		this.fechaComentario = fecha;
+		this.operario = operario;
 	}
 
 	public String getTexto() {
@@ -52,6 +61,14 @@ public class Comentario {
 
 	public void setFechaComentario(Date fechaComentario) {
 		this.fechaComentario = fechaComentario;
+	}
+
+	public Operario getOperario() {
+		return operario;
+	}
+
+	public void setOperario(Operario operario) {
+		this.operario = operario;
 	}
 
 	@Override

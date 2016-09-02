@@ -6,11 +6,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.util.converter.IntegerStringConverter;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Proceso;
 
@@ -25,7 +29,7 @@ public class NMTareaController extends ControladorRomano {
 	private TextField maquina;
 
 	@FXML
-	private TextField cantidad;
+	private Spinner<Integer> cantidad;
 
 	@FXML
 	private TextArea observaciones;
@@ -84,6 +88,23 @@ public class NMTareaController extends ControladorRomano {
 					return new SimpleStringProperty("<no name>");
 				}
 			});
+			cantidad.getEditor().setTextFormatter(new TextFormatter<Integer>(
+					new IntegerStringConverter(), 0,
+					c -> {
+						if(c.isContentChange()){
+							Integer numeroIngresado = null;
+							try{
+								numeroIngresado = new Integer(c.getControlNewText());
+							} catch(Exception e){
+								//No ingreso un entero;
+							}
+							if(numeroIngresado == null){
+								return null;
+							}
+						}
+						return c;
+					}));
+			cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
 		});
 	}
 
