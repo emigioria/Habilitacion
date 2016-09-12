@@ -14,13 +14,17 @@ public class Administrador extends Usuario {
 	@Column(name = "contrasenia", length = 100, nullable = false)
 	private String contrasenia;
 
+	@Column(name = "sal", length = 100, nullable = false)
+	private String sal;
+
 	public Administrador() {
 		super();
 	}
 
-	public Administrador(String nombre, String apellido, String contrasenia) {
+	public Administrador(String nombre, String apellido, String contrasenia, String sal) {
 		super(nombre, apellido);
 		this.contrasenia = contrasenia;
+		this.sal = sal;
 	}
 
 	public String getContrasenia() {
@@ -31,11 +35,20 @@ public class Administrador extends Usuario {
 		this.contrasenia = contrasenia;
 	}
 
+	public String getSal() {
+		return sal;
+	}
+
+	public void setSal(String sal) {
+		this.sal = sal;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((contrasenia == null) ? 0 : contrasenia.hashCode());
+		result = prime * result + ((sal == null) ? 0 : sal.hashCode());
 		return result;
 	}
 
@@ -59,7 +72,15 @@ public class Administrador extends Usuario {
 		else if(!contrasenia.equals(other.contrasenia)){
 			return false;
 		}
-		return super.equals(obj);
+		if(sal == null){
+			if(other.sal != null){
+				return false;
+			}
+		}
+		else if(!sal.equals(other.sal)){
+			return false;
+		}
+		return true;
 	}
 
 }
