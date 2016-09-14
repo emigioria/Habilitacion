@@ -28,7 +28,7 @@ public abstract class ControladorRomano implements ControladorApilable {
 		this.coordinador = coordinador;
 	}
 
-	public static ControladorRomano nuevaSceneIva(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
+	public static ControladorRomano nuevaScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(ControladorRomano.class.getResource(URLVista));

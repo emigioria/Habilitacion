@@ -8,15 +8,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
-import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
 import proy.gui.controladores.ControladorRomano;
+import proy.gui.controladores.VHistorialTareasController;
 import proy.logica.gestores.CoordinadorJavaFX;
 
 public class Main extends Application {
@@ -66,9 +65,7 @@ public class Main extends Application {
 		iniciarHibernate();
 
 		//Crear primera ventana
-		//		controladorVentanaInicio = ControladorRomano.nuevaScene(InicioController.URLVista, apilador, coordinador);
-		stagePrincipal.setScene(new Scene(new GridPane()));
-		stagePrincipal.show();
+		controladorVentanaInicio = ControladorRomano.nuevaScene(VHistorialTareasController.URLVista, apilador, coordinador);
 	}
 
 	private void iniciarHibernate() {

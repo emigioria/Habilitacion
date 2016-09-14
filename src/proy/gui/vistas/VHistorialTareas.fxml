@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="800.0" prefHeight="399.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="800.0" prefHeight="399.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VHistorialTareasController">
    <content>
       <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="397.0" prefWidth="611.0">
          <panes>
@@ -26,9 +26,9 @@
                         <RowConstraints fillHeight="false" minHeight="-Infinity" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="proceso_1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Label alignment="TOP_LEFT" text="maquina_1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                        <Label text="parte_1" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="nombreProceso" text="proceso_1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="nombreMaquina" alignment="TOP_LEFT" text="maquina_1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="nombreParte" text="parte_1" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                      </children>
                   </GridPane>
                </graphic>
@@ -45,12 +45,12 @@
                         <RowConstraints maxHeight="7.0" minHeight="0.0" prefHeight="5.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Label text="Operario - Fulano" />
-                        <Label text="Máquina - Cortadora de tapas de empanada" GridPane.rowIndex="1" />
-                        <TableView minHeight="0.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                        <Label fx:id="nombreOperario" text="Operario - Fulano" />
+                        <Label fx:id="nombreMaquina" text="Máquina - Cortadora de tapas de empanada" GridPane.rowIndex="1" />
+                        <TableView fx:id="tablaPiezas" minHeight="0.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn prefWidth="138.0" text="Piezas" />
-                            <TableColumn minWidth="7.0" prefWidth="139.0" text="Material" />
+                            <TableColumn fx:id="columnaPieza" prefWidth="138.0" text="Piezas" />
+                            <TableColumn fx:id="columnaMaterial" minWidth="7.0" prefWidth="139.0" text="Material" />
                           </columns>
                         </TableView>
                      </children>
