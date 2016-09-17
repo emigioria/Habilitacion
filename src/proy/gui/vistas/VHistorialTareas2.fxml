@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="800.0" prefHeight="399.0" prefWidth="613.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VHistorialTareasController">
+<ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxHeight="600.0" maxWidth="800.0" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VHistorialTareasController">
    <content>
-      <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="397.0" prefWidth="611.0">
+      <Accordion maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
          <panes>
-            <TitledPane animated="false">
+            <TitledPane fx:id="panelTarea" animated="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                <graphic>
                   <GridPane alignment="CENTER_LEFT" hgap="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="541.0">
                      <columnConstraints>
@@ -33,25 +33,28 @@
                   </GridPane>
                </graphic>
                <content>
-                  <GridPane hgap="5.0" prefHeight="83.0" prefWidth="596.0" vgap="5.0">
+                  <GridPane hgap="5.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="5.0">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="479.0" minWidth="10.0" prefWidth="298.0" />
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
                         <ColumnConstraints hgrow="NEVER" maxWidth="294.0" minWidth="286.0" prefWidth="286.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
-                        <RowConstraints maxHeight="171.0" minHeight="10.0" prefHeight="166.0" vgrow="ALWAYS" />
+                        <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                         <RowConstraints maxHeight="7.0" minHeight="0.0" prefHeight="5.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <Label fx:id="nombreOperario" text="Operario - Fulano" />
                         <Label fx:id="nombreMaquina" text="Máquina - Cortadora de tapas de empanada" GridPane.rowIndex="1" />
-                        <TableView fx:id="tablaPiezas" minHeight="0.0" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
+                        <TableView fx:id="tablaPiezas" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
                           <columns>
-                            <TableColumn fx:id="columnaPieza" prefWidth="138.0" text="Piezas" />
-                            <TableColumn fx:id="columnaMaterial" minWidth="7.0" prefWidth="139.0" text="Material" />
+                            <TableColumn fx:id="columnaPieza" maxWidth="1.7976931348623157E308" minWidth="224.0" prefWidth="224.0" text="Piezas" />
+                            <TableColumn fx:id="columnaMaterial" maxWidth="1.7976931348623157E308" minWidth="224.0" prefWidth="224.0" text="Material" />
                           </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
                         </TableView>
                      </children>
                   </GridPane>
