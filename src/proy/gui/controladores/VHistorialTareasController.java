@@ -1,12 +1,18 @@
 package proy.gui.controladores;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Pane;
+import proy.datos.entidades.Material;
 import proy.datos.entidades.Pieza;
 
 public class VHistorialTareasController extends ControladorRomano {
@@ -35,6 +41,9 @@ public class VHistorialTareasController extends ControladorRomano {
 	private TableColumn<Pieza, String> columnaMaterial;
 
 	@FXML
+	private TitledPane panelTarea;
+
+	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
 			columnaPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
@@ -53,26 +62,29 @@ public class VHistorialTareasController extends ControladorRomano {
 					return new SimpleStringProperty("<no name>");
 				}
 			});
+
+			panelTarea.setExpanded(true);
+			tablaPiezas.getItems().add(new Pieza("Hola", null, null, null, null, new Material("Chau", null)));
+
+			(new Thread(() -> {
+				try{
+					Thread.sleep(100);
+				} catch(Exception e){
+				}
+				Platform.runLater(() -> {
+					TableRow<?> tableRow = (TableRow<?>) tablaPiezas.lookup("TableRow");
+					tablaPiezas.minHeightProperty().bind(new SimpleIntegerProperty(1).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+					tablaPiezas.prefHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+					tablaPiezas.maxHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+					tablaPiezas.getItems().clear();
+				});
+			})).start();
 		});
-	}
-
-	@FXML
-	public void nuevoOperario() {
-
-	}
-
-	@FXML
-	public void eliminarOperario() {
-
-	}
-
-	@FXML
-	public void guardarOperario() {
-
 	}
 
 	@Override
 	public void actualizar() {
 
 	}
+
 }
