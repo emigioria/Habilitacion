@@ -38,12 +38,17 @@ public class AMaquinasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaMaquina() {
-
+		NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URLVista, apilador, coordinador);
+		nuevaPantalla.formatearNuevaMaquina();
 	}
 
 	@FXML
 	public void modificarMaquina() {
-
+		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
+		if(maquina != null){
+			NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URLVista, apilador, coordinador);
+			nuevaPantalla.formatearModificarMaquina(maquina);
+		}
 	}
 
 	@FXML

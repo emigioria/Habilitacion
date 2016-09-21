@@ -43,11 +43,11 @@ public class UsuarioGestor {
 	}
 
 	public ArrayList<Comentario> listarComentarios(FiltroComentario filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorUsuario.obtenerComentarios(filtro);
 	}
 
 	public ArrayList<Operario> listarOperarios(FiltroOperario filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorUsuario.obtenerOperarios(filtro);
 	}
 
 	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {

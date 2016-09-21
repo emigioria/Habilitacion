@@ -14,9 +14,8 @@ import javafx.stage.WindowEvent;
 import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
-import proy.gui.controladores.AMaquinasController;
-import proy.gui.controladores.AOperariosController;
 import proy.gui.controladores.ControladorRomano;
+import proy.gui.controladores.VTareasController;
 import proy.logica.gestores.CoordinadorJavaFX;
 
 public class Main extends Application {
@@ -66,7 +65,7 @@ public class Main extends Application {
 		iniciarHibernate();
 
 		//Crear primera ventana
-		controladorVentanaInicio = ControladorRomano.nuevaScene(AMaquinasController.URLVista, apilador, coordinador);
+		controladorVentanaInicio = ControladorRomano.nuevaScene(VTareasController.URLVista, apilador, coordinador);
 	}
 
 	private void iniciarHibernate() {

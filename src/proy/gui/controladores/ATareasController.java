@@ -1,6 +1,7 @@
 package proy.gui.controladores;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -41,6 +42,9 @@ public class ATareasController extends ControladorRomano {
 	private TableColumn<Tarea, String> columnaOperario;
 
 	@FXML
+	private TableColumn<Tarea, Number> columnaCantidad;
+
+	@FXML
 	private TableColumn<Tarea, String> columnaFecha;
 
 	@FXML
@@ -78,6 +82,14 @@ public class ATareasController extends ControladorRomano {
 					return new SimpleStringProperty("<no name>");
 				}
 			});
+			columnaCantidad.setCellValueFactory((CellDataFeatures<Tarea, Number> param) -> {
+				if(param.getValue() != null){
+					return new SimpleIntegerProperty(param.getValue().getCantidadTeorica());
+				}
+				else{
+					return new SimpleIntegerProperty(-1);
+				}
+			});
 			columnaFecha.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
 				if(param.getValue() != null){
 					return new SimpleStringProperty(ConversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
@@ -96,7 +108,17 @@ public class ATareasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaTarea() {
+		NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URLVista, apilador, coordinador);
+		nuevaPantalla.formatearNuevaTarea();
+	}
 
+	@FXML
+	public void modificarTarea() {
+		Tarea tarea = tablaTareas.getSelectionModel().getSelectedItem();
+		if(tarea != null){
+			NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URLVista, apilador, coordinador);
+			nuevaPantalla.formatearModificarTarea(tarea);
+		}
 	}
 
 	@FXML
@@ -141,11 +163,6 @@ public class ATareasController extends ControladorRomano {
 			//Operacion exitosa
 			tablaTareas.getItems().remove(tarea);
 		}
-	}
-
-	@FXML
-	public void guardarTarea() {
-
 	}
 
 	@Override

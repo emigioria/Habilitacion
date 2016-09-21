@@ -27,7 +27,7 @@ public class ProcesoGestor {
 	private ProcesoService persistidorProceso;
 
 	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorProceso.obtenerProcesos(filtro);
 	}
 
 	public ResultadoCrearProceso crearProceso(Proceso proceso) throws PersistenciaException {
@@ -43,7 +43,7 @@ public class ProcesoGestor {
 	}
 
 	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorProceso.obtenerTareas(filtro);
 	}
 
 	public ResultadoCrearTarea crearTarea(Tarea tarea) throws PersistenciaException {

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="574.0" prefWidth="767.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AProcesosController">
+<VBox prefHeight="574.0" prefWidth="767.0" spacing="10.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AProcesosController">
    <children>
       <Label text="Lista de Procesos">
          <font>
@@ -53,17 +53,17 @@
             </TableView>
             <VBox prefHeight="358.0" prefWidth="86.0" spacing="10.0">
                <children>
-                  <Button fx:id="botonNueva" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#nuevoProceso" text="Nuevo">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#nuevoProceso" text="Nuevo">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Modificar">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#modificarProceso" text="Modificar">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="botonEliminar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eliminarProceso" text="Eliminar">
+                  <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eliminarProceso" text="Eliminar">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -74,7 +74,7 @@
       </HBox>
       <HBox alignment="BOTTOM_RIGHT" prefWidth="200.0" spacing="10.0">
          <children>
-            <Button mnemonicParsing="false" prefWidth="86.0" text="Salir" />
+            <Button mnemonicParsing="false" onAction="#salir" prefWidth="86.0" text="Salir" />
          </children>
       </HBox>
    </children>

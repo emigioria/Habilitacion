@@ -13,39 +13,39 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.ATareasController">
    <children>
-      <TableView prefHeight="217.0" prefWidth="177.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TableView fx:id="tablaTareas" prefHeight="217.0" prefWidth="177.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
          <columns>
-            <TableColumn minWidth="0.0" prefWidth="166.0" text="Proceso" />
-            <TableColumn minWidth="0.0" prefWidth="282.0" text="Maquina" />
-            <TableColumn minWidth="0.0" prefWidth="282.0" text="Parte" />
-            <TableColumn prefWidth="75.0" text="Cantidad" />
-            <TableColumn minWidth="0.0" prefWidth="166.0" text="Operario" />
-            <TableColumn minWidth="0.0" prefWidth="166.0" text="Fecha" />
+            <TableColumn fx:id="columnaProceso" minWidth="0.0" prefWidth="166.0" text="Proceso" />
+            <TableColumn fx:id="columnaMaquina" minWidth="0.0" prefWidth="282.0" text="Maquina" />
+            <TableColumn fx:id="columnaParte" minWidth="0.0" prefWidth="282.0" text="Parte" />
+            <TableColumn fx:id="columnaCantidad" prefWidth="75.0" text="Cantidad" />
+            <TableColumn fx:id="columnaOperario" minWidth="0.0" prefWidth="166.0" text="Operario" />
+            <TableColumn fx:id="columnaFecha" minWidth="0.0" prefWidth="166.0" text="Fecha" />
          </columns>
       </TableView>
       <VBox prefHeight="405.0" prefWidth="117.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <children>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Nueva">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#nuevaTarea" text="Nueva">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Eliminar">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#modificarTarea" text="Modificar">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Guardar">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#eliminarTarea" text="Eliminar">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </Button>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Salir">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#salir" text="Salir">
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
@@ -72,7 +72,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </TextField>
-            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Buscar">
+            <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscar" text="Buscar">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>

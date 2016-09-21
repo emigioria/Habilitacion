@@ -39,7 +39,7 @@ public class TallerGestor {
 	private TallerService persistidorTaller;
 
 	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorTaller.obtenerMaquinas(filtro);
 	}
 
 	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
@@ -55,7 +55,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Parte> listarPartes(FiltroParte filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorTaller.obtenerPartes(filtro);
 	}
 
 	public ResultadoCrearParte crearParte(Parte parte) throws PersistenciaException {
@@ -71,7 +71,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return listarPiezas(filtro);
 	}
 
 	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
@@ -83,7 +83,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorTaller.obtenerHerramientas(filtro);
 	}
 
 	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
@@ -95,7 +95,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		return persistidorTaller.obtenerMateriales(filtro);
 	}
 
 	public ResultadoCrearMaterial crearMaterial(Material material) throws PersistenciaException {

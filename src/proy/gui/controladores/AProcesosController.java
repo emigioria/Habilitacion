@@ -93,7 +93,17 @@ public class AProcesosController extends ControladorRomano {
 
 	@FXML
 	public void nuevoProceso() {
+		NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URLVista, apilador, coordinador);
+		nuevaPantalla.formatearNuevoProceso();
+	}
 
+	@FXML
+	public void modificarProceso() {
+		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
+		if(proceso != null){
+			NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URLVista, apilador, coordinador);
+			nuevaPantalla.formatearModificarProceso(proceso);
+		}
 	}
 
 	@FXML

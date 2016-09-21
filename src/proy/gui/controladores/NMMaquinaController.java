@@ -8,6 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 
@@ -124,6 +125,14 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
+
+	}
+
+	public void formatearNuevaMaquina() {
+
+	}
+
+	public void formatearModificarMaquina(Maquina maquina) {
 
 	}
 

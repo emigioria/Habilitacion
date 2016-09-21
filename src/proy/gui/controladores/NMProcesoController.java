@@ -9,6 +9,7 @@ import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
+import proy.datos.entidades.Proceso;
 
 public class NMProcesoController extends ControladorRomano {
 
@@ -69,6 +70,14 @@ public class NMProcesoController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
+
+	}
+
+	public void formatearNuevoProceso() {
+
+	}
+
+	public void formatearModificarProceso(Proceso proceso) {
 
 	}
 
