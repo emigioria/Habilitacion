@@ -10,4 +10,4 @@ Trabajo de Habilitación Profesional - 2016
 
 ## Licencia
 
-Este proyecto esta licenciado bajo la Mozilla Public License Version 2.0. Ver [LICENSE.md](LICENSE.md) para mas detalles 
+Este proyecto esta licenciado bajo la Mozilla Public License Version 2.0. Ver [LICENSE](LICENSE) para mas detalles 
