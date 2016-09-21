@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -48,24 +47,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
-
-	@FXML
-	private Button botonNuevaParte;
-
-	@FXML
-	private Button botonEliminarParte;
-
-	@FXML
-	private Button botonNuevaPieza;
-
-	@FXML
-	private Button botonEliminarPieza;
-
-	@FXML
-	private Button botonGuardar;
-
-	@FXML
-	private Button botonSalir;
 
 	@FXML
 	private void initialize() {

@@ -3,7 +3,6 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -67,15 +66,6 @@ public class NMTareaController extends ControladorRomano {
 
 	@FXML
 	private TableColumn<Proceso, String> columnaParte;
-
-	@FXML
-	private Button botonBuscar;
-
-	@FXML
-	private Button botonAceptar;
-
-	@FXML
-	private Button botonCancelar;
 
 	private Tarea tarea;
 

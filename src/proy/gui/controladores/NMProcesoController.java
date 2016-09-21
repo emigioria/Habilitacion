@@ -1,7 +1,6 @@
 package proy.gui.controladores;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
@@ -47,24 +46,6 @@ public class NMProcesoController extends ControladorRomano {
 
 	@FXML
 	private ListView<Herramienta> listaHerramientas;
-
-	@FXML
-	private Button botonAgregarPieza;
-
-	@FXML
-	private Button botonQuitarPieza;
-
-	@FXML
-	private Button botonAgregarHerramienta;
-
-	@FXML
-	private Button botonQuitarHerramienta;
-
-	@FXML
-	private Button botonGuardar;
-
-	@FXML
-	private Button botonSalir;
 
 	@FXML
 	public void agregarPieza() {
