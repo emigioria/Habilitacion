@@ -36,7 +36,7 @@ import proy.logica.gestores.resultados.ResultadoModificarParte;
 public class TallerGestor {
 
 	@Resource
-	private TallerService persistidorDocumento;
+	private TallerService persistidorTaller;
 
 	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
 		throw new NotYetImplementedException();

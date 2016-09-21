@@ -28,7 +28,7 @@ public class Proceso {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -79,6 +79,10 @@ public class Proceso {
 		this.tipo = tipo;
 		this.estado = estado;
 		this.parte = parte;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getDescripcion() {

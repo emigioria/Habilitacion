@@ -185,23 +185,23 @@ public class CoordinadorJavaFX {
 		return gestorProceso.eliminarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea ComenzarTarea(Tarea tarea) throws PersistenciaException {
-		return gestorProceso.ComenzarTarea(tarea);
+	public ResultadoModificarTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.comenzarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea PausarTarea(Tarea tarea) throws PersistenciaException {
-		return gestorProceso.PausarTarea(tarea);
+	public ResultadoModificarTarea pausarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.pausarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea ReanudarTarea(Tarea tarea) throws PersistenciaException {
-		return gestorProceso.ReanudarTarea(tarea);
+	public ResultadoModificarTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.reanudarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea TerminarTarea(Tarea tarea) throws PersistenciaException {
-		return gestorProceso.TerminarTarea(tarea);
+	public ResultadoModificarTarea terminarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.terminarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea CancelarTarea(Tarea tarea) throws PersistenciaException {
-		return gestorProceso.CancelarTarea(tarea);
+	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
+		return gestorProceso.cancelarTarea(tarea);
 	}
 }

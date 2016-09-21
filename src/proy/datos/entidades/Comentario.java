@@ -23,7 +23,7 @@ public class Comentario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -45,6 +45,10 @@ public class Comentario {
 		this.texto = texto;
 		this.fechaComentario = fecha;
 		this.operario = operario;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getTexto() {

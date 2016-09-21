@@ -19,7 +19,7 @@ public class Material {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -39,6 +39,10 @@ public class Material {
 		super();
 		this.nombre = nombre;
 		this.medidas = medidas;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getNombre() {

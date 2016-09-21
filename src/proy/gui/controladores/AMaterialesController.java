@@ -3,7 +3,6 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -25,12 +24,6 @@ public class AMaterialesController extends ControladorRomano {
 
 	@FXML
 	private TableColumn<Material, String> columnaMedidas;
-
-	@FXML
-	private Button botonNuevo;
-
-	@FXML
-	private Button botonEliminar;
 
 	@FXML
 	private void initialize() {

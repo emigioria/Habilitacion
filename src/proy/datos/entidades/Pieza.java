@@ -27,7 +27,7 @@ public class Pieza {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -69,6 +69,10 @@ public class Pieza {
 		this.estado = estado;
 		this.parte = parte;
 		this.material = material;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getNombre() {
