@@ -29,7 +29,7 @@
             <TableColumn fx:id="columnaParte" minWidth="0.0" prefWidth="282.0" text="Parte" />
          </columns>
       </TableView>
-      <Label text="Lista de Tareas" GridPane.columnIndex="1">
+      <Label fx:id="lbTitulo" text="Nueva tarea" GridPane.columnIndex="1">
          <font>
             <Font size="24.0" />
          </font>
@@ -79,7 +79,7 @@
             <TextArea fx:id="observaciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
          </children>
          <GridPane.margin>
-            <Insets bottom="10.0" />
+            <Insets />
          </GridPane.margin>
          <padding>
             <Insets left="10.0" />

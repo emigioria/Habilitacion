@@ -23,14 +23,23 @@ import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 public class UsuarioGestor {
 
 	@Resource
-	private UsuarioService persistidorDocumento;
+	private UsuarioService persistidorUsuario;
 
 	public ResultadoAutenticacion autenticarAdministrador(FiltroAdministrador filtro) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {
+		ResultadoCrearComentario resultado = validarCrearComentario(comentario);
+		if(!resultado.hayErrores()){
+			//hacer las cosas
+		}
 		throw new NotYetImplementedException();
+	}
+
+	private ResultadoCrearComentario validarCrearComentario(Comentario comentario) {
+		// TODO Auto-generated method stub
+		return new ResultadoCrearComentario();
 	}
 
 	public ArrayList<Comentario> listarComentarios(FiltroComentario filtro) throws PersistenciaException {
@@ -42,11 +51,28 @@ public class UsuarioGestor {
 	}
 
 	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {
+		ResultadoCrearOperario resultado = validarCrearOperario(operario);
+		if(!resultado.hayErrores()){
+			//hacer las cosas
+		}
 		throw new NotYetImplementedException();
+	}
+
+	private ResultadoCrearOperario validarCrearOperario(Operario operario) {
+		// TODO Auto-generated method stub
+		return new ResultadoCrearOperario();
 	}
 
 	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
+		ResultadoEliminarOperario resultado = validarEliminarOperario(operario);
+		if(!resultado.hayErrores()){
+			//hacer las cosas
+		}
 		throw new NotYetImplementedException();
 	}
 
+	private ResultadoEliminarOperario validarEliminarOperario(Operario operario) {
+		// TODO Auto-generated method stub
+		return new ResultadoEliminarOperario();
+	}
 }

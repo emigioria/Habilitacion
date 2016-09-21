@@ -22,7 +22,7 @@ public abstract class Usuario {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -47,6 +47,10 @@ public abstract class Usuario {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getNombre() {

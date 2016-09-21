@@ -24,7 +24,7 @@ import proy.logica.gestores.resultados.ResultadoModificarTarea;
 public class ProcesoGestor {
 
 	@Resource
-	private ProcesoService persistidorDocumento;
+	private ProcesoService persistidorProceso;
 
 	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {
 		throw new NotYetImplementedException();
@@ -47,34 +47,61 @@ public class ProcesoGestor {
 	}
 
 	public ResultadoCrearTarea crearTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoCrearTarea resultado = validarCrearTarea(tarea);
+		if(!resultado.hayErrores()){
+			persistidorProceso.guardarTarea(tarea);
+		}
 		throw new NotYetImplementedException();
+	}
+
+	private ResultadoCrearTarea validarCrearTarea(Tarea tarea) {
+		// TODO validar tarea para crearla
+		return new ResultadoCrearTarea();
 	}
 
 	public ResultadoModificarTarea modificarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ResultadoModificarTarea resultado = validarModificarTarea(tarea);
+		if(!resultado.hayErrores()){
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarTarea validarModificarTarea(Tarea tarea) {
+		// TODO validar tarea para modificarla
+		return new ResultadoModificarTarea();
 	}
 
 	public ResultadoEliminarTarea eliminarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoEliminarTarea resultado = validarEliminarTarea(tarea);
+		if(!resultado.hayErrores()){
+			persistidorProceso.bajaTarea(tarea);
+		}
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea ComenzarTarea(Tarea tarea) throws PersistenciaException {
+	private ResultadoEliminarTarea validarEliminarTarea(Tarea tarea) {
+		// TODO validar tarea para eliminarla
+		return new ResultadoEliminarTarea();
+	}
+
+	public ResultadoModificarTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea PausarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarTarea pausarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea ReanudarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea TerminarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarTarea terminarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea CancelarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 }

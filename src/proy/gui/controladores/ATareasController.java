@@ -9,7 +9,12 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Tarea;
+import proy.excepciones.ManejadorExcepciones;
+import proy.excepciones.PersistenciaException;
 import proy.gui.ConversorFechas;
+import proy.gui.componentes.VentanaError;
+import proy.logica.gestores.resultados.ResultadoEliminarTarea;
+import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea;
 
 public class ATareasController extends ControladorRomano {
 
@@ -112,7 +117,46 @@ public class ATareasController extends ControladorRomano {
 
 	@FXML
 	public void eliminarTarea() {
+		ResultadoEliminarTarea resultado = null;
+		Boolean hayErrores;
+		Tarea tarea;
+		String errores = "";
 
+		//Toma de datos de la vista
+		tarea = tablaTareas.getSelectionModel().getSelectedItem();
+		if(tarea == null){
+			return;
+		}
+
+		//Inicio transacción al gestor
+		try{
+			resultado = coordinador.eliminarTarea(tarea);
+		} catch(PersistenciaException e){
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		hayErrores = resultado.hayErrores();
+		if(hayErrores){
+			for(ErrorEliminarTarea r: resultado.getErrores()){
+				switch(r) {
+				default: //ejemplo, no usar default
+					errores += "No se ha encontrado la tarea buscada.\n";
+					break;
+				}
+			}
+			if(!errores.isEmpty()){
+				new VentanaError("No se ha podido eliminar la tarea", errores, apilador.getStage());
+			}
+		}
+		else{
+			//Operacion exitosa
+			tablaTareas.getItems().remove(tarea);
+		}
 	}
 
 	@FXML

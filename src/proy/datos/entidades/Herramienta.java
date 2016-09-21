@@ -20,7 +20,7 @@ public class Herramienta {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -39,6 +39,10 @@ public class Herramienta {
 	public Herramienta(String nombre) {
 		this();
 		this.nombre = nombre;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public String getNombre() {

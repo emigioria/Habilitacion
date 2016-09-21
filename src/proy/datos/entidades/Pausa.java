@@ -26,7 +26,7 @@ public class Pausa implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Id
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -54,6 +54,10 @@ public class Pausa implements Serializable {
 		this.causa = causa;
 		this.fechaHoraInicio = fechaHoraInicio;
 		this.fechaHoraFin = fechaHoraFin;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public Tarea getTarea() {

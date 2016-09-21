@@ -31,7 +31,7 @@ public class Tarea {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "codigo")
-	private Integer codigo;
+	private Long codigo;
 
 	@Version
 	@Column(name = "version")
@@ -75,6 +75,7 @@ public class Tarea {
 
 	public Tarea() {
 		pausas = new ArrayList<Pausa>();
+		estado = EstadoTarea.PLANIFICADA;
 	}
 
 	public Tarea(Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
@@ -88,6 +89,10 @@ public class Tarea {
 		this.estado = estado;
 		this.proceso = proceso;
 		this.operario = operario;
+	}
+
+	public Long getId() {
+		return codigo;
 	}
 
 	public Integer getCantidadTeorica() {
