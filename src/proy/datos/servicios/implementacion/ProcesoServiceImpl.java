@@ -7,11 +7,9 @@
 package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.datos.servicios.Filtro;
 import proy.datos.servicios.ProcesoService;
-import proy.excepciones.ConsultaException;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
@@ -45,26 +42,16 @@ public class ProcesoServiceImpl implements ProcesoService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Proceso> obtenerProcesos(Filtro filtro) throws PersistenciaException {
-		ArrayList<Proceso> resultado = new ArrayList<Proceso>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Proceso){
-						resultado.add((Proceso) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Proceso> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Proceso){
+				retorno.add((Proceso) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -112,26 +99,16 @@ public class ProcesoServiceImpl implements ProcesoService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Tarea> obtenerTareas(Filtro filtro) throws PersistenciaException {
-		ArrayList<Tarea> resultado = new ArrayList<Tarea>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Tarea){
-						resultado.add((Tarea) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Tarea> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Tarea){
+				retorno.add((Tarea) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override

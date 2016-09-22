@@ -22,6 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -30,6 +31,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.EstadoTarea;
 
+@NamedQuery(name = "listarTareas", query = "SELECT t FROM Tarea t")
 @Entity
 @Table(name = "tarea")
 public class Tarea {
@@ -80,7 +82,7 @@ public class Tarea {
 	private List<Pausa> pausas;
 
 	public Tarea() {
-		pausas = new ArrayList<Pausa>();
+		pausas = new ArrayList<>();
 		estado = EstadoTarea.PLANIFICADA;
 	}
 
@@ -174,6 +176,7 @@ public class Tarea {
 	}
 
 	public List<Pausa> getPausas() {
+		pausas.size();
 		return pausas;
 	}
 

@@ -6,23 +6,48 @@
  */
 package proy.datos.servicios.implementacion;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import proy.excepciones.ConsultaException;
+import proy.excepciones.PersistenciaException;
+
 public interface FiltroHibernate {
 
-	String getConsulta();
+	public String getConsultaDinamica();
 
-	public String getSelect(String nombreEntidad);
+	public String getNamedQuery();
 
-	public String getFrom(String nombreEntidad);
+	public Query setParametros(Query query);
 
-	public String getWhere(String nombreEntidad);
+	public void updateParametros(Session session);
 
-	public String getOrden(String nombreEntidad);
-
-	void setParametros(Query query);
-
-	void updateParametros(Session session);
-
+	public static ArrayList<Object> listar(FiltroHibernate filtro, Session session) throws PersistenciaException {
+		ArrayList<Object> resultado = new ArrayList<>();
+		try{
+			Query query = null;
+			if(!filtro.getNamedQuery().isEmpty()){
+				query = session.getNamedQuery(filtro.getNamedQuery());
+			}
+			else{
+				query = session.createQuery(filtro.getConsultaDinamica());
+			}
+			filtro.setParametros(query);
+			filtro.updateParametros(session);
+			List<?> var = query.list();
+			if(var instanceof List){
+				for(int i = 0; i < ((List<?>) var).size(); i++){
+					Object item = ((List<?>) var).get(i);
+					resultado.add(item);
+				}
+			}
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new ConsultaException();
+		}
+		return resultado;
+	}
 }

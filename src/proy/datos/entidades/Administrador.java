@@ -9,9 +9,11 @@ package proy.datos.entidades;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+@NamedQuery(name = "listarAdministradores", query = "SELECT a FROM Administrador a")
 @Entity
 @PrimaryKeyJoinColumn(name = "codusuario", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "administrador_codusuario_fk"))
 @Table(name = "administrador")

@@ -80,7 +80,7 @@ public class NMTareaController extends ControladorRomano {
 		//TODO buscar bien procesos
 		tablaProcesos.getItems().clear();
 		try{
-			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso()));
+			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
 		} catch(PersistenciaException e){
 			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		}
@@ -113,7 +113,7 @@ public class NMTareaController extends ControladorRomano {
 					return new SimpleStringProperty("<no name>");
 				}
 			});
-			cantidad.getEditor().setTextFormatter(new TextFormatter<Integer>(
+			cantidad.getEditor().setTextFormatter(new TextFormatter<>(
 					new IntegerStringConverter(), 0,
 					c -> {
 						if(c.isContentChange()){
@@ -260,9 +260,9 @@ public class NMTareaController extends ControladorRomano {
 		Platform.runLater(() -> {
 			try{
 				cbOperario.getItems().clear();
-				cbOperario.getItems().addAll(coordinador.listarOperarios(new FiltroOperario()));
+				cbOperario.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
 				tablaProcesos.getItems().clear();
-				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso()));
+				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
 			} catch(PersistenciaException e){
 
 			}

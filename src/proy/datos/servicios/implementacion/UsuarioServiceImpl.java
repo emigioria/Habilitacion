@@ -7,11 +7,9 @@
 package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
 import proy.datos.servicios.Filtro;
 import proy.datos.servicios.UsuarioService;
-import proy.excepciones.ConsultaException;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
@@ -46,26 +43,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Administrador> obtenerAdministradores(Filtro filtro) throws PersistenciaException {
-		ArrayList<Administrador> resultado = new ArrayList<Administrador>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Administrador){
-						resultado.add((Administrador) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Administrador> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Administrador){
+				retorno.add((Administrador) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -83,51 +70,31 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Comentario> obtenerComentarios(Filtro filtro) throws PersistenciaException {
-		ArrayList<Comentario> resultado = new ArrayList<Comentario>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Comentario){
-						resultado.add((Comentario) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Comentario> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Comentario){
+				retorno.add((Comentario) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Operario> obtenerOperarios(Filtro filtro) throws PersistenciaException {
-		ArrayList<Operario> resultado = new ArrayList<Operario>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Operario){
-						resultado.add((Operario) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Operario> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Operario){
+				retorno.add((Operario) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override

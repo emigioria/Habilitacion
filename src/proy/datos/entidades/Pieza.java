@@ -21,11 +21,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
+@NamedQuery(name = "listarPiezas", query = "SELECT p FROM Pieza p")
 @Entity
 @Table(name = "pieza")
 public class Pieza {
@@ -64,7 +66,7 @@ public class Pieza {
 	private Set<Proceso> procesos;
 
 	public Pieza() {
-		procesos = new HashSet<Proceso>();
+		procesos = new HashSet<>();
 	}
 
 	public Pieza(String nombre, String codigoPlano, Integer cantidad, Estado estado, Parte parte, Material material) {

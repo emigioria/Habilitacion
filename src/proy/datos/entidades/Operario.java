@@ -9,9 +9,11 @@ package proy.datos.entidades;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
+import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+@NamedQuery(name = "listarOperarios", query = "SELECT o FROM Operario o")
 @Entity
 @PrimaryKeyJoinColumn(name = "codusuario", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "operario_codusuario_fk"))
 @Table(name = "operario")

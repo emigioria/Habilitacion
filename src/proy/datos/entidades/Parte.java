@@ -15,11 +15,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p")
 @Entity
 @Table(name = "parte")
 public class Parte {

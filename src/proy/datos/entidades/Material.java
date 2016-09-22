@@ -13,11 +13,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
+@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m")
 @Entity
 @Table(name = "material")
 public class Material {

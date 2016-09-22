@@ -16,9 +16,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h")
 @Entity
 @Table(name = "herramienta")
 public class Herramienta {
@@ -39,7 +41,7 @@ public class Herramienta {
 	private Set<Proceso> procesos;
 
 	public Herramienta() {
-		procesos = new HashSet<Proceso>();
+		procesos = new HashSet<>();
 	}
 
 	public Herramienta(String nombre) {

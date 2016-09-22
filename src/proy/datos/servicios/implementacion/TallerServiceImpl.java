@@ -7,11 +7,9 @@
 package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.EntityNotFoundException;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,6 @@ import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.servicios.Filtro;
 import proy.datos.servicios.TallerService;
-import proy.excepciones.ConsultaException;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
@@ -48,26 +45,16 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Maquina> obtenerMaquinas(Filtro filtro) throws PersistenciaException {
-		ArrayList<Maquina> resultado = new ArrayList<Maquina>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Maquina){
-						resultado.add((Maquina) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Maquina> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Maquina){
+				retorno.add((Maquina) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -115,26 +102,16 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Parte> obtenerPartes(Filtro filtro) throws PersistenciaException {
-		ArrayList<Parte> resultado = new ArrayList<Parte>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Parte){
-						resultado.add((Parte) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Parte> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Parte){
+				retorno.add((Parte) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -182,26 +159,16 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Pieza> obtenerPiezas(Filtro filtro) throws PersistenciaException {
-		ArrayList<Pieza> resultado = new ArrayList<Pieza>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Pieza){
-						resultado.add((Pieza) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Pieza> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Pieza){
+				retorno.add((Pieza) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -234,26 +201,16 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException {
-		ArrayList<Herramienta> resultado = new ArrayList<Herramienta>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Herramienta){
-						resultado.add((Herramienta) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Herramienta> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Herramienta){
+				retorno.add((Herramienta) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override
@@ -286,26 +243,16 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException {
-		ArrayList<Material> resultado = new ArrayList<Material>();
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			Query query = session.createQuery(filtro.getConsulta());
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
-			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					if(item instanceof Material){
-						resultado.add((Material) item);
-					}
-				}
+		Session session = getSessionFactory().getCurrentSession();
+		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
+
+		ArrayList<Material> retorno = new ArrayList<>();
+		for(Object item: resultado){
+			if(item instanceof Material){
+				retorno.add((Material) item);
 			}
-		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
 		}
-		return resultado;
+		return retorno;
 	}
 
 	@Override

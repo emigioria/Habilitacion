@@ -13,48 +13,87 @@ import proy.datos.servicios.Filtro;
 
 public class FiltroComentario extends Filtro {
 
-	public FiltroComentario() {
-		super();
+	private String consulta = "";
+	private String namedQuery = "";
+
+	public static class Builder {
+
+		private String nombreEntidad = "c";
+
+		public Builder() {
+			super();
+		}
+
+		public Builder nombreEntidad(String nombreEntidad) {
+			this.nombreEntidad = nombreEntidad;
+			return this;
+		}
+
+		public FiltroComentario build() {
+			return new FiltroComentario(this);
+		}
 	}
 
-	@Override
-	public String getConsulta() {
-		String nombreEntidad = "c";
-		String consulta = this.getSelect(nombreEntidad) + this.getFrom(nombreEntidad) + this.getWhere(nombreEntidad) + this.getOrden(nombreEntidad);
-		return consulta;
+	private FiltroComentario(Builder builder) {
+		setConsulta(builder);
+		setNamedQuery(builder);
 	}
 
-	@Override
-	public String getSelect(String nombreEntidad) {
-		String select = "SELECT " + nombreEntidad;
+	private void setConsulta(Builder builder) {
+		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	}
+
+	private void setNamedQuery(Builder builder) {
+		namedQuery = "listarComentarios";
+	}
+
+	private String getSelect(Builder builder) {
+		String select = "SELECT " + builder.nombreEntidad;
 		return select;
 	}
 
-	@Override
-	public String getFrom(String nombreEntidad) {
-		String from = " FROM Comentario " + nombreEntidad;
+	private String getFrom(Builder builder) {
+		String from = " FROM Administrador " + builder.nombreEntidad;
 		return from;
 	}
 
-	@Override
-	public String getWhere(String nombreEntidad) {
+	private String getWhere(Builder builder) {
 		String where = "";
 		return where;
 	}
 
-	@Override
-	public String getOrden(String nombreEntidad) {
-		String orden = "";
-		return orden;
+	private String getGroupBy(Builder builder) {
+		String groupBy = "";
+		return groupBy;
+	}
+
+	private String getHaving(Builder builder) {
+		String having = "";
+		return having;
+	}
+
+	private String getOrderBy(Builder builder) {
+		String orderBy = "";
+		return orderBy;
 	}
 
 	@Override
-	public void setParametros(Query query) {
-
+	public Query setParametros(Query query) {
+		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
 
+	}
+
+	@Override
+	public String getConsultaDinamica() {
+		return consulta;
+	}
+
+	@Override
+	public String getNamedQuery() {
+		return namedQuery;
 	}
 }

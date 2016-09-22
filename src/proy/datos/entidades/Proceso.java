@@ -22,11 +22,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
+@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p")
 @Entity
 @Table(name = "proceso")
 public class Proceso {
@@ -72,8 +74,8 @@ public class Proceso {
 	private Set<Herramienta> herramientas;
 
 	public Proceso() {
-		herramientas = new HashSet<Herramienta>();
-		piezas = new HashSet<Pieza>();
+		herramientas = new HashSet<>();
+		piezas = new HashSet<>();
 	}
 
 	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
