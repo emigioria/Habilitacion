@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package proy.gui;
 
 import java.util.List;
@@ -39,7 +45,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		//Analizar parámetros de entrada
+		//Analizar parï¿½metros de entrada
 		verParametros(getParameters().getRaw());
 
 		//Inicializar parametros
@@ -50,7 +56,7 @@ public class Main extends Application {
 		primaryStage.getIcons().add(new IconoAplicacion());
 		primaryStage.setTitle("Aplicacion Romano");
 
-		//Setear acción de cierre
+		//Setear acciï¿½n de cierre
 		primaryStage.setOnCloseRequest((WindowEvent e) -> {
 			apilador.desapilarScene();
 			if(!apilador.isEmpty()){
@@ -121,6 +127,6 @@ public class Main extends Application {
 	}
 
 	private void verParametros(List<String> raw) {
-		//Analizar parámetros
+		//Analizar parï¿½metros
 	}
 }

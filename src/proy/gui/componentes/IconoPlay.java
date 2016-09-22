@@ -1,9 +1,15 @@
+/**
+ * Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package proy.gui.componentes;
 
 import javafx.scene.image.Image;
 
 /**
- * Representa el ícono de la aplicación
+ * Representa el ï¿½cono de la aplicaciï¿½n
  *
  * @author Acosta - Gioria - Moretti - Rebechi
  *
@@ -11,7 +17,7 @@ import javafx.scene.image.Image;
 public class IconoPlay extends Image {
 
 	/**
-	 * Constructor. Genera la imagen del ícono
+	 * Constructor. Genera la imagen del ï¿½cono
 	 */
 	public IconoPlay() {
 		super("file:archivos/imagenes/boton_play.png");

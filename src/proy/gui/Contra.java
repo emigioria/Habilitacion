@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package proy.gui;
 
 import java.security.NoSuchAlgorithmException;
@@ -10,7 +16,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- * Encargada de la encriptación de contraseñas
+ * Encargada de la encriptaciï¿½n de contraseï¿½as
  *
  */
 public abstract class Contra {
@@ -22,7 +28,7 @@ public abstract class Contra {
 	 * Encripta un String con el algoritmo MD5.
 	 *
 	 * @param palabra
-	 *            palabra a encriptar, se borrará al terminar.
+	 *            palabra a encriptar, se borrarï¿½ al terminar.
 	 * @param sal
 	 *            sal para ocultar la palabra.
 	 * @return String

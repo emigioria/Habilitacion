@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package proy.gui.controladores;
 
 import javafx.application.Platform;
@@ -157,7 +163,7 @@ public class NMTareaController extends ControladorRomano {
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacción al gestor
+		//Inicio transacciï¿½n al gestor
 		try{
 			resultado = coordinador.crearTarea(tar);
 		} catch(PersistenciaException e){
@@ -176,7 +182,7 @@ public class NMTareaController extends ControladorRomano {
 				//TODO hacer validador primero
 				default: //no usar default
 					//ejemplo de error
-					errores += "El nombre no es válido.\n";
+					errores += "El nombre no es vï¿½lido.\n";
 				}
 			}
 			if(!errores.isEmpty()){
@@ -202,7 +208,7 @@ public class NMTareaController extends ControladorRomano {
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacción al gestor
+		//Inicio transacciï¿½n al gestor
 		try{
 			resultado = coordinador.modificarTarea(tar);
 		} catch(PersistenciaException e){
@@ -219,7 +225,7 @@ public class NMTareaController extends ControladorRomano {
 			for(ErrorModificarTarea r: resultado.getErrores()){
 				switch(r) {
 				default: //ejemplo, no usar default
-					errores += "El nombre no es válido.\n";
+					errores += "El nombre no es vï¿½lido.\n";
 					break;
 				}
 			}

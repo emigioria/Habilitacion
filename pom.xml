@@ -1,8 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>Habilitacion</groupId>
-  <artifactId>Habilitacion</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>RomanoTP</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <inceptionYear>2016</inceptionYear>
+  
+  <licenses>
+    <license>
+      <name>Mozilla Public License 2.0</name>
+      <url>https://www.mozilla.org/media/MPL/2.0/index.815ca599c9df.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <developers>
+    <developer>
+      <name>Andres Leonel Rico</name>
+      <email>https://github.com/andresleonelrico</email>
+    </developer>
+    <developer>
+      <name>Emiliano Gioria</name>
+      <email>https://github.com/emigioria</email>
+    </developer>
+    <developer>
+      <name>Marina Ludi</name>
+      <email>https://github.com/marinaLudi</email>
+    </developer>
+  </developers>
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -22,7 +47,36 @@
           <target>1.8</target>
         </configuration>
       </plugin>
+      
+      <!-- Adding header to file -->
+	  <plugin>
+		<groupId>com.mycila</groupId>
+		<artifactId>license-maven-plugin</artifactId>
+  		<version>3.0</version>
+
+  		<configuration>
+		  <header>header.txt</header>
+		  <mapping>
+             <fxml>XML_STYLE</fxml>
+          </mapping> 
+    	  <properties>
+            <owner>Andres Leonel Rico - Emiliano Gioria - Marina Ludi</owner>
+            <inceptionYear>2016</inceptionYear>
+		  </properties>
+		  <basedir>src</basedir>
+  		</configuration>
+  		
+        <executions>
+          <execution>
+            <goals>
+                <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
+	  </plugin>
+
     </plugins>
+    
   </build>
 
   <properties>

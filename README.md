@@ -4,7 +4,7 @@ Trabajo de Habilitación Profesional - 2016
 
 ## Autores
 
-* **Andres Rico** - [andresleonelrico](https://github.com/andresleonelrico)
+* **Andres Leonel Rico** - [andresleonelrico](https://github.com/andresleonelrico)
 * **Emiliano Gioria** - [emigioria](https://github.com/emigioria)
 * **Marina Ludi** - [marinaLudi](https://github.com/marinaLudi)
 
