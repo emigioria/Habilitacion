@@ -7,7 +7,7 @@
 package proy.excepciones;
 
 /**
- * Representa un error de conexi�n con la base de datos
+ * Representa un error de conexión con la base de datos
  *
  * @author Acosta - Gioria - Moretti - Rebechi
  *

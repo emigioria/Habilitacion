@@ -140,7 +140,7 @@ public class ATareasController extends ControladorRomano {
 			return;
 		}
 
-		//Inicio transacción al gestor
+		//Inicio transacciÃ³n al gestor
 		try{
 			resultado = coordinador.eliminarTarea(tarea);
 		} catch(PersistenciaException e){

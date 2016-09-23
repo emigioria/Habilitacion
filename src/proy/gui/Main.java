@@ -44,7 +44,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		//Analizar parámetros de entrada
+		//Analizar parÃ¡metros de entrada
 		verParametros(getParameters().getRaw());
 
 		//Inicializar parametros
@@ -55,7 +55,7 @@ public class Main extends Application {
 		primaryStage.getIcons().add(new IconoAplicacion());
 		primaryStage.setTitle("Aplicacion Romano");
 
-		//Setear acción de cierre
+		//Setear acciÃ³n de cierre
 		primaryStage.setOnCloseRequest((e) -> {
 			apilador.desapilarScene();
 			if(!apilador.isEmpty()){
@@ -126,6 +126,6 @@ public class Main extends Application {
 	}
 
 	private void verParametros(List<String> raw) {
-		//Analizar parï¿½metros
+		//Analizar parÃ¡metros
 	}
 }

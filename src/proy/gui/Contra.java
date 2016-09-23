@@ -16,7 +16,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- * Encargada de la encriptación de contraseñas
+ * Encargada de la encriptaciÃ³n de contraseÃ±as
  */
 public abstract class Contra {
 
@@ -27,7 +27,7 @@ public abstract class Contra {
 	 * Encripta un String con el algoritmo MD5.
 	 *
 	 * @param palabra
-	 *            palabra a encriptar, se borrarï¿½ al terminar.
+	 *            palabra a encriptar, se borrarÃ¡ al terminar.
 	 * @param sal
 	 *            sal para ocultar la palabra.
 	 * @return String

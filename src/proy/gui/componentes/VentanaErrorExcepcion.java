@@ -40,7 +40,7 @@ public class VentanaErrorExcepcion extends Alert {
 	 * @param mensaje
 	 *            mensaje a mostrar en la ventana
 	 * @param padre
-	 *            ventana en la que se mostrar� este di�logo
+	 *            ventana en la que se mostrará este diálogo
 	 */
 	public VentanaErrorExcepcion(String mensaje, Window padre) {
 		super(AlertType.ERROR);

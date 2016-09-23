@@ -163,7 +163,7 @@ public class NMTareaController extends ControladorRomano {
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacci�n al gestor
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.crearTarea(tar);
 		} catch(PersistenciaException e){
@@ -182,7 +182,7 @@ public class NMTareaController extends ControladorRomano {
 				//TODO hacer validador primero
 				default: //no usar default
 					//ejemplo de error
-					errores += "El nombre no es v�lido.\n";
+					errores += "El nombre no es válido.\n";
 				}
 			}
 			if(!errores.isEmpty()){
@@ -208,7 +208,7 @@ public class NMTareaController extends ControladorRomano {
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacci�n al gestor
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.modificarTarea(tar);
 		} catch(PersistenciaException e){
@@ -225,7 +225,7 @@ public class NMTareaController extends ControladorRomano {
 			for(ErrorModificarTarea r: resultado.getErrores()){
 				switch(r) {
 				default: //ejemplo, no usar default
-					errores += "El nombre no es v�lido.\n";
+					errores += "El nombre no es válido.\n";
 					break;
 				}
 			}

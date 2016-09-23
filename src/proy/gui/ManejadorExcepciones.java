@@ -17,7 +17,7 @@ public abstract class ManejadorExcepciones {
 	}
 
 	public static void presentarExcepcionInesperada(Exception e, Window w) {
-		System.err.println("Excepción inesperada!!");
+		System.err.println("ExcepciÃ³n inesperada!!");
 		e.printStackTrace();
 		new VentanaErrorExcepcionInesperada(w);
 	}

@@ -9,12 +9,12 @@ package proy.gui.componentes;
 import javafx.scene.image.Image;
 
 /**
- * Representa el ícono de la aplicación
+ * Representa el Ã­cono de la aplicaciÃ³n
  */
 public class IconoAplicacion extends Image {
 
 	/**
-	 * Constructor. Genera la imagen del ícono
+	 * Constructor. Genera la imagen del Ã­cono
 	 */
 	public IconoAplicacion() {
 		super("file:archivos/imagenes/icono.png");

@@ -7,7 +7,7 @@
 package proy.excepciones;
 
 /**
- * Representa un error en el guardado o modificaci�n de datos sobe la base de datos
+ * Representa un error en el guardado o modificación de datos sobe la base de datos
  *
  * @author Acosta - Gioria - Moretti - Rebechi
  *

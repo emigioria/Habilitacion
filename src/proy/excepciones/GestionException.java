@@ -7,7 +7,7 @@
 package proy.excepciones;
 
 /**
- * Representa un error en la gesti�n de datos
+ * Representa un error en la gestión de datos
  *
  * @author Acosta - Gioria - Moretti - Rebechi
  *
