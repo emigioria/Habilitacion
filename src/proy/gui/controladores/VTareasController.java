@@ -38,7 +38,7 @@ public class VTareasController extends ControladorRomano {
 			botonPlay.setGraphic(imagen);
 
 			final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
-			final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
+			final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6, 4, 4, 6;";
 			botonDetener.setStyle(STYLE_NORMAL);
 			botonPlay.setStyle(STYLE_NORMAL);
 			EventHandler<MouseEvent> eventoClickPressed = new EventHandler<MouseEvent>() {

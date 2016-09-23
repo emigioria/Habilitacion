@@ -19,7 +19,7 @@ public interface FiltroHibernate {
 
 	public String getConsultaDinamica();
 
-	public String getNamedQuery();
+	public String getNamedQueryName();
 
 	public Query setParametros(Query query);
 
@@ -29,8 +29,8 @@ public interface FiltroHibernate {
 		ArrayList<Object> resultado = new ArrayList<>();
 		try{
 			Query query = null;
-			if(!filtro.getNamedQuery().isEmpty()){
-				query = session.getNamedQuery(filtro.getNamedQuery());
+			if(!filtro.getNamedQueryName().isEmpty()){
+				query = session.getNamedQuery(filtro.getNamedQueryName());
 			}
 			else{
 				query = session.createQuery(filtro.getConsultaDinamica());

@@ -93,7 +93,7 @@ public class FiltroTarea extends Filtro {
 	}
 
 	@Override
-	public String getNamedQuery() {
+	public String getNamedQueryName() {
 		return namedQuery;
 	}
 }
