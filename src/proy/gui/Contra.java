@@ -16,8 +16,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- * Encargada de la encriptaciï¿½n de contraseï¿½as
- *
+ * Encargada de la encriptación de contraseñas
  */
 public abstract class Contra {
 

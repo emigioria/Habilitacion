@@ -15,9 +15,9 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Tarea;
-import proy.excepciones.ManejadorExcepciones;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ConversorFechas;
+import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea;
@@ -140,7 +140,7 @@ public class ATareasController extends ControladorRomano {
 			return;
 		}
 
-		//Inicio transacciï¿½n al gestor
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.eliminarTarea(tarea);
 		} catch(PersistenciaException e){

@@ -16,7 +16,6 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
@@ -45,7 +44,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		//Analizar parï¿½metros de entrada
+		//Analizar parámetros de entrada
 		verParametros(getParameters().getRaw());
 
 		//Inicializar parametros
@@ -56,8 +55,8 @@ public class Main extends Application {
 		primaryStage.getIcons().add(new IconoAplicacion());
 		primaryStage.setTitle("Aplicacion Romano");
 
-		//Setear acciï¿½n de cierre
-		primaryStage.setOnCloseRequest((WindowEvent e) -> {
+		//Setear acción de cierre
+		primaryStage.setOnCloseRequest((e) -> {
 			apilador.desapilarScene();
 			if(!apilador.isEmpty()){
 				e.consume();

@@ -9,15 +9,12 @@ package proy.gui.componentes;
 import javafx.scene.image.Image;
 
 /**
- * Representa el ï¿½cono de la aplicaciï¿½n
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
+ * Representa el ícono de la aplicación
  */
 public class IconoAplicacion extends Image {
 
 	/**
-	 * Constructor. Genera la imagen del ï¿½cono
+	 * Constructor. Genera la imagen del ícono
 	 */
 	public IconoAplicacion() {
 		super("file:archivos/imagenes/icono.png");

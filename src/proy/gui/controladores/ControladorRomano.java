@@ -14,8 +14,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import proy.excepciones.ManejadorExcepciones;
 import proy.gui.ControladorApilable;
+import proy.gui.ManejadorExcepciones;
 import proy.gui.PilaScene;
 import proy.logica.gestores.CoordinadorJavaFX;
 
@@ -51,9 +51,6 @@ public abstract class ControladorRomano implements ControladorApilable {
 		}
 		return null;
 	}
-
-	@Override
-	public abstract void actualizar();
 
 	@FXML
 	public void salir() {

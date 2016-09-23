@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.excepciones;
+package proy.gui;
 
 import javafx.stage.Window;
 import proy.gui.componentes.VentanaErrorExcepcion;
@@ -17,7 +17,7 @@ public abstract class ManejadorExcepciones {
 	}
 
 	public static void presentarExcepcionInesperada(Exception e, Window w) {
-		System.err.println("Excepciï¿½n inesperada!!");
+		System.err.println("Excepción inesperada!!");
 		e.printStackTrace();
 		new VentanaErrorExcepcionInesperada(w);
 	}

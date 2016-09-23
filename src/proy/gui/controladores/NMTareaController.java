@@ -25,9 +25,9 @@ import proy.datos.clases.EstadoTarea;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
-import proy.excepciones.ManejadorExcepciones;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ConversorFechas;
+import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.filtros.FiltroProceso;
@@ -159,11 +159,11 @@ public class NMTareaController extends ControladorRomano {
 		tar.setCantidadTeorica(cantidad.getValue());
 		tar.setEstado(EstadoTarea.PLANIFICADA);
 		tar.setFechaPlanificada(ConversorFechas.getDate(fechaTarea.getValue()));
-		tar.setObservaciones(observaciones.getText());
+		tar.setObservaciones(observaciones.getText().trim());
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacciï¿½n al gestor
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.crearTarea(tar);
 		} catch(PersistenciaException e){
@@ -208,7 +208,7 @@ public class NMTareaController extends ControladorRomano {
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 
-		//Inicio transacciï¿½n al gestor
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.modificarTarea(tar);
 		} catch(PersistenciaException e){

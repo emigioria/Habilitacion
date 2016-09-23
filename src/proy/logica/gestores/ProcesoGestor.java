@@ -83,7 +83,7 @@ public class ProcesoGestor {
 		if(!resultado.hayErrores()){
 			persistidorProceso.bajaTarea(tarea);
 		}
-		throw new NotYetImplementedException();
+		return resultado;
 	}
 
 	private ResultadoEliminarTarea validarEliminarTarea(Tarea tarea) {
