@@ -48,11 +48,11 @@ public class Pausa implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fecha_hora_inicio", nullable = false)
-	Date fechaHoraInicio;
+	private Date fechaHoraInicio;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fecha_hora_fin", nullable = false)
-	Date fechaHoraFin;
+	private Date fechaHoraFin;
 
 	public Pausa(Tarea tarea, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
 		super();

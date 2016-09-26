@@ -53,15 +53,15 @@ public class Tarea {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha_planificada", nullable = false)
-	Date fechaPlanificada;
+	private Date fechaPlanificada;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fecha_hora_inicio", nullable = false)
-	Date fechaHoraInicio;
+	private Date fechaHoraInicio;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fecha_hora_fin", nullable = false)
-	Date fechaHoraFin;
+	private Date fechaHoraFin;
 
 	@Column(name = "observaciones", length = 500)
 	private String observaciones;

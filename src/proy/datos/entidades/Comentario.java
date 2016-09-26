@@ -46,7 +46,7 @@ public class Comentario {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "fecha", nullable = false)
-	Date fechaComentario;
+	private Date fechaComentario;
 
 	public Comentario(String texto, Date fecha, Operario operario) {
 		super();
