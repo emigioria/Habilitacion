@@ -35,6 +35,14 @@ public abstract class ControladorRomano implements ControladorApilable {
 	}
 
 	public static ControladorRomano nuevaScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
+		return nuevaCambiarScene(URLVista, apilador, coordinador, false);
+	}
+
+	public static ControladorRomano cambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
+		return nuevaCambiarScene(URLVista, apilador, coordinador, true);
+	}
+
+	private static ControladorRomano nuevaCambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
 		try{
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(ControladorRomano.class.getResource(URLVista));
@@ -42,7 +50,12 @@ public abstract class ControladorRomano implements ControladorApilable {
 			ControladorRomano controlador = loader.getController();
 
 			Scene scene = new Scene(scenaSiguiente);
-			apilador.apilarScene(scene, controlador);
+			if(cambiar){
+				apilador.cambiarScene(scene, controlador);
+			}
+			else{
+				apilador.apilarScene(scene, controlador);
+			}
 			controlador.setApilador(apilador);
 			controlador.setCoordinador(coordinador);
 			return controlador;

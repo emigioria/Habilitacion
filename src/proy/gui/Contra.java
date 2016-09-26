@@ -32,8 +32,8 @@ public abstract class Contra {
 	 *            sal para ocultar la palabra.
 	 * @return String
 	 */
-	public static String encriptarMD5(char[] palabra, byte[] sal) {
-		return new String(hashPassword(palabra, sal, ITERATIONS, KEY_LENGTH));
+	public static String encriptarMD5(char[] palabra, String sal) {
+		return new String(hashPassword(palabra, sal.getBytes(), ITERATIONS, KEY_LENGTH));
 	}
 
 	private static byte[] hashPassword(final char[] password, final byte[] salt, final int iterations, final int keyLength) {
@@ -49,10 +49,10 @@ public abstract class Contra {
 		}
 	}
 
-	public static byte[] generarSal() {
+	public static String generarSal() {
 		SecureRandom random = new SecureRandom();
 		byte bytes[] = new byte[20];
 		random.nextBytes(bytes);
-		return bytes;
+		return new String(bytes);
 	}
 }
