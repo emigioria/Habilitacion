@@ -93,11 +93,22 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ResultadoCrearHerramienta resultado = validarCrearHerramienta(herramienta);
+		if(!resultado.hayErrores()){
+			persistidorTaller.guardarHerramienta(herramienta);
+		}
+		//throw new NotYetImplementedException();
+		return resultado;
+	}
+	
+	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException{
+		//persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().build()); ??
+		return new ResultadoCrearHerramienta();
 	}
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		persistidorTaller.bajaHerramienta(herramienta);
+		return new ResultadoEliminarHerramienta();
 	}
 
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {

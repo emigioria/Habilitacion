@@ -13,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import proy.gui.ControladorApilable;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.PilaScene;
@@ -68,6 +67,7 @@ public abstract class ControladorRomano implements ControladorApilable {
 	@FXML
 	public void salir() {
 		Stage stage = apilador.getStage();
-		stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+		//stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+		apilador.desapilarScene();
 	}
 }

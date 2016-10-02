@@ -58,13 +58,13 @@ public class Main extends Application {
 		//Setear acción de cierre
 		primaryStage.setOnCloseRequest((e) -> {
 			apilador.desapilarScene();
-			if(!apilador.isEmpty()){
-				e.consume();
-			}
-			else{
+		//	if(!apilador.isEmpty()){
+			//	e.consume();
+		//	}
+			//else{
 				SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
 				sessionFact.close();
-			}
+			//}
 		});
 
 		iniciarHibernate();
