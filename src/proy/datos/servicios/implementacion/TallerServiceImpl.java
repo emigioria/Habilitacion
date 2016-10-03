@@ -46,15 +46,8 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Maquina> obtenerMaquinas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Maquina> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Maquina){
-				retorno.add((Maquina) item);
-			}
-		}
-		return retorno;
+		ArrayList<Maquina> resultado = FiltroHibernate.listar(filtro, session, Maquina.class);
+		return resultado;
 	}
 
 	@Override
@@ -103,15 +96,8 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Parte> obtenerPartes(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Parte> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Parte){
-				retorno.add((Parte) item);
-			}
-		}
-		return retorno;
+		ArrayList<Parte> resultado = FiltroHibernate.listar(filtro, session, Parte.class);
+		return resultado;
 	}
 
 	@Override
@@ -160,15 +146,8 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Pieza> obtenerPiezas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Pieza> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Pieza){
-				retorno.add((Pieza) item);
-			}
-		}
-		return retorno;
+		ArrayList<Pieza> resultado = FiltroHibernate.listar(filtro, session, Pieza.class);
+		return resultado;
 	}
 
 	@Override
@@ -202,15 +181,8 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Herramienta> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Herramienta){
-				retorno.add((Herramienta) item);
-			}
-		}
-		return retorno;
+		ArrayList<Herramienta> resultado = FiltroHibernate.listar(filtro, session, Herramienta.class);
+		return resultado;
 	}
 
 	@Override
@@ -244,15 +216,8 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Material> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Material){
-				retorno.add((Material) item);
-			}
-		}
-		return retorno;
+		ArrayList<Material> resultado = FiltroHibernate.listar(filtro, session, Material.class);
+		return resultado;
 	}
 
 	@Override

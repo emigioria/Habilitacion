@@ -43,15 +43,8 @@ public class ProcesoServiceImpl implements ProcesoService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Proceso> obtenerProcesos(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Proceso> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Proceso){
-				retorno.add((Proceso) item);
-			}
-		}
-		return retorno;
+		ArrayList<Proceso> resultado = FiltroHibernate.listar(filtro, session, Proceso.class);
+		return resultado;
 	}
 
 	@Override
@@ -100,15 +93,8 @@ public class ProcesoServiceImpl implements ProcesoService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Tarea> obtenerTareas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Tarea> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Tarea){
-				retorno.add((Tarea) item);
-			}
-		}
-		return retorno;
+		ArrayList<Tarea> resultado = FiltroHibernate.listar(filtro, session, Tarea.class);
+		return resultado;
 	}
 
 	@Override

@@ -25,8 +25,8 @@ public interface FiltroHibernate {
 
 	public void updateParametros(Session session);
 
-	public static ArrayList<Object> listar(FiltroHibernate filtro, Session session) throws PersistenciaException {
-		ArrayList<Object> resultado = new ArrayList<>();
+	public static <T> ArrayList<T> listar(FiltroHibernate filtro, Session session, Class<? extends T> clase) throws PersistenciaException {
+		ArrayList<T> resultado = new ArrayList<>();
 		try{
 			Query query = null;
 			if(!filtro.getNamedQueryName().isEmpty()){
@@ -38,10 +38,11 @@ public interface FiltroHibernate {
 			filtro.setParametros(query);
 			filtro.updateParametros(session);
 			List<?> var = query.list();
-			if(var instanceof List){
-				for(int i = 0; i < ((List<?>) var).size(); i++){
-					Object item = ((List<?>) var).get(i);
-					resultado.add(item);
+			for(Object o: var){
+				try{
+					resultado.add(clase.cast(o));
+				} catch(ClassCastException e){
+					//no agrega objetos no casteables
 				}
 			}
 		} catch(Exception e){

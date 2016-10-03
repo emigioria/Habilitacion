@@ -44,15 +44,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Administrador> obtenerAdministradores(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Administrador> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Administrador){
-				retorno.add((Administrador) item);
-			}
-		}
-		return retorno;
+		ArrayList<Administrador> resultado = FiltroHibernate.listar(filtro, session, Administrador.class);
+		return resultado;
 	}
 
 	@Override
@@ -71,30 +64,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Comentario> obtenerComentarios(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Comentario> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Comentario){
-				retorno.add((Comentario) item);
-			}
-		}
-		return retorno;
+		ArrayList<Comentario> resultado = FiltroHibernate.listar(filtro, session, Comentario.class);
+		return resultado;
 	}
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Operario> obtenerOperarios(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Object> resultado = FiltroHibernate.listar(filtro, session);
-
-		ArrayList<Operario> retorno = new ArrayList<>();
-		for(Object item: resultado){
-			if(item instanceof Operario){
-				retorno.add((Operario) item);
-			}
-		}
-		return retorno;
+		ArrayList<Operario> resultado = FiltroHibernate.listar(filtro, session, Operario.class);
+		return resultado;
 	}
 
 	@Override
