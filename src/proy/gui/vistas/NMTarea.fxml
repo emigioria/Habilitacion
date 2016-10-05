@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 
     Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
@@ -25,7 +26,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMTareaController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMTareaController">
    <children>
       <TableView fx:id="tablaProcesos" prefHeight="217.0" prefWidth="177.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <columnResizePolicy>
@@ -63,12 +64,12 @@
       </HBox>
       <HBox alignment="TOP_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="3">
          <children>
-            <Button fx:id="botonAceptar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#guardarTarea" text="Aceptar">
+            <Button fx:id="botonGuardar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#guardarTarea" text="Guardar">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="botonCancelar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#salir" text="Cancelar">
+            <Button fx:id="botonSalir" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#salir" text="Salir">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
