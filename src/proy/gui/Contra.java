@@ -22,6 +22,7 @@ public abstract class Contra {
 
 	private final static Integer ITERATIONS = 10000;
 	private final static Integer KEY_LENGTH = 256;
+	private final static String SAL_GLOBAL = "R��n�з�m�{|XŨ`m";
 
 	/**
 	 * Encripta un String con el algoritmo MD5.
@@ -33,7 +34,7 @@ public abstract class Contra {
 	 * @return String
 	 */
 	public static String encriptarMD5(char[] palabra, String sal) {
-		return new String(hashPassword(palabra, sal.getBytes(), ITERATIONS, KEY_LENGTH));
+		return new String(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes(), ITERATIONS, KEY_LENGTH));
 	}
 
 	private static byte[] hashPassword(final char[] password, final byte[] salt, final int iterations, final int keyLength) {
