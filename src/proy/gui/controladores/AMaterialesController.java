@@ -64,16 +64,9 @@ public class AMaterialesController extends ControladorRomano {
 
 					@Override
 					public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
-						if(this.getTableRow() == null){
-							this.setEditable(false);
-						}
-						else{
-							if(newValue == null){
-								this.setEditable(false);
-							}
-							else{
-								this.setEditable(materialesAGuardar.contains(newValue));
-							}
+						this.setEditable(false);
+						if(this.getTableRow() != null && newValue != null){
+							this.setEditable(materialesAGuardar.contains(newValue));
 						}
 					}
 				};
