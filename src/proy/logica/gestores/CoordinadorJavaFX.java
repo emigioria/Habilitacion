@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.DatosLogin;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
@@ -22,7 +23,6 @@ import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
-import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;
@@ -67,8 +67,8 @@ public class CoordinadorJavaFX {
 	@Resource
 	private ProcesoGestor gestorProceso;
 
-	public ResultadoAutenticacion autenticarAdministrador(FiltroAdministrador filtro) throws PersistenciaException {
-		return gestorUsuario.autenticarAdministrador(filtro);
+	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
+		return gestorUsuario.autenticarAdministrador(login);
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {
