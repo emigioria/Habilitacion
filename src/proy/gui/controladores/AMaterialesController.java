@@ -6,14 +6,19 @@
  */
 package proy.gui.controladores;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
 import proy.datos.entidades.Material;
+import proy.gui.componentes.TableCellTextViewString;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -32,30 +37,71 @@ public class AMaterialesController extends ControladorRomano {
 	private TableColumn<Material, String> columnaMedidas;
 
 	@FXML
+	private ArrayList<Material> materialesAGuardar = new ArrayList<>();
+
+	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
-			columnaMaterial.setCellValueFactory((CellDataFeatures<Material, String> param) -> {
+			columnaMaterial.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(param.getValue().getNombre());
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				return new SimpleStringProperty("<Sin nombre>");
 			});
-			columnaMedidas.setCellValueFactory((CellDataFeatures<Material, String> param) -> {
+			columnaMedidas.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getMedidas());
+					if(param.getValue().getMedidas() != null){
+						return new SimpleStringProperty(param.getValue().getMedidas());
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				return new SimpleStringProperty("<Sin medidas>");
 			});
+
+			Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
+				return new TableCellTextViewString<Material>() {
+
+					@Override
+					public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
+						if(this.getTableRow() == null){
+							this.setEditable(false);
+						}
+						else{
+							if(newValue == null){
+								this.setEditable(false);
+							}
+							else{
+								this.setEditable(materialesAGuardar.contains(newValue));
+							}
+						}
+					}
+				};
+			};
+			columnaMaterial.setCellFactory(call);
+			columnaMedidas.setCellFactory(call);
+
+			columnaMaterial.setOnEditCommit((t) -> {
+				t.getRowValue().setNombre(t.getNewValue());
+			});
+			columnaMedidas.setOnEditCommit((t) -> {
+				t.getRowValue().setMedidas(t.getNewValue());
+			});
+
+			actualizar();
 		});
+
 	}
 
 	@FXML
 	public void nuevoMaterial() {
+		if(!tablaMateriales.isEditable()){
+			tablaMateriales.setEditable(true);
+		}
 
+		Material nuevoMaterial = new Material();
+		materialesAGuardar.add(nuevoMaterial);
+		tablaMateriales.getItems().add(0, nuevoMaterial);
 	}
 
 	@FXML
