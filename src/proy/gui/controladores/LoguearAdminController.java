@@ -6,12 +6,16 @@
  */
 package proy.gui.controladores;
 
+import java.awt.Frame;
+
 import javax.swing.JPasswordField;
+import javax.swing.SwingUtilities;
 
 import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import proy.gui.Contra;
 
 public class LoguearAdminController extends ControladorRomano {
 
@@ -29,7 +33,12 @@ public class LoguearAdminController extends ControladorRomano {
 	private void initialize() {
 		Platform.runLater(() -> {
 			contra = new JPasswordField();
-			swingContra.setContent(contra);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					swingContra.setContent(contra);
+				}
+			});
 		});
 	}
 
@@ -44,14 +53,29 @@ public class LoguearAdminController extends ControladorRomano {
 		//			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		//			return;
 		//		}
+		Contra.encriptarMD5(contra.getPassword(), Contra.generarSal());
 		Boolean hayErrores = false;
 		if(!hayErrores){
 			ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
+			matarSwing();
 		}
 	}
 
 	@Override
 	public void actualizar() {
 
+	}
+
+	@Override
+	public void salir() {
+		matarSwing();
+		super.salir();
+	}
+
+	private void matarSwing() {
+		Frame[] frames = Frame.getFrames();
+		for(Frame f: frames){
+			f.dispose();
+		}
 	}
 }

@@ -43,6 +43,10 @@ public class Material {
 	@Column(name = "estado", length = 10, nullable = false)
 	private Estado estado;
 
+	public Material() {
+		super();
+	}
+
 	public Material(String nombre, String medidas) {
 		super();
 		this.nombre = nombre;
