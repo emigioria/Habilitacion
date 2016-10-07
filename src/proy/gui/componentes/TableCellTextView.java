@@ -18,8 +18,10 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 	public TableCellTextView(StringConverter<T> convertidor) {
 		super();
 		this.convertidor = convertidor;
+		//Cuando la fila es seteada...
 		this.tableRowProperty().addListener((observable, oldValue, newValue) -> {
 			if(newValue != null){
+				//se agrega un listener a dicha fila para que escuche cuando cambia su contenido
 				((javafx.scene.control.TableRow<O>) newValue).itemProperty().addListener(this);
 			}
 		});
