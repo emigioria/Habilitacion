@@ -23,7 +23,7 @@ import proy.datos.entidades.Pieza;
 
 public class VHistorialTareasController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/VHistorialTareas.fxml";
+	public static final String URLVista = "/proy/gui/vistas/VHistorialTareas.fxml";
 
 	@FXML
 	private Label nombreProceso;

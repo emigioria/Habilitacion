@@ -24,7 +24,7 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerra
 
 public class AHerramientasController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/AHerramientas.fxml";
+	public static final String URLVista = "/proy/gui/vistas/AHerramientas.fxml";
 
 	@FXML
 	private TextField nombreHerramienta;

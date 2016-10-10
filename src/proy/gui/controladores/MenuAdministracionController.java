@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 
 public class MenuAdministracionController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/MenuAdministracion.fxml";
+	public static final String URLVista = "/proy/gui/vistas/MenuAdministracion.fxml";
 
 	@FXML
 	public void administrarOperarios() {

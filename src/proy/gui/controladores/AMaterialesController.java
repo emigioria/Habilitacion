@@ -22,7 +22,7 @@ import proy.gui.componentes.TableCellTextViewString;
 
 public class AMaterialesController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/AMateriales.fxml";
+	public static final String URLVista = "/proy/gui/vistas/AMateriales.fxml";
 
 	@FXML
 	private TextField nombreMaterial;

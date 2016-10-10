@@ -38,7 +38,7 @@ import proy.logica.gestores.resultados.ResultadoModificarTarea.ErrorModificarTar
 
 public class NMTareaController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/NMTarea.fxml";
+	public static final String URLVista = "/proy/gui/vistas/NMTarea.fxml";
 
 	@FXML
 	private Label lbTitulo;

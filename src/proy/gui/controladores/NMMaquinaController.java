@@ -20,7 +20,7 @@ import proy.datos.entidades.Pieza;
 
 public class NMMaquinaController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/NMMaquina.fxml";
+	public static final String URLVista = "/proy/gui/vistas/NMMaquina.fxml";
 
 	@FXML
 	private TextField nombreMaquina;

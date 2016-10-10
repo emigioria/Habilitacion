@@ -24,7 +24,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea
 
 public class ATareasController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/ATareas.fxml";
+	public static final String URLVista = "/proy/gui/vistas/ATareas.fxml";
 
 	@FXML
 	private TextField nombreOperario;
