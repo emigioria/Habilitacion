@@ -14,13 +14,17 @@ import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import proy.datos.clases.DatosLogin;
+import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.PersistenciaException;
+import proy.gui.Contra;
+import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
+import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
@@ -32,7 +36,24 @@ public class UsuarioGestor {
 	private UsuarioService persistidorUsuario;
 
 	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ArrayList<ErrorResultadoAutenticacion> errores = new ArrayList<>();
+		//Obtengo los administradores
+		ArrayList<Administrador> administradores = persistidorUsuario.obtenerAdministradores(new FiltroAdministrador.Builder().dni(login.getDNI()).build());
+		if(administradores.size() != 1){
+			//Si no lo encuentra falla
+			errores.add(ErrorResultadoAutenticacion.DatosInvalidos);
+		}
+		else{
+			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
+			Administrador admin = administradores.get(0);
+			String sal = admin.getSal();
+			String contraIngresada = Contra.encriptarMD5(login.getContrasenia(), sal);
+			if(!contraIngresada.equals(admin.getContrasenia())){
+				//Si no coincide falla
+				errores.add(ErrorResultadoAutenticacion.DatosInvalidos);
+			}
+		}
+		return new ResultadoAutenticacion(errores.toArray(new ErrorResultadoAutenticacion[0]));
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {

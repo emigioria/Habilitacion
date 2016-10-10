@@ -15,7 +15,12 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import proy.gui.Contra;
+import proy.datos.clases.DatosLogin;
+import proy.excepciones.PersistenciaException;
+import proy.gui.ManejadorExcepciones;
+import proy.gui.componentes.VentanaError;
+import proy.logica.gestores.resultados.ResultadoAutenticacion;
+import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
 
 public class LoguearAdminController extends ControladorRomano {
 
@@ -44,18 +49,56 @@ public class LoguearAdminController extends ControladorRomano {
 
 	@FXML
 	public void iniciarSesion() {
-		//TODO hacer
-		//		try{
-		//String user = nombre.getText().trim();
-		//String pass = Contra.encriptarMD5(contra.getPassword(), Contra.generarSal());
-		//coordinador.autenticarAdministrador(new FiltroAdministrador());
-		//		} catch(PersistenciaException e){
-		//			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
-		//			return;
-		//		}
-		Contra.encriptarMD5(contra.getPassword(), Contra.generarSal());
-		Boolean hayErrores = false;
-		if(!hayErrores){
+		//TODO borrar para activar login
+		ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
+		matarSwing();
+		if(true){
+			return;
+		}
+		@SuppressWarnings("unused")
+		//borrar
+
+		ResultadoAutenticacion resultado = null;
+		Boolean hayErrores;
+		DatosLogin datos;
+		String errores = "";
+
+		//Toma de datos de la vista
+		String user = nombre.getText().trim();
+		char[] pass = contra.getPassword();
+		if(user.isEmpty() || pass.length < 1){
+			new VentanaError("No se ha podido iniciar sesión", "Campos vacíos.", apilador.getStage());
+			return;
+		}
+		datos = new DatosLogin(user, pass);
+
+		//Inicio transacción al gestor
+		try{
+			resultado = coordinador.autenticarAdministrador(datos);
+		} catch(PersistenciaException e){
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		hayErrores = resultado.hayErrores();
+		if(hayErrores){
+			for(ErrorResultadoAutenticacion r: resultado.getErrores()){
+				switch(r) {
+				case DatosInvalidos:
+					errores += "Datos inválidos al iniciar sesión.\n";
+					break;
+				}
+			}
+			if(!errores.isEmpty()){
+				new VentanaError("No se ha podido iniciar sesión", errores, apilador.getStage());
+			}
+		}
+		else{
+			//Operacion exitosa
 			ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
 			matarSwing();
 		}

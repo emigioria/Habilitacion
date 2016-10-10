@@ -2,17 +2,17 @@ package proy.datos.clases;
 
 public class DatosLogin {
 
-	private String nombreUsuario;
+	private String dni;
 
 	private char[] contrasenia;
 
-	public DatosLogin(String usuario, char[] contrasenia) {
-		this.nombreUsuario = usuario;
+	public DatosLogin(String dni, char[] contrasenia) {
+		this.dni = dni;
 		this.contrasenia = contrasenia;
 	}
 
-	public String getNombreUsuario() {
-		return nombreUsuario;
+	public String getDNI() {
+		return dni;
 	}
 
 	public char[] getContrasenia() {

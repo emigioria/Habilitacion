@@ -40,6 +40,9 @@ public abstract class Usuario {
 	@Column(name = "apellido", length = 100, nullable = false)
 	private String apellido;
 
+	@Column(name = "dni", length = 10, nullable = false, unique = true)
+	private String dni;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "estado", length = 10, nullable = false)
 	private Estado estado;
@@ -49,10 +52,11 @@ public abstract class Usuario {
 		estado = Estado.ALTA;
 	}
 
-	public Usuario(String nombre, String apellido) {
+	public Usuario(String nombre, String apellido, String dni) {
 		super();
 		this.nombre = nombre;
 		this.apellido = apellido;
+		this.dni = dni;
 	}
 
 	public Long getId() {
@@ -75,6 +79,14 @@ public abstract class Usuario {
 		this.apellido = apellido;
 	}
 
+	public String getDNI() {
+		return dni;
+	}
+
+	public void setDNI(String dni) {
+		this.dni = dni;
+	}
+
 	public Estado getEstado() {
 		return estado;
 	}
@@ -89,6 +101,7 @@ public abstract class Usuario {
 		int result = 1;
 		result = prime * result + ((apellido == null) ? 0 : apellido.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result + ((dni == null) ? 0 : dni.hashCode());
 		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
@@ -123,6 +136,14 @@ public abstract class Usuario {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
+		if(dni == null){
+			if(other.dni != null){
+				return false;
+			}
+		}
+		else if(!dni.equals(other.dni)){
+			return false;
+		}
 		if(estado != other.estado){
 			return false;
 		}
@@ -143,5 +164,10 @@ public abstract class Usuario {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return this.getNombre() + " " + this.getApellido();
 	}
 }

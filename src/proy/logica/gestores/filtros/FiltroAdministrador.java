@@ -15,10 +15,12 @@ public class FiltroAdministrador extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private String dni;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
+		private String dni;
 
 		public Builder() {
 			super();
@@ -29,6 +31,18 @@ public class FiltroAdministrador extends Filtro {
 			return this;
 		}
 
+		public Builder dni(String dni) {
+			this.dni = dni;
+			return this;
+		}
+
+		private Boolean parametrosPorDefecto() {
+			if(dni != null){
+				return false;
+			}
+			return true;
+		}
+
 		public FiltroAdministrador build() {
 			return new FiltroAdministrador(this);
 		}
@@ -37,6 +51,7 @@ public class FiltroAdministrador extends Filtro {
 	private FiltroAdministrador(Builder builder) {
 		setConsulta(builder);
 		setNamedQuery(builder);
+		this.dni = builder.dni;
 	}
 
 	private void setConsulta(Builder builder) {
@@ -44,7 +59,9 @@ public class FiltroAdministrador extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		namedQuery = "listarAdministradores";
+		if(builder.parametrosPorDefecto()){
+			namedQuery = "listarAdministradores";
+		}
 	}
 
 	private String getSelect(Builder builder) {
@@ -58,7 +75,13 @@ public class FiltroAdministrador extends Filtro {
 	}
 
 	private String getWhere(Builder builder) {
-		String where = "";
+		String where =
+				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : (""));
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -73,12 +96,15 @@ public class FiltroAdministrador extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".dni ASC";
 		return orderBy;
 	}
 
 	@Override
 	public Query setParametros(Query query) {
+		if(dni != null){
+			query.setParameter("dni", dni);
+		}
 		return query;
 	}
 
