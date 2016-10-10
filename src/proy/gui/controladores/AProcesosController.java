@@ -17,7 +17,7 @@ import proy.datos.entidades.Proceso;
 
 public class AProcesosController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/AProcesos.fxml";
+	public static final String URLVista = "/proy/gui/vistas/AProcesos.fxml";
 
 	@FXML
 	private TextField nombreProceso;

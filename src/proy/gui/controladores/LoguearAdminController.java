@@ -19,15 +19,15 @@ import proy.gui.Contra;
 
 public class LoguearAdminController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/LoguearAdmin.fxml";
+	public static final String URLVista = "/proy/gui/vistas/LoguearAdmin.fxml";
 
 	@FXML
-	TextField nombre;
+	private TextField nombre;
 
 	@FXML
-	SwingNode swingContra;
+	private SwingNode swingContra;
 
-	JPasswordField contra;
+	private JPasswordField contra;
 
 	@FXML
 	private void initialize() {

@@ -16,7 +16,7 @@ import proy.datos.entidades.Operario;
 
 public class AOperariosController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/AOperarios.fxml";
+	public static final String URLVista = "/proy/gui/vistas/AOperarios.fxml";
 
 	@FXML
 	private TableView<Operario> tablaOperarios;

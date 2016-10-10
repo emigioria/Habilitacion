@@ -17,13 +17,13 @@ import proy.gui.componentes.IconoPlay;
 
 public class VTareasController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/VTareas.fxml";
+	public static final String URLVista = "/proy/gui/vistas/VTareas.fxml";
 
 	@FXML
-	Button botonDetener;
+	private Button botonDetener;
 
 	@FXML
-	Button botonPlay;
+	private Button botonPlay;
 
 	@FXML
 	private void initialize() {

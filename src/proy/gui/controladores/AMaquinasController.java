@@ -17,7 +17,7 @@ import proy.datos.entidades.Maquina;
 
 public class AMaquinasController extends ControladorRomano {
 
-	public static String URLVista = "/proy/gui/vistas/AMaquinas.fxml";
+	public static final String URLVista = "/proy/gui/vistas/AMaquinas.fxml";
 
 	@FXML
 	private TextField nombreMaquina;
