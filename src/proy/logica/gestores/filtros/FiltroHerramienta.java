@@ -9,16 +9,21 @@ package proy.logica.gestores.filtros;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import proy.datos.clases.Estado;
 import proy.datos.servicios.Filtro;
 
 public class FiltroHerramienta extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private String nombre;
+	private Estado estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "h";
+		private String nombre;
+		private Estado estado = Estado.ALTA;
 
 		public Builder() {
 			super();
@@ -29,12 +34,20 @@ public class FiltroHerramienta extends Filtro {
 			return this;
 		}
 
+		public Builder nombre(String nombre) {
+			this.nombre = nombre;
+			return this;
+		}
+
 		public FiltroHerramienta build() {
 			return new FiltroHerramienta(this);
 		}
 	}
 
 	private FiltroHerramienta(Builder builder) {
+		this.nombre = builder.nombre;
+		this.estado = builder.estado;
+
 		setConsulta(builder);
 		setNamedQuery(builder);
 	}
@@ -44,6 +57,12 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.nombre != null){
+			return;
+		}
+		if(builder.estado != Estado.ALTA){
+			return;
+		}
 		namedQuery = "listarHerramientas";
 	}
 
@@ -53,12 +72,19 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Administrador " + builder.nombreEntidad;
+		String from = " FROM Herramienta " + builder.nombreEntidad;
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
-		String where = "";
+		String where =
+				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre = :nom AND ") : ("")) +
+						builder.nombreEntidad + ".estado = est";
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -79,6 +105,12 @@ public class FiltroHerramienta extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
+		if(nombre != null){
+			query.setParameter("nom", nombre);
+		}
+		if(estado != null){
+			query.setParameter("est", estado);
+		}
 		return query;
 	}
 

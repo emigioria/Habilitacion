@@ -19,7 +19,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
-@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m")
+@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE estado = ALTA")
 @Entity
 @Table(name = "material")
 public class Material {
@@ -45,6 +45,7 @@ public class Material {
 
 	public Material() {
 		super();
+		estado = Estado.ALTA;
 	}
 
 	public Material(String nombre, String medidas) {

@@ -28,7 +28,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
-@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p")
+@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE estado = ALTA")
 @Entity
 @Table(name = "proceso")
 public class Proceso {
@@ -76,6 +76,7 @@ public class Proceso {
 	public Proceso() {
 		herramientas = new HashSet<>();
 		piezas = new HashSet<>();
+		estado = Estado.ALTA;
 	}
 
 	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {

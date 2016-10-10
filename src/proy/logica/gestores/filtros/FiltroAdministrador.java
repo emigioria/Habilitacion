@@ -9,6 +9,7 @@ package proy.logica.gestores.filtros;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import proy.datos.clases.Estado;
 import proy.datos.servicios.Filtro;
 
 public class FiltroAdministrador extends Filtro {
@@ -16,11 +17,13 @@ public class FiltroAdministrador extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private String dni;
+	private Estado estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private String dni;
+		private Estado estado = Estado.ALTA;
 
 		public Builder() {
 			super();
@@ -36,22 +39,17 @@ public class FiltroAdministrador extends Filtro {
 			return this;
 		}
 
-		private Boolean parametrosPorDefecto() {
-			if(dni != null){
-				return false;
-			}
-			return true;
-		}
-
 		public FiltroAdministrador build() {
 			return new FiltroAdministrador(this);
 		}
 	}
 
 	private FiltroAdministrador(Builder builder) {
+		this.dni = builder.dni;
+		this.estado = builder.estado;
+
 		setConsulta(builder);
 		setNamedQuery(builder);
-		this.dni = builder.dni;
 	}
 
 	private void setConsulta(Builder builder) {
@@ -59,9 +57,13 @@ public class FiltroAdministrador extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		if(builder.parametrosPorDefecto()){
-			namedQuery = "listarAdministradores";
+		if(builder.dni != null){
+			return;
 		}
+		if(builder.estado != Estado.ALTA){
+			return;
+		}
+		namedQuery = "listarAdministradores";
 	}
 
 	private String getSelect(Builder builder) {
@@ -76,7 +78,8 @@ public class FiltroAdministrador extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : (""));
+				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
+						builder.nombreEntidad + ".estado = est";
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -104,6 +107,9 @@ public class FiltroAdministrador extends Filtro {
 	public Query setParametros(Query query) {
 		if(dni != null){
 			query.setParameter("dni", dni);
+		}
+		if(estado != null){
+			query.setParameter("est", estado);
 		}
 		return query;
 	}

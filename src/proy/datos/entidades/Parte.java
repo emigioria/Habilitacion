@@ -21,7 +21,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
-@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p")
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE estado = ALTA")
 @Entity
 @Table(name = "parte")
 public class Parte {
@@ -48,8 +48,12 @@ public class Parte {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Maquina maquina;
 
+	public Parte() {
+		estado = Estado.ALTA;
+	}
+
 	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
-		super();
+		this();
 		this.nombre = nombre;
 		this.cantidad = cantidad;
 		this.estado = estado;

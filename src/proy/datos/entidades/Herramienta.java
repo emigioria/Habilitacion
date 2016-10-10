@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,7 +22,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h")
+import proy.datos.clases.Estado;
+
+@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h WHERE estado = ALTA")
 @Entity
 @Table(name = "herramienta")
 public class Herramienta {
@@ -37,11 +41,16 @@ public class Herramienta {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "estado", length = 10, nullable = false)
+	private Estado estado;
+
 	@ManyToMany(mappedBy = "herramientas", fetch = FetchType.EAGER)
 	private Set<Proceso> procesos;
 
 	public Herramienta() {
 		procesos = new HashSet<>();
+		estado = Estado.ALTA;
 	}
 
 	public Herramienta(String nombre) {
@@ -72,6 +81,7 @@ public class Herramienta {
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		return result;
 	}
 
@@ -93,6 +103,9 @@ public class Herramienta {
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		if(estado != other.estado){
 			return false;
 		}
 		if(nombre == null){
