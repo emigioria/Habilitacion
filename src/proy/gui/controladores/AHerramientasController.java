@@ -44,7 +44,7 @@ public class AHerramientasController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getNombre());
 				}
 				else{
-					return new SimpleStringProperty("<no name>");
+					return new SimpleStringProperty("<Nombre>");
 				}
 			});
 			actualizar();
@@ -112,6 +112,21 @@ public class AHerramientasController extends ControladorRomano {
 		}
 		else{
 			return;
+		}
+	}
+
+	public void guardarHerramienta() {
+
+	}
+
+	public void buscar() {
+		FiltroHerramienta filtroH = new FiltroHerramienta.Builder().build();
+		System.out.println(filtroH.getNamedQueryName());
+		try{
+			coordinador.listarHerramientas(filtroH);
+		} catch(PersistenciaException e){
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -26,6 +26,7 @@ import proy.logica.gestores.filtros.FiltroMaterial;
 import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
+import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaterial;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
@@ -97,12 +98,18 @@ public class TallerGestor {
 		if(!resultado.hayErrores()){
 			persistidorTaller.guardarHerramienta(herramienta);
 		}
-		//throw new NotYetImplementedException();
 		return resultado;
 	}
-	
-	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException{
-		//persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().build()); ??
+
+	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
+		//hago así o busco directamente en la DB
+		//y ver si devuelve null(?)
+		ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().build());
+		for(Herramienta herram: lista){
+			if(herramienta.getNombre().equals(herram.getNombre())){
+				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
+			}
+		}
 		return new ResultadoCrearHerramienta();
 	}
 
