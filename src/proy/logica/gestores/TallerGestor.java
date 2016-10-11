@@ -28,7 +28,7 @@ import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
@@ -122,8 +122,8 @@ public class TallerGestor {
 		return persistidorTaller.obtenerMateriales(filtro);
 	}
 
-	public ResultadoCrearMaterial crearMaterial(Material material) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {

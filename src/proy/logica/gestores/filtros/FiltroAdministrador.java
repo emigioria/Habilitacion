@@ -79,7 +79,7 @@ public class FiltroAdministrador extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
-						builder.nombreEntidad + ".estado = est";
+						builder.nombreEntidad + ".estado = :est";
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
