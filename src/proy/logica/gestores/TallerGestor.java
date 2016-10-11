@@ -123,7 +123,7 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-
+		throw new NotYetImplementedException();
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
