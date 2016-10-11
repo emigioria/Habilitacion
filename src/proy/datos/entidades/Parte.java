@@ -21,7 +21,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
-@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE estado = ALTA")
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado = ALTA")
 @Entity
 @Table(name = "parte")
 public class Parte {
