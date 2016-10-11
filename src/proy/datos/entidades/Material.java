@@ -19,7 +19,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.Estado;
 
-@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE m.estado = ALTA")
+@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE m.estado = :est")
 @Entity
 @Table(name = "material")
 public class Material {
