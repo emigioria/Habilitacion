@@ -32,6 +32,7 @@ public class FiltroHerramienta extends Filtro {
 		public FiltroHerramienta build() {
 			return new FiltroHerramienta(this);
 		}
+
 	}
 
 	private FiltroHerramienta(Builder builder) {

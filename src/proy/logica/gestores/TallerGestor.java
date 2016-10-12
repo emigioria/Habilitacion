@@ -102,13 +102,10 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		//hago así o busco directamente en la DB
-		//y ver si devuelve null(?)
 		ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().build());
-		for(Herramienta herram: lista){
-			if(herramienta.getNombre().equals(herram.getNombre())){
-				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
-			}
+		System.out.println(lista);
+		if(lista.size() != 0){
+			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
 		}
 		return new ResultadoCrearHerramienta();
 	}
