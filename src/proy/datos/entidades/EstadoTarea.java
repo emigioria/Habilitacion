@@ -6,32 +6,24 @@
  */
 package proy.datos.entidades;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.EstadoStr;
+import proy.datos.clases.EstadoTareaStr;
 
-@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h WHERE h.estado.nombre = :est")
 @Entity
-@Table(name = "herramienta")
-public class Herramienta {
+@Table(name = "estadotarea")
+public class EstadoTarea {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
 	private Long codigo;
 
@@ -39,41 +31,25 @@ public class Herramienta {
 	@Column(name = "version")
 	private Long version;
 
-	@Column(name = "nombre", length = 100, nullable = false)
-	private String nombre;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "estado", length = 10, nullable = false, unique = true)
+	private EstadoTareaStr nombre;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
-	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "herramienta_codestado_fk"), nullable = false)
-	private Estado estado;
-
-	@ManyToMany(mappedBy = "herramientas", fetch = FetchType.EAGER)
-	private Set<Proceso> procesos;
-
-	public Herramienta() {
+	private EstadoTarea() {
 		super();
-		procesos = new HashSet<>();
-		estado = new Estado(EstadoStr.ALTA);
 	}
 
-	public Herramienta(String nombre) {
+	public EstadoTarea(EstadoTareaStr estado) {
 		this();
-		this.nombre = nombre;
+		this.nombre = estado;
 	}
 
 	public Long getId() {
 		return codigo;
 	}
 
-	public String getNombre() {
+	public EstadoTareaStr getNombre() {
 		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public Set<Proceso> getProcesos() {
-		return procesos;
 	}
 
 	@Override
@@ -81,7 +57,6 @@ public class Herramienta {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
@@ -98,7 +73,7 @@ public class Herramienta {
 		if(getClass() != obj.getClass()){
 			return false;
 		}
-		Herramienta other = (Herramienta) obj;
+		EstadoTarea other = (EstadoTarea) obj;
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
@@ -107,20 +82,7 @@ public class Herramienta {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
-		if(estado == null){
-			if(other.estado != null){
-				return false;
-			}
-		}
-		else if(!estado.equals(other.estado)){
-			return false;
-		}
-		if(nombre == null){
-			if(other.nombre != null){
-				return false;
-			}
-		}
-		else if(!nombre.equals(other.nombre)){
+		if(nombre != other.nombre){
 			return false;
 		}
 		if(version == null){

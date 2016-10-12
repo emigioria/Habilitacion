@@ -54,8 +54,12 @@ public class Pausa implements Serializable {
 	@Column(name = "fecha_hora_fin", nullable = false)
 	private Date fechaHoraFin;
 
-	public Pausa(Tarea tarea, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
+	public Pausa() {
 		super();
+	}
+
+	public Pausa(Tarea tarea, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
+		this();
 		this.tarea = tarea;
 		this.causa = causa;
 		this.fechaHoraInicio = fechaHoraInicio;

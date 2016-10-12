@@ -48,8 +48,12 @@ public class Comentario {
 	@Column(name = "fecha", nullable = false)
 	private Date fechaComentario;
 
-	public Comentario(String texto, Date fecha, Operario operario) {
+	public Comentario() {
 		super();
+	}
+
+	public Comentario(String texto, Date fecha, Operario operario) {
+		this();
 		this.texto = texto;
 		this.fechaComentario = fecha;
 		this.operario = operario;

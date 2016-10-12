@@ -74,8 +74,10 @@ public class AHerramientasController extends ControladorRomano {
 				resultado = coordinador.crearHerramienta(nuevaHerramienta);
 			} catch(PersistenciaException e){
 				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
 			} catch(Exception e){
 				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
 			}
 
 			hayErrores = resultado.hayErrores();
@@ -101,14 +103,16 @@ public class AHerramientasController extends ControladorRomano {
 		int selectedIndex = tablaHerramientas.getSelectionModel().getSelectedIndex();
 		if(selectedIndex >= 0){
 			Herramienta hSelected = tablaHerramientas.getSelectionModel().getSelectedItem();
-			tablaHerramientas.getItems().remove(selectedIndex);
 			try{
 				coordinador.eliminarHerramienta(hSelected);
 			} catch(PersistenciaException e){
 				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
 			} catch(Exception e){
 				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
 			}
+			tablaHerramientas.getItems().remove(selectedIndex);
 		}
 		else{
 			return;

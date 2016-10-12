@@ -31,6 +31,9 @@
   	<property name="hibernate.c3p0.idle_test_period">3000</property>
   
     <mapping class="proy.datos.entidades.Administrador" />
+    <mapping class="proy.datos.entidades.Comentario" />
+    <mapping class="proy.datos.entidades.Estado" />
+    <mapping class="proy.datos.entidades.EstadoTarea" />
     <mapping class="proy.datos.entidades.Herramienta" />
     <mapping class="proy.datos.entidades.Maquina" />
     <mapping class="proy.datos.entidades.Material" />

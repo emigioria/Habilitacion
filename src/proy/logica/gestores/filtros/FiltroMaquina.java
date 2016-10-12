@@ -53,7 +53,7 @@ public class FiltroMaquina extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Administrador " + builder.nombreEntidad;
+		String from = " FROM Maquina " + builder.nombreEntidad;
 		return from;
 	}
 

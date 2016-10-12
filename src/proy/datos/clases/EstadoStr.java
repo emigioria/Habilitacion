@@ -6,6 +6,6 @@
  */
 package proy.datos.clases;
 
-public enum Estado {
+public enum EstadoStr {
 	ALTA, BAJA;
 }

@@ -9,16 +9,22 @@ package proy.logica.gestores.filtros;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import proy.datos.clases.EstadoTareaStr;
+import proy.datos.entidades.Herramienta;
 import proy.datos.servicios.Filtro;
 
 public class FiltroTarea extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private EstadoTareaStr noEstado;
+	private Herramienta herramienta;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
+		private EstadoTareaStr noEstado;
+		private Herramienta herramienta;
 
 		public Builder() {
 			super();
@@ -29,12 +35,25 @@ public class FiltroTarea extends Filtro {
 			return this;
 		}
 
+		public Builder herramienta(Herramienta herramienta) {
+			this.herramienta = herramienta;
+			return this;
+		}
+
+		public Builder noEstado(EstadoTareaStr noEstado) {
+			this.noEstado = noEstado;
+			return this;
+		}
+
 		public FiltroTarea build() {
 			return new FiltroTarea(this);
 		}
 	}
 
 	private FiltroTarea(Builder builder) {
+		this.noEstado = builder.noEstado;
+		this.herramienta = builder.herramienta;
+
 		setConsulta(builder);
 		setNamedQuery(builder);
 	}
@@ -44,21 +63,46 @@ public class FiltroTarea extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.noEstado != null){
+			return;
+		}
+		if(builder.herramienta != null){
+			return;
+		}
 		namedQuery = "listarTareas";
 	}
 
 	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+		String select;
+		if(builder.herramienta != null){
+			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		}
+		else{
+			select = "SELECT " + builder.nombreEntidad;
+		}
 		return select;
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Administrador " + builder.nombreEntidad;
+		String from;
+		if(builder.herramienta != null){
+			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.herramientas herr";
+		}
+		else{
+			from = " FROM Tarea " + builder.nombreEntidad;
+		}
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
-		String where = "";
+		String where =
+				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
+						((builder.herramienta != null) ? ("herr = :her AND ") : (""));
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -73,18 +117,24 @@ public class FiltroTarea extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".fechaPlanificada ASC";
 		return orderBy;
 	}
 
 	@Override
 	public Query setParametros(Query query) {
+		if(noEstado != null){
+			query.setParameter("nEs", noEstado);
+		}
+		if(herramienta != null){
+			query.setParameter("her", herramienta);
+		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-
+		session.update(herramienta);
 	}
 
 	@Override

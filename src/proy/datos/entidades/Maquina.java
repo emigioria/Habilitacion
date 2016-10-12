@@ -32,7 +32,12 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false, unique = true)
 	private String nombre;
 
+	public Maquina() {
+		super();
+	}
+
 	public Maquina(String nombre) {
+		this();
 		this.nombre = nombre;
 	}
 

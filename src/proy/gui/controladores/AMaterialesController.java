@@ -18,7 +18,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import proy.datos.entidades.Material;
+import proy.excepciones.PersistenciaException;
+import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.VentanaError;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -104,7 +108,44 @@ public class AMaterialesController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
+		ResultadoCrearMateriales resultado = null;
+		Boolean hayErrores;
+		String errores = "";
 
+		//Toma de datos de la vista
+		if(materialesAGuardar.size() == 0){
+			return;
+		}
+
+		//Inicio transacción al gestor
+		try{
+			resultado = coordinador.crearMateriales(materialesAGuardar);
+		} catch(PersistenciaException e){
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		hayErrores = resultado.hayErrores();
+		if(hayErrores){
+			/*
+			 * for(ErrorCrearHerramienta r: resultado.getErrores()){
+			 * switch(r) {
+			 * //TODO hacer validador primero
+			 * case NombreIncompleto:
+			 * errores += "El nombre no es válido.\n";
+			 * case NombreRepetido:
+			 * errores += "Ya existe una herramienta con ese nombre. \n";
+			 * }
+			 * }
+			 */
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+			}
+		}
 	}
 
 	@Override

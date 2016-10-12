@@ -11,8 +11,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -25,9 +23,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarPiezas", query = "SELECT p FROM Pieza p")
+@NamedQuery(name = "listarPiezas", query = "SELECT p FROM Pieza p WHERE p.estado.nombre = :est")
 @Entity
 @Table(name = "pieza")
 public class Pieza {
@@ -50,8 +48,8 @@ public class Pieza {
 	@Column(name = "cantidad", nullable = false)
 	private Integer cantidad;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codestado_fk"), nullable = false)
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -66,7 +64,9 @@ public class Pieza {
 	private Set<Proceso> procesos;
 
 	public Pieza() {
+		super();
 		procesos = new HashSet<>();
+		estado = new Estado(EstadoStr.ALTA);
 	}
 
 	public Pieza(String nombre, String codigoPlano, Integer cantidad, Estado estado, Parte parte, Material material) {
@@ -184,7 +184,12 @@ public class Pieza {
 		else if(!codigoPlano.equals(other.codigoPlano)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(nombre == null){
