@@ -112,6 +112,12 @@ public class AMaterialesController extends ControladorRomano {
 		Boolean hayErrores;
 		String errores = "";
 
+		//Toma de datos de la vista
+		if(materialesAGuardar.size() == 0){
+			return;
+		}
+
+		//Inicio transacción al gestor
 		try{
 			resultado = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
@@ -122,6 +128,7 @@ public class AMaterialesController extends ControladorRomano {
 			return;
 		}
 
+		//Tratamiento de errores
 		hayErrores = resultado.hayErrores();
 		if(hayErrores){
 			/*
