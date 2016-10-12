@@ -32,7 +32,7 @@ public class Estado {
 	private Long version;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@Column(name = "estado", length = 10, nullable = false, unique = true)
 	private EstadoStr nombre;
 
 	private Estado() {
