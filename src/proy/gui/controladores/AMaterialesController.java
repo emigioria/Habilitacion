@@ -116,8 +116,10 @@ public class AMaterialesController extends ControladorRomano {
 			resultado = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
 			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
 		} catch(Exception e){
 			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
 		}
 
 		hayErrores = resultado.hayErrores();
