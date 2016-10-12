@@ -6,6 +6,8 @@
  */
 package proy.gui.controladores;
 
+import java.util.Date;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -21,7 +23,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.converter.IntegerStringConverter;
-import proy.datos.clases.EstadoTarea;
+import proy.datos.clases.EstadoTareaStr;
+import proy.datos.entidades.EstadoTarea;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
@@ -130,6 +133,7 @@ public class NMTareaController extends ControladorRomano {
 						return c;
 					}));
 			cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+			fechaTarea.setValue(ConversorFechas.getLocalDate(new Date()));
 			actualizar();
 		});
 	}
@@ -155,9 +159,14 @@ public class NMTareaController extends ControladorRomano {
 		String errores = "";
 
 		//Toma de datos de la vista
+		if(fechaTarea.getValue() == null){
+			new VentanaError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
+			return true;
+		}
+
 		tar = new Tarea();
 		tar.setCantidadTeorica(cantidad.getValue());
-		tar.setEstado(EstadoTarea.PLANIFICADA);
+		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
 		tar.setFechaPlanificada(ConversorFechas.getDate(fechaTarea.getValue()));
 		tar.setObservaciones(observaciones.getText().trim());
 		tar.setOperario(cbOperario.getValue());
@@ -200,9 +209,14 @@ public class NMTareaController extends ControladorRomano {
 		String errores = "";
 
 		//Toma de datos de la vista
+		if(fechaTarea.getValue() == null){
+			new VentanaError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
+			return true;
+		}
+
 		tar = this.tarea;
 		tar.setCantidadTeorica(cantidad.getValue());
-		tar.setEstado(EstadoTarea.PLANIFICADA);
+		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
 		tar.setFechaPlanificada(ConversorFechas.getDate(fechaTarea.getValue()));
 		tar.setObservaciones(observaciones.getText());
 		tar.setOperario(cbOperario.getValue());

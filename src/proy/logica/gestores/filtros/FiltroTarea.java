@@ -9,7 +9,7 @@ package proy.logica.gestores.filtros;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import proy.datos.clases.EstadoTarea;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Herramienta;
 import proy.datos.servicios.Filtro;
 
@@ -17,13 +17,13 @@ public class FiltroTarea extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
-	private EstadoTarea noEstado;
+	private EstadoTareaStr noEstado;
 	private Herramienta herramienta;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
-		private EstadoTarea noEstado;
+		private EstadoTareaStr noEstado;
 		private Herramienta herramienta;
 
 		public Builder() {
@@ -40,7 +40,7 @@ public class FiltroTarea extends Filtro {
 			return this;
 		}
 
-		public Builder noEstado(EstadoTarea noEstado) {
+		public Builder noEstado(EstadoTareaStr noEstado) {
 			this.noEstado = noEstado;
 			return this;
 		}
@@ -96,7 +96,7 @@ public class FiltroTarea extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado != :nEs AND ") : ("")) +
+				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
 						((builder.herramienta != null) ? ("herr = :her AND ") : (""));
 
 		if(!where.isEmpty()){

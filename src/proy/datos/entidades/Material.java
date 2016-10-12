@@ -8,18 +8,20 @@ package proy.datos.entidades;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE m.estado = :est")
+@NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE m.estado.nombre = :est")
 @Entity
 @Table(name = "material")
 public class Material {
@@ -39,17 +41,17 @@ public class Material {
 	@Column(name = "medidas", length = 100)
 	private String medidas;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "material_codestado_fk"), nullable = false)
 	private Estado estado;
 
 	public Material() {
 		super();
-		estado = Estado.ALTA;
+		estado = new Estado(EstadoStr.ALTA);
 	}
 
 	public Material(String nombre, String medidas) {
-		super();
+		this();
 		this.nombre = nombre;
 		this.medidas = medidas;
 	}
@@ -106,7 +108,12 @@ public class Material {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(medidas == null){

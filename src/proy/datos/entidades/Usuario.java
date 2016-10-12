@@ -8,17 +8,19 @@ package proy.datos.entidades;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -43,17 +45,17 @@ public abstract class Usuario {
 	@Column(name = "dni", length = 10, nullable = false, unique = true)
 	private String dni;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "usuario_codestado_fk"), nullable = false)
 	private Estado estado;
 
 	public Usuario() {
 		super();
-		estado = Estado.ALTA;
+		estado = new Estado(EstadoStr.ALTA);
 	}
 
 	public Usuario(String nombre, String apellido, String dni) {
-		super();
+		this();
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.dni = dni;
@@ -144,7 +146,12 @@ public abstract class Usuario {
 		else if(!dni.equals(other.dni)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(nombre == null){

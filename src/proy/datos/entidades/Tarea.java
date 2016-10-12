@@ -13,8 +13,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -29,7 +27,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import proy.datos.clases.EstadoTarea;
+import proy.datos.clases.EstadoTareaStr;
 
 @NamedQuery(name = "listarTareas", query = "SELECT t FROM Tarea t")
 @Entity
@@ -66,8 +64,8 @@ public class Tarea {
 	@Column(name = "observaciones", length = 500)
 	private String observaciones;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 15, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "tarea_codestado_fk"), nullable = false)
 	private EstadoTarea estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -82,12 +80,13 @@ public class Tarea {
 	private List<Pausa> pausas;
 
 	public Tarea() {
+		super();
 		pausas = new ArrayList<>();
-		estado = EstadoTarea.PLANIFICADA;
+		estado = new EstadoTarea(EstadoTareaStr.PLANIFICADA);
 	}
 
 	public Tarea(Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
-		super();
+		this();
 		this.cantidadSolicitada = cantidadSolicitada;
 		this.cantidadReal = cantidadReal;
 		this.fechaPlanificada = fechaPlanificada;
@@ -232,7 +231,12 @@ public class Tarea {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(fechaHoraFin == null){

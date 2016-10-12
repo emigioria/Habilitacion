@@ -8,20 +8,20 @@ package proy.datos.entidades;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado = :est")
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est")
 @Entity
 @Table(name = "parte")
 public class Parte {
@@ -41,15 +41,16 @@ public class Parte {
 	@Column(name = "cantidad", nullable = false)
 	private Integer cantidad;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "parte_codestado_fk"), nullable = false)
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Maquina maquina;
 
 	public Parte() {
-		estado = Estado.ALTA;
+		super();
+		estado = new Estado(EstadoStr.ALTA);
 	}
 
 	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
@@ -136,7 +137,12 @@ public class Parte {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(nombre == null){

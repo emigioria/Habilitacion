@@ -9,7 +9,7 @@ package proy.logica.gestores.filtros;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 import proy.datos.servicios.Filtro;
 
 public class FiltroAdministrador extends Filtro {
@@ -17,13 +17,13 @@ public class FiltroAdministrador extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private String dni;
-	private Estado estado;
+	private EstadoStr estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private String dni;
-		private Estado estado = Estado.ALTA;
+		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
 			super();
@@ -60,7 +60,7 @@ public class FiltroAdministrador extends Filtro {
 		if(builder.dni != null){
 			return;
 		}
-		if(builder.estado != Estado.ALTA){
+		if(builder.estado != EstadoStr.ALTA){
 			return;
 		}
 		namedQuery = "listarAdministradores";
@@ -79,7 +79,7 @@ public class FiltroAdministrador extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
-						builder.nombreEntidad + ".estado = :est";
+						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

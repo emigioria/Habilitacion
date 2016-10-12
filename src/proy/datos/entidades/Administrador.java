@@ -13,7 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-@NamedQuery(name = "listarAdministradores", query = "SELECT a FROM Administrador a WHERE a.estado = :est")
+@NamedQuery(name = "listarAdministradores", query = "SELECT a FROM Administrador a WHERE a.estado.nombre = :est")
 @Entity
 @PrimaryKeyJoinColumn(name = "codusuario", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "administrador_codusuario_fk"))
 @Table(name = "administrador")

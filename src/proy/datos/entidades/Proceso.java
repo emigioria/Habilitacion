@@ -11,8 +11,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -26,9 +24,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.datos.clases.Estado;
+import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado = :est")
+@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado.nombre = :est")
 @Entity
 @Table(name = "proceso")
 public class Proceso {
@@ -57,8 +55,8 @@ public class Proceso {
 	@Column(name = "tipo", length = 100)
 	private String tipo;
 
-	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "proceso_codestado_fk"), nullable = false)
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -74,9 +72,10 @@ public class Proceso {
 	private Set<Herramienta> herramientas;
 
 	public Proceso() {
+		super();
 		herramientas = new HashSet<>();
 		piezas = new HashSet<>();
-		estado = Estado.ALTA;
+		estado = new Estado(EstadoStr.ALTA);
 	}
 
 	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
@@ -201,7 +200,12 @@ public class Proceso {
 		else if(!descripcion.equals(other.descripcion)){
 			return false;
 		}
-		if(estado != other.estado){
+		if(estado == null){
+			if(other.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(other.estado)){
 			return false;
 		}
 		if(observaciones == null){

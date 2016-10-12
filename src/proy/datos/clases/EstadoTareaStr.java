@@ -6,6 +6,6 @@
  */
 package proy.datos.clases;
 
-public enum EstadoTarea {
+public enum EstadoTareaStr {
 	PLANIFICADA, EJECUTANDO, PAUSADA, FINALIZADA;
 }
