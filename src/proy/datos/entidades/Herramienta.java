@@ -9,6 +9,7 @@ package proy.datos.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class Herramienta {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.REFRESH }, optional = false)
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "herramienta_codestado_fk"), nullable = false)
 	private Estado estado;
 
@@ -70,6 +71,14 @@ public class Herramienta {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
 	}
 
 	public Set<Proceso> getProcesos() {

@@ -22,6 +22,8 @@ import proy.datos.clases.EstadoStr;
 @Table(name = "estado")
 public class Estado {
 
+	public static final String COLUMNA_NOMBRE = "nombre";
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "codigo")
@@ -32,7 +34,7 @@ public class Estado {
 	private Long version;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "estado", length = 10, nullable = false, unique = true)
+	@Column(name = COLUMNA_NOMBRE, length = 10, nullable = false, unique = true)
 	private EstadoStr nombre;
 
 	private Estado() {

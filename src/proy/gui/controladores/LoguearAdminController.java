@@ -7,6 +7,7 @@
 package proy.gui.controladores;
 
 import java.awt.Frame;
+import java.util.Date;
 
 import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
@@ -16,6 +17,7 @@ import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import proy.datos.clases.DatosLogin;
+import proy.datos.entidades.Herramienta;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.VentanaError;
@@ -52,6 +54,16 @@ public class LoguearAdminController extends ControladorRomano {
 		//TODO borrar para activar login
 		ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
 		matarSwing();
+
+		try{
+			Herramienta h = new Herramienta();
+			h.setNombre("Hola" + (new Date()));
+			coordinador.crearHerramienta(h);
+		} catch(PersistenciaException e1){
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
 		if(true){
 			return;
 		}
