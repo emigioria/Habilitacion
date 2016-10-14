@@ -191,6 +191,7 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
 			session.save(herramienta);
 		} catch(Exception e){
 			e.printStackTrace();

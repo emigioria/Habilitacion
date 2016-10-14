@@ -40,7 +40,7 @@ public class AOperariosController extends ControladorRomano {
 	private TableColumn<Operario, String> columnaDNI;
 
 	@FXML
-	private ArrayList<Operario> operariosAGuardar;
+	private ArrayList<Operario> operariosAGuardar = new ArrayList<>();;
 
 	@FXML
 	private void initialize() {
@@ -66,7 +66,7 @@ public class AOperariosController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getDNI());
 				}
 				else{
-					return new SimpleStringProperty("<nSin DNI>");
+					return new SimpleStringProperty("<Sin DNI>");
 				}
 			});
 
@@ -109,7 +109,6 @@ public class AOperariosController extends ControladorRomano {
 		if(!tablaOperarios.isEditable()){
 			tablaOperarios.setEditable(true);
 		}
-
 		Operario nuevoOperario = new Operario();
 		operariosAGuardar.add(nuevoOperario);
 		tablaOperarios.getItems().add(0, nuevoOperario);
