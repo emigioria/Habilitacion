@@ -95,6 +95,7 @@ public class TallerGestor {
 
 	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
 		ResultadoCrearHerramienta resultado = validarCrearHerramienta(herramienta);
+
 		if(!resultado.hayErrores()){
 			persistidorTaller.guardarHerramienta(herramienta);
 		}
@@ -102,7 +103,7 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().build());
+		ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
 		System.out.println(lista);
 		if(lista.size() != 0){
 			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);

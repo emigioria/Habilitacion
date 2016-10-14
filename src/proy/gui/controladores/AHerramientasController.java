@@ -6,17 +6,22 @@
  */
 package proy.gui.controladores;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 import proy.datos.entidades.Herramienta;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
+import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
@@ -36,6 +41,9 @@ public class AHerramientasController extends ControladorRomano {
 	private TableColumn<Herramienta, String> columnaNombre;
 
 	@FXML
+	private ArrayList<Herramienta> herramientasAGuardar = new ArrayList<>();
+
+	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
 
@@ -44,65 +52,52 @@ public class AHerramientasController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getNombre());
 				}
 				else{
-					return new SimpleStringProperty("<Nombre>");
+					return new SimpleStringProperty("<Sin Nombre>");
 				}
 			});
+
+			Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
+				return new TableCellTextViewString<Herramienta>() {
+
+					@Override
+					public void changed(ObservableValue<? extends Herramienta> observable, Herramienta oldValue, Herramienta newValue) {
+						this.setEditable(false);
+						if(this.getTableRow() != null && newValue != null){
+							this.setEditable(herramientasAGuardar.contains(newValue));
+						}
+					}
+				};
+			};
+			tablaHerramientas.setEditable(true);
+
+			columnaNombre.setCellFactory(call);
+			columnaNombre.setOnEditCommit((t) -> {
+				t.getRowValue().setNombre(t.getNewValue());
+			});
+
 			actualizar();
 		});
+
 	}
 
 	@FXML
 	public void nuevaHerramienta() {
-		//hace editable la tabla y crea herramienta vacia
-		//..ver como hacer editable solo una fila
-		tablaHerramientas.setEditable(true);
-		columnaNombre.setCellFactory(TextFieldTableCell.forTableColumn());
+
+		if(!tablaHerramientas.isEditable()){
+			tablaHerramientas.setEditable(true);
+		}
 
 		Herramienta nuevaHerramienta = new Herramienta();
+		herramientasAGuardar.add(nuevaHerramienta);
 		tablaHerramientas.getItems().add(0, nuevaHerramienta);
-		tablaHerramientas.getSelectionModel().select(0);
 
-		//cuando apreta enter guarda
-		columnaNombre.setOnEditCommit(seleccion -> {
-			ResultadoCrearHerramienta resultado = null;
-			Boolean hayErrores;
-			String errores = "";
-
-			nuevaHerramienta.setNombre(seleccion.getNewValue());
-
-			try{
-				resultado = coordinador.crearHerramienta(nuevaHerramienta);
-			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				return;
-			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-				return;
-			}
-
-			hayErrores = resultado.hayErrores();
-			if(hayErrores){
-				for(ErrorCrearHerramienta r: resultado.getErrores()){
-					switch(r) {
-					//TODO hacer validador primero
-					case NombreIncompleto:
-						errores += "El nombre no es válido.\n";
-					case NombreRepetido:
-						errores += "Ya existe una herramienta con ese nombre. \n";
-					}
-				}
-				if(!errores.isEmpty()){
-					new VentanaError("Error al crear herramienta", errores, apilador.getStage());
-				}
-			}
-		});
 	}
 
 	@FXML
 	public void eliminarHerramienta() {
-		int selectedIndex = tablaHerramientas.getSelectionModel().getSelectedIndex();
-		if(selectedIndex >= 0){
-			Herramienta hSelected = tablaHerramientas.getSelectionModel().getSelectedItem();
+		Herramienta hSelected = tablaHerramientas.getSelectionModel().getSelectedItem();
+
+		if(hSelected != null){
 			try{
 				coordinador.eliminarHerramienta(hSelected);
 			} catch(PersistenciaException e){
@@ -112,7 +107,7 @@ public class AHerramientasController extends ControladorRomano {
 				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
-			tablaHerramientas.getItems().remove(selectedIndex);
+			actualizar();
 		}
 		else{
 			return;
@@ -120,18 +115,55 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	public void guardarHerramienta() {
+		ResultadoCrearHerramienta resultado = null;
+		Boolean hayErrores;
+		String errores = "";
+
+		if(herramientasAGuardar.size() == 0){
+			return;
+		}
+
+		try{
+			resultado = coordinador.crearHerramienta(herramientasAGuardar.get(0));
+		} catch(PersistenciaException e){
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		hayErrores = resultado.hayErrores();
+		if(hayErrores){
+			for(ErrorCrearHerramienta r: resultado.getErrores()){
+				switch(r) {
+				case NombreIncompleto:
+					errores += "El nombre no es válido.\n";
+				case NombreRepetido:
+					errores += "Ya existe una herramienta con ese nombre. \n";
+				}
+			}
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+			}
+		}
+		else{
+			tablaHerramientas.setEditable(false);
+		}
 
 	}
 
 	public void buscar() {
-		FiltroHerramienta filtroH = new FiltroHerramienta.Builder().build();
-		System.out.println(filtroH.getNamedQueryName());
+		FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreHerramienta.getText()).build();
+		ArrayList<Herramienta> result = null;
 		try{
-			coordinador.listarHerramientas(filtroH);
+			result = coordinador.listarHerramientas(filtro);
 		} catch(PersistenciaException e){
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		}
+		tablaHerramientas.getItems().clear();
+		tablaHerramientas.getItems().addAll(result);
+
 	}
 
 	@Override

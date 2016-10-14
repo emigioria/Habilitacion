@@ -42,7 +42,7 @@ public class Herramienta {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
-	@ManyToOne(fetch = FetchType.EAGER, optional = false)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false) //, cascade = CascadeType.ALL)
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "herramienta_codestado_fk"), nullable = false)
 	private Estado estado;
 
