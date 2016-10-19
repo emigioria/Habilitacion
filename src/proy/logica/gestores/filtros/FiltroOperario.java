@@ -16,11 +16,13 @@ public class FiltroOperario extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private String DNI;
 	private EstadoStr estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
+		private String DNI;
 		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
@@ -32,6 +34,11 @@ public class FiltroOperario extends Filtro {
 			return this;
 		}
 
+		public Builder DNI(String DNI) {
+			this.DNI = DNI;
+			return this;
+		}
+
 		public FiltroOperario build() {
 			return new FiltroOperario(this);
 		}
@@ -39,6 +46,7 @@ public class FiltroOperario extends Filtro {
 
 	private FiltroOperario(Builder builder) {
 		this.estado = builder.estado;
+		this.DNI = builder.DNI;
 
 		setConsulta(builder);
 		setNamedQuery(builder);

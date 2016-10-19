@@ -72,7 +72,7 @@ public class AHerramientasController extends ControladorRomano {
 
 			columnaNombre.setCellFactory(call);
 			columnaNombre.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue());
+				t.getRowValue().setNombre(t.getNewValue().trim());
 			});
 
 			actualizar();
@@ -123,14 +123,16 @@ public class AHerramientasController extends ControladorRomano {
 			return;
 		}
 
-		try{
-			resultado = coordinador.crearHerramienta(herramientasAGuardar.get(0));
-		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
-			return;
-		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-			return;
+		for(Herramienta herramienta: herramientasAGuardar){
+			try{
+				resultado = coordinador.crearHerramienta(herramienta);
+			} catch(PersistenciaException e){
+				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			} catch(Exception e){
+				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
+			}
 		}
 
 		hayErrores = resultado.hayErrores();
@@ -139,8 +141,10 @@ public class AHerramientasController extends ControladorRomano {
 				switch(r) {
 				case NombreIncompleto:
 					errores += "El nombre no es válido.\n";
+					break;
 				case NombreRepetido:
 					errores += "Ya existe una herramienta con ese nombre. \n";
+					break;
 				}
 			}
 			if(!errores.isEmpty()){
@@ -163,7 +167,6 @@ public class AHerramientasController extends ControladorRomano {
 		}
 		tablaHerramientas.getItems().clear();
 		tablaHerramientas.getItems().addAll(result);
-
 	}
 
 	@Override

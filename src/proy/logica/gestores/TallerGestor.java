@@ -103,9 +103,14 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
-		if(lista.size() != 0){
-			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
+		if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
+			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreIncompleto);
+		}
+		else{
+			ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
+			if(lista.size() != 0){
+				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
+			}
 		}
 		return new ResultadoCrearHerramienta();
 	}

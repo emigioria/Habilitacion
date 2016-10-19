@@ -21,7 +21,10 @@ import proy.datos.entidades.Operario;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroOperario;
+import proy.logica.gestores.resultados.ResultadoCrearOperario;
+import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
 
 public class AOperariosController extends ControladorRomano {
 
@@ -86,17 +89,17 @@ public class AOperariosController extends ControladorRomano {
 
 			columnaNombre.setCellFactory(call);
 			columnaNombre.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue());
+				t.getRowValue().setNombre(t.getNewValue().trim());
 			});
 
 			columnaApellido.setCellFactory(call);
 			columnaApellido.setOnEditCommit((t) -> {
-				t.getRowValue().setApellido(t.getNewValue());
+				t.getRowValue().setApellido(t.getNewValue().trim());
 			});
 
 			columnaDNI.setCellFactory(call);
 			columnaDNI.setOnEditCommit((t) -> {
-				t.getRowValue().setDNI(t.getNewValue());
+				t.getRowValue().setDNI(t.getNewValue().trim());
 			});
 
 			actualizar();
@@ -116,11 +119,72 @@ public class AOperariosController extends ControladorRomano {
 
 	@FXML
 	public void eliminarOperario() {
+		Operario oSelected = tablaOperarios.getSelectionModel().getSelectedItem();
 
+		if(oSelected != null){
+			try{
+				coordinador.eliminarOperario(oSelected);
+			} catch(PersistenciaException e){
+				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			} catch(Exception e){
+				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
+			}
+			actualizar();
+		}
+		else{
+			return;
+		}
 	}
 
 	@FXML
 	public void guardarOperario() {
+		ResultadoCrearOperario resultado = null;
+		Boolean hayErrores;
+		String errores = "";
+
+		if(operariosAGuardar.size() == 0){
+			return;
+		}
+
+		for(Operario operario: operariosAGuardar){
+			try{
+				resultado = coordinador.crearOperario(operario);
+			} catch(PersistenciaException e){
+				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			} catch(Exception e){
+				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
+			}
+		}
+
+		hayErrores = resultado.hayErrores();
+		if(hayErrores){
+			for(ErrorCrearOperario r: resultado.getErrores()){
+				switch(r) {
+				case NombreIncompleto:
+					errores += "El nombre no es válido.\n";
+					break;
+				case ApellidoIncompleto:
+					errores += "El apellido no es válido \n";
+					break;
+				case DNIIncompleto:
+					errores += "El DNI no es válido \n";
+					break;
+				case DNIRepetido:
+					errores += "Ya existe un operario con ese DNI \n";
+					break;
+				}
+			}
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+			}
+		}
+		else{
+			tablaOperarios.setEditable(false);
+		}
 
 	}
 

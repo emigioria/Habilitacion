@@ -27,6 +27,7 @@ import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
+import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 
 @Service
@@ -80,22 +81,39 @@ public class UsuarioGestor {
 	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {
 		ResultadoCrearOperario resultado = validarCrearOperario(operario);
 		if(!resultado.hayErrores()){
-			//hacer las cosas
+			persistidorUsuario.guardarOperario(operario);
 		}
-		throw new NotYetImplementedException();
+		return resultado;
 	}
 
-	private ResultadoCrearOperario validarCrearOperario(Operario operario) {
-		// TODO Auto-generated method stub
-		return new ResultadoCrearOperario();
+	private ResultadoCrearOperario validarCrearOperario(Operario operario) throws PersistenciaException {
+		ArrayList<ErrorCrearOperario> errores = new ArrayList<ErrorCrearOperario>();
+
+		if(operario.getDNI() == null || operario.getDNI().isEmpty()){
+			errores.add(ErrorCrearOperario.DNIIncompleto);
+		}
+		else{
+			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().DNI(operario.getDNI()).build());
+			if(operarioMismoDNI.size() != 0){
+				errores.add(ErrorCrearOperario.DNIRepetido);
+			}
+		}
+
+		if(operario.getNombre() == null || operario.getNombre().isEmpty()){
+			errores.add(ErrorCrearOperario.NombreIncompleto);
+		}
+		if(operario.getApellido() == null || operario.getApellido().isEmpty()){
+			errores.add(ErrorCrearOperario.ApellidoIncompleto);
+		}
+		return new ResultadoCrearOperario(errores.toArray(new ErrorCrearOperario[errores.size()]));
 	}
 
 	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
 		ResultadoEliminarOperario resultado = validarEliminarOperario(operario);
 		if(!resultado.hayErrores()){
-			//hacer las cosas
+			persistidorUsuario.bajaOperario(operario);
 		}
-		throw new NotYetImplementedException();
+		return resultado;
 	}
 
 	private ResultadoEliminarOperario validarEliminarOperario(Operario operario) {
