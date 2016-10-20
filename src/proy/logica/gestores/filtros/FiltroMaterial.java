@@ -37,7 +37,9 @@ public class FiltroMaterial extends Filtro {
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
+			if(nombres != null && !nombres.isEmpty()){
+				this.nombres = nombres;
+			}
 			return this;
 		}
 
@@ -59,6 +61,12 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.nombres != null){
+			return;
+		}
+		if(builder.estado != EstadoStr.ALTA){
+			return;
+		}
 		namedQuery = "listarMateriales";
 	}
 
@@ -75,7 +83,7 @@ public class FiltroMaterial extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:noms) AND ") : (""));
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -102,7 +110,7 @@ public class FiltroMaterial extends Filtro {
 	@Override
 	public Query setParametros(Query query) {
 		if(nombres != null){
-			query.setParameterList("noms", nombres);
+			query.setParameterList("nms", nombres);
 		}
 		if(estado != null){
 			query.setParameter("est", estado);

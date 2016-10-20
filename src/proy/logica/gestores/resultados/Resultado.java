@@ -19,16 +19,12 @@ public abstract class Resultado<T> {
 		this.errores = Arrays.asList(errores);
 	}
 
-	public void add(T error) {
-		this.errores.add(error);
-	}
-
 	public Boolean hayErrores() {
 		return !errores.isEmpty();
 	}
 
 	public List<T> getErrores() {
-		return new ArrayList<T>(errores);
+		return new ArrayList<>(errores);
 	}
 
 }

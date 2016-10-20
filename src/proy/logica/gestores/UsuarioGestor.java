@@ -24,7 +24,7 @@ import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
-import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
+import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
@@ -37,12 +37,12 @@ public class UsuarioGestor {
 	private UsuarioService persistidorUsuario;
 
 	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
-		ArrayList<ErrorResultadoAutenticacion> errores = new ArrayList<>();
+		ArrayList<ErrorAutenticacion> errores = new ArrayList<>();
 		//Obtengo los administradores
 		ArrayList<Administrador> administradores = persistidorUsuario.obtenerAdministradores(new FiltroAdministrador.Builder().dni(login.getDNI()).build());
 		if(administradores.size() != 1){
 			//Si no lo encuentra falla
-			errores.add(ErrorResultadoAutenticacion.DatosInvalidos);
+			errores.add(ErrorAutenticacion.DatosInvalidos);
 		}
 		else{
 			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
@@ -51,10 +51,10 @@ public class UsuarioGestor {
 			String contraIngresada = Contra.encriptarMD5(login.getContrasenia(), sal);
 			if(!contraIngresada.equals(admin.getContrasenia())){
 				//Si no coincide falla
-				errores.add(ErrorResultadoAutenticacion.DatosInvalidos);
+				errores.add(ErrorAutenticacion.DatosInvalidos);
 			}
 		}
-		return new ResultadoAutenticacion(errores.toArray(new ErrorResultadoAutenticacion[0]));
+		return new ResultadoAutenticacion(errores.toArray(new ErrorAutenticacion[0]));
 	}
 
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {

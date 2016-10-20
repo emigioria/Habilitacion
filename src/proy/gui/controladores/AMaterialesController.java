@@ -23,6 +23,8 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
+import proy.gui.componentes.VentanaInformacion;
+import proy.logica.gestores.filtros.FiltroMaterial;
 import proy.logica.gestores.resultados.ResultadoCrearMaterial;
 import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
 
@@ -139,12 +141,12 @@ public class AMaterialesController extends ControladorRomano {
 					switch(e) {
 					case NombreIncompleto:
 						nombreIncompletoEncontrado = true;
-					case MedidasIncompletas:
-						medidasIncompletasEncontradas = true;
+						break;
 					case NombreRepetido:
 						erroresBfr.append("Ya existe un material con el nombre \"");
 						erroresBfr.append(materialesAGuardar.get(i).getNombre());
 						erroresBfr.append("\".\n");
+						break;
 					}
 
 				}
@@ -161,10 +163,21 @@ public class AMaterialesController extends ControladorRomano {
 		if(!errores.isEmpty()){
 			new VentanaError("Error al crear herramienta", errores, apilador.getStage());
 		}
+		else{
+			materialesAGuardar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han guardado correctamente los materiales");
+		}
 	}
 
 	@Override
 	public void actualizar() {
-
+		Platform.runLater(() -> {
+			try{
+				tablaMateriales.getItems().clear();
+				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
+			} catch(PersistenciaException e){
+				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			}
+		});
 	}
 }

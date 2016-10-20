@@ -137,42 +137,46 @@ public class TallerGestor {
 
 	private ArrayList<ResultadoCrearMaterial> validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 
-		//Creo e inicializo la lista de resultados para cada material
-		ArrayList<ResultadoCrearMaterial> resultados = new ArrayList<>(materiales.size());
+		//Creo e inicializo la lista de errores para cada material
+		ArrayList<ArrayList<ErrorCrearMaterial>> erroresMateriales = new ArrayList<>(materiales.size());
 		for(int i = 0; i < materiales.size(); i++){
-			resultados.add(new ResultadoCrearMaterial());
+			erroresMateriales.add(new ArrayList<ErrorCrearMaterial>());
 		}
 
 		//Creo una lista de los nombres de materiales voy a buscar en la BD
 		ArrayList<String> materiales_a_buscar_en_la_BD = new ArrayList<>();
 
-		//reviso que el nombre y las medidas estén completos
+		//Reviso que el nombre esté completo
 		for(int i = 0; i < materiales.size(); i++){
 			if(materiales.get(i).getNombre() == null || materiales.get(i).getNombre().isEmpty()){
-				//ACA SE ROMPE
-				resultados.get(i).add(ErrorCrearMaterial.NombreIncompleto);
+				//Si el nombre está incompleto agrego el error
+				erroresMateriales.get(i).add(ErrorCrearMaterial.NombreIncompleto);
 			}
 			else{
-				//si el nombre está completo lo busco en la BD
+				//Si el nombre está completo lo busco en la BD
 				materiales_a_buscar_en_la_BD.add(materiales.get(i).getNombre());
-			}
-
-			if(materiales.get(i).getMedidas() == null || materiales.get(i).getMedidas().isEmpty()){
-				resultados.get(i).add(ErrorCrearMaterial.MedidasIncompletas);
 			}
 		}
 
-		//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-		List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(
-				new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
+		if(!materiales_a_buscar_en_la_BD.isEmpty()){
+			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
+			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(
+					new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
 
-		//veo qué materiales están repetidos
-		for(int i = 0; i < materiales.size(); i++){
-			for(Material c: materiales_coincidentes){
-				if(materiales.get(i).getNombre().equals(c.getNombre())){
-					resultados.get(i).add(ErrorCrearMaterial.NombreRepetido);
+			//veo qué materiales están repetidos
+			for(int i = 0; i < materiales.size(); i++){
+				for(Material c: materiales_coincidentes){
+					if(materiales.get(i).getNombre().equals(c.getNombre())){
+						erroresMateriales.get(i).add(ErrorCrearMaterial.NombreRepetido);
+					}
 				}
 			}
+		}
+
+		//Creo e inicializo la lista de resultados para cada material
+		ArrayList<ResultadoCrearMaterial> resultados = new ArrayList<>(materiales.size());
+		for(ArrayList<ErrorCrearMaterial> errores: erroresMateriales){
+			resultados.add(new ResultadoCrearMaterial(errores.toArray(new ErrorCrearMaterial[0])));
 		}
 
 		return resultados;

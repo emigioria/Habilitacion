@@ -12,7 +12,6 @@ import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -226,9 +225,10 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(rollbackFor = PersistenciaException.class)
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		try{
-			StatelessSession session = getSessionFactory().openStatelessSession();
+			Session session = getSessionFactory().getCurrentSession();
 			for(Material material: materiales){
-				session.insert(material);
+				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+				session.save(material);
 			}
 		} catch(Exception e){
 			e.printStackTrace();

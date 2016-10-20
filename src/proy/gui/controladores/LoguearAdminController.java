@@ -20,7 +20,7 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
-import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
+import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 
 public class LoguearAdminController extends ControladorRomano {
 
@@ -86,7 +86,7 @@ public class LoguearAdminController extends ControladorRomano {
 		//Tratamiento de errores
 		hayErrores = resultado.hayErrores();
 		if(hayErrores){
-			for(ErrorResultadoAutenticacion r: resultado.getErrores()){
+			for(ErrorAutenticacion r: resultado.getErrores()){
 				switch(r) {
 				case DatosInvalidos:
 					errores += "Datos inválidos al iniciar sesión.\n";

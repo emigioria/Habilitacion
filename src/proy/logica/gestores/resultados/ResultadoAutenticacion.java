@@ -7,21 +7,21 @@
 package proy.logica.gestores.resultados;
 
 import proy.datos.entidades.Administrador;
-import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorResultadoAutenticacion;
+import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 
-public class ResultadoAutenticacion extends Resultado<ErrorResultadoAutenticacion> {
+public class ResultadoAutenticacion extends Resultado<ErrorAutenticacion> {
 
-	public enum ErrorResultadoAutenticacion {
+	public enum ErrorAutenticacion {
 		DatosInvalidos;
 	}
 
 	private Administrador administrador;
 
-	public ResultadoAutenticacion(ErrorResultadoAutenticacion... errores) {
+	public ResultadoAutenticacion(ErrorAutenticacion... errores) {
 		super(errores);
 	}
 
-	public ResultadoAutenticacion(Administrador administrador, ErrorResultadoAutenticacion... errores) {
+	public ResultadoAutenticacion(Administrador administrador, ErrorAutenticacion... errores) {
 		super(errores);
 		this.administrador = administrador;
 	}
