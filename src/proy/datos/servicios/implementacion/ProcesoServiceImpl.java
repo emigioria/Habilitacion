@@ -52,6 +52,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void guardarProceso(Proceso proceso) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
 			session.save(proceso);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -64,6 +65,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void actualizarProceso(Proceso proceso) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
+			proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
 			session.update(proceso);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -102,6 +104,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void guardarTarea(Tarea tarea) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			tarea.setEstado(AttachEstado.attachEstadoTarea(session, tarea.getEstado()));
 			session.save(tarea);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -114,6 +117,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void actualizarTarea(Tarea tarea) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
+			tarea.setEstado(AttachEstado.attachEstadoTarea(session, tarea.getEstado()));
 			session.update(tarea);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

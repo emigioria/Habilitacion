@@ -81,6 +81,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void guardarOperario(Operario operario) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
 			session.save(operario);
 		} catch(Exception e){
 			e.printStackTrace();

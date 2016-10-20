@@ -103,8 +103,9 @@ public class TallerServiceImpl implements TallerService {
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
 	public void guardarParte(Parte parte) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
 		try{
-			Session session = getSessionFactory().getCurrentSession();
+			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
 			session.save(parte);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -117,6 +118,7 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarParte(Parte parte) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
+			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
 			session.update(parte);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -155,6 +157,7 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarPieza(Pieza pieza) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
 			session.save(pieza);
 		} catch(Exception e){
 			e.printStackTrace();
