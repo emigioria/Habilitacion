@@ -7,6 +7,7 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -22,7 +23,8 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
-import proy.logica.gestores.resultados.ResultadoCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -108,9 +110,8 @@ public class AMaterialesController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
-		ResultadoCrearMateriales resultado = null;
-		Boolean hayErrores;
-		String errores = "";
+		List<ResultadoCrearMaterial> resultados;
+		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
 		if(materialesAGuardar.size() == 0){
@@ -119,7 +120,7 @@ public class AMaterialesController extends ControladorRomano {
 
 		//Inicio transacción al gestor
 		try{
-			resultado = coordinador.crearMateriales(materialesAGuardar);
+			resultados = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
 			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
@@ -129,22 +130,36 @@ public class AMaterialesController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
-			/*
-			 * for(ErrorCrearHerramienta r: resultado.getErrores()){
-			 * switch(r) {
-			 * //TODO hacer validador primero
-			 * case NombreIncompleto:
-			 * errores += "El nombre no es válido.\n";
-			 * case NombreRepetido:
-			 * errores += "Ya existe una herramienta con ese nombre. \n";
-			 * }
-			 * }
-			 */
-			if(!errores.isEmpty()){
-				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+		boolean nombreIncompletoEncontrado = false;
+		boolean medidasIncompletasEncontradas = false;
+
+		for(int i = 0; i < resultados.size(); i++){
+			if(resultados.get(i).hayErrores()){
+				for(ErrorCrearMaterial e: resultados.get(i).getErrores()){
+					switch(e) {
+					case NombreIncompleto:
+						nombreIncompletoEncontrado = true;
+					case MedidasIncompletas:
+						medidasIncompletasEncontradas = true;
+					case NombreRepetido:
+						erroresBfr.append("Ya existe un material con el nombre \"");
+						erroresBfr.append(materialesAGuardar.get(i).getNombre());
+						erroresBfr.append("\".\n");
+					}
+
+				}
 			}
+		}
+		if(nombreIncompletoEncontrado){
+			erroresBfr.append("Hay nombres vacíos.\n");
+		}
+		if(medidasIncompletasEncontradas){
+			erroresBfr.append("Hay medidas vacías.\n");
+		}
+
+		String errores = erroresBfr.toString();
+		if(!errores.isEmpty()){
+			new VentanaError("Error al crear herramienta", errores, apilador.getStage());
 		}
 	}
 

@@ -6,6 +6,8 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -16,11 +18,13 @@ public class FiltroMaterial extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private ArrayList<String> nombres;
 	private EstadoStr estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
+		private ArrayList<String> nombres;
 		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
@@ -32,12 +36,18 @@ public class FiltroMaterial extends Filtro {
 			return this;
 		}
 
+		public Builder nombres(ArrayList<String> nombres) {
+			this.nombres = nombres;
+			return this;
+		}
+
 		public FiltroMaterial build() {
 			return new FiltroMaterial(this);
 		}
 	}
 
 	private FiltroMaterial(Builder builder) {
+		this.nombres = builder.nombres;
 		this.estado = builder.estado;
 
 		setConsulta(builder);
@@ -64,7 +74,8 @@ public class FiltroMaterial extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:noms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -90,6 +101,9 @@ public class FiltroMaterial extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
+		if(nombres != null){
+			query.setParameterList("noms", nombres);
+		}
 		if(estado != null){
 			query.setParameter("est", estado);
 		}

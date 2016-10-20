@@ -6,15 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
-import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
 
-public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
+public class ResultadoCrearMaterial extends Resultado<ErrorCrearMaterial> {
 
-	public enum ErrorCrearMateriales {
+	public enum ErrorCrearMaterial {
 		NombreIncompleto, MedidasIncompletas, NombreRepetido;
 	}
 
-	public ResultadoCrearMateriales(ErrorCrearMateriales... errores) {
+	public ResultadoCrearMaterial(ErrorCrearMaterial... errores) {
 		super(errores);
 	}
 }
