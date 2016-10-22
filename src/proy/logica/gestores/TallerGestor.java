@@ -164,11 +164,23 @@ public class TallerGestor {
 					new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
 
 			//veo qué materiales están repetidos
+			loopexterno: //
 			for(int i = 0; i < materiales.size(); i++){
 				for(Material c: materiales_coincidentes){
 					if(materiales.get(i).getNombre().equals(c.getNombre())){
-						erroresMateriales.get(i).add(ErrorCrearMaterial.NombreRepetido);
+						erroresMateriales.get(i).add(ErrorCrearMaterial.NombreRepetidoEnBD);
 					}
+					break loopexterno;
+				}
+			}
+		}
+
+		//veo si hay nombres que se repiten entre los nuevos materiales
+		for(int i = 0; i < materiales.size(); i++){
+			for(int j = i + 1; j < materiales.size(); j++){
+				if(materiales.get(i).equals(materiales.get(j))){
+					erroresMateriales.get(i).add(ErrorCrearMaterial.NombreRepetidoEnVista);
+					break;
 				}
 			}
 		}

@@ -83,10 +83,16 @@ public class AMaterialesController extends ControladorRomano {
 			columnaMedidas.setCellFactory(call);
 
 			columnaMaterial.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue());
+				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
 			});
 			columnaMedidas.setOnEditCommit((t) -> {
-				t.getRowValue().setMedidas(t.getNewValue());
+				t.getRowValue().setMedidas(t.getNewValue().toLowerCase().trim());
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
 			});
 
 			actualizar();
@@ -142,11 +148,13 @@ public class AMaterialesController extends ControladorRomano {
 					case NombreIncompleto:
 						nombreIncompletoEncontrado = true;
 						break;
-					case NombreRepetido:
+					case NombreRepetidoEnBD:
 						erroresBfr.append("Ya existe un material con el nombre \"");
 						erroresBfr.append(materialesAGuardar.get(i).getNombre());
 						erroresBfr.append("\".\n");
 						break;
+					case NombreRepetidoEnVista:
+						erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
 					}
 
 				}

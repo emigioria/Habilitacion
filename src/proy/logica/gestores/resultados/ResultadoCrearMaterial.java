@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial
 public class ResultadoCrearMaterial extends Resultado<ErrorCrearMaterial> {
 
 	public enum ErrorCrearMaterial {
-		NombreIncompleto, NombreRepetido;
+		NombreIncompleto, NombreRepetidoEnBD, NombreRepetidoEnVista;
 	}
 
 	public ResultadoCrearMaterial(ErrorCrearMaterial... errores) {
