@@ -80,31 +80,12 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 
 	@SuppressWarnings("unchecked")
 	private String getString() {
-		String resultado;
-
 		if(getTableColumn().getCellValueFactory() != null){
 			T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), (O) getTableRow().getItem())).getValue();
 			if(valor != null){
-				resultado = valor.toString();
+				return valor.toString();
 			}
 		}
-		resultado = getItem() == null ? "" : getItem().toString();
-
-		switch(resultado.length()) {
-		// Los strings vacíos se retornan como están.
-		case 0:
-			resultado = "";
-			break;
-		// Los strings de un solo caracter se devuelven en mayúscula.
-		case 1:
-			resultado = resultado.toUpperCase();
-			break;
-		// Sino, mayúscula la primera letra, minúscula el resto.
-		default:
-			resultado = resultado.substring(0, 1).toUpperCase()
-					+ resultado.substring(1).toLowerCase();
-		}
-
-		return resultado.trim();
+		return getItem() == null ? "" : getItem().toString();
 	}
 }

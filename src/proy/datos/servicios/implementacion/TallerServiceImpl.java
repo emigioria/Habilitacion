@@ -231,7 +231,6 @@ public class TallerServiceImpl implements TallerService {
 			Session session = getSessionFactory().getCurrentSession();
 			for(Material material: materiales){
 				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
-				System.err.println(material.getEstado().getNombre());
 				session.save(material);
 			}
 		} catch(Exception e){

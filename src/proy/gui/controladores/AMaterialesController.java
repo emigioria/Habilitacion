@@ -144,7 +144,7 @@ public class AMaterialesController extends ControladorRomano {
 		for(int i = 0; i < resultados.size(); i++){
 			if(resultados.get(i).hayErrores()){
 				for(ErrorCrearMaterial e: resultados.get(i).getErrores()){
-					switch(e) {
+					switch(e) { //TODO cambiar, queda muy feo
 					case NombreIncompleto:
 						nombreIncompletoEncontrado = true;
 						break;
@@ -155,6 +155,7 @@ public class AMaterialesController extends ControladorRomano {
 						break;
 					case NombreRepetidoEnVista:
 						erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
+						break;
 					}
 
 				}
