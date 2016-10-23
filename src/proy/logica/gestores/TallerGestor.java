@@ -203,7 +203,7 @@ public class TallerGestor {
 		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
 
 		if(resultado.hayErrores() == false){
-			//TODO persistidorTaller.bajaMateriales(materiales);
+			persistidorTaller.bajaMateriales(materiales);
 		}
 
 		return resultado;

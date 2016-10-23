@@ -241,10 +241,12 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaMaterial(Material material) throws PersistenciaException {
+	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			session.delete(material);
+			for(Material material: materiales){
+				session.delete(material);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

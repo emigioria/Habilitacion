@@ -49,6 +49,6 @@ public interface TallerService {
 
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
-	public void bajaMaterial(Material material) throws PersistenciaException;
+	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
 }
