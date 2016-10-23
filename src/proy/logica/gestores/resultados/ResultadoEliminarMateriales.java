@@ -6,25 +6,27 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import proy.datos.entidades.Pieza;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMaterial;
 
 public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMaterial> {
 
-	ArrayList<ArrayList<Pieza>> piezasAsociadas;
+	Set<Pieza> piezasAsociadas;
 
 	public enum ErrorEliminarMaterial {
 		PiezasActivasAsociadas;
 	}
 
-	public ResultadoEliminarMateriales(ArrayList<ArrayList<Pieza>> piezasAsociadas, ErrorEliminarMaterial... errores) {
+	public ResultadoEliminarMateriales(Collection<Pieza> piezasAsociadas, ErrorEliminarMaterial... errores) {
 		super(errores);
-		this.piezasAsociadas = piezasAsociadas;
+		this.piezasAsociadas = new HashSet<>(piezasAsociadas);
 	}
 
-	public ArrayList<ArrayList<Pieza>> getPiezasAsociadas() {
+	public Set<Pieza> getPiezasAsociadas() {
 		return piezasAsociadas;
 	}
 }

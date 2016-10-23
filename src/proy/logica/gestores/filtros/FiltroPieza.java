@@ -21,18 +21,12 @@ public class FiltroPieza extends Filtro {
 	private String namedQuery = "";
 	private EstadoStr estado;
 	private ArrayList<Material> materiales;
-	private Orden orden;
-
-	public enum Orden {
-		PorIdMaterial
-	}
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
 		private ArrayList<Material> materiales = null;
-		private Orden orden = null;
 
 		public Builder() {
 			super();
@@ -48,11 +42,6 @@ public class FiltroPieza extends Filtro {
 			return this;
 		}
 
-		public Builder order(Orden orden) {
-			this.orden = orden;
-			return this;
-		}
-
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
 		}
@@ -61,7 +50,6 @@ public class FiltroPieza extends Filtro {
 	private FiltroPieza(Builder builder) {
 		this.estado = builder.estado;
 		this.materiales = builder.materiales;
-		this.orden = builder.orden;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -72,6 +60,12 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.materiales != null){
+			return;
+		}
+		if(builder.estado != EstadoStr.ALTA){
+			return;
+		}
 		namedQuery = "listarPiezas";
 	}
 
@@ -88,7 +82,7 @@ public class FiltroPieza extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material.codigo in :mat AND ") : (""));
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in :mts AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -108,13 +102,7 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
-		if(orden != null){
-			switch(builder.orden) {
-			case PorIdMaterial:
-				orderBy = " ORDER BY " + builder.nombreEntidad + ".matrial.codigo ";
-			}
-		}
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 
@@ -124,9 +112,7 @@ public class FiltroPieza extends Filtro {
 			query.setParameter("est", estado);
 		}
 		if(materiales != null){
-			ArrayList<Long> idMateriales = new ArrayList<>();
-			materiales.forEach(m -> idMateriales.add(m.getId()));
-			query.setParameterList("mat", idMateriales);
+			query.setParameterList("mts", materiales);
 		}
 		return query;
 	}

@@ -107,6 +107,12 @@ public class AMaterialesController extends ControladorRomano {
 	}
 
 	@FXML
+	public void guardar() {
+		eliminarMateriales();
+		crearMateriales();
+	}
+
+	@FXML
 	public void nuevoMaterial() {
 		if(!tablaMateriales.isEditable()){
 			tablaMateriales.setEditable(true);
@@ -117,70 +123,16 @@ public class AMaterialesController extends ControladorRomano {
 		tablaMateriales.getItems().add(0, nuevoMaterial);
 	}
 
-	@FXML
-	public void eliminarMateriales() {
-		ResultadoEliminarMateriales resultado;
-		StringBuffer erroresBfr = new StringBuffer();
-
-		Material materialAEliminar = tablaMateriales.getSelectionModel().getSelectedItem();
-		if(materialesAGuardar.contains(materialAEliminar)){
-			materialesAGuardar.remove(materialAEliminar);
-		}
-		else{
-			materialesAEliminar.add(materialAEliminar);
-
-			//Inicio transacción al gestor
-			try{
-				resultado = coordinador.eliminarMateriales(materialAEliminar);
-			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				return;
-			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-				return;
-			}
-
-			if(resultado.hayErrores()){
-				for(ErrorEliminarMaterial e: resultado.getErrores()){
-					switch(e) {
-					case PiezasActivasAsociadas:
-						erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");
-						erroresBfr.append("Piezas asociadas:\n");
-						for(Pieza pieza: resultado.getPiezasAsociadas()){
-							erroresBfr.append("\t<");
-							erroresBfr.append(pieza.getNombre());
-							erroresBfr.append(">\n");
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	@FXML
-	public void guardar() {
+	private void crearMateriales() {
 		ResultadoCrearMateriales resultadoCrearMateriales;
-		ResultadoEliminarMateriales resultadoEliminarMateriales;
 		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
-		if(materialesAGuardar.isEmpty() && materialesAEliminar.isEmpty()){
+		if(materialesAGuardar.isEmpty()){
 			return;
 		}
 
 		//Inicio transacciones al gestor
-
-		try{
-			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
-		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
-			return;
-		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-			return;
-		}
-
 		try{
 			resultadoCrearMateriales = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
@@ -192,23 +144,6 @@ public class AMaterialesController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-
-		if(resultadoEliminarMateriales.hayErrores()){
-			for(ErrorEliminarMaterial e: resultadoEliminarMateriales.getErrores()){
-				switch(e) {
-				case PiezasActivasAsociadas:
-					erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");
-					erroresBfr.append("Piezas asociadas:\n");
-					for(Pieza pieza: resultadoEliminarMateriales.getPiezasAsociadas()){
-						erroresBfr.append("\t<");
-						erroresBfr.append(pieza.getNombre());
-						erroresBfr.append(">\n");
-					}
-					break;
-				}
-			}
-		}
-
 		if(resultadoCrearMateriales.hayErrores()){
 			for(ErrorCrearMateriales e: resultadoCrearMateriales.getErrores()){
 				switch(e) {
@@ -237,6 +172,67 @@ public class AMaterialesController extends ControladorRomano {
 		else{
 			materialesAGuardar.clear();
 			new VentanaInformacion("Operación exitosa", "Se han guardado correctamente los materiales");
+		}
+	}
+
+	@FXML
+	public void eliminarMaterial() {
+		Material materialAEliminar = tablaMateriales.getSelectionModel().getSelectedItem();
+		if(materialAEliminar != null){
+			if(materialesAGuardar.contains(materialAEliminar)){
+				materialesAGuardar.remove(materialAEliminar);
+			}
+			else{
+				materialesAEliminar.add(materialAEliminar);
+			}
+			tablaMateriales.getItems().remove(materialAEliminar);
+		}
+	}
+
+	private void eliminarMateriales() {
+		ResultadoEliminarMateriales resultadoEliminarMateriales;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		if(materialesAEliminar.isEmpty()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
+		} catch(PersistenciaException e){
+			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarMateriales.hayErrores()){
+			for(ErrorEliminarMaterial e: resultadoEliminarMateriales.getErrores()){
+				switch(e) {
+				case PiezasActivasAsociadas:
+					erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");
+					erroresBfr.append("Piezas asociadas:\n");
+					for(Pieza pieza: resultadoEliminarMateriales.getPiezasAsociadas()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(pieza.getNombre());
+						erroresBfr.append(">\n");
+					}
+					break;
+				}
+			}
+		}
+
+		String errores = erroresBfr.toString();
+		if(!errores.isEmpty()){
+			new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+		}
+		else{
+			materialesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente los materiales");
 		}
 	}
 

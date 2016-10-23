@@ -169,33 +169,6 @@ public class TallerGestor {
 
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
 			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
-			/*
-			 * //veo qué materiales están repetidos comparando ambas listas
-			 * boolean nombreGuardadoRepetidoEncontrado;
-			 * itMaterialesAGuardar = materiales.listIterator();
-			 *
-			 * while(itMaterialesAGuardar.hasNext()){
-			 * nombreGuardadoRepetidoEncontrado = false;
-			 * materialAGuardar = itMaterialesAGuardar.next();
-			 * itMaterialesGuardados = materiales_coincidentes.listIterator();
-			 *
-			 * while(itMaterialesGuardados.hasNext() && !nombreGuardadoRepetidoEncontrado){
-			 * materialGuardado = itMaterialesGuardados.next();
-			 * if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
-			 * materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
-			 *
-			 * //agrego el material repetido a la lista de repetidos y levanto la bandera de encontrado
-			 * nombresMaterialesRepetidos.add(materialAGuardar.getNombre());
-			 * nombreGuardadoRepetidoEncontrado = true;
-			 * }
-			 * }
-			 *
-			 * }
-			 *
-			 * if(!nombresMaterialesRepetidos.isEmpty()){
-			 * erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
-			 * }
-			 */
 			if(!materiales_coincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
 				for(Material material: materiales_coincidentes){
@@ -225,36 +198,26 @@ public class TallerGestor {
 	}
 
 	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ResultadoEliminarMateriales resultado;
-
-		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
-		ArrayList<ArrayList<Pieza>> piezasAsociadasPorMaterial = new ArrayList<>();
-
-		if(!piezasAsociadas.isEmpty()){
-			Pieza anterior = piezasAsociadas.get(0);
-			piezasAsociadasPorMaterial.add(new ArrayList<Pieza>());
-			int ultimaLista = 0;
-			for(Pieza pieza: piezasAsociadas){
-				if(pieza.getMaterial().equals(anterior.getMaterial())){
-					piezasAsociadasPorMaterial.get(ultimaLista).add(pieza);
-				}
-				else{
-					piezasAsociadasPorMaterial.add(new ArrayList<Pieza>());
-					ultimaLista++;
-					piezasAsociadasPorMaterial.get(ultimaLista).add(pieza);
-				}
-			}
-
-			resultado = new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, ErrorEliminarMaterial.PiezasActivasAsociadas);
-		}
-		else{
-			resultado = new ResultadoEliminarMateriales(null);
-		}
+		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
 
 		if(resultado.hayErrores() == false){
 			//TODO persistidorTaller.bajaMateriales(materiales);
 		}
 
+		return resultado;
+	}
+
+	private ResultadoEliminarMateriales validarEliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		ResultadoEliminarMateriales resultado;
+
+		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
+
+		if(!piezasAsociadas.isEmpty()){
+			resultado = new ResultadoEliminarMateriales(piezasAsociadas, ErrorEliminarMaterial.PiezasActivasAsociadas);
+		}
+		else{
+			resultado = new ResultadoEliminarMateriales(null);
+		}
 		return resultado;
 	}
 }

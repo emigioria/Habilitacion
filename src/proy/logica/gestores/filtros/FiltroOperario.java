@@ -16,13 +16,13 @@ public class FiltroOperario extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
-	private String DNI;
+	private String dni;
 	private EstadoStr estado;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
-		private String DNI;
+		private String dni;
 		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
@@ -34,8 +34,8 @@ public class FiltroOperario extends Filtro {
 			return this;
 		}
 
-		public Builder DNI(String DNI) {
-			this.DNI = DNI;
+		public Builder dni(String dni) {
+			this.dni = dni;
 			return this;
 		}
 
@@ -45,8 +45,8 @@ public class FiltroOperario extends Filtro {
 	}
 
 	private FiltroOperario(Builder builder) {
+		this.dni = builder.dni;
 		this.estado = builder.estado;
-		this.DNI = builder.DNI;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -57,6 +57,12 @@ public class FiltroOperario extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.dni != null){
+			return;
+		}
+		if(builder.estado != EstadoStr.ALTA){
+			return;
+		}
 		namedQuery = "listarOperarios";
 	}
 
@@ -72,7 +78,8 @@ public class FiltroOperario extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
+						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -92,12 +99,15 @@ public class FiltroOperario extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".dni ASC";
 		return orderBy;
 	}
 
 	@Override
 	public Query setParametros(Query query) {
+		if(dni != null){
+			query.setParameter("dni", dni);
+		}
 		if(estado != null){
 			query.setParameter("est", estado);
 		}

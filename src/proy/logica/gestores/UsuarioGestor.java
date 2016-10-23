@@ -93,7 +93,7 @@ public class UsuarioGestor {
 			errores.add(ErrorCrearOperario.DNIIncompleto);
 		}
 		else{
-			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().DNI(operario.getDNI()).build());
+			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().dni(operario.getDNI()).build());
 			if(operarioMismoDNI.size() != 0){
 				errores.add(ErrorCrearOperario.DNIRepetido);
 			}
