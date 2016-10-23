@@ -213,7 +213,11 @@ public class TallerGestor {
 		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
 
 		if(!piezasAsociadas.isEmpty()){
-			resultado = new ResultadoEliminarMateriales(piezasAsociadas, ErrorEliminarMateriales.PiezasActivasAsociadas);
+			ArrayList<String> piezasAsociadasStr = new ArrayList<>();
+			for(Pieza pieza: piezasAsociadas){
+				piezasAsociadasStr.add(pieza.toString());
+			}
+			resultado = new ResultadoEliminarMateriales(piezasAsociadasStr, ErrorEliminarMateriales.PiezasActivasAsociadas);
 		}
 		else{
 			resultado = new ResultadoEliminarMateriales(null);

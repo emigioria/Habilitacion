@@ -10,23 +10,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import proy.datos.entidades.Pieza;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 
 public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMateriales> {
 
-	Set<Pieza> piezasAsociadas;
+	Set<String> piezasAsociadas;
 
 	public enum ErrorEliminarMateriales {
 		PiezasActivasAsociadas;
 	}
 
-	public ResultadoEliminarMateriales(Collection<Pieza> piezasAsociadas, ErrorEliminarMateriales... errores) {
+	public ResultadoEliminarMateriales(Collection<String> piezasAsociadas, ErrorEliminarMateriales... errores) {
 		super(errores);
 		this.piezasAsociadas = new HashSet<>(piezasAsociadas);
 	}
 
-	public Set<Pieza> getPiezasAsociadas() {
+	public Set<String> getPiezasAsociadas() {
 		return piezasAsociadas;
 	}
 }

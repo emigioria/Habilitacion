@@ -18,7 +18,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import proy.datos.entidades.Material;
-import proy.datos.entidades.Pieza;
 import proy.excepciones.PersistenciaException;
 import proy.gui.FormateadorString;
 import proy.gui.ManejadorExcepciones;
@@ -216,9 +215,9 @@ public class AMaterialesController extends ControladorRomano {
 				case PiezasActivasAsociadas:
 					erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");
 					erroresBfr.append("Piezas asociadas:\n");
-					for(Pieza pieza: resultadoEliminarMateriales.getPiezasAsociadas()){
+					for(String pieza: resultadoEliminarMateriales.getPiezasAsociadas()){
 						erroresBfr.append("\t<");
-						erroresBfr.append(pieza.getNombre());
+						erroresBfr.append(pieza);
 						erroresBfr.append(">\n");
 					}
 					break;
