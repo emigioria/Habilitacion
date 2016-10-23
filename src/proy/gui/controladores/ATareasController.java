@@ -109,6 +109,17 @@ public class ATareasController extends ControladorRomano {
 
 	@FXML
 	public void buscar() {
+		/*
+		 * FiltroTarea filtro = new FiltroTarea.Builder().(columnaMaquina.getText()).build();
+		 * ArrayList<Herramienta> result = null;
+		 * try{
+		 * result = coordinador.listarHerramientas(filtro);
+		 * } catch(PersistenciaException e){
+		 * ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+		 * }
+		 * tablaHerramientas.getItems().clear();
+		 * tablaHerramientas.getItems().addAll(result);
+		 */
 
 	}
 

@@ -6,11 +6,14 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.Date;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Herramienta;
+import proy.datos.entidades.Operario;
 import proy.datos.servicios.Filtro;
 
 public class FiltroTarea extends Filtro {
@@ -19,12 +22,16 @@ public class FiltroTarea extends Filtro {
 	private String namedQuery = "";
 	private EstadoTareaStr noEstado;
 	private Herramienta herramienta;
+	private Operario operario;
+	private Date fecha;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoTareaStr noEstado;
 		private Herramienta herramienta;
+		private Operario operario;
+		private Date fecha;
 
 		public Builder() {
 			super();
@@ -45,6 +52,16 @@ public class FiltroTarea extends Filtro {
 			return this;
 		}
 
+		public Builder operario(Operario operario) {
+			this.operario = operario;
+			return this;
+		}
+
+		public Builder fecha(Date fecha) {
+			this.fecha = fecha;
+			return this;
+		}
+
 		public FiltroTarea build() {
 			return new FiltroTarea(this);
 		}
@@ -53,6 +70,8 @@ public class FiltroTarea extends Filtro {
 	private FiltroTarea(Builder builder) {
 		this.noEstado = builder.noEstado;
 		this.herramienta = builder.herramienta;
+		this.operario = builder.operario;
+		this.fecha = builder.fecha;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -97,7 +116,9 @@ public class FiltroTarea extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
-						((builder.herramienta != null) ? ("herr = :her AND ") : (""));
+						((builder.herramienta != null) ? ("herr = :her AND ") : ("")) +
+						((builder.operario != null) ? (builder.nombreEntidad + ".operario = :op AND ") : ("")) +
+						((builder.fecha != null) ? (builder.nombreEntidad + ".fecha = :fec ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -128,6 +149,12 @@ public class FiltroTarea extends Filtro {
 		}
 		if(herramienta != null){
 			query.setParameter("her", herramienta);
+		}
+		if(operario != null){
+			query.setParameter("op", operario);
+		}
+		if(fecha != null){
+			query.setParameter("fec", fecha);
 		}
 		return query;
 	}
