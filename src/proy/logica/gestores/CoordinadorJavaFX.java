@@ -44,7 +44,7 @@ import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
@@ -155,8 +155,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearMateriales(materiales);
 	}
 
-	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
-		return gestorTaller.eliminarMaterial(material);
+	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		return gestorTaller.eliminarMateriales(materiales);
 	}
 
 	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {

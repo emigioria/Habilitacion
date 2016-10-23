@@ -6,10 +6,13 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Material;
 import proy.datos.servicios.Filtro;
 
 public class FiltroPieza extends Filtro {
@@ -17,11 +20,19 @@ public class FiltroPieza extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
+	private ArrayList<Material> materiales;
+	private Orden orden;
+
+	public enum Orden {
+		PorIdMaterial
+	}
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
+		private ArrayList<Material> materiales = null;
+		private Orden orden = null;
 
 		public Builder() {
 			super();
@@ -32,6 +43,16 @@ public class FiltroPieza extends Filtro {
 			return this;
 		}
 
+		public Builder materiales(ArrayList<Material> materiales) {
+			this.materiales = materiales;
+			return this;
+		}
+
+		public Builder order(Orden orden) {
+			this.orden = orden;
+			return this;
+		}
+
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
 		}
@@ -39,6 +60,8 @@ public class FiltroPieza extends Filtro {
 
 	private FiltroPieza(Builder builder) {
 		this.estado = builder.estado;
+		this.materiales = builder.materiales;
+		this.orden = builder.orden;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -64,7 +87,8 @@ public class FiltroPieza extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material.codigo in :mat AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -85,6 +109,12 @@ public class FiltroPieza extends Filtro {
 
 	private String getOrderBy(Builder builder) {
 		String orderBy = "";
+		if(orden != null){
+			switch(builder.orden) {
+			case PorIdMaterial:
+				orderBy = " ORDER BY " + builder.nombreEntidad + ".matrial.codigo ";
+			}
+		}
 		return orderBy;
 	}
 
@@ -92,6 +122,11 @@ public class FiltroPieza extends Filtro {
 	public Query setParametros(Query query) {
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(materiales != null){
+			ArrayList<Long> idMateriales = new ArrayList<>();
+			materiales.forEach(m -> idMateriales.add(m.getId()));
+			query.setParameterList("mat", idMateriales);
 		}
 		return query;
 	}

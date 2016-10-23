@@ -37,7 +37,8 @@ import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
@@ -217,8 +218,37 @@ public class TallerGestor {
 		return new ResultadoCrearMateriales(nombresMaterialesRepetidos, erroresMateriales.toArray(new ErrorCrearMateriales[0]));
 	}
 
-	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
-		throw new NotYetImplementedException();
-	}
+	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		ResultadoEliminarMateriales resultado;
 
+		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
+		ArrayList<ArrayList<Pieza>> piezasAsociadasPorMaterial = new ArrayList<>();
+
+		if(!piezasAsociadas.isEmpty()){
+			Pieza anterior = piezasAsociadas.get(0);
+			piezasAsociadasPorMaterial.add(new ArrayList<Pieza>());
+			int ultimaLista = 0;
+			for(Pieza pieza: piezasAsociadas){
+				if(pieza.getMaterial().equals(anterior.getMaterial())){
+					piezasAsociadasPorMaterial.get(ultimaLista).add(pieza);
+				}
+				else{
+					piezasAsociadasPorMaterial.add(new ArrayList<Pieza>());
+					ultimaLista++;
+					piezasAsociadasPorMaterial.get(ultimaLista).add(pieza);
+				}
+			}
+
+			resultado = new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, ErrorEliminarMaterial.PiezasActivasAsociadas);
+		}
+		else{
+			resultado = new ResultadoEliminarMateriales(null);
+		}
+
+		if(resultado.hayErrores() == false){
+			//TODO persistidorTaller.bajaMateriales(materiales);
+		}
+
+		return resultado;
+	}
 }
