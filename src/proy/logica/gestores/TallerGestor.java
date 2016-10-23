@@ -172,7 +172,7 @@ public class TallerGestor {
 			if(!materiales_coincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
 				for(Material material: materiales_coincidentes){
-					nombresMaterialesRepetidos.add(material.getNombre());
+					nombresMaterialesRepetidos.add(material.toString());
 				}
 			}
 		}
@@ -220,7 +220,7 @@ public class TallerGestor {
 			resultado = new ResultadoEliminarMateriales(piezasAsociadasStr, ErrorEliminarMateriales.PiezasActivasAsociadas);
 		}
 		else{
-			resultado = new ResultadoEliminarMateriales(null);
+			resultado = new ResultadoEliminarMateriales();
 		}
 		return resultado;
 	}

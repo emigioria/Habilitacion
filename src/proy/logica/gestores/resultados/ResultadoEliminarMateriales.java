@@ -20,6 +20,10 @@ public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMaterial
 		PiezasActivasAsociadas;
 	}
 
+	public ResultadoEliminarMateriales() {
+		super();
+	}
+
 	public ResultadoEliminarMateriales(Collection<String> piezasAsociadas, ErrorEliminarMateriales... errores) {
 		super(errores);
 		this.piezasAsociadas = new HashSet<>(piezasAsociadas);
