@@ -25,8 +25,8 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroMaterial;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -118,8 +118,7 @@ public class AMaterialesController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
-		ResultadoCrearMaterial resultado;
-		ArrayList<Integer> repetidosEnBD = new ArrayList<>();
+		ResultadoCrearMateriales resultado;
 		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
@@ -129,7 +128,7 @@ public class AMaterialesController extends ControladorRomano {
 
 		//Inicio transacción al gestor
 		try{
-			resultado = coordinador.crearMateriales(materialesAGuardar, repetidosEnBD);
+			resultado = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
 			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
@@ -141,20 +140,20 @@ public class AMaterialesController extends ControladorRomano {
 		//Tratamiento de errores
 
 		if(resultado.hayErrores()){
-			for(ErrorCrearMaterial e: resultado.getErrores()){
+			for(ErrorCrearMateriales e: resultado.getErrores()){
 				switch(e) {
 				case NombreIncompleto:
 					erroresBfr.append("Hay nombres vacíos.\n");
 					break;
-				case NombreRepetidoEnBD:
-					erroresBfr.append("Estos materiales ya existen en la base de datos:\n");
-					for(Integer i: repetidosEnBD){
+				case NombreYaExistente:
+					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
+					for(Material material: resultado.getRepetidos()){
 						erroresBfr.append("\t<");
-						erroresBfr.append(materialesAGuardar.get(i).getNombre());
+						erroresBfr.append(material.getNombre());
 						erroresBfr.append(">\n");
 					}
 					break;
-				case NombreRepetidoEnVista:
+				case NombreIngresadoRepetido:
 					erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
 					break;
 				}

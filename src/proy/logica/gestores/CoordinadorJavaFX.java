@@ -36,7 +36,7 @@ import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
@@ -151,8 +151,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.listarMateriales(filtro);
 	}
 
-	public ResultadoCrearMaterial crearMateriales(ArrayList<Material> materiales, ArrayList<Integer> repetidos) throws PersistenciaException {
-		return gestorTaller.crearMateriales(materiales, repetidos);
+	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		return gestorTaller.crearMateriales(materiales);
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
