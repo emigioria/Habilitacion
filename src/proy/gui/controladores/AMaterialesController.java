@@ -213,12 +213,13 @@ public class AMaterialesController extends ControladorRomano {
 			for(ErrorEliminarMateriales e: resultadoEliminarMateriales.getErrores()){
 				switch(e) {
 				case PiezasActivasAsociadas:
-					erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");
-					erroresBfr.append("Piezas asociadas:\n");
-					for(String pieza: resultadoEliminarMateriales.getPiezasAsociadas()){
-						erroresBfr.append("\t<");
-						erroresBfr.append(pieza);
-						erroresBfr.append(">\n");
+					for(String material: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().keySet()){
+						erroresBfr.append("El material <" + material + "> no se puede eliminar porque está siendo utilizado en las siguientes piezas:\n");
+						for(String pieza: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().get(material)){
+							erroresBfr.append("\t<");
+							erroresBfr.append(pieza);
+							erroresBfr.append(">\n");
+						}
 					}
 					break;
 				}

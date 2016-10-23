@@ -6,30 +6,26 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 
 public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMateriales> {
 
-	Set<String> piezasAsociadas;
+	Map<String, List<String>> piezasAsociadasPorMaterial;
 
 	public enum ErrorEliminarMateriales {
 		PiezasActivasAsociadas;
 	}
 
-	public ResultadoEliminarMateriales() {
-		super();
-	}
-
-	public ResultadoEliminarMateriales(Collection<String> piezasAsociadas, ErrorEliminarMateriales... errores) {
+	public ResultadoEliminarMateriales(Map<String, List<String>> piezasAsociadasPorMaterial, ErrorEliminarMateriales... errores) {
 		super(errores);
-		this.piezasAsociadas = new HashSet<>(piezasAsociadas);
+		this.piezasAsociadasPorMaterial = new HashMap<>(piezasAsociadasPorMaterial);
 	}
 
-	public Set<String> getPiezasAsociadas() {
-		return piezasAsociadas;
+	public Map<String, List<String>> getPiezasAsociadasPorMaterial() {
+		return piezasAsociadasPorMaterial;
 	}
 }

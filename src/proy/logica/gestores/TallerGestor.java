@@ -7,8 +7,10 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -208,20 +210,30 @@ public class TallerGestor {
 	}
 
 	private ResultadoEliminarMateriales validarEliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ResultadoEliminarMateriales resultado;
+		//Creo la lista de errores
+		ArrayList<ErrorEliminarMateriales> erroresMateriales = new ArrayList<>();
 
+		//Busco las piezas activas asociadas a los materiales
 		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
 
+		//Separo las piezas por material
+		Map<String, List<String>> piezasAsociadasPorMaterial = new HashMap<>();
+
 		if(!piezasAsociadas.isEmpty()){
-			ArrayList<String> piezasAsociadasStr = new ArrayList<>();
-			for(Pieza pieza: piezasAsociadas){
-				piezasAsociadasStr.add(pieza.toString());
+			for(Material material: materiales){
+				ArrayList<String> piezasDelMaterial = new ArrayList<>();
+				piezasAsociadasPorMaterial.put(material.toString(), piezasDelMaterial);
+
+				for(Pieza pieza: piezasAsociadas){
+					if(material.equals(pieza.getMaterial())){
+						piezasDelMaterial.add(pieza.toString());
+					}
+				}
 			}
-			resultado = new ResultadoEliminarMateriales(piezasAsociadasStr, ErrorEliminarMateriales.PiezasActivasAsociadas);
+
+			erroresMateriales.add(ErrorEliminarMateriales.PiezasActivasAsociadas);
 		}
-		else{
-			resultado = new ResultadoEliminarMateriales();
-		}
-		return resultado;
+
+		return new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, erroresMateriales.toArray(new ErrorEliminarMateriales[0]));
 	}
 }
