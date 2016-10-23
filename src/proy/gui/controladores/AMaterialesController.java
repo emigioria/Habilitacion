@@ -7,7 +7,6 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -118,7 +117,8 @@ public class AMaterialesController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
-		List<ResultadoCrearMaterial> resultados;
+		ResultadoCrearMaterial resultado;
+		ArrayList<Integer> repetidosEnBD = new ArrayList<>();
 		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
@@ -128,7 +128,7 @@ public class AMaterialesController extends ControladorRomano {
 
 		//Inicio transacción al gestor
 		try{
-			resultados = coordinador.crearMateriales(materialesAGuardar);
+			resultado = coordinador.crearMateriales(materialesAGuardar, repetidosEnBD);
 		} catch(PersistenciaException e){
 			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
@@ -138,34 +138,26 @@ public class AMaterialesController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		boolean nombreIncompletoEncontrado = false;
-		boolean medidasIncompletasEncontradas = false;
 
-		for(int i = 0; i < resultados.size(); i++){
-			if(resultados.get(i).hayErrores()){
-				for(ErrorCrearMaterial e: resultados.get(i).getErrores()){
-					switch(e) { //TODO cambiar, queda muy feo
-					case NombreIncompleto:
-						nombreIncompletoEncontrado = true;
-						break;
-					case NombreRepetidoEnBD:
-						erroresBfr.append("Ya existe un material con el nombre \"");
+		if(resultado.hayErrores()){
+			for(ErrorCrearMaterial e: resultado.getErrores()){
+				switch(e) {
+				case NombreIncompleto:
+					erroresBfr.append("Hay nombres vacíos.\n");
+					break;
+				case NombreRepetidoEnBD:
+					erroresBfr.append("Estos materiales ya existen en la base de datos:\n");
+					for(Integer i: repetidosEnBD){
+						erroresBfr.append("\t<");
 						erroresBfr.append(materialesAGuardar.get(i).getNombre());
-						erroresBfr.append("\".\n");
-						break;
-					case NombreRepetidoEnVista:
-						erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
-						break;
+						erroresBfr.append(">\n");
 					}
-
+					break;
+				case NombreRepetidoEnVista:
+					erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
+					break;
 				}
 			}
-		}
-		if(nombreIncompletoEncontrado){
-			erroresBfr.append("Hay nombres vacíos.\n");
-		}
-		if(medidasIncompletasEncontradas){
-			erroresBfr.append("Hay medidas vacías.\n");
 		}
 
 		String errores = erroresBfr.toString();

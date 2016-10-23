@@ -151,8 +151,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.listarMateriales(filtro);
 	}
 
-	public ArrayList<ResultadoCrearMaterial> crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		return gestorTaller.crearMateriales(materiales);
+	public ResultadoCrearMaterial crearMateriales(ArrayList<Material> materiales, ArrayList<Integer> repetidos) throws PersistenciaException {
+		return gestorTaller.crearMateriales(materiales, repetidos);
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
