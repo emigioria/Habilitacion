@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores;
+package proy.logica;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,9 @@ import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
+import proy.logica.gestores.ProcesoGestor;
+import proy.logica.gestores.TallerGestor;
+import proy.logica.gestores.UsuarioGestor;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;

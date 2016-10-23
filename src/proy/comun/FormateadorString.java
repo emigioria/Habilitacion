@@ -1,4 +1,4 @@
-package proy.gui;
+package proy.comun;
 
 public abstract class FormateadorString {
 

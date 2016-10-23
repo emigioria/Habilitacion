@@ -23,14 +23,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.converter.IntegerStringConverter;
+import proy.comun.ConversorFechas;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.EstadoTarea;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
-import proy.gui.ConversorFechas;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.filtros.FiltroProceso;
@@ -85,7 +85,7 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		}
 	}
 
@@ -176,10 +176,10 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			resultado = coordinador.crearTarea(tar);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -226,10 +226,10 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			resultado = coordinador.modificarTarea(tar);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 

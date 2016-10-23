@@ -15,7 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import proy.gui.FormateadorString;
+import proy.comun.FormateadorString;
 
 @NamedQuery(name = "listarMaquinas", query = "SELECT m FROM Maquina m ORDER BY m.nombre ")
 @Entity

@@ -20,8 +20,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
-import proy.gui.FormateadorString;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

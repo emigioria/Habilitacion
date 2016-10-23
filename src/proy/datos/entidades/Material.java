@@ -19,8 +19,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
-import proy.gui.FormateadorString;
 
 @NamedQuery(name = "listarMateriales", query = "SELECT m FROM Material m WHERE m.estado.nombre = :est ORDER BY m.nombre ")
 @Entity

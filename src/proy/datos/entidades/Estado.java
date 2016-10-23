@@ -16,8 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
-import proy.gui.FormateadorString;
 
 @Entity
 @Table(name = "estado")

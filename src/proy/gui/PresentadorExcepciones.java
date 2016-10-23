@@ -10,7 +10,8 @@ import javafx.stage.Window;
 import proy.gui.componentes.VentanaErrorExcepcion;
 import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 
-public abstract class ManejadorExcepciones {
+public abstract class PresentadorExcepciones {
+	
 	public static void presentarExcepcion(Exception e, Window w) {
 		e.printStackTrace();
 		new VentanaErrorExcepcion(e.getMessage(), w);

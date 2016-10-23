@@ -19,7 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import proy.datos.entidades.Operario;
 import proy.excepciones.PersistenciaException;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroOperario;
@@ -125,10 +125,10 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				coordinador.eliminarOperario(oSelected);
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 			actualizar();
@@ -152,10 +152,10 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				resultado = coordinador.crearOperario(operario);
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 		}
@@ -195,7 +195,7 @@ public class AOperariosController extends ControladorRomano {
 				tablaOperarios.getItems().clear();
 				tablaOperarios.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}

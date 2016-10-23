@@ -17,10 +17,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
+import proy.comun.FormateadorString;
 import proy.datos.entidades.Material;
 import proy.excepciones.PersistenciaException;
-import proy.gui.FormateadorString;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
@@ -135,10 +135,10 @@ public class AMaterialesController extends ControladorRomano {
 		try{
 			resultadoCrearMateriales = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
@@ -201,10 +201,10 @@ public class AMaterialesController extends ControladorRomano {
 		try{
 			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
@@ -243,7 +243,7 @@ public class AMaterialesController extends ControladorRomano {
 				tablaMateriales.getItems().clear();
 				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}
