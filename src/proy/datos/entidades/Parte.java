@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.EstadoStr;
+import proy.gui.FormateadorString;
 
 @NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est")
 @Entity
@@ -162,5 +163,10 @@ public class Parte {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre());
 	}
 }

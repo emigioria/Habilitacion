@@ -25,6 +25,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.EstadoStr;
+import proy.gui.FormateadorString;
 
 @NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h WHERE h.estado.nombre = :est")
 @Entity
@@ -141,5 +142,10 @@ public class Herramienta {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre());
 	}
 }

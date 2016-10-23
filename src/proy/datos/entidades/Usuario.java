@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import proy.datos.clases.EstadoStr;
+import proy.gui.FormateadorString;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -175,6 +176,6 @@ public abstract class Usuario {
 
 	@Override
 	public String toString() {
-		return this.getNombre() + " " + this.getApellido();
+		return FormateadorString.primeraMayuscula(this.getNombre()) + " " + FormateadorString.primeraMayuscula(this.getApellido());
 	}
 }

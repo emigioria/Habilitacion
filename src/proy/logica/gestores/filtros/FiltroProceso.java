@@ -84,7 +84,7 @@ public class FiltroProceso extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".descripcion , " + builder.nombreEntidad + ".tipo";
 		return orderBy;
 	}
 
