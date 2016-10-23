@@ -29,7 +29,7 @@ import proy.logica.gestores.filtros.FiltroMaterial;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -211,7 +211,7 @@ public class AMaterialesController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultadoEliminarMateriales.hayErrores()){
-			for(ErrorEliminarMaterial e: resultadoEliminarMateriales.getErrores()){
+			for(ErrorEliminarMateriales e: resultadoEliminarMateriales.getErrores()){
 				switch(e) {
 				case PiezasActivasAsociadas:
 					erroresBfr.append("No se puede eliminar el material porque hay piezas asociadas al mismo.\n");

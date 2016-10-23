@@ -37,7 +37,7 @@ import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
@@ -213,7 +213,7 @@ public class TallerGestor {
 		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
 
 		if(!piezasAsociadas.isEmpty()){
-			resultado = new ResultadoEliminarMateriales(piezasAsociadas, ErrorEliminarMaterial.PiezasActivasAsociadas);
+			resultado = new ResultadoEliminarMateriales(piezasAsociadas, ErrorEliminarMateriales.PiezasActivasAsociadas);
 		}
 		else{
 			resultado = new ResultadoEliminarMateriales(null);

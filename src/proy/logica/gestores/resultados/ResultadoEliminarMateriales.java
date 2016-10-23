@@ -11,17 +11,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 import proy.datos.entidades.Pieza;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 
-public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMaterial> {
+public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMateriales> {
 
 	Set<Pieza> piezasAsociadas;
 
-	public enum ErrorEliminarMaterial {
+	public enum ErrorEliminarMateriales {
 		PiezasActivasAsociadas;
 	}
 
-	public ResultadoEliminarMateriales(Collection<Pieza> piezasAsociadas, ErrorEliminarMaterial... errores) {
+	public ResultadoEliminarMateriales(Collection<Pieza> piezasAsociadas, ErrorEliminarMateriales... errores) {
 		super(errores);
 		this.piezasAsociadas = new HashSet<>(piezasAsociadas);
 	}
