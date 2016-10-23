@@ -7,7 +7,6 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -139,7 +138,7 @@ public class TallerGestor {
 	}
 
 	private ResultadoCrearMateriales validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		HashSet<String> nombresMaterialesRepetidos = new HashSet<String>();
+		ArrayList<String> nombresMaterialesRepetidos = new ArrayList<>();
 		ListIterator<Material> itMaterialesAGuardar = null, itMaterialesGuardados = null;
 		Material materialAGuardar = null, materialGuardado = null;
 
@@ -170,31 +169,38 @@ public class TallerGestor {
 
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
 			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
-
-			//veo qué materiales están repetidos comparando ambas listas
-			boolean nombreGuardadoRepetidoEncontrado;
-			itMaterialesAGuardar = materiales.listIterator();
-
-			while(itMaterialesAGuardar.hasNext()){
-				nombreGuardadoRepetidoEncontrado = false;
-				materialAGuardar = itMaterialesAGuardar.next();
-				itMaterialesGuardados = materiales_coincidentes.listIterator();
-
-				while(itMaterialesGuardados.hasNext() && !nombreGuardadoRepetidoEncontrado){
-					materialGuardado = itMaterialesGuardados.next();
-					if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
-							materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
-
-						//agrego el material repetido a la lista de repetidos y levanto la bandera de encontrado
-						nombresMaterialesRepetidos.add(materialAGuardar.getNombre());
-						nombreGuardadoRepetidoEncontrado = true;
-					}
-				}
-
-			}
-
-			if(!nombresMaterialesRepetidos.isEmpty()){
+			/*
+			 * //veo qué materiales están repetidos comparando ambas listas
+			 * boolean nombreGuardadoRepetidoEncontrado;
+			 * itMaterialesAGuardar = materiales.listIterator();
+			 *
+			 * while(itMaterialesAGuardar.hasNext()){
+			 * nombreGuardadoRepetidoEncontrado = false;
+			 * materialAGuardar = itMaterialesAGuardar.next();
+			 * itMaterialesGuardados = materiales_coincidentes.listIterator();
+			 *
+			 * while(itMaterialesGuardados.hasNext() && !nombreGuardadoRepetidoEncontrado){
+			 * materialGuardado = itMaterialesGuardados.next();
+			 * if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
+			 * materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
+			 *
+			 * //agrego el material repetido a la lista de repetidos y levanto la bandera de encontrado
+			 * nombresMaterialesRepetidos.add(materialAGuardar.getNombre());
+			 * nombreGuardadoRepetidoEncontrado = true;
+			 * }
+			 * }
+			 *
+			 * }
+			 *
+			 * if(!nombresMaterialesRepetidos.isEmpty()){
+			 * erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
+			 * }
+			 */
+			if(!materiales_coincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
+				for(Material material: materiales_coincidentes){
+					nombresMaterialesRepetidos.add(material.getNombre());
+				}
 			}
 		}
 

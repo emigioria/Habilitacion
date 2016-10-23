@@ -6,6 +6,7 @@
  */
 package proy.logica.gestores.resultados;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
@@ -18,9 +19,9 @@ public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
 		NombreIncompleto, NombreYaExistente, NombreIngresadoRepetido;
 	}
 
-	public ResultadoCrearMateriales(HashSet<String> nombresRepetidos, ErrorCrearMateriales... errores) {
+	public ResultadoCrearMateriales(Collection<String> nombresRepetidos, ErrorCrearMateriales... errores) {
 		super(errores);
-		this.nombresRepetidos = nombresRepetidos;
+		this.nombresRepetidos = new HashSet<>(nombresRepetidos);
 	}
 
 	public HashSet<String> getRepetidos() {
