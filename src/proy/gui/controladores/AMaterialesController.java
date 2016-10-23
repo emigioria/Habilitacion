@@ -147,9 +147,9 @@ public class AMaterialesController extends ControladorRomano {
 					break;
 				case NombreYaExistente:
 					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
-					for(Material material: resultado.getRepetidos()){
+					for(String nombreMaterial: resultado.getRepetidos()){
 						erroresBfr.append("\t<");
-						erroresBfr.append(material.getNombre());
+						erroresBfr.append(nombreMaterial);
 						erroresBfr.append(">\n");
 					}
 					break;

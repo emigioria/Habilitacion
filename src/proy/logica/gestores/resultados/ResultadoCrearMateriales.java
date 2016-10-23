@@ -6,26 +6,24 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
-import proy.datos.entidades.Material;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 
 public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
 
-	List<Material> repetidos;
+	HashSet<String> nombresRepetidos;
 
 	public enum ErrorCrearMateriales {
 		NombreIncompleto, NombreYaExistente, NombreIngresadoRepetido;
 	}
 
-	public ResultadoCrearMateriales(ArrayList<Material> repetidos, ErrorCrearMateriales... errores) {
+	public ResultadoCrearMateriales(HashSet<String> nombresRepetidos, ErrorCrearMateriales... errores) {
 		super(errores);
-		repetidos = new ArrayList<>(repetidos);
+		this.nombresRepetidos = nombresRepetidos;
 	}
 
-	public List<Material> getRepetidos() {
-		return repetidos;
+	public HashSet<String> getRepetidos() {
+		return nombresRepetidos;
 	}
 }

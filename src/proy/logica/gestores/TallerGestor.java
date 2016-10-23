@@ -7,6 +7,7 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -137,7 +138,7 @@ public class TallerGestor {
 	}
 
 	private ResultadoCrearMateriales validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ArrayList<Material> materialesRepetidos = new ArrayList<>();
+		HashSet<String> nombresMaterialesRepetidos = new HashSet<String>();
 		ListIterator<Material> itMaterialesAGuardar = null, itMaterialesGuardados = null;
 		Material materialAGuardar = null, materialGuardado = null;
 
@@ -184,14 +185,14 @@ public class TallerGestor {
 							materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
 
 						//agrego el material repetido a la lista de repetidos y levanto la bandera de encontrado
-						materialesRepetidos.add(materialAGuardar);
+						nombresMaterialesRepetidos.add(materialAGuardar.getNombre());
 						nombreGuardadoRepetidoEncontrado = true;
 					}
 				}
 
 			}
 
-			if(!materialesRepetidos.isEmpty()){
+			if(!nombresMaterialesRepetidos.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
 			}
 		}
@@ -213,7 +214,7 @@ public class TallerGestor {
 			}
 		}
 
-		return new ResultadoCrearMateriales(materialesRepetidos, erroresMateriales.toArray(new ErrorCrearMateriales[0]));
+		return new ResultadoCrearMateriales(nombresMaterialesRepetidos, erroresMateriales.toArray(new ErrorCrearMateriales[0]));
 	}
 
 	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
