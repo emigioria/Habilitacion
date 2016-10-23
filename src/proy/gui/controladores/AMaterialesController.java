@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import proy.datos.entidades.Material;
 import proy.excepciones.PersistenciaException;
+import proy.gui.FormateadorString;
 import proy.gui.ManejadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
@@ -52,7 +53,7 @@ public class AMaterialesController extends ControladorRomano {
 			columnaMaterial.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(param.getValue().getNombre());
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");
