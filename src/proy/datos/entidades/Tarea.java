@@ -29,7 +29,7 @@ import javax.persistence.Version;
 
 import proy.datos.clases.EstadoTareaStr;
 
-@NamedQuery(name = "listarTareas", query = "SELECT t FROM Tarea t")
+@NamedQuery(name = "listarTareas", query = "SELECT t FROM Tarea t ORDER BY t.fechaPlanificada ASC")
 @Entity
 @Table(name = "tarea")
 public class Tarea {

@@ -12,7 +12,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-@NamedQuery(name = "listarOperarios", query = "SELECT o FROM Operario o WHERE o.estado.nombre = :est")
+@NamedQuery(name = "listarOperarios", query = "SELECT o FROM Operario o WHERE o.estado.nombre = :est ORDER BY o.dni ASC")
 @Entity
 @PrimaryKeyJoinColumn(name = "codusuario", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "operario_codusuario_fk"))
 @Table(name = "operario")

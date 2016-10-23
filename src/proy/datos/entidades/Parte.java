@@ -22,7 +22,7 @@ import javax.persistence.Version;
 import proy.datos.clases.EstadoStr;
 import proy.gui.FormateadorString;
 
-@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est")
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est ORDER BY p.nombre ")
 @Entity
 @Table(name = "parte")
 public class Parte {
