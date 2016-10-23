@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
 
 @Entity
@@ -96,5 +97,10 @@ public class Estado {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre().toString());
 	}
 }

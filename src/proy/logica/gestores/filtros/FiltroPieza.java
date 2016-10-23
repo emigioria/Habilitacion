@@ -6,10 +6,13 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Material;
 import proy.datos.servicios.Filtro;
 
 public class FiltroPieza extends Filtro {
@@ -17,11 +20,13 @@ public class FiltroPieza extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
+	private ArrayList<Material> materiales;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
+		private ArrayList<Material> materiales = null;
 
 		public Builder() {
 			super();
@@ -32,6 +37,11 @@ public class FiltroPieza extends Filtro {
 			return this;
 		}
 
+		public Builder materiales(ArrayList<Material> materiales) {
+			this.materiales = materiales;
+			return this;
+		}
+
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
 		}
@@ -39,6 +49,7 @@ public class FiltroPieza extends Filtro {
 
 	private FiltroPieza(Builder builder) {
 		this.estado = builder.estado;
+		this.materiales = builder.materiales;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -49,6 +60,12 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.materiales != null){
+			return;
+		}
+		if(builder.estado != EstadoStr.ALTA){
+			return;
+		}
 		namedQuery = "listarPiezas";
 	}
 
@@ -64,7 +81,8 @@ public class FiltroPieza extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in :mts AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -84,7 +102,7 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 
@@ -92,6 +110,9 @@ public class FiltroPieza extends Filtro {
 	public Query setParametros(Query query) {
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(materiales != null){
+			query.setParameterList("mts", materiales);
 		}
 		return query;
 	}

@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
 
 @Entity
@@ -175,6 +176,6 @@ public abstract class Usuario {
 
 	@Override
 	public String toString() {
-		return this.getNombre() + " " + this.getApellido();
+		return FormateadorString.primeraMayuscula(this.getNombre()) + " " + FormateadorString.primeraMayuscula(this.getApellido());
 	}
 }

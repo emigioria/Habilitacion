@@ -13,13 +13,13 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.comun.EncriptadorPassword;
 import proy.datos.clases.DatosLogin;
 import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.PersistenciaException;
-import proy.gui.Contra;
 import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroOperario;
@@ -48,7 +48,7 @@ public class UsuarioGestor {
 			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
 			Administrador admin = administradores.get(0);
 			String sal = admin.getSal();
-			String contraIngresada = Contra.encriptarMD5(login.getContrasenia(), sal);
+			String contraIngresada = EncriptadorPassword.encriptarMD5(login.getContrasenia(), sal);
 			if(!contraIngresada.equals(admin.getContrasenia())){
 				//Si no coincide falla
 				errores.add(ErrorAutenticacion.DatosInvalidos);
@@ -93,7 +93,7 @@ public class UsuarioGestor {
 			errores.add(ErrorCrearOperario.DNIIncompleto);
 		}
 		else{
-			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().DNI(operario.getDNI()).build());
+			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().dni(operario.getDNI()).build());
 			if(operarioMismoDNI.size() != 0){
 				errores.add(ErrorCrearOperario.DNIRepetido);
 			}

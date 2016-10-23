@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.gui;
+package proy.comun;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -18,7 +18,7 @@ import javax.crypto.spec.PBEKeySpec;
 /**
  * Encargada de la encriptación de contraseñas
  */
-public abstract class Contra {
+public abstract class EncriptadorPassword {
 
 	private final static Integer ITERATIONS = 10000;
 	private final static Integer KEY_LENGTH = 256;

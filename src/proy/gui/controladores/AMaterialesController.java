@@ -7,7 +7,6 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,15 +17,18 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
+import proy.comun.FormateadorString;
 import proy.datos.entidades.Material;
 import proy.excepciones.PersistenciaException;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroMaterial;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -48,12 +50,15 @@ public class AMaterialesController extends ControladorRomano {
 	private ArrayList<Material> materialesAGuardar = new ArrayList<>();
 
 	@FXML
+	private ArrayList<Material> materialesAEliminar = new ArrayList<>();
+
+	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
 			columnaMaterial.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(param.getValue().getNombre());
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");
@@ -83,15 +88,27 @@ public class AMaterialesController extends ControladorRomano {
 			columnaMedidas.setCellFactory(call);
 
 			columnaMaterial.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue());
+				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
 			});
 			columnaMedidas.setOnEditCommit((t) -> {
-				t.getRowValue().setMedidas(t.getNewValue());
+				t.getRowValue().setMedidas(t.getNewValue().toLowerCase().trim());
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
 			});
 
 			actualizar();
 		});
 
+	}
+
+	@FXML
+	public void guardar() {
+		eliminarMateriales();
+		crearMateriales();
 	}
 
 	@FXML
@@ -105,67 +122,117 @@ public class AMaterialesController extends ControladorRomano {
 		tablaMateriales.getItems().add(0, nuevoMaterial);
 	}
 
-	@FXML
-	public void eliminarMaterial() {
-
-	}
-
-	@FXML
-	public void guardar() {
-		List<ResultadoCrearMaterial> resultados;
+	private void crearMateriales() {
+		ResultadoCrearMateriales resultadoCrearMateriales;
 		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
-		if(materialesAGuardar.size() == 0){
+		if(materialesAGuardar.isEmpty()){
 			return;
 		}
 
-		//Inicio transacción al gestor
+		//Inicio transacciones al gestor
 		try{
-			resultados = coordinador.crearMateriales(materialesAGuardar);
+			resultadoCrearMateriales = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
 		//Tratamiento de errores
-		boolean nombreIncompletoEncontrado = false;
-		boolean medidasIncompletasEncontradas = false;
-
-		for(int i = 0; i < resultados.size(); i++){
-			if(resultados.get(i).hayErrores()){
-				for(ErrorCrearMaterial e: resultados.get(i).getErrores()){
-					switch(e) {
-					case NombreIncompleto:
-						nombreIncompletoEncontrado = true;
-						break;
-					case NombreRepetido:
-						erroresBfr.append("Ya existe un material con el nombre \"");
-						erroresBfr.append(materialesAGuardar.get(i).getNombre());
-						erroresBfr.append("\".\n");
-						break;
+		if(resultadoCrearMateriales.hayErrores()){
+			for(ErrorCrearMateriales e: resultadoCrearMateriales.getErrores()){
+				switch(e) {
+				case NombreIncompleto:
+					erroresBfr.append("Hay nombres vacíos.\n");
+					break;
+				case NombreYaExistente:
+					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
+					for(String nombreMaterial: resultadoCrearMateriales.getRepetidos()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(nombreMaterial);
+						erroresBfr.append(">\n");
 					}
-
+					break;
+				case NombreIngresadoRepetido:
+					erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
+					break;
 				}
 			}
-		}
-		if(nombreIncompletoEncontrado){
-			erroresBfr.append("Hay nombres vacíos.\n");
-		}
-		if(medidasIncompletasEncontradas){
-			erroresBfr.append("Hay medidas vacías.\n");
 		}
 
 		String errores = erroresBfr.toString();
 		if(!errores.isEmpty()){
-			new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+			new VentanaError("Error al crear materiales", errores, apilador.getStage());
 		}
 		else{
 			materialesAGuardar.clear();
 			new VentanaInformacion("Operación exitosa", "Se han guardado correctamente los materiales");
+		}
+	}
+
+	@FXML
+	public void eliminarMaterial() {
+		Material materialAEliminar = tablaMateriales.getSelectionModel().getSelectedItem();
+		if(materialAEliminar != null){
+			if(materialesAGuardar.contains(materialAEliminar)){
+				materialesAGuardar.remove(materialAEliminar);
+			}
+			else{
+				materialesAEliminar.add(materialAEliminar);
+			}
+			tablaMateriales.getItems().remove(materialAEliminar);
+		}
+	}
+
+	private void eliminarMateriales() {
+		ResultadoEliminarMateriales resultadoEliminarMateriales;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		if(materialesAEliminar.isEmpty()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarMateriales.hayErrores()){
+			for(ErrorEliminarMateriales e: resultadoEliminarMateriales.getErrores()){
+				switch(e) {
+				case PiezasActivasAsociadas:
+					for(String material: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().keySet()){
+						erroresBfr.append("El material <" + material + "> no se puede eliminar porque está siendo utilizado en las siguientes piezas:\n");
+						for(String pieza: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().get(material)){
+							erroresBfr.append("\t<");
+							erroresBfr.append(pieza);
+							erroresBfr.append(">\n");
+						}
+					}
+					break;
+				}
+			}
+		}
+
+		String errores = erroresBfr.toString();
+		if(!errores.isEmpty()){
+			new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+		}
+		else{
+			materialesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente los materiales");
 		}
 	}
 
@@ -176,7 +243,7 @@ public class AMaterialesController extends ControladorRomano {
 				tablaMateriales.getItems().clear();
 				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}

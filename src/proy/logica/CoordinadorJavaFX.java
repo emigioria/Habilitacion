@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores;
+package proy.logica;
 
 import java.util.ArrayList;
 
@@ -23,6 +23,9 @@ import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
+import proy.logica.gestores.ProcesoGestor;
+import proy.logica.gestores.TallerGestor;
+import proy.logica.gestores.UsuarioGestor;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;
@@ -36,7 +39,7 @@ import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
@@ -44,7 +47,7 @@ import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
@@ -151,12 +154,12 @@ public class CoordinadorJavaFX {
 		return gestorTaller.listarMateriales(filtro);
 	}
 
-	public ArrayList<ResultadoCrearMaterial> crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		return gestorTaller.crearMateriales(materiales);
 	}
 
-	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
-		return gestorTaller.eliminarMaterial(material);
+	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		return gestorTaller.eliminarMateriales(materiales);
 	}
 
 	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {

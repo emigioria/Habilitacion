@@ -73,7 +73,7 @@ public class FiltroComentario extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = "";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".fechaComentario ";
 		return orderBy;
 	}
 

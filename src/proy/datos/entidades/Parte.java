@@ -19,9 +19,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est")
+@NamedQuery(name = "listarPartes", query = "SELECT p FROM Parte p WHERE p.estado.nombre = :est ORDER BY p.nombre ")
 @Entity
 @Table(name = "parte")
 public class Parte {
@@ -162,5 +163,10 @@ public class Parte {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre());
 	}
 }

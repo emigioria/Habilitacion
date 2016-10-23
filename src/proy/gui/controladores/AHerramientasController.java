@@ -20,7 +20,7 @@ import javafx.scene.control.TextField;
 import javafx.util.Callback;
 import proy.datos.entidades.Herramienta;
 import proy.excepciones.PersistenciaException;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroHerramienta;
@@ -101,10 +101,10 @@ public class AHerramientasController extends ControladorRomano {
 			try{
 				coordinador.eliminarHerramienta(hSelected);
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 			actualizar();
@@ -127,10 +127,10 @@ public class AHerramientasController extends ControladorRomano {
 			try{
 				resultado = coordinador.crearHerramienta(herramienta);
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				ManejadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 		}
@@ -163,7 +163,7 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			result = coordinador.listarHerramientas(filtro);
 		} catch(PersistenciaException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		}
 		tablaHerramientas.getItems().clear();
 		tablaHerramientas.getItems().addAll(result);
@@ -176,7 +176,7 @@ public class AHerramientasController extends ControladorRomano {
 				tablaHerramientas.getItems().clear();
 				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
 			} catch(PersistenciaException e){
-				ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}

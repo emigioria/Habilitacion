@@ -24,9 +24,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado.nombre = :est")
+@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado.nombre = :est ORDER BY p.descripcion , p.tipo")
 @Entity
 @Table(name = "proceso")
 public class Proceso {
@@ -253,6 +254,6 @@ public class Proceso {
 
 	@Override
 	public String toString() {
-		return descripcion + " - " + tipo;
+		return FormateadorString.primeraMayuscula(this.getDescripcion()) + " - " + FormateadorString.primeraMayuscula(this.getTipo());
 	}
 }

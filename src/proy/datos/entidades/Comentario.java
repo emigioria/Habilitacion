@@ -23,7 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-@NamedQuery(name = "listarComentarios", query = "SELECT c FROM Comentario c")
+@NamedQuery(name = "listarComentarios", query = "SELECT c FROM Comentario c ORDER BY c.fechaComentario ")
 @Entity
 @Table(name = "comentario")
 public class Comentario {

@@ -13,9 +13,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import proy.gui.ControladorApilable;
-import proy.gui.ManejadorExcepciones;
+import proy.gui.PresentadorExcepciones;
 import proy.gui.PilaScene;
-import proy.logica.gestores.CoordinadorJavaFX;
+import proy.logica.CoordinadorJavaFX;
 
 public abstract class ControladorRomano implements ControladorApilable {
 
@@ -58,7 +58,7 @@ public abstract class ControladorRomano implements ControladorApilable {
 			controlador.setCoordinador(coordinador);
 			return controlador;
 		} catch(IOException e){
-			ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 		}
 		return null;
 	}

@@ -21,7 +21,7 @@ import proy.gui.componentes.VentanaErrorExcepcionInesperada;
 import proy.gui.componentes.VentanaEsperaBaseDeDatos;
 import proy.gui.controladores.ControladorRomano;
 import proy.gui.controladores.VTareasController;
-import proy.logica.gestores.CoordinadorJavaFX;
+import proy.logica.CoordinadorJavaFX;
 
 public class Main extends Application {
 

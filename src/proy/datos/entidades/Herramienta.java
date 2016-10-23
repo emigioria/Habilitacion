@@ -24,9 +24,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
 
-@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h WHERE h.estado.nombre = :est")
+@NamedQuery(name = "listarHerramientas", query = "SELECT h FROM Herramienta h WHERE h.estado.nombre = :est ORDER BY h.nombre ")
 @Entity
 @Table(name = "herramienta")
 public class Herramienta {
@@ -141,5 +142,10 @@ public class Herramienta {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre());
 	}
 }

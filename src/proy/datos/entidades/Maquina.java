@@ -15,7 +15,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-@NamedQuery(name = "listarMaquinas", query = "SELECT m FROM Maquina m")
+import proy.comun.FormateadorString;
+
+@NamedQuery(name = "listarMaquinas", query = "SELECT m FROM Maquina m ORDER BY m.nombre ")
 @Entity
 @Table(name = "maquina")
 public class Maquina {
@@ -100,5 +102,10 @@ public class Maquina {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return FormateadorString.primeraMayuscula(this.getNombre());
 	}
 }

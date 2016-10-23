@@ -7,7 +7,10 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -29,13 +32,14 @@ import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial;
-import proy.logica.gestores.resultados.ResultadoCrearMaterial.ErrorCrearMaterial;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
@@ -126,64 +130,110 @@ public class TallerGestor {
 		return persistidorTaller.obtenerMateriales(filtro);
 	}
 
-	public ArrayList<ResultadoCrearMaterial> crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ArrayList<ResultadoCrearMaterial> resultados = validarCrearMateriales(materiales);
+	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		ResultadoCrearMateriales resultado = validarCrearMateriales(materiales);
 
-		if(resultados.stream().allMatch(r -> r.hayErrores() == false)){
+		if(resultado.hayErrores() == false){
 			persistidorTaller.guardarMateriales(materiales);
 		}
-		return resultados;
+		return resultado;
 	}
 
-	private ArrayList<ResultadoCrearMaterial> validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+	private ResultadoCrearMateriales validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		ArrayList<String> nombresMaterialesRepetidos = new ArrayList<>();
+		ListIterator<Material> itMaterialesAGuardar = null, itMaterialesGuardados = null;
+		Material materialAGuardar = null, materialGuardado = null;
 
-		//Creo e inicializo la lista de errores para cada material
-		ArrayList<ArrayList<ErrorCrearMaterial>> erroresMateriales = new ArrayList<>(materiales.size());
-		for(int i = 0; i < materiales.size(); i++){
-			erroresMateriales.add(new ArrayList<ErrorCrearMaterial>());
-		}
+		//Creo la lista de errores
+		ArrayList<ErrorCrearMateriales> erroresMateriales = new ArrayList<>();
 
 		//Creo una lista de los nombres de materiales voy a buscar en la BD
 		ArrayList<String> materiales_a_buscar_en_la_BD = new ArrayList<>();
 
 		//Reviso que el nombre esté completo
-		for(int i = 0; i < materiales.size(); i++){
-			if(materiales.get(i).getNombre() == null || materiales.get(i).getNombre().isEmpty()){
-				//Si el nombre está incompleto agrego el error
-				erroresMateriales.get(i).add(ErrorCrearMaterial.NombreIncompleto);
+		boolean nombreIncompletoEncontrado = false;
+		for(Material m: materiales){
+			if(m.getNombre() == null || m.getNombre().isEmpty()){
+				nombreIncompletoEncontrado = true;
 			}
 			else{
 				//Si el nombre está completo lo busco en la BD
-				materiales_a_buscar_en_la_BD.add(materiales.get(i).getNombre());
+				materiales_a_buscar_en_la_BD.add(m.getNombre());
 			}
 		}
+		//Si encontré un nombre incompleto, agrego el error
+		if(nombreIncompletoEncontrado){
+			erroresMateriales.add(ErrorCrearMateriales.NombreIncompleto);
+		}
 
+		//Si hay materiales a buscar
 		if(!materiales_a_buscar_en_la_BD.isEmpty()){
-			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(
-					new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
 
-			//veo qué materiales están repetidos
-			for(int i = 0; i < materiales.size(); i++){
-				for(Material c: materiales_coincidentes){
-					if(materiales.get(i).getNombre().equals(c.getNombre())){
-						erroresMateriales.get(i).add(ErrorCrearMaterial.NombreRepetido);
-					}
+			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
+			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
+			if(!materiales_coincidentes.isEmpty()){
+				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
+				for(Material material: materiales_coincidentes){
+					nombresMaterialesRepetidos.add(material.toString());
 				}
 			}
 		}
 
-		//Creo e inicializo la lista de resultados para cada material
-		ArrayList<ResultadoCrearMaterial> resultados = new ArrayList<>(materiales.size());
-		for(ArrayList<ErrorCrearMaterial> errores: erroresMateriales){
-			resultados.add(new ResultadoCrearMaterial(errores.toArray(new ErrorCrearMaterial[0])));
+		//veo si hay nombres que se repiten entre los nuevos materiales
+		boolean nombreIngresadoRepetidoEncontrado = false;
+		itMaterialesAGuardar = materiales.listIterator();
+
+		while(itMaterialesAGuardar.hasNext() && !nombreIngresadoRepetidoEncontrado){
+			materialAGuardar = itMaterialesAGuardar.next();
+			itMaterialesGuardados = materiales.listIterator(itMaterialesAGuardar.nextIndex());
+			while(itMaterialesGuardados.hasNext() && !nombreIngresadoRepetidoEncontrado){
+				materialGuardado = itMaterialesGuardados.next();
+				if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
+						materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
+					nombreIngresadoRepetidoEncontrado = true;
+					erroresMateriales.add(ErrorCrearMateriales.NombreIngresadoRepetido);
+				}
+			}
 		}
 
-		return resultados;
+		return new ResultadoCrearMateriales(nombresMaterialesRepetidos, erroresMateriales.toArray(new ErrorCrearMateriales[0]));
 	}
 
-	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
+
+		if(resultado.hayErrores() == false){
+			//TODO persistidorTaller.bajaMateriales(materiales);
+		}
+
+		return resultado;
 	}
 
+	private ResultadoEliminarMateriales validarEliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		//Creo la lista de errores
+		ArrayList<ErrorEliminarMateriales> erroresMateriales = new ArrayList<>();
+
+		//Busco las piezas activas asociadas a los materiales
+		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
+
+		//Separo las piezas por material
+		Map<String, List<String>> piezasAsociadasPorMaterial = new HashMap<>();
+
+		if(!piezasAsociadas.isEmpty()){
+			for(Material material: materiales){
+				ArrayList<String> piezasDelMaterial = new ArrayList<>();
+				piezasAsociadasPorMaterial.put(material.toString(), piezasDelMaterial);
+
+				for(Pieza pieza: piezasAsociadas){
+					if(material.equals(pieza.getMaterial())){
+						piezasDelMaterial.add(pieza.toString());
+					}
+				}
+			}
+
+			erroresMateriales.add(ErrorEliminarMateriales.PiezasActivasAsociadas);
+		}
+
+		return new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, erroresMateriales.toArray(new ErrorEliminarMateriales[0]));
+	}
 }
