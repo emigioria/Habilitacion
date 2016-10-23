@@ -118,7 +118,7 @@ public class FiltroTarea extends Filtro {
 				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
 						((builder.herramienta != null) ? ("herr = :her AND ") : ("")) +
 						((builder.operario != null) ? (builder.nombreEntidad + ".operario = :op AND ") : ("")) +
-						((builder.fecha != null) ? (builder.nombreEntidad + ".fecha = :fec ") : (""));
+						((builder.fecha != null) ? (builder.nombreEntidad + ".fecha = :fec AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
