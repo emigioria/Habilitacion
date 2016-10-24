@@ -9,8 +9,6 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -65,10 +63,7 @@ public class NMMaquinaController extends ControladorRomano {
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
 
-	private Maquina maquina = null;
-
-	//flags de cambio
-	private boolean cambioNombre = false;
+	private Maquina maquina;
 
 	@FXML
 	private void initialize() {
@@ -122,25 +117,17 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 			});
 
-			tablaPartes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Parte>() {
-				@Override
-				public void changed(ObservableValue<? extends Parte> ovs, Parte viejo, Parte nuevo) {
-					Platform.runLater(() -> {
-						try{
-							tablaPiezas.getItems().clear();
+			tablaPartes.getSelectionModel().selectedItemProperty().addListener((ovs, viejo, nuevo) -> {
+				Platform.runLater(() -> {
+					tablaPiezas.getItems().clear();
+					try{
+						if(nuevo != null){
 							tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
-						} catch(PersistenciaException e){
-							PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 						}
-					});
-				}
-			});
-
-			nombreMaquina.textProperty().addListener((observable, oldValue, newValue) -> {
-				cambioNombre = true;
-				if(maquina != null){
-					maquina.setNombre(newValue);
-				}
+					} catch(PersistenciaException e){
+						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+					}
+				});
 			});
 
 			actualizar();
@@ -169,18 +156,35 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
+		Boolean hayErrores;
+		if(maquina == null){
+			hayErrores = crearMaquina();
+		}
+		else{
+			hayErrores = modificarMaquina();
+		}
+		if(hayErrores != null && !hayErrores){
+			salir();
+		}
+	}
+
+	private Boolean crearMaquina() {
 		ResultadoCrearMaquina resultado;
 		StringBuffer erroresBfr = new StringBuffer();
+		Maquina maquina = new Maquina();
+
+		//Toma de datos de la vista
+		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
 
 		//Inicio transacciones al gestor
 		try{
 			resultado = coordinador.crearMaquina(maquina);
 		} catch(PersistenciaException e){
 			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-			return;
+			return true;
 		} catch(Exception e){
 			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-			return;
+			return true;
 		}
 
 		//Tratamiento de errores
@@ -195,26 +199,32 @@ public class NMMaquinaController extends ControladorRomano {
 					break;
 				}
 			}
-		}
 
-		String errores = erroresBfr.toString();
-		if(!errores.isEmpty()){
-			new VentanaError("Error al crear la máquina", errores, apilador.getStage());
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear la máquina", errores, apilador.getStage());
+			}
+			return true;
 		}
 		else{
 			new VentanaInformacion("Operación exitosa", "Se ha creado la máquina con éxito");
-
+			return false;
 		}
 	}
 
+	private Boolean modificarMaquina() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 	public void formatearNuevaMaquina() {
-		this.maquina = new Maquina();
-		hacerBindings();
+
 	}
 
 	public void formatearModificarMaquina(Maquina maquina) {
 		this.maquina = maquina;
-		hacerBindings();
+		nombreMaquina.setText(maquina.getNombre());
+		actualizar();
 	}
 
 	@Override
@@ -224,14 +234,11 @@ public class NMMaquinaController extends ControladorRomano {
 				if(maquina != null){
 					tablaPartes.getItems().clear();
 					tablaPartes.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(maquina).build()));
+					tablaPiezas.getItems().clear();
 				}
 			} catch(PersistenciaException e){
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
-	}
-
-	private void hacerBindings() {
-		nombreMaquina.textProperty().bindBidirectional(new SimpleStringProperty(maquina.getNombre()));
 	}
 }

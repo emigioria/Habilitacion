@@ -59,6 +59,16 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
+		ResultadoCrearMaquina resultado = validarCrearMaquina(maquina);
+
+		if(!resultado.hayErrores()){
+			persistidorTaller.guardarMaquina(maquina);
+		}
+
+		return resultado;
+	}
+
+	public ResultadoCrearMaquina validarCrearMaquina(Maquina maquina) throws PersistenciaException {
 		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
 			errores.add(ErrorCrearMaquina.NombreIncompleto);
@@ -69,13 +79,8 @@ public class TallerGestor {
 				errores.add(ErrorCrearMaquina.NombreRepetido);
 			}
 		}
-		ResultadoCrearMaquina resultado = new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
 
-		if(!resultado.hayErrores()){
-			persistidorTaller.guardarMaquina(maquina);
-		}
-
-		return resultado;
+		return new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
 	}
 
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {

@@ -80,7 +80,7 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+		String select = "SELECT DISTINCT " + builder.nombreEntidad;
 		return select;
 	}
 
