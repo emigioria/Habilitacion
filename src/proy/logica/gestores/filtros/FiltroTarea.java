@@ -23,7 +23,8 @@ public class FiltroTarea extends Filtro {
 	private EstadoTareaStr noEstado;
 	private Herramienta herramienta;
 	private Operario operario;
-	private Date fecha;
+	private Date fechaPlanificadaInicio;
+	private Date fechaPlanificadaFin;
 
 	public static class Builder {
 
@@ -31,7 +32,8 @@ public class FiltroTarea extends Filtro {
 		private EstadoTareaStr noEstado;
 		private Herramienta herramienta;
 		private Operario operario;
-		private Date fecha;
+		private Date fechaPlanificadaInicio;
+		private Date fechaPlanificadaFin;
 
 		public Builder() {
 			super();
@@ -57,8 +59,13 @@ public class FiltroTarea extends Filtro {
 			return this;
 		}
 
-		public Builder fecha(Date fecha) {
-			this.fecha = fecha;
+		public Builder fechaPlanificadaInicio(Date fechaPlanificadaInicio) {
+			this.fechaPlanificadaInicio = fechaPlanificadaInicio;
+			return this;
+		}
+
+		public Builder fechaPlanificadaFin(Date fechaPlanificadaFin) {
+			this.fechaPlanificadaFin = fechaPlanificadaFin;
 			return this;
 		}
 
@@ -71,7 +78,8 @@ public class FiltroTarea extends Filtro {
 		this.noEstado = builder.noEstado;
 		this.herramienta = builder.herramienta;
 		this.operario = builder.operario;
-		this.fecha = builder.fecha;
+		this.fechaPlanificadaInicio = builder.fechaPlanificadaInicio;
+		this.fechaPlanificadaFin = builder.fechaPlanificadaFin;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -118,7 +126,8 @@ public class FiltroTarea extends Filtro {
 				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
 						((builder.herramienta != null) ? ("herr = :her AND ") : ("")) +
 						((builder.operario != null) ? (builder.nombreEntidad + ".operario = :op AND ") : ("")) +
-						((builder.fecha != null) ? (builder.nombreEntidad + ".fecha = :fec AND ") : (""));
+						((builder.fechaPlanificadaInicio != null) ? (builder.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
+						((builder.fechaPlanificadaFin != null) ? (builder.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -153,8 +162,11 @@ public class FiltroTarea extends Filtro {
 		if(operario != null){
 			query.setParameter("op", operario);
 		}
-		if(fecha != null){
-			query.setParameter("fec", fecha);
+		if(fechaPlanificadaInicio != null){
+			query.setParameter("fpi", fechaPlanificadaInicio);
+		}
+		if(fechaPlanificadaFin != null){
+			query.setParameter("fpf", fechaPlanificadaFin);
 		}
 		return query;
 	}
