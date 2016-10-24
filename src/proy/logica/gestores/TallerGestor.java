@@ -135,7 +135,7 @@ public class TallerGestor {
 	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		ResultadoCrearMateriales resultado = validarCrearMateriales(materiales);
 
-		if(resultado.hayErrores() == false){
+		if(!resultado.hayErrores()){
 			persistidorTaller.guardarMateriales(materiales);
 		}
 		return resultado;
@@ -204,21 +204,25 @@ public class TallerGestor {
 	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
 
-		if(resultado.hayErrores() == false){
-			//obtengo las piezas dadas de baja asociadas al material
-			ArrayList<Pieza> piezasNoActivasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).setBaja().build());
+		if(!resultado.hayErrores()){
+			ArrayList<Material> materialesABajaLogica;
 			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
-			ArrayList<Material> materialesABajaLogica = new ArrayList<>(materiales);
-			for(Pieza pieza: piezasNoActivasAsociadas){
-				materialesABajaFisica.remove(pieza.getMaterial());
-			}
-			materialesABajaLogica.removeAll(materialesABajaFisica);
 
-			//si el material no tiene piezas no activas asociadas, se le da baja fisica
+			ArrayList<String> nombresMateriales = new ArrayList<>();
+			for(Material material: materiales){
+				nombresMateriales.add(material.getNombre());
+			}
+
+			//si el material tiene piezas asociadas, se le da baja lógica
+			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMateriales).conPiezas().build());
+
+			//si el material no tiene piezas asociadas, se le da baja fisica
+			materialesABajaFisica.removeAll(materialesABajaLogica);
+
 			if(!materialesABajaFisica.isEmpty()){
 				persistidorTaller.bajaMateriales(materialesABajaFisica);
 			}
-			//si el material tiene piezas no activas asociadas, se le da baja lógica
+
 			if(!materialesABajaLogica.isEmpty()){
 				for(Material material: materialesABajaLogica){
 					material.setEstado(new Estado(EstadoStr.BAJA));
