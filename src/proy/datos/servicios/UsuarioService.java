@@ -25,6 +25,8 @@ public interface UsuarioService {
 
 	public void guardarOperario(Operario operario) throws PersistenciaException;
 
+	public void actualizarOperario(Operario operario) throws PersistenciaException;
+
 	public void bajaOperario(Operario operario) throws PersistenciaException;
 
 }
