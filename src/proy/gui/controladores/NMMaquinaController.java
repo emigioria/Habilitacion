@@ -9,6 +9,8 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -21,6 +23,8 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
+import proy.logica.gestores.filtros.FiltroParte;
+import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 
@@ -61,7 +65,7 @@ public class NMMaquinaController extends ControladorRomano {
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
 
-	private Maquina maquina;
+	private Maquina maquina = null;
 
 	//flags de cambio
 	private boolean cambioNombre = false;
@@ -117,6 +121,29 @@ public class NMMaquinaController extends ControladorRomano {
 					return new SimpleStringProperty("<no name>");
 				}
 			});
+
+			tablaPartes.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Parte>() {
+				@Override
+				public void changed(ObservableValue<? extends Parte> ovs, Parte viejo, Parte nuevo) {
+					Platform.runLater(() -> {
+						try{
+							tablaPiezas.getItems().clear();
+							tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
+						} catch(PersistenciaException e){
+							PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+						}
+					});
+				}
+			});
+
+			nombreMaquina.textProperty().addListener((observable, oldValue, newValue) -> {
+				cambioNombre = true;
+				if(maquina != null){
+					maquina.setNombre(newValue);
+				}
+			});
+
+			actualizar();
 		});
 	}
 
@@ -181,19 +208,30 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	public void formatearNuevaMaquina() {
-		maquina = new Maquina();
-		nombreMaquina.textProperty().addListener((observable, oldValue, newValue) -> {
-			cambioNombre = true;
-			maquina.setNombre(newValue);
-		});
+		this.maquina = new Maquina();
+		hacerBindings();
 	}
 
 	public void formatearModificarMaquina(Maquina maquina) {
-
+		this.maquina = maquina;
+		hacerBindings();
 	}
 
 	@Override
 	public void actualizar() {
+		Platform.runLater(() -> {
+			try{
+				if(maquina != null){
+					tablaPartes.getItems().clear();
+					tablaPartes.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(maquina).build()));
+				}
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			}
+		});
+	}
 
+	private void hacerBindings() {
+		nombreMaquina.textProperty().bindBidirectional(new SimpleStringProperty(maquina.getNombre()));
 	}
 }

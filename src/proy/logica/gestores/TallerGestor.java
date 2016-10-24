@@ -103,7 +103,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
-		return listarPiezas(filtro);
+		return persistidorTaller.obtenerPiezas(filtro);
 	}
 
 	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
