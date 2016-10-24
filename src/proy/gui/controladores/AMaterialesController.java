@@ -162,11 +162,10 @@ public class AMaterialesController extends ControladorRomano {
 					break;
 				}
 			}
-		}
-
-		String errores = erroresBfr.toString();
-		if(!errores.isEmpty()){
-			new VentanaError("Error al crear materiales", errores, apilador.getStage());
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear materiales", errores, apilador.getStage());
+			}
 		}
 		else{
 			materialesAGuardar.clear();
@@ -224,11 +223,11 @@ public class AMaterialesController extends ControladorRomano {
 					break;
 				}
 			}
-		}
 
-		String errores = erroresBfr.toString();
-		if(!errores.isEmpty()){
-			new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+			}
 		}
 		else{
 			materialesAEliminar.clear();
