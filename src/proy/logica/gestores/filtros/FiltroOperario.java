@@ -111,9 +111,6 @@ public class FiltroOperario extends Filtro {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
-		if(DNI != null){
-			query.setParameter("DNI", DNI);
-		}
 		return query;
 	}
 
