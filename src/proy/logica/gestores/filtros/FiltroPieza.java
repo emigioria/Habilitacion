@@ -42,6 +42,11 @@ public class FiltroPieza extends Filtro {
 			return this;
 		}
 
+		public Builder setBaja() {
+			this.estado = EstadoStr.BAJA;
+			return this;
+		}
+
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
 		}

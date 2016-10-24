@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -203,7 +205,27 @@ public class TallerGestor {
 		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
 
 		if(resultado.hayErrores() == false){
-			persistidorTaller.bajaMateriales(materiales);
+			//obtengo las piezas dadas de baja asociadas al material
+			ArrayList<Pieza> piezasNoActivasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).setBaja().build());
+			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
+			ArrayList<Material> materialesABajaLogica = new ArrayList<>(materiales);
+			for(Pieza pieza: piezasNoActivasAsociadas){
+				materialesABajaFisica.remove(pieza.getMaterial());
+			}
+			materialesABajaLogica.removeAll(materialesABajaFisica);
+
+			//si el material no tiene piezas no activas asociadas, se le da baja fisica
+			if(!materialesABajaFisica.isEmpty()){
+				persistidorTaller.bajaMateriales(materialesABajaFisica);
+			}
+			//si el material tiene piezas no activas asociadas, se le da baja lógica
+			if(!materialesABajaLogica.isEmpty()){
+				for(Material material: materialesABajaLogica){
+					material.setEstado(new Estado(EstadoStr.BAJA));
+				}
+				persistidorTaller.actualizarMateriales(materialesABajaLogica);
+			}
+
 		}
 
 		return resultado;

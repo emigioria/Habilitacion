@@ -256,4 +256,22 @@ public class TallerServiceImpl implements TallerService {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			for(Material material: materiales){
+				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+				session.update(material);
+			}
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
 }
