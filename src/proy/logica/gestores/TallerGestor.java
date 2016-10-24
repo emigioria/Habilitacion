@@ -34,6 +34,7 @@ import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
@@ -58,7 +59,23 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
+		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
+			errores.add(ErrorCrearMaquina.NombreIncompleto);
+		}
+		else{
+			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
+			if(!maquinasRepetidas.isEmpty()){
+				errores.add(ErrorCrearMaquina.NombreRepetido);
+			}
+		}
+		ResultadoCrearMaquina resultado = new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
+
+		if(!resultado.hayErrores()){
+			persistidorTaller.guardarMaquina(maquina);
+		}
+
+		return resultado;
 	}
 
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {

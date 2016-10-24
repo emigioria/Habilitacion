@@ -17,6 +17,12 @@ import javafx.scene.control.TextField;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
+import proy.excepciones.PersistenciaException;
+import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.VentanaError;
+import proy.gui.componentes.VentanaInformacion;
+import proy.logica.gestores.resultados.ResultadoCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 
 public class NMMaquinaController extends ControladorRomano {
 
@@ -54,6 +60,11 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
+
+	private Maquina maquina;
+
+	//flags de cambio
+	private boolean cambioNombre = false;
 
 	@FXML
 	private void initialize() {
@@ -131,11 +142,50 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
+		ResultadoCrearMaquina resultado;
+		StringBuffer erroresBfr = new StringBuffer();
 
+		//Inicio transacciones al gestor
+		try{
+			resultado = coordinador.crearMaquina(maquina);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultado.hayErrores()){
+			for(ErrorCrearMaquina e: resultado.getErrores()){
+				switch(e) {
+				case NombreIncompleto:
+					erroresBfr.append("El nombre de la máquina está vacío.\n");
+					break;
+				case NombreRepetido:
+					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
+					break;
+				}
+			}
+		}
+
+		String errores = erroresBfr.toString();
+		if(!errores.isEmpty()){
+			new VentanaError("Error al crear la máquina", errores, apilador.getStage());
+		}
+		else{
+			new VentanaInformacion("Operación exitosa", "Se ha creado la máquina con éxito");
+
+		}
 	}
 
 	public void formatearNuevaMaquina() {
-
+		maquina = new Maquina();
+		nombreMaquina.textProperty().addListener((observable, oldValue, newValue) -> {
+			cambioNombre = true;
+			maquina.setNombre(newValue);
+		});
 	}
 
 	public void formatearModificarMaquina(Maquina maquina) {

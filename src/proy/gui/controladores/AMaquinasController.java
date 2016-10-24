@@ -8,12 +8,19 @@ package proy.gui.controladores;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import proy.comun.FormateadorString;
 import proy.datos.entidades.Maquina;
+import proy.excepciones.PersistenciaException;
+import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.TableCellTextViewString;
+import proy.logica.gestores.filtros.FiltroMaquina;
 
 public class AMaquinasController extends ControladorRomano {
 
@@ -31,15 +38,28 @@ public class AMaquinasController extends ControladorRomano {
 	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
-			columnaNombre.setCellValueFactory((CellDataFeatures<Maquina, String> param) -> {
+			columnaNombre.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				return new SimpleStringProperty("<Sin nombre>");
 			});
 		});
+
+		Callback<TableColumn<Maquina, String>, TableCell<Maquina, String>> call = col -> {
+			return new TableCellTextViewString<Maquina>() {
+
+				@Override
+				public void changed(ObservableValue<? extends Maquina> observable, Maquina oldValue, Maquina newValue) {
+					this.setEditable(false);
+				}
+			};
+		};
+		columnaNombre.setCellFactory(call);
+
+		actualizar();
 	}
 
 	@FXML
@@ -64,6 +84,13 @@ public class AMaquinasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
-
+		Platform.runLater(() -> {
+			try{
+				tablaMaquinas.getItems().clear();
+				tablaMaquinas.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			}
+		});
 	}
 }
