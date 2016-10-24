@@ -15,10 +15,12 @@ public class FiltroMaquina extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private String nombre;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
+		private String nombre = null;
 
 		public Builder() {
 			super();
@@ -29,12 +31,19 @@ public class FiltroMaquina extends Filtro {
 			return this;
 		}
 
+		public Builder nombre(String nombre) {
+			this.nombre = nombre;
+			return this;
+		}
+
 		public FiltroMaquina build() {
 			return new FiltroMaquina(this);
 		}
 	}
 
 	private FiltroMaquina(Builder builder) {
+		this.nombre = builder.nombre;
+
 		setConsulta(builder);
 		setNamedQuery(builder);
 	}
@@ -44,6 +53,9 @@ public class FiltroMaquina extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(nombre != null){
+			return;
+		}
 		namedQuery = "listarMaquinas";
 	}
 
@@ -58,7 +70,12 @@ public class FiltroMaquina extends Filtro {
 	}
 
 	private String getWhere(Builder builder) {
-		String where = "";
+		String where = ((builder.nombre != null) ? (builder.nombreEntidad + ".nombre = :nom AND ") : (""));
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -79,6 +96,9 @@ public class FiltroMaquina extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
+		if(nombre != null){
+			query.setParameter("nom", nombre);
+		}
 		return query;
 	}
 

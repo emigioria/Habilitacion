@@ -167,6 +167,22 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
+	public void actualizarPieza(Pieza pieza) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+			session.update(pieza);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
 	public void bajaPieza(Pieza pieza) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
@@ -195,6 +211,22 @@ public class TallerServiceImpl implements TallerService {
 			Session session = getSessionFactory().getCurrentSession();
 			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
 			session.save(herramienta);
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+			session.update(herramienta);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
 		} catch(Exception e){
 			e.printStackTrace();
 			throw new SaveUpdateException();
@@ -241,10 +273,30 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaMaterial(Material material) throws PersistenciaException {
+	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			for(Material material: materiales){
+				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+				session.update(material);
+			}
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			session.delete(material);
+			for(Material material: materiales){
+				session.delete(material);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

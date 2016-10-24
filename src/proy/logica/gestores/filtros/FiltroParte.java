@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Maquina;
 import proy.datos.servicios.Filtro;
 
 public class FiltroParte extends Filtro {
@@ -17,11 +18,13 @@ public class FiltroParte extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
+	private Maquina maquina;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
+		private Maquina maquina;
 
 		public Builder() {
 			super();
@@ -32,6 +35,11 @@ public class FiltroParte extends Filtro {
 			return this;
 		}
 
+		public Builder maquina(Maquina maquina) {
+			this.maquina = maquina;
+			return this;
+		}
+
 		public FiltroParte build() {
 			return new FiltroParte(this);
 		}
@@ -39,6 +47,7 @@ public class FiltroParte extends Filtro {
 
 	private FiltroParte(Builder builder) {
 		this.estado = builder.estado;
+		this.maquina = builder.maquina;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -49,6 +58,9 @@ public class FiltroParte extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(maquina != null){
+			return;
+		}
 		namedQuery = "listarPartes";
 	}
 
@@ -64,7 +76,8 @@ public class FiltroParte extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -92,6 +105,9 @@ public class FiltroParte extends Filtro {
 	public Query setParametros(Query query) {
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(maquina != null){
+			query.setParameter("maq", maquina);
 		}
 		return query;
 	}

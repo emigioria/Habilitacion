@@ -91,6 +91,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
+	public void actualizarOperario(Operario operario) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
+			session.update(operario);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
 	public void bajaOperario(Operario operario) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();

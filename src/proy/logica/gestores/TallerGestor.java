@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -32,6 +34,7 @@ import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
@@ -56,7 +59,23 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
+		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
+			errores.add(ErrorCrearMaquina.NombreIncompleto);
+		}
+		else{
+			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
+			if(!maquinasRepetidas.isEmpty()){
+				errores.add(ErrorCrearMaquina.NombreRepetido);
+			}
+		}
+		ResultadoCrearMaquina resultado = new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
+
+		if(!resultado.hayErrores()){
+			persistidorTaller.guardarMaquina(maquina);
+		}
+
+		return resultado;
 	}
 
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
@@ -84,7 +103,7 @@ public class TallerGestor {
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
-		return listarPiezas(filtro);
+		return persistidorTaller.obtenerPiezas(filtro);
 	}
 
 	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
@@ -133,7 +152,7 @@ public class TallerGestor {
 	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		ResultadoCrearMateriales resultado = validarCrearMateriales(materiales);
 
-		if(resultado.hayErrores() == false){
+		if(!resultado.hayErrores()){
 			persistidorTaller.guardarMateriales(materiales);
 		}
 		return resultado;
@@ -202,8 +221,32 @@ public class TallerGestor {
 	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
 
-		if(resultado.hayErrores() == false){
-			//TODO persistidorTaller.bajaMateriales(materiales);
+		if(!resultado.hayErrores()){
+			ArrayList<Material> materialesABajaLogica;
+			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
+
+			ArrayList<String> nombresMateriales = new ArrayList<>();
+			for(Material material: materiales){
+				nombresMateriales.add(material.getNombre());
+			}
+
+			//si el material tiene piezas asociadas, se le da baja lógica
+			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMateriales).conPiezas().build());
+
+			//si el material no tiene piezas asociadas, se le da baja fisica
+			materialesABajaFisica.removeAll(materialesABajaLogica);
+
+			if(!materialesABajaFisica.isEmpty()){
+				persistidorTaller.bajaMateriales(materialesABajaFisica);
+			}
+
+			if(!materialesABajaLogica.isEmpty()){
+				for(Material material: materialesABajaLogica){
+					material.setEstado(new Estado(EstadoStr.BAJA));
+				}
+				persistidorTaller.actualizarMateriales(materialesABajaLogica);
+			}
+
 		}
 
 		return resultado;
