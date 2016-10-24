@@ -17,8 +17,6 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
-import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -247,7 +245,7 @@ public class TallerGestor {
 
 			if(!materialesABajaLogica.isEmpty()){
 				for(Material material: materialesABajaLogica){
-					material.setEstado(new Estado(EstadoStr.BAJA));
+					material.darDeBaja();
 				}
 				persistidorTaller.actualizarMateriales(materialesABajaLogica);
 			}

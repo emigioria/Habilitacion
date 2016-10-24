@@ -85,6 +85,10 @@ public class Material {
 		this.estado = estado;
 	}
 
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
