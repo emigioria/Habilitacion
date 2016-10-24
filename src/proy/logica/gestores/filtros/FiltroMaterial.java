@@ -25,6 +25,7 @@ public class FiltroMaterial extends Filtro {
 
 		private String nombreEntidad = "a";
 		private ArrayList<String> nombres;
+		private Boolean conPiezas;
 		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
@@ -40,6 +41,11 @@ public class FiltroMaterial extends Filtro {
 			if(nombres != null && !nombres.isEmpty()){
 				this.nombres = nombres;
 			}
+			return this;
+		}
+
+		public Builder conPiezas() {
+			this.conPiezas = true;
 			return this;
 		}
 
@@ -67,6 +73,9 @@ public class FiltroMaterial extends Filtro {
 		if(builder.estado != EstadoStr.ALTA){
 			return;
 		}
+		if(builder.conPiezas != null){
+			return;
+		}
 		namedQuery = "listarMateriales";
 	}
 
@@ -76,14 +85,21 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Material " + builder.nombreEntidad;
+		String from;
+		if(builder.conPiezas != null && builder.conPiezas){
+			from = " FROM Material " + builder.nombreEntidad + ", Pieza piez ";
+		}
+		else{
+			from = " FROM Material " + builder.nombreEntidad;
+		}
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""))
+						+ ((builder.conPiezas != null) ? ((builder.conPiezas) ? (builder.nombreEntidad + " = piez.material AND ") : ("")) : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

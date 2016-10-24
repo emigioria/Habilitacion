@@ -37,11 +37,15 @@ public interface TallerService {
 
 	public void guardarPieza(Pieza pieza) throws PersistenciaException;
 
+	public void actualizarPieza(Pieza pieza) throws PersistenciaException;
+
 	public void bajaPieza(Pieza pieza) throws PersistenciaException;
 
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException;
 
 	public void guardarHerramienta(Herramienta herramienta) throws PersistenciaException;
+
+	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException;
 
 	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException;
 
@@ -49,8 +53,8 @@ public interface TallerService {
 
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
-	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException;
+	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
-	void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
+	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
 }
