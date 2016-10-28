@@ -57,7 +57,7 @@ public class AHerramientasController extends ControladorRomano {
 			});
 
 			Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
-				return new TableCellTextViewString<Herramienta>() {
+				return new TableCellTextViewString<Herramienta>(Herramienta.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Herramienta> observable, Herramienta oldValue, Herramienta newValue) {

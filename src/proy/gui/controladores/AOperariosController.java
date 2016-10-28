@@ -74,7 +74,7 @@ public class AOperariosController extends ControladorRomano {
 			});
 
 			Callback<TableColumn<Operario, String>, TableCell<Operario, String>> call = col -> {
-				return new TableCellTextViewString<Operario>() {
+				return new TableCellTextViewString<Operario>(Operario.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {

@@ -1,5 +1,7 @@
 package proy.gui.componentes;
 
+import java.util.Optional;
+
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
@@ -13,10 +15,13 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 
 	private TextField textField;
 	private StringConverter<T> convertidor;
+	private Class<? extends O> claseTabla;
+	private O objeto = null;
 
 	@SuppressWarnings("unchecked")
-	public TableCellTextView(StringConverter<T> convertidor) {
+	public TableCellTextView(Class<? extends O> claseTabla, StringConverter<T> convertidor) {
 		super();
+		this.claseTabla = claseTabla;
 		this.convertidor = convertidor;
 		//Cuando la fila es seteada...
 		this.tableRowProperty().addListener((observable, oldValue, newValue) -> {
@@ -78,12 +83,14 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	private String getString() {
-		if(getTableColumn().getCellValueFactory() != null){
-			T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), (O) getTableRow().getItem())).getValue();
-			if(valor != null){
-				return valor.toString();
+		Optional.ofNullable(getTableRow().getItem()).filter(claseTabla::isInstance).map(claseTabla::cast).ifPresent(n -> objeto = n);
+		if(objeto != null){
+			if(getTableColumn().getCellValueFactory() != null){
+				T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), objeto)).getValue();
+				if(valor != null){
+					return valor.toString();
+				}
 			}
 		}
 		return getItem() == null ? "" : getItem().toString();

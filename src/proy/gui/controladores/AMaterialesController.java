@@ -73,7 +73,7 @@ public class AMaterialesController extends ControladorRomano {
 			});
 
 			Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
-				return new TableCellTextViewString<Material>() {
+				return new TableCellTextViewString<Material>(Material.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
