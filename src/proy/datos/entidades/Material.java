@@ -121,6 +121,9 @@ public class Material {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
+		else{
+			return true;
+		}
 		if(estado == null){
 			if(other.estado != null){
 				return false;

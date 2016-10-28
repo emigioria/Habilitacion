@@ -85,6 +85,9 @@ public class Maquina {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
+		else{
+			return true;
+		}
 		if(nombre == null){
 			if(other.nombre != null){
 				return false;

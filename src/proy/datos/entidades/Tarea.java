@@ -207,6 +207,17 @@ public class Tarea {
 			return false;
 		}
 		Tarea other = (Tarea) obj;
+		if(codigo == null){
+			if(other.codigo != null){
+				return false;
+			}
+		}
+		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
 		if(cantidadReal == null){
 			if(other.cantidadReal != null){
 				return false;
@@ -221,14 +232,6 @@ public class Tarea {
 			}
 		}
 		else if(!cantidadSolicitada.equals(other.cantidadSolicitada)){
-			return false;
-		}
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
 		if(estado == null){

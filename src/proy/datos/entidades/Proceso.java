@@ -193,6 +193,9 @@ public class Proceso {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
+		else{
+			return true;
+		}
 		if(descripcion == null){
 			if(other.descripcion != null){
 				return false;

@@ -123,20 +123,23 @@ public abstract class Usuario {
 			return false;
 		}
 		Usuario other = (Usuario) obj;
-		if(apellido == null){
-			if(other.apellido != null){
-				return false;
-			}
-		}
-		else if(!apellido.equals(other.apellido)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(apellido == null){
+			if(other.apellido != null){
+				return false;
+			}
+		}
+		else if(!apellido.equals(other.apellido)){
 			return false;
 		}
 		if(dni == null){

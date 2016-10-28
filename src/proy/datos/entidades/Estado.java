@@ -85,6 +85,9 @@ public class Estado {
 		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
+		else{
+			return true;
+		}
 		if(nombre != other.nombre){
 			return false;
 		}

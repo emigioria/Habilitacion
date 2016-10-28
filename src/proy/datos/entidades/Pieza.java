@@ -161,20 +161,23 @@ public class Pieza {
 			return false;
 		}
 		Pieza other = (Pieza) obj;
-		if(cantidad == null){
-			if(other.cantidad != null){
-				return false;
-			}
-		}
-		else if(!cantidad.equals(other.cantidad)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(cantidad == null){
+			if(other.cantidad != null){
+				return false;
+			}
+		}
+		else if(!cantidad.equals(other.cantidad)){
 			return false;
 		}
 		if(codigoPlano == null){

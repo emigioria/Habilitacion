@@ -126,20 +126,23 @@ public class Pausa implements Serializable {
 			return false;
 		}
 		Pausa other = (Pausa) obj;
-		if(causa == null){
-			if(other.causa != null){
-				return false;
-			}
-		}
-		else if(!causa.equals(other.causa)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(causa == null){
+			if(other.causa != null){
+				return false;
+			}
+		}
+		else if(!causa.equals(other.causa)){
 			return false;
 		}
 		if(fechaHoraFin == null){

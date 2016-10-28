@@ -110,20 +110,23 @@ public class Comentario {
 			return false;
 		}
 		Comentario other = (Comentario) obj;
-		if(texto == null){
-			if(other.texto != null){
-				return false;
-			}
-		}
-		else if(!texto.equals(other.texto)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(texto == null){
+			if(other.texto != null){
+				return false;
+			}
+		}
+		else if(!texto.equals(other.texto)){
 			return false;
 		}
 		if(fechaComentario == null){

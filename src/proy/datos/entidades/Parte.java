@@ -122,20 +122,23 @@ public class Parte {
 			return false;
 		}
 		Parte other = (Parte) obj;
-		if(cantidad == null){
-			if(other.cantidad != null){
-				return false;
-			}
-		}
-		else if(!cantidad.equals(other.cantidad)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(cantidad == null){
+			if(other.cantidad != null){
+				return false;
+			}
+		}
+		else if(!cantidad.equals(other.cantidad)){
 			return false;
 		}
 		if(estado == null){
