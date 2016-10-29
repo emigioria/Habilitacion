@@ -16,6 +16,7 @@ import proy.comun.FormateadorString;
 import proy.datos.entidades.Maquina;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.VentanaConfirmacion;
 import proy.logica.gestores.filtros.FiltroMaquina;
 
 public class AMaquinasController extends ControladorRomano {
@@ -64,7 +65,25 @@ public class AMaquinasController extends ControladorRomano {
 
 	@FXML
 	public void eliminarMaquina() {
+		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
+		if(maquina != null){
+			//se pregunta al usuario si desea confirmar la elininación de la máquina
+			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmación eliminar máquina",
+					"Se eliminará la máquina <"+maquina.getNombre()+"> y sus componentes de forma permanente. "
+							+ "¿Está seguro de que desea continuar?",
+							apilador.getStage());
 
+			if(vc.acepta()){
+				//Inicio transacciones al gestor
+				try{
+					coordinador.eliminarMaquina(maquina);
+				} catch(PersistenciaException e){
+					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				} catch(Exception e){
+					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				}
+			}
+		}
 	}
 
 	@Override

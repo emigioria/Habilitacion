@@ -17,6 +17,8 @@ import javafx.stage.Window;
  *
  */
 public class VentanaConfirmacion extends Alert {
+	
+	ButtonType resultado;
 
 	/**
 	 * Constructor. Genera la ventana
@@ -44,9 +46,10 @@ public class VentanaConfirmacion extends Alert {
 		this.setContentText(mensaje);
 		this.setHeaderText(null);
 		this.setTitle(titulo);
+		resultado = this.showAndWait().get();
 	}
 
 	public Boolean acepta() {
-		return (this.showAndWait().get()) == ButtonType.OK;
+		return resultado == ButtonType.OK;
 	}
 }

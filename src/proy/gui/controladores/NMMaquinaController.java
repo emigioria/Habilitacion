@@ -25,6 +25,8 @@ import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
 public class NMMaquinaController extends ControladorRomano {
 
@@ -156,12 +158,14 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void guardar() {
-		Boolean hayErrores;
+		Boolean hayErrores = null;
 		if(maquina == null){
 			hayErrores = crearMaquina();
 		}
 		else{
-			hayErrores = modificarMaquina();
+			if(huboCambios()){
+				hayErrores = modificarMaquina();
+			}
 		}
 		if(hayErrores != null && !hayErrores){
 			salir();
@@ -213,8 +217,47 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	private Boolean modificarMaquina() {
-		// TODO Auto-generated method stub
-		return true;
+
+		ResultadoModificarMaquina resultado;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
+
+		//Inicio transacciones al gestor
+		try{
+			resultado = coordinador.modificarMaquina(maquina);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return true;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return true;
+		}
+
+		//Tratamiento de errores
+		if(resultado.hayErrores()){
+			for(ErrorModificarMaquina e: resultado.getErrores()){
+				switch(e) {
+				case NombreIncompleto:
+					erroresBfr.append("El nombre de la máquina está vacío.\n");
+					break;
+				case NombreRepetido:
+					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear la máquina", errores, apilador.getStage());
+			}
+			return true;
+		}
+		else{
+			new VentanaInformacion("Operación exitosa", "Se ha creado la máquina con éxito");
+			return false;
+		}
 	}
 
 	public void formatearNuevaMaquina() {
@@ -240,5 +283,12 @@ public class NMMaquinaController extends ControladorRomano {
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
+	}
+
+	private boolean huboCambios() {
+		if(maquina.getNombre().equals(nombreMaquina.getText())){
+			return true;
+		}
+		return false;
 	}
 }
