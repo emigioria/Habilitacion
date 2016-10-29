@@ -17,7 +17,11 @@ import proy.datos.entidades.Maquina;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.VentanaConfirmacion;
+import proy.gui.componentes.VentanaError;
+import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroMaquina;
+import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
+import proy.logica.gestores.resultados.ResultadoEliminarMaquina.ErrorEliminarMaquina;
 
 public class AMaquinasController extends ControladorRomano {
 
@@ -68,19 +72,39 @@ public class AMaquinasController extends ControladorRomano {
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
 		if(maquina != null){
 			//se pregunta al usuario si desea confirmar la elininación de la máquina
-			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmación eliminar máquina",
+			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar máquina",
 					"Se eliminará la máquina <"+maquina.getNombre()+"> y sus componentes de forma permanente. "
 							+ "¿Está seguro de que desea continuar?",
 							apilador.getStage());
 
 			if(vc.acepta()){
+				ResultadoEliminarMaquina resultado = null;
+				StringBuffer erroresBfr = new StringBuffer();
 				//Inicio transacciones al gestor
 				try{
-					coordinador.eliminarMaquina(maquina);
+					resultado = coordinador.eliminarMaquina(maquina);
 				} catch(PersistenciaException e){
 					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				} catch(Exception e){
 					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				}
+				
+				//Tratamiento de errores
+				if(resultado.hayErrores()){
+					for(ErrorEliminarMaquina e: resultado.getErrores()){
+						switch(e) {
+						//no hay errores de eliminar maquina por ahora
+						}
+					}
+
+					String errores = erroresBfr.toString();
+					if(!errores.isEmpty()){
+						new VentanaError("Error al eliminar la máquina", errores, apilador.getStage());
+					}
+				}
+				else{
+					actualizar();
+					new VentanaInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito");
 				}
 			}
 		}

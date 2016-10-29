@@ -13,8 +13,8 @@ import javafx.util.StringConverter;
 
 public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements ChangeListener<O> {
 
-	private TextField textField;
-	private StringConverter<T> convertidor;
+	protected TextField textField;
+	protected StringConverter<T> convertidor;
 	private Class<? extends O> claseTabla;
 	private O objeto = null;
 
@@ -66,7 +66,7 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		}
 	}
 
-	private void createTextField() {
+	protected void createTextField() {
 		textField = new TextField();
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
 		textField.setOnKeyReleased(new EventHandler<KeyEvent>() {

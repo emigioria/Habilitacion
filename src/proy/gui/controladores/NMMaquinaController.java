@@ -6,19 +6,27 @@
  */
 package proy.gui.controladores;
 
+import java.util.ArrayList;
+
 import javafx.application.Platform;
+import javafx.beans.binding.IntegerExpression;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.util.Callback;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
+import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroParte;
@@ -67,6 +75,8 @@ public class NMMaquinaController extends ControladorRomano {
 
 	private Maquina maquina;
 
+	private ArrayList<Parte> partesAGuardar;
+
 	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
@@ -86,6 +96,34 @@ public class NMMaquinaController extends ControladorRomano {
 					return new SimpleIntegerProperty(-1);
 				}
 			});
+			
+			columnaNombreParte.setCellFactory(col -> {
+				return new TableCellTextViewString<Parte>(Parte.class) {
+
+					@Override
+					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+						this.setEditable(false);
+						if(this.getTableRow() != null && newValue != null){
+							this.setEditable(partesAGuardar.contains(newValue));
+						}
+					}
+				};
+			});
+			/* ESTO NO ANDA y no se porqué.
+			 * 
+			columnaCantidadParte.setCellFactory(col -> {
+				return new TableCellTextViewNumber<Parte>(Parte.class) {
+
+					@Override
+					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+						this.setEditable(false);
+						if(this.getTableRow() != null && newValue != null){
+							this.setEditable(partesAGuardar.contains(newValue));
+						}
+					}
+				};
+			});
+			*/
 			columnaNombrePieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
 				if(param.getValue() != null){
 					return new SimpleStringProperty(param.getValue().getNombre());
@@ -138,7 +176,13 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void nuevaParte() {
+		if(!tablaPartes.isEditable()){
+			tablaPartes.setEditable(true);
+		}
 
+		Parte nuevaParte = new Parte();
+		partesAGuardar.add(nuevaParte);
+		tablaPartes.getItems().add(0, nuevaParte);
 	}
 
 	@FXML
