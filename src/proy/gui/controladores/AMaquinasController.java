@@ -72,28 +72,7 @@ public class AMaquinasController extends ControladorRomano {
 		ResultadoEliminarMaquina resultado;
 		StringBuffer erroresBfr = new StringBuffer();
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
-<<<<<<< HEAD
-		if(maquina != null){
-			//se pregunta al usuario si desea confirmar la elininación de la máquina
-			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar máquina",
-					"Se eliminará la máquina <"+maquina.getNombre()+"> y sus componentes de forma permanente. "
-							+ "¿Está seguro de que desea continuar?",
-							apilador.getStage());
-=======
->>>>>>> branch 'master' of https://github.com/emigioria/Habilitacion
 
-<<<<<<< HEAD
-			if(vc.acepta()){
-				ResultadoEliminarMaquina resultado = null;
-				StringBuffer erroresBfr = new StringBuffer();
-				//Inicio transacciones al gestor
-				try{
-					resultado = coordinador.eliminarMaquina(maquina);
-				} catch(PersistenciaException e){
-					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				} catch(Exception e){
-					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-=======
 		if(maquina == null){
 			return;
 		}
@@ -122,25 +101,6 @@ public class AMaquinasController extends ControladorRomano {
 			for(ErrorEliminarMaquina e: resultado.getErrores()){
 				switch(e) {
 
->>>>>>> branch 'master' of https://github.com/emigioria/Habilitacion
-				}
-				
-				//Tratamiento de errores
-				if(resultado.hayErrores()){
-					for(ErrorEliminarMaquina e: resultado.getErrores()){
-						switch(e) {
-						//no hay errores de eliminar maquina por ahora
-						}
-					}
-
-					String errores = erroresBfr.toString();
-					if(!errores.isEmpty()){
-						new VentanaError("Error al eliminar la máquina", errores, apilador.getStage());
-					}
-				}
-				else{
-					actualizar();
-					new VentanaInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito");
 				}
 			}
 
