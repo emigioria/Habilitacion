@@ -49,6 +49,9 @@ public class FiltroProceso extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(estado != EstadoStr.ALTA){
+			return;
+		}
 		namedQuery = "listarProcesos";
 	}
 

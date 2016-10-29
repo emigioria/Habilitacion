@@ -36,7 +36,7 @@ public class Pausa implements Serializable {
 
 	@Id
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codtarea", foreignKey = @ForeignKey(name = "pausa_codtarea_fk"))
+	@JoinColumn(name = "codtarea", foreignKey = @ForeignKey(name = "pausa_codtarea_fk"), nullable = false)
 	private Tarea tarea;
 
 	@Version

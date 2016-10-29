@@ -7,10 +7,10 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import proy.comun.EncriptadorPassword;
@@ -60,13 +60,15 @@ public class UsuarioGestor {
 	public ResultadoCrearComentario crearComentario(Comentario comentario) throws PersistenciaException {
 		ResultadoCrearComentario resultado = validarCrearComentario(comentario);
 		if(!resultado.hayErrores()){
-			//hacer las cosas
+			if(comentario.getFechaComentario() == null){
+				comentario.setFechaComentario(new Date());
+			}
+			persistidorUsuario.guardarComentario(comentario);
 		}
-		throw new NotYetImplementedException();
+		return resultado;
 	}
 
 	private ResultadoCrearComentario validarCrearComentario(Comentario comentario) {
-		// TODO Auto-generated method stub
 		return new ResultadoCrearComentario();
 	}
 
@@ -87,7 +89,7 @@ public class UsuarioGestor {
 	}
 
 	private ResultadoCrearOperario validarCrearOperario(Operario operario) throws PersistenciaException {
-		ArrayList<ErrorCrearOperario> errores = new ArrayList<ErrorCrearOperario>();
+		ArrayList<ErrorCrearOperario> errores = new ArrayList<>();
 
 		if(operario.getDNI() == null || operario.getDNI().isEmpty()){
 			errores.add(ErrorCrearOperario.DNIIncompleto);

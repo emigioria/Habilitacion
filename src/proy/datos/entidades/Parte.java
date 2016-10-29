@@ -55,13 +55,17 @@ public class Parte {
 	@JoinColumn(name = "codmaquina", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "parte_codmaquina_fk"), nullable = false)
 	private Maquina maquina;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Pieza> piezas;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
+	private Set<Proceso> procesos;
 
 	public Parte() {
 		super();
 		estado = new Estado(EstadoStr.ALTA);
 		piezas = new HashSet<>();
+		procesos = new HashSet<>();
 	}
 
 	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
@@ -109,7 +113,13 @@ public class Parte {
 	}
 
 	public Set<Pieza> getPiezas() {
+		piezas.size();
 		return piezas;
+	}
+
+	public Set<Proceso> getProcesos() {
+		procesos.size();
+		return procesos;
 	}
 
 	@Override
