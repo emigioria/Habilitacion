@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 public class ResultadoCrearMaquina extends Resultado<ErrorCrearMaquina> {
 
 	public enum ErrorCrearMaquina {
-		NombreIncompleto, NombreRepetido;
+		NombreIncompleto, NombreRepetido
 	}
 
 	public ResultadoCrearMaquina(ErrorCrearMaquina... errores) {

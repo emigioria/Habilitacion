@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoModificarParte.ErrorModificarPar
 public class ResultadoModificarParte extends Resultado<ErrorModificarParte> {
 
 	public enum ErrorModificarParte {
-		NombreIncompleto, CantidadIncompleta, NombreRepetido;
+		NombreIncompleto, CantidadIncompleta, NombreRepetido
 	}
 
 	public ResultadoModificarParte(ErrorModificarParte... errores) {
