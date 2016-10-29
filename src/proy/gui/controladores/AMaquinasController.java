@@ -69,14 +69,20 @@ public class AMaquinasController extends ControladorRomano {
 
 	@FXML
 	public void eliminarMaquina() {
+		ResultadoEliminarMaquina resultado;
+		StringBuffer erroresBfr = new StringBuffer();
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
+<<<<<<< HEAD
 		if(maquina != null){
 			//se pregunta al usuario si desea confirmar la elininación de la máquina
 			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar máquina",
 					"Se eliminará la máquina <"+maquina.getNombre()+"> y sus componentes de forma permanente. "
 							+ "¿Está seguro de que desea continuar?",
 							apilador.getStage());
+=======
+>>>>>>> branch 'master' of https://github.com/emigioria/Habilitacion
 
+<<<<<<< HEAD
 			if(vc.acepta()){
 				ResultadoEliminarMaquina resultado = null;
 				StringBuffer erroresBfr = new StringBuffer();
@@ -87,6 +93,36 @@ public class AMaquinasController extends ControladorRomano {
 					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				} catch(Exception e){
 					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+=======
+		if(maquina == null){
+			return;
+		}
+		//se pregunta al usuario si desea confirmar la elininación de la máquina
+		VentanaConfirmacion vc = new VentanaConfirmacion("Confirmación eliminar máquina",
+				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus componentes de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				apilador.getStage());
+		if(!vc.acepta()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultado = coordinador.eliminarMaquina(maquina);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultado.hayErrores()){
+			for(ErrorEliminarMaquina e: resultado.getErrores()){
+				switch(e) {
+
+>>>>>>> branch 'master' of https://github.com/emigioria/Habilitacion
 				}
 				
 				//Tratamiento de errores
@@ -107,6 +143,14 @@ public class AMaquinasController extends ControladorRomano {
 					new VentanaInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito");
 				}
 			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar la máquina", errores, apilador.getStage());
+			}
+		}
+		else{
+			new VentanaInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito");
 		}
 	}
 

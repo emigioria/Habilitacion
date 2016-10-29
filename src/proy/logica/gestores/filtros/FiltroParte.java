@@ -58,6 +58,9 @@ public class FiltroParte extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(estado != EstadoStr.ALTA){
+
+		}
 		if(maquina != null){
 			return;
 		}
@@ -114,7 +117,9 @@ public class FiltroParte extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(maquina != null){
+			session.update(maquina);
+		}
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import proy.datos.clases.DatosLogin;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
@@ -126,6 +127,11 @@ public class CoordinadorJavaFX {
 		return gestorTaller.eliminarParte(parte);
 	}
 
+	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).parte(parte).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
+	}
+
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
 		return gestorTaller.listarPiezas(filtro);
 	}
@@ -138,6 +144,11 @@ public class CoordinadorJavaFX {
 		return gestorTaller.eliminarPieza(pieza);
 	}
 
+	public Boolean tieneTareasNoTerminadasAsociadas(Pieza pieza) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).pieza(pieza).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
+	}
+
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
 		return gestorTaller.listarHerramientas(filtro);
 	}
@@ -148,6 +159,11 @@ public class CoordinadorJavaFX {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		return gestorTaller.eliminarHerramienta(herramienta);
+	}
+
+	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramienta(herramienta).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {

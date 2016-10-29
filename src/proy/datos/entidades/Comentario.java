@@ -41,7 +41,7 @@ public class Comentario {
 	private String texto;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"))
+	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"), nullable = false)
 	private Operario operario;
 
 	@Temporal(TemporalType.DATE)

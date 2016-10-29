@@ -12,6 +12,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,7 +40,7 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false, unique = true)
 	private String nombre;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "maquina", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "maquina", orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Parte> partes;
 
 	public Maquina() {
@@ -65,6 +66,7 @@ public class Maquina {
 	}
 
 	public Set<Parte> getPartes() {
+		partes.size();
 		return partes;
 	}
 

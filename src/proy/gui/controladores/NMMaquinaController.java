@@ -207,9 +207,7 @@ public class NMMaquinaController extends ControladorRomano {
 			hayErrores = crearMaquina();
 		}
 		else{
-			if(huboCambios()){
-				hayErrores = modificarMaquina();
-			}
+			hayErrores = modificarMaquina();
 		}
 		if(hayErrores != null && !hayErrores){
 			salir();
@@ -327,12 +325,5 @@ public class NMMaquinaController extends ControladorRomano {
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
-	}
-
-	private boolean huboCambios() {
-		if(maquina.getNombre().equals(nombreMaquina.getText())){
-			return true;
-		}
-		return false;
 	}
 }
