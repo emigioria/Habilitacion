@@ -6,6 +6,10 @@
  */
 package proy.datos.entidades;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -47,11 +52,16 @@ public class Parte {
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "codmaquina", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "parte_codmaquina_fk"), nullable = false)
 	private Maquina maquina;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true)
+	private Set<Pieza> piezas;
 
 	public Parte() {
 		super();
 		estado = new Estado(EstadoStr.ALTA);
+		piezas = new HashSet<>();
 	}
 
 	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
@@ -96,6 +106,10 @@ public class Parte {
 
 	public void setEstado(Estado estado) {
 		this.estado = estado;
+	}
+
+	public Set<Pieza> getPiezas() {
+		return piezas;
 	}
 
 	@Override

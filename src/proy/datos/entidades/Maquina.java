@@ -6,12 +6,17 @@
  */
 package proy.datos.entidades;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -34,8 +39,12 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false, unique = true)
 	private String nombre;
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "maquina", orphanRemoval = true)
+	private Set<Parte> partes;
+
 	public Maquina() {
 		super();
+		partes = new HashSet<>();
 	}
 
 	public Maquina(String nombre) {
@@ -53,6 +62,10 @@ public class Maquina {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Set<Parte> getPartes() {
+		return partes;
 	}
 
 	@Override
