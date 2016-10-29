@@ -20,12 +20,12 @@ import javafx.util.StringConverter;
 public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements ChangeListener<O> {
 
 	protected TextField textField;
-	protected StringConverter<T> convertidor;
+	protected StringConverter<? extends T> convertidor;
 	private Class<? extends O> claseTabla;
 	private O objeto = null;
 
 	@SuppressWarnings("unchecked")
-	public TableCellTextView(Class<? extends O> claseTabla, StringConverter<T> convertidor) {
+	public TableCellTextView(Class<? extends O> claseTabla, StringConverter<? extends T> convertidor) {
 		super();
 		this.claseTabla = claseTabla;
 		this.convertidor = convertidor;
@@ -72,14 +72,26 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		}
 	}
 
-	protected void createTextField() {
+	private void createTextField() {
+		nuevoTextField();
+		setTextFieldProperties();
+	}
+
+	protected void nuevoTextField() {
 		textField = new TextField();
+	}
+
+	protected void setTextFieldProperties() {
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
 		textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent t) {
 				if(t.getCode() == KeyCode.ENTER){
-					commitEdit(convertidor.fromString(textField.getText()));
+					try{
+						commitEdit(convertidor.fromString(textField.getText()));
+					} catch(Exception e){
+						commitEdit(null);
+					}
 					cancelEdit();
 				}
 				else if(t.getCode() == KeyCode.ESCAPE){

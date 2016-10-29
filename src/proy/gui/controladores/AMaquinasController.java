@@ -77,8 +77,22 @@ public class AMaquinasController extends ControladorRomano {
 			return;
 		}
 		//se pregunta al usuario si desea confirmar la elininación de la máquina
-		VentanaConfirmacion vc = new VentanaConfirmacion("Confirmación eliminar máquina",
+		VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar máquina",
 				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus componentes de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				apilador.getStage());
+		if(!vc.acepta()){
+			return;
+		}
+		vc = new VentanaConfirmacion("Confirmar eliminar máquina",
+				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus procesos y tareas de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				apilador.getStage());
+		if(!vc.acepta()){
+			return;
+		}
+		vc = new VentanaConfirmacion("Confirmar eliminar máquina",
+				"Se eliminará la máquina <" + maquina.getNombre() + "> y no se podrá recuperar.\n" +
 						"¿Está seguro de que desea continuar?",
 				apilador.getStage());
 		if(!vc.acepta()){
@@ -100,7 +114,7 @@ public class AMaquinasController extends ControladorRomano {
 		if(resultado.hayErrores()){
 			for(ErrorEliminarMaquina e: resultado.getErrores()){
 				switch(e) {
-
+				//no hay errores de eliminar maquina por ahora
 				}
 			}
 

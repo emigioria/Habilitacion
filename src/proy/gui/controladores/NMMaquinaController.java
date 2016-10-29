@@ -7,25 +7,24 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.application.Platform;
-import javafx.beans.binding.IntegerExpression;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.util.Callback;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.util.converter.IntegerStringConverter;
+import proy.comun.FormateadorString;
 import proy.datos.entidades.Maquina;
-import proy.datos.entidades.Parte;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
@@ -75,86 +74,97 @@ public class NMMaquinaController extends ControladorRomano {
 
 	private Maquina maquina;
 
-	private ArrayList<Parte> partesAGuardar;
+	private ArrayList<Parte> partesAGuardar = new ArrayList<>();
+
+	private HashMap<Parte, ArrayList<Pieza>> piezasAGuardar = new HashMap<>();
 
 	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
-			columnaNombreParte.setCellValueFactory((CellDataFeatures<Parte, String> param) -> {
+			tablaPartes.setEditable(true);
+			columnaNombreParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				return new SimpleStringProperty("<Sin nombre>");
 			});
-			columnaCantidadParte.setCellValueFactory((CellDataFeatures<Parte, Number> param) -> {
-				if(param.getValue() != null){
-					return new SimpleIntegerProperty(param.getValue().getCantidad());
-				}
-				else{
-					return new SimpleIntegerProperty(-1);
-				}
-			});
-			
 			columnaNombreParte.setCellFactory(col -> {
 				return new TableCellTextViewString<Parte>(Parte.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() != null && newValue != null){
-							this.setEditable(partesAGuardar.contains(newValue));
-						}
+
 					}
 				};
 			});
-			/* ESTO NO ANDA y no se porqué.
-			 * 
+			columnaNombreParte.setOnEditCommit(t -> {
+				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
+			});
+
+			columnaCantidadParte.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getCantidad() != null){
+						return new SimpleIntegerProperty(param.getValue().getCantidad());
+					}
+				}
+				return new SimpleIntegerProperty(-1);
+			});
 			columnaCantidadParte.setCellFactory(col -> {
-				return new TableCellTextViewNumber<Parte>(Parte.class) {
+				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
 
 					@Override
 					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() != null && newValue != null){
-							this.setEditable(partesAGuardar.contains(newValue));
-						}
+
 					}
 				};
 			});
-			*/
-			columnaNombrePieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
+			columnaCantidadParte.setOnEditCommit(t -> {
+				if(t.getNewValue() != null){
+					t.getRowValue().setCantidad((Integer) t.getNewValue());
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+				t.getTableColumn().setVisible(false);
+				t.getTableColumn().setVisible(true);
 			});
-			columnaCantidadPieza.setCellValueFactory((CellDataFeatures<Pieza, Number> param) -> {
+
+			columnaNombrePieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleIntegerProperty(param.getValue().getCantidad());
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
-				else{
-					return new SimpleIntegerProperty(-1);
-				}
+				return new SimpleStringProperty("<Sin nombre>");
 			});
-			columnaMaterialPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
+			columnaCantidadPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getMaterial().getNombre());
+					if(param.getValue().getCantidad() != null){
+						return new SimpleIntegerProperty(param.getValue().getCantidad());
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
+				return new SimpleIntegerProperty(-1);
 			});
-			columnaCodigoPlanoPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
+			columnaMaterialPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getCodigoPlano());
+					if(param.getValue().getMaterial() != null){
+						if(param.getValue().getMaterial().getNombre() != null){
+							return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getMaterial().getNombre()));
+						}
+					}
 				}
-				else{
-					return new SimpleStringProperty("<no name>");
+				return new SimpleStringProperty("<Sin nombre>");
+			});
+			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getCodigoPlano() != null){
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getCodigoPlano()));
+					}
 				}
+				return new SimpleStringProperty("<Sin nombre>");
 			});
 
 			tablaPartes.getSelectionModel().selectedItemProperty().addListener((ovs, viejo, nuevo) -> {
@@ -162,7 +172,12 @@ public class NMMaquinaController extends ControladorRomano {
 					tablaPiezas.getItems().clear();
 					try{
 						if(nuevo != null){
-							tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
+							if(!partesAGuardar.contains(nuevo)){
+								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
+							}
+							else{
+								tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+							}
 						}
 					} catch(PersistenciaException e){
 						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
@@ -176,12 +191,9 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void nuevaParte() {
-		if(!tablaPartes.isEditable()){
-			tablaPartes.setEditable(true);
-		}
-
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
+		piezasAGuardar.put(nuevaParte, new ArrayList<>());
 		tablaPartes.getItems().add(0, nuevaParte);
 	}
 
@@ -192,7 +204,16 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void nuevaPieza() {
-
+		Parte parteDePiezaAGuardar = tablaPartes.getSelectionModel().getSelectedItem();
+		if(parteDePiezaAGuardar == null){
+			return;
+		}
+		Pieza nuevaPieza = new Pieza();
+		if(!piezasAGuardar.containsKey(parteDePiezaAGuardar)){
+			piezasAGuardar.put(parteDePiezaAGuardar, new ArrayList<>());
+		}
+		piezasAGuardar.get(parteDePiezaAGuardar).add(nuevaPieza);
+		tablaPiezas.getItems().add(0, nuevaPieza);
 	}
 
 	@FXML
