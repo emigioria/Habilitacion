@@ -85,6 +85,10 @@ public class TallerGestor {
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
 		ResultadoModificarMaquina resultado = validarModificarMaquina(maquina);
 
+		if(!resultado.hayErrores()){
+			persistidorTaller.actualizarMaquina(maquina);
+		}
+
 		return resultado;
 	}
 
@@ -95,6 +99,7 @@ public class TallerGestor {
 		}
 		else{
 			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
+			maquinasRepetidas.remove(maquina);
 			if(!maquinasRepetidas.isEmpty()){
 				errores.add(ErrorModificarMaquina.NombreRepetido);
 			}
@@ -105,7 +110,7 @@ public class TallerGestor {
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
 		persistidorTaller.bajaMaquina(maquina);
-		
+
 		return new ResultadoEliminarMaquina();
 	}
 
@@ -155,8 +160,8 @@ public class TallerGestor {
 			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreIncompleto);
 		}
 		else{
-			ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
-			if(lista.size() != 0){
+			ArrayList<Herramienta> herramientasRepetidas = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
+			if(!herramientasRepetidas.isEmpty()){
 				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
 			}
 		}
