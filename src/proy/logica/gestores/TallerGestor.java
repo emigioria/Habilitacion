@@ -41,7 +41,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -126,7 +126,7 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
+	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> parte) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 

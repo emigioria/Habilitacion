@@ -50,7 +50,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
-import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
@@ -123,8 +123,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.modificarParte(parte);
 	}
 
-	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
-		return gestorTaller.eliminarParte(parte);
+	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
+		return gestorTaller.eliminarPartes(partes);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {

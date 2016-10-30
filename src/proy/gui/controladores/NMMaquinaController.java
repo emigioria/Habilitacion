@@ -24,8 +24,8 @@ import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
-import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.TableCellTextViewNumber;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
@@ -33,6 +33,7 @@ import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
@@ -76,6 +77,7 @@ public class NMMaquinaController extends ControladorRomano {
 	private Maquina maquina;
 
 	private ArrayList<Parte> partesAGuardar = new ArrayList<>();
+	private ArrayList<Parte> partesAEliminar = new ArrayList<>();
 
 	private HashMap<Parte, ArrayList<Pieza>> piezasAGuardar = new HashMap<>();
 
@@ -126,19 +128,6 @@ public class NMMaquinaController extends ControladorRomano {
 				return new SimpleIntegerProperty(-1);
 			});
 			//Seteamos el Cell Factory
-			/*
-			columnaCantidadParte.setCellFactory(col -> {
-				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
-
-					@Override
-					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-					}
-				};
-			});
-			*/
-			
-			
 			columnaCantidadParte.setCellFactory(col -> {
 				return new TableCellTextViewNumber<Parte>(Parte.class, new IntegerStringConverter()) {
 
@@ -244,7 +233,73 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void eliminarParte() {
-
+		Parte parteAEliminar = tablaPartes.getSelectionModel().getSelectedItem();
+		if(parteAEliminar != null){
+			if(partesAGuardar.contains(parteAEliminar)){
+				partesAGuardar.remove(parteAEliminar);
+			}
+			else{
+				partesAEliminar.add(parteAEliminar);
+			}
+			tablaPartes.getItems().remove(parteAEliminar);
+		}
+	}
+	
+	public Boolean eliminarPartes() {
+		ResultadoEliminarPartes resultadoEliminarPartes;
+		StringBuffer erroresBfr = new StringBuffer();
+		StringBuffer mensajeConfirmacionBfr = new StringBuffer();
+		ArrayList<String> nombresPartesConTareasNoTerminadas = new ArrayList<>();
+		
+		if(partesAEliminar.isEmpty()){
+			return false;
+		}
+		
+		//Inicio transacciones al gestor
+		for(Parte parte: partesAEliminar){
+			try{
+				if(coordinador.tieneTareasNoTerminadasAsociadas(parte)){
+					nombresPartesConTareasNoTerminadas.add(parte.getNombre());
+				}
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			} catch(Exception e){
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			}
+		}
+				
+		if(!nombresPartesConTareasNoTerminadas.isEmpty()){
+			//armo el mensaje:
+			mensajeConfirmacionBfr.append("Advertencia: estas partes que desea eliminar tienen tareas no terminadas asociadas:\n");
+			for(String nombreParte: nombresPartesConTareasNoTerminadas){
+				mensajeConfirmacionBfr.append("\t<");
+				mensajeConfirmacionBfr.append(nombreParte);
+				mensajeConfirmacionBfr.append(">\n");
+			}
+			mensajeConfirmacionBfr.append("\n¿Está seguro de que desea continuar?");
+			//se pregunta al usuario si desea confirmar la elininación de las partes
+			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar partes",
+					mensajeConfirmacionBfr.toString(),
+					apilador.getStage());
+			if(!vc.acepta()){
+				tablaPartes.getItems().addAll(partesAEliminar);
+				partesAEliminar.clear();
+				return true;
+			}
+		}
+		
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarPartes = coordinador.eliminarPartes(partesAEliminar);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return true;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return true;
+		}
+		
+		return false;
 	}
 
 	@FXML

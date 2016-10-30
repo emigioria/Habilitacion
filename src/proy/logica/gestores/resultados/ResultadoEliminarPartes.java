@@ -6,15 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
-import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarMaquina;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 
-public class ResultadoEliminarParte extends Resultado<ErrorEliminarMaquina> {
+public class ResultadoEliminarPartes extends Resultado<ErrorEliminarPartes> {
 
-	public enum ErrorEliminarMaquina {
-
+	public enum ErrorEliminarPartes {
+		
 	}
 
-	public ResultadoEliminarParte(ErrorEliminarMaquina... errores) {
+	public ResultadoEliminarPartes(ErrorEliminarPartes... errores) {
 		super(errores);
 	}
 }
