@@ -24,7 +24,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea
 
 public class ATareasController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/ATareas.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/ATareas.fxml";
 
 	@FXML
 	private TextField nombreOperario;
@@ -125,7 +125,7 @@ public class ATareasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaTarea() {
-		NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URLVista, apilador, coordinador);
+		NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URL_VISTA, apilador, coordinador);
 		nuevaPantalla.formatearNuevaTarea();
 	}
 
@@ -133,7 +133,7 @@ public class ATareasController extends ControladorRomano {
 	public void modificarTarea() {
 		Tarea tarea = tablaTareas.getSelectionModel().getSelectedItem();
 		if(tarea != null){
-			NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URLVista, apilador, coordinador);
+			NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URL_VISTA, apilador, coordinador);
 			nuevaPantalla.formatearModificarTarea(tarea);
 		}
 	}

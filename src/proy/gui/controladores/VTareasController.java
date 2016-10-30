@@ -17,7 +17,7 @@ import proy.gui.componentes.IconoPlay;
 
 public class VTareasController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/VTareas.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/VTareas.fxml";
 
 	@FXML
 	private Button botonDetener;
@@ -62,7 +62,7 @@ public class VTareasController extends ControladorRomano {
 
 	@FXML
 	public void loguearse() {
-		ControladorRomano.nuevaScene(LoguearAdminController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(LoguearAdminController.URL_VISTA, apilador, coordinador);
 	}
 
 	@Override

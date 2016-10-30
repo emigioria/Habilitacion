@@ -128,7 +128,7 @@ public class CoordinadorJavaFX {
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		ResultadoEliminarTareas resultado = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
 		if(resultado.hayErrores()){
-			return new ResultadoEliminarPartes(resultado, ErrorEliminarPartes.ErrorAlEliminarTareas);
+			return new ResultadoEliminarPartes(resultado, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
 		}
 		return gestorTaller.eliminarPartes(partes);
 	}

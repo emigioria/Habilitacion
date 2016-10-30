@@ -13,7 +13,7 @@ public class ResultadoEliminarPartes extends Resultado<ErrorEliminarPartes> {
 	private ResultadoEliminarTareas resultadoTareas;
 
 	public enum ErrorEliminarPartes {
-		ErrorAlEliminarTareas
+		ERROR_AL_ELIMINAR_TAREAS
 	}
 
 	public ResultadoEliminarPartes(ErrorEliminarPartes... errores) {

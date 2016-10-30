@@ -40,7 +40,7 @@ import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarM
 
 public class NMMaquinaController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/NMMaquina.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/NMMaquina.fxml";
 
 	private String titulo;
 
@@ -358,10 +358,10 @@ public class NMMaquinaController extends ControladorRomano {
 		if(resultado.hayErrores()){
 			for(ErrorCrearMaquina e: resultado.getErrores()){
 				switch(e) {
-				case NombreIncompleto:
+				case NOMBRE_INCOMPLETO:
 					erroresBfr.append("El nombre de la máquina está vacío.\n");
 					break;
-				case NombreRepetido:
+				case NOMBRE_REPETIDO:
 					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
 					break;
 				}
@@ -402,10 +402,10 @@ public class NMMaquinaController extends ControladorRomano {
 		if(resultado.hayErrores()){
 			for(ErrorModificarMaquina e: resultado.getErrores()){
 				switch(e) {
-				case NombreIncompleto:
+				case NOMBRE_INCOMPLETO:
 					erroresBfr.append("El nombre de la máquina está vacío.\n");
 					break;
-				case NombreRepetido:
+				case NOMBRE_REPETIDO:
 					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
 					break;
 				}

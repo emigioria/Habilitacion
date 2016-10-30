@@ -29,7 +29,7 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerra
 
 public class AHerramientasController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/AHerramientas.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/AHerramientas.fxml";
 
 	@FXML
 	private TextField nombreHerramienta;
@@ -139,10 +139,10 @@ public class AHerramientasController extends ControladorRomano {
 		if(hayErrores){
 			for(ErrorCrearHerramienta r: resultado.getErrores()){
 				switch(r) {
-				case NombreIncompleto:
+				case NOMBRE_INCOMPLETO:
 					errores += "El nombre no es válido.\n";
 					break;
-				case NombreRepetido:
+				case NOMBRE_REPETIDO:
 					errores += "Ya existe una herramienta con ese nombre. \n";
 					break;
 				}

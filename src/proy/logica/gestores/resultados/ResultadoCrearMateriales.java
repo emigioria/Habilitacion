@@ -16,7 +16,7 @@ public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
 	HashSet<String> nombresRepetidos;
 
 	public enum ErrorCrearMateriales {
-		NombreIncompleto, NombreYaExistente, NombreIngresadoRepetido
+		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO
 	}
 
 	public ResultadoCrearMateriales(Collection<String> nombresRepetidos, ErrorCrearMateriales... errores) {

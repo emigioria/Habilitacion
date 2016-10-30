@@ -24,7 +24,7 @@ import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion
 
 public class LoguearAdminController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/LoguearAdmin.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/LoguearAdmin.fxml";
 
 	@FXML
 	private TextField nombre;
@@ -50,7 +50,7 @@ public class LoguearAdminController extends ControladorRomano {
 	@FXML
 	public void iniciarSesion() {
 		//TODO borrar para activar login
-		ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
+		ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
 		matarSwing();
 		if(true){
 			return;
@@ -88,7 +88,7 @@ public class LoguearAdminController extends ControladorRomano {
 		if(hayErrores){
 			for(ErrorAutenticacion r: resultado.getErrores()){
 				switch(r) {
-				case DatosInvalidos:
+				case DATOS_INVALIDOS:
 					errores += "Datos inválidos al iniciar sesión.\n";
 					break;
 				}
@@ -99,7 +99,7 @@ public class LoguearAdminController extends ControladorRomano {
 		}
 		else{
 			//Operacion exitosa
-			ControladorRomano.cambiarScene(MenuAdministracionController.URLVista, apilador, coordinador);
+			ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
 			matarSwing();
 		}
 	}

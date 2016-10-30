@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario
 public class ResultadoCrearOperario extends Resultado<ErrorCrearOperario> {
 
 	public enum ErrorCrearOperario {
-		NombreIncompleto, ApellidoIncompleto, DNIIncompleto, DNIRepetido
+		NOMBRE_INCOMPLETO, APELLIDO_INCOMPLETO, DNI_INCOMPLETO, DNI_REPETIDO
 	}
 
 	public ResultadoCrearOperario(ErrorCrearOperario... errores) {

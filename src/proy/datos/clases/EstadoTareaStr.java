@@ -7,5 +7,5 @@
 package proy.datos.clases;
 
 public enum EstadoTareaStr {
-	PLANIFICADA, EJECUTANDO, PAUSADA, FINALIZADA;
+	PLANIFICADA, EJECUTANDO, PAUSADA, FINALIZADA
 }

@@ -42,7 +42,7 @@ public class UsuarioGestor {
 		ArrayList<Administrador> administradores = persistidorUsuario.obtenerAdministradores(new FiltroAdministrador.Builder().dni(login.getDNI()).build());
 		if(administradores.size() != 1){
 			//Si no lo encuentra falla
-			errores.add(ErrorAutenticacion.DatosInvalidos);
+			errores.add(ErrorAutenticacion.DATOS_INVALIDOS);
 		}
 		else{
 			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
@@ -51,7 +51,7 @@ public class UsuarioGestor {
 			String contraIngresada = EncriptadorPassword.encriptarMD5(login.getContrasenia(), sal);
 			if(!contraIngresada.equals(admin.getContrasenia())){
 				//Si no coincide falla
-				errores.add(ErrorAutenticacion.DatosInvalidos);
+				errores.add(ErrorAutenticacion.DATOS_INVALIDOS);
 			}
 		}
 		return new ResultadoAutenticacion(errores.toArray(new ErrorAutenticacion[0]));
@@ -92,20 +92,20 @@ public class UsuarioGestor {
 		ArrayList<ErrorCrearOperario> errores = new ArrayList<>();
 
 		if(operario.getDNI() == null || operario.getDNI().isEmpty()){
-			errores.add(ErrorCrearOperario.DNIIncompleto);
+			errores.add(ErrorCrearOperario.DNI_INCOMPLETO);
 		}
 		else{
 			ArrayList<Operario> operarioMismoDNI = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().dni(operario.getDNI()).build());
 			if(operarioMismoDNI.size() != 0){
-				errores.add(ErrorCrearOperario.DNIRepetido);
+				errores.add(ErrorCrearOperario.DNI_REPETIDO);
 			}
 		}
 
 		if(operario.getNombre() == null || operario.getNombre().isEmpty()){
-			errores.add(ErrorCrearOperario.NombreIncompleto);
+			errores.add(ErrorCrearOperario.NOMBRE_INCOMPLETO);
 		}
 		if(operario.getApellido() == null || operario.getApellido().isEmpty()){
-			errores.add(ErrorCrearOperario.ApellidoIncompleto);
+			errores.add(ErrorCrearOperario.APELLIDO_INCOMPLETO);
 		}
 		return new ResultadoCrearOperario(errores.toArray(new ErrorCrearOperario[errores.size()]));
 	}

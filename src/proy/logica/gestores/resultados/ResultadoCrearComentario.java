@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearComentario.ErrorCrearComent
 public class ResultadoCrearComentario extends Resultado<ErrorCrearComentario> {
 
 	public enum ErrorCrearComentario {
-		TextoIncompleta
+		TEXTO_INCOMPLETA
 	}
 
 	public ResultadoCrearComentario(ErrorCrearComentario... errores) {

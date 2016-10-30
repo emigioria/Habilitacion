@@ -25,7 +25,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaquina.ErrorEliminarMaq
 
 public class AMaquinasController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/AMaquinas.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/AMaquinas.fxml";
 
 	@FXML
 	private TextField nombreMaquina;
@@ -54,7 +54,7 @@ public class AMaquinasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaMaquina() {
-		NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URLVista, apilador, coordinador);
+		NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URL_VISTA, apilador, coordinador);
 		nuevaPantalla.formatearNuevaMaquina();
 	}
 
@@ -62,7 +62,7 @@ public class AMaquinasController extends ControladorRomano {
 	public void modificarMaquina() {
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
 		if(maquina != null){
-			NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URLVista, apilador, coordinador);
+			NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URL_VISTA, apilador, coordinador);
 			nuevaPantalla.formatearModificarMaquina(maquina);
 		}
 	}

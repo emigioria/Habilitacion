@@ -70,12 +70,12 @@ public class TallerGestor {
 	public ResultadoCrearMaquina validarCrearMaquina(Maquina maquina) throws PersistenciaException {
 		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
-			errores.add(ErrorCrearMaquina.NombreIncompleto);
+			errores.add(ErrorCrearMaquina.NOMBRE_INCOMPLETO);
 		}
 		else{
 			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
 			if(!maquinasRepetidas.isEmpty()){
-				errores.add(ErrorCrearMaquina.NombreRepetido);
+				errores.add(ErrorCrearMaquina.NOMBRE_REPETIDO);
 			}
 		}
 
@@ -95,13 +95,13 @@ public class TallerGestor {
 	public ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
 		ArrayList<ErrorModificarMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
-			errores.add(ErrorModificarMaquina.NombreIncompleto);
+			errores.add(ErrorModificarMaquina.NOMBRE_INCOMPLETO);
 		}
 		else{
 			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
 			maquinasRepetidas.remove(maquina);
 			if(!maquinasRepetidas.isEmpty()){
-				errores.add(ErrorModificarMaquina.NombreRepetido);
+				errores.add(ErrorModificarMaquina.NOMBRE_REPETIDO);
 			}
 		}
 
@@ -157,12 +157,12 @@ public class TallerGestor {
 
 	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
 		if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
-			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreIncompleto);
+			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_INCOMPLETO);
 		}
 		else{
 			ArrayList<Herramienta> herramientasRepetidas = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
 			if(!herramientasRepetidas.isEmpty()){
-				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
+				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_REPETIDO);
 			}
 		}
 		return new ResultadoCrearHerramienta();
@@ -210,7 +210,7 @@ public class TallerGestor {
 		}
 		//Si encontré un nombre incompleto, agrego el error
 		if(nombreIncompletoEncontrado){
-			erroresMateriales.add(ErrorCrearMateriales.NombreIncompleto);
+			erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INCOMPLETO);
 		}
 
 		//Si hay materiales a buscar
@@ -219,7 +219,7 @@ public class TallerGestor {
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
 			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales_a_buscar_en_la_BD).build());
 			if(!materiales_coincidentes.isEmpty()){
-				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
+				erroresMateriales.add(ErrorCrearMateriales.NOMBRE_YA_EXISTENTE);
 				for(Material material: materiales_coincidentes){
 					nombresMaterialesRepetidos.add(material.toString());
 				}
@@ -238,7 +238,7 @@ public class TallerGestor {
 				if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
 						materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
 					nombreIngresadoRepetidoEncontrado = true;
-					erroresMateriales.add(ErrorCrearMateriales.NombreIngresadoRepetido);
+					erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INGRESADO_REPETIDO);
 				}
 			}
 		}
@@ -297,7 +297,7 @@ public class TallerGestor {
 				}
 			}
 
-			erroresMateriales.add(ErrorEliminarMateriales.PiezasActivasAsociadas);
+			erroresMateriales.add(ErrorEliminarMateriales.PIEZAS_ACTIVAS_ASOCIADAS);
 		}
 
 		return new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, erroresMateriales.toArray(new ErrorEliminarMateriales[0]));

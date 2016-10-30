@@ -17,7 +17,7 @@ import proy.datos.entidades.Proceso;
 
 public class AProcesosController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/AProcesos.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/AProcesos.fxml";
 
 	@FXML
 	private TextField nombreProceso;
@@ -99,7 +99,7 @@ public class AProcesosController extends ControladorRomano {
 
 	@FXML
 	public void nuevoProceso() {
-		NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URLVista, apilador, coordinador);
+		NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URL_VISTA, apilador, coordinador);
 		nuevaPantalla.formatearNuevoProceso();
 	}
 
@@ -107,7 +107,7 @@ public class AProcesosController extends ControladorRomano {
 	public void modificarProceso() {
 		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
 		if(proceso != null){
-			NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URLVista, apilador, coordinador);
+			NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URL_VISTA, apilador, coordinador);
 			nuevaPantalla.formatearModificarProceso(proceso);
 		}
 	}

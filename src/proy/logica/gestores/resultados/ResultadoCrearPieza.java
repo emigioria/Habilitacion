@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearPieza.ErrorCrearPieza;
 public class ResultadoCrearPieza extends Resultado<ErrorCrearPieza> {
 
 	public enum ErrorCrearPieza {
-		NombreIncompleto, CantidadIncompleta, NombreRepetido
+		NOMBRE_INCOMPLETO, CANTIDAD_INCOMPLETA, NOMBRE_REPETIDO
 	}
 
 	public ResultadoCrearPieza(ErrorCrearPieza... errores) {

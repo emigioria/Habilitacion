@@ -12,7 +12,7 @@ import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion
 public class ResultadoAutenticacion extends Resultado<ErrorAutenticacion> {
 
 	public enum ErrorAutenticacion {
-		DatosInvalidos
+		DATOS_INVALIDOS
 	}
 
 	private Administrador administrador;
