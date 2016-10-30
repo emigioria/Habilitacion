@@ -47,7 +47,9 @@ public class FiltroParte extends Filtro {
 		}
 
 		public Builder partes(ArrayList<Parte> partes) {
-			this.partes = partes;
+			if(partes != null && !partes.isEmpty()){
+				this.partes = partes;
+			}
 			return this;
 		}
 

@@ -6,6 +6,7 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.hibernate.Query;
@@ -25,12 +26,12 @@ public class FiltroTarea extends Filtro {
 	private String namedQuery = "";
 	private EstadoTareaStr noEstado;
 	private EstadoTareaStr estado;
-	private Herramienta herramienta;
+	private ArrayList<Herramienta> herramientas;
 	private Operario operario;
 	private Date fechaPlanificadaInicio;
 	private Date fechaPlanificadaFin;
-	private Parte parte;
-	private Pieza pieza;
+	private ArrayList<Parte> partes;
+	private ArrayList<Pieza> piezas;
 	private Proceso proceso;
 
 	public static class Builder {
@@ -38,12 +39,12 @@ public class FiltroTarea extends Filtro {
 		private String nombreEntidad = "a";
 		private EstadoTareaStr noEstado;
 		private EstadoTareaStr estado;
-		private Herramienta herramienta;
+		private ArrayList<Herramienta> herramientas;
 		private Operario operario;
 		private Date fechaPlanificadaInicio;
 		private Date fechaPlanificadaFin;
-		private Parte parte;
-		private Pieza pieza;
+		private ArrayList<Parte> partes;
+		private ArrayList<Pieza> piezas;
 		private Proceso proceso;
 
 		public Builder() {
@@ -56,7 +57,17 @@ public class FiltroTarea extends Filtro {
 		}
 
 		public Builder herramienta(Herramienta herramienta) {
-			this.herramienta = herramienta;
+			if(herramienta != null){
+				this.herramientas = new ArrayList<>();
+				this.herramientas.add(herramienta);
+			}
+			return this;
+		}
+
+		public Builder herramientas(ArrayList<Herramienta> herramientas) {
+			if(herramientas != null && !herramientas.isEmpty()){
+				this.herramientas = herramientas;
+			}
 			return this;
 		}
 
@@ -86,16 +97,36 @@ public class FiltroTarea extends Filtro {
 		}
 
 		public Builder parte(Parte parte) {
-			this.parte = parte;
+			if(parte != null){
+				this.partes = new ArrayList<>();
+				this.partes.add(parte);
+			}
+			return this;
+		}
+
+		public Builder partes(ArrayList<Parte> partes) {
+			if(partes != null && !partes.isEmpty()){
+				this.partes = partes;
+			}
 			return this;
 		}
 
 		public Builder pieza(Pieza pieza) {
-			this.pieza = pieza;
+			if(pieza != null){
+				this.piezas = new ArrayList<>();
+				this.piezas.add(pieza);
+			}
 			return this;
 		}
 
-		public Builder proces(Proceso proceso) {
+		public Builder piezas(ArrayList<Pieza> piezas) {
+			if(piezas != null && !piezas.isEmpty()){
+				this.piezas = piezas;
+			}
+			return this;
+		}
+
+		public Builder proceso(Proceso proceso) {
 			this.proceso = proceso;
 			return this;
 		}
@@ -108,12 +139,12 @@ public class FiltroTarea extends Filtro {
 	private FiltroTarea(Builder builder) {
 		this.noEstado = builder.noEstado;
 		this.estado = builder.estado;
-		this.herramienta = builder.herramienta;
+		this.herramientas = builder.herramientas;
 		this.operario = builder.operario;
 		this.fechaPlanificadaInicio = builder.fechaPlanificadaInicio;
 		this.fechaPlanificadaFin = builder.fechaPlanificadaFin;
-		this.parte = builder.parte;
-		this.pieza = builder.pieza;
+		this.partes = builder.partes;
+		this.piezas = builder.piezas;
 		this.proceso = builder.proceso;
 
 		setConsulta(builder);
@@ -131,7 +162,7 @@ public class FiltroTarea extends Filtro {
 		if(builder.estado != null){
 			return;
 		}
-		if(builder.herramienta != null){
+		if(builder.herramientas != null){
 			return;
 		}
 		if(builder.operario != null){
@@ -143,10 +174,10 @@ public class FiltroTarea extends Filtro {
 		if(builder.fechaPlanificadaFin != null){
 			return;
 		}
-		if(builder.parte != null){
+		if(builder.partes != null){
 			return;
 		}
-		if(builder.pieza != null){
+		if(builder.piezas != null){
 			return;
 		}
 		if(builder.proceso != null){
@@ -157,7 +188,7 @@ public class FiltroTarea extends Filtro {
 
 	private String getSelect(Builder builder) {
 		String select;
-		if(builder.herramienta != null || builder.parte != null || builder.pieza != null){
+		if(builder.herramientas != null || builder.partes != null || builder.piezas != null){
 			select = "SELECT DISTINCT " + builder.nombreEntidad;
 		}
 		else{
@@ -168,13 +199,13 @@ public class FiltroTarea extends Filtro {
 
 	private String getFrom(Builder builder) {
 		String from;
-		if(builder.herramienta != null && builder.pieza != null){
+		if(builder.herramientas != null && builder.piezas != null){
 			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.herramientas herr, Pieza pies";
 		}
-		else if(builder.herramienta != null){
+		else if(builder.herramientas != null){
 			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.herramientas herr";
 		}
-		else if(builder.pieza != null){
+		else if(builder.piezas != null){
 			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.piezas pies";
 		}
 		else{
@@ -187,12 +218,12 @@ public class FiltroTarea extends Filtro {
 		String where =
 				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
 						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
-						((builder.herramienta != null) ? ("herr = :her AND ") : ("")) +
+						((builder.herramientas != null) ? ("herr in (:hes) AND ") : ("")) +
 						((builder.operario != null) ? (builder.nombreEntidad + ".operario = :op AND ") : ("")) +
 						((builder.fechaPlanificadaInicio != null) ? (builder.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
 						((builder.fechaPlanificadaFin != null) ? (builder.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : ("")) +
-						((builder.parte != null) ? ("proc.parte = :par AND ") : ("")) +
-						((builder.pieza != null) ? ("pies = :pie AND ") : ("")) +
+						((builder.partes != null) ? ("proc.parte in (:prs) AND ") : ("")) +
+						((builder.piezas != null) ? ("pies in (:pis) AND ") : ("")) +
 						((builder.proceso != null) ? (builder.nombreEntidad + ".proceso = :pro AND ") : (""));
 
 		if(!where.isEmpty()){
@@ -225,8 +256,8 @@ public class FiltroTarea extends Filtro {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
-		if(herramienta != null){
-			query.setParameter("her", herramienta);
+		if(herramientas != null){
+			query.setParameter("hes", herramientas);
 		}
 		if(operario != null){
 			query.setParameter("op", operario);
@@ -237,11 +268,11 @@ public class FiltroTarea extends Filtro {
 		if(fechaPlanificadaFin != null){
 			query.setParameter("fpf", fechaPlanificadaFin);
 		}
-		if(parte != null){
-			query.setParameter("par", parte);
+		if(partes != null){
+			query.setParameter("pas", partes);
 		}
-		if(pieza != null){
-			query.setParameter("pie", pieza);
+		if(piezas != null){
+			query.setParameter("pis", piezas);
 		}
 		if(proceso != null){
 			query.setParameter("pro", proceso);
@@ -251,14 +282,14 @@ public class FiltroTarea extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
-		if(herramienta != null){
-			session.update(herramienta);
+		if(herramientas != null){
+			session.update(herramientas);
 		}
-		if(parte != null){
-			session.update(parte);
+		if(partes != null){
+			session.update(partes);
 		}
-		if(pieza != null){
-			session.update(pieza);
+		if(piezas != null){
+			session.update(piezas);
 		}
 		if(proceso != null){
 			session.update(proceso);

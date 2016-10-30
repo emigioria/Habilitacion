@@ -41,7 +41,9 @@ public class FiltroPieza extends Filtro {
 		}
 
 		public Builder materiales(ArrayList<Material> materiales) {
-			this.materiales = materiales;
+			if(materiales != null && !materiales.isEmpty()){
+				this.materiales = materiales;
+			}
 			return this;
 		}
 

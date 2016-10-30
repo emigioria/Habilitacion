@@ -51,9 +51,11 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarParte;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
@@ -124,6 +126,10 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
+		ResultadoEliminarTareas resultado = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
+		if(resultado.hayErrores()){
+			return new ResultadoEliminarPartes(resultado, ErrorEliminarPartes.ErrorAlEliminarTareas);
+		}
 		return gestorTaller.eliminarPartes(partes);
 	}
 

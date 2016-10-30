@@ -23,6 +23,7 @@ import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
 
@@ -76,6 +77,18 @@ public class ProcesoGestor {
 	private ResultadoModificarTarea validarModificarTarea(Tarea tarea) {
 		// TODO validar tarea para modificarla
 		return new ResultadoModificarTarea();
+	}
+
+	public ResultadoEliminarTareas eliminarTareas(ArrayList<Tarea> tareas) throws PersistenciaException {
+		ResultadoEliminarTareas resultado = validarEliminarTareas(tareas);
+		if(!resultado.hayErrores()){
+			persistidorProceso.bajaTareas(tareas);
+		}
+		return resultado;
+	}
+
+	private ResultadoEliminarTareas validarEliminarTareas(ArrayList<Tarea> tareas) {
+		return new ResultadoEliminarTareas();
 	}
 
 	public ResultadoEliminarTarea eliminarTarea(Tarea tarea) throws PersistenciaException {

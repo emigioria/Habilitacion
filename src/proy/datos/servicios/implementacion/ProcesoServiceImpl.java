@@ -143,4 +143,21 @@ public class ProcesoServiceImpl implements ProcesoService {
 		}
 	}
 
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void bajaTareas(ArrayList<Tarea> tareas) throws PersistenciaException {
+		try{
+			Session session = getSessionFactory().getCurrentSession();
+			for(Tarea tarea: tareas){
+				session.delete(tarea);
+			}
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("eliminar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new DeleteException();
+		}
+	}
+
 }

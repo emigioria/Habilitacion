@@ -30,4 +30,6 @@ public interface ProcesoService {
 
 	public void bajaTarea(Tarea tarea) throws PersistenciaException;
 
+	public void bajaTareas(ArrayList<Tarea> tareas) throws PersistenciaException;
+
 }

@@ -10,11 +10,22 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPart
 
 public class ResultadoEliminarPartes extends Resultado<ErrorEliminarPartes> {
 
+	private ResultadoEliminarTareas resultadoTareas;
+
 	public enum ErrorEliminarPartes {
-		
+		ErrorAlEliminarTareas
 	}
 
 	public ResultadoEliminarPartes(ErrorEliminarPartes... errores) {
 		super(errores);
+	}
+
+	public ResultadoEliminarPartes(ResultadoEliminarTareas resultadoTareas, ErrorEliminarPartes... errores) {
+		this(errores);
+		this.resultadoTareas = resultadoTareas;
+	}
+
+	public ResultadoEliminarTareas getResultadoTareas() {
+		return resultadoTareas;
 	}
 }
