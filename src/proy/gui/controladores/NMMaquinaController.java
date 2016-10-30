@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,9 +25,9 @@ import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
-import proy.gui.componentes.TableCellTextViewNumber;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroParte;
@@ -40,6 +41,8 @@ import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarM
 public class NMMaquinaController extends ControladorRomano {
 
 	public static final String URLVista = "/proy/gui/vistas/NMMaquina.fxml";
+
+	private String titulo;
 
 	@FXML
 	private TextField nombreMaquina;
@@ -74,6 +77,9 @@ public class NMMaquinaController extends ControladorRomano {
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
 
+	@FXML
+	private Label lbNMMaquina;
+
 	private Maquina maquina;
 
 	private ArrayList<Parte> partesAGuardar = new ArrayList<>();
@@ -85,9 +91,9 @@ public class NMMaquinaController extends ControladorRomano {
 	private void initialize() {
 		Platform.runLater(() -> {
 			tablaPartes.setEditable(true);
-			
+
 			//Inicialización de la columna PARTE->NOMBRE
-			
+
 			//Seteamos el Cell Value Factory
 			columnaNombreParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
@@ -115,9 +121,8 @@ public class NMMaquinaController extends ControladorRomano {
 				t.getTableColumn().setVisible(true);
 			});
 
-			
 			//Inicialización de la columna PARTE->CANTIDAD
-			
+
 			//Seteamos el Cell Value Factory
 			columnaCantidadParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
@@ -129,7 +134,7 @@ public class NMMaquinaController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory
 			columnaCantidadParte.setCellFactory(col -> {
-				return new TableCellTextViewNumber<Parte>(Parte.class, new IntegerStringConverter()) {
+				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
 
 					@Override
 					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
@@ -137,9 +142,6 @@ public class NMMaquinaController extends ControladorRomano {
 					}
 				};
 			});
-			
-			
-			
 			//Al terminar de editar, se guarda el valor.
 			columnaCantidadParte.setOnEditCommit(t -> {
 				if(t.getNewValue() != null){
@@ -150,9 +152,8 @@ public class NMMaquinaController extends ControladorRomano {
 				t.getTableColumn().setVisible(true);
 			});
 
-			
 			//Inicialización de la columna PIEZA->NOMBRE
-			
+
 			//Seteamos el Cell Value Factory
 			columnaNombrePieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
@@ -162,10 +163,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleStringProperty("<Sin nombre>");
 			});
-			
-			
+
 			//Inicialización de la columna PIEZA->CANTIDAD
-			
+
+			//Seteamos el Cell Value Factory
 			columnaCantidadPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCantidad() != null){
@@ -174,10 +175,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleIntegerProperty(-1);
 			});
-			
-			
+
 			//Inicialización de la columna PIEZA->MATERIAL
-			
+
+			//Seteamos el Cell Value Factory
 			columnaMaterialPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getMaterial() != null){
@@ -188,10 +189,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleStringProperty("<Sin nombre>");
 			});
-			
-			
+
 			//Inicialización de la columna PIEZA->CODIGO->PLANO
-			
+
+			//Seteamos el Cell Value Factory
 			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCodigoPlano() != null){
@@ -201,6 +202,7 @@ public class NMMaquinaController extends ControladorRomano {
 				return new SimpleStringProperty("<Sin nombre>");
 			});
 
+			//Cuando cambia la parte seleccionada, cargamos sus piezas
 			tablaPartes.getSelectionModel().selectedItemProperty().addListener((ovs, viejo, nuevo) -> {
 				Platform.runLater(() -> {
 					tablaPiezas.getItems().clear();
@@ -235,8 +237,41 @@ public class NMMaquinaController extends ControladorRomano {
 	public void eliminarParte() {
 		Parte parteAEliminar = tablaPartes.getSelectionModel().getSelectedItem();
 		if(parteAEliminar != null){
+
+			//Se pregunta si quiere dar de baja
+			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar parte",
+					"¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
+					apilador.getStage());
+
+			if(!vc.acepta()){
+				return;
+			}
+
+			//Si acepta dar de baja se verifica que la parte a eliminar no tiene tareas no terminadas asociadas
+			Boolean tieneTareasNoTerminadasAsociadas;
+			try{
+				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(parteAEliminar);
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			} catch(Exception e){
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
+			}
+
+			//Se pregunta si quiere dar de baja estas tareas asociadas
+			if(tieneTareasNoTerminadasAsociadas){
+				vc = new VentanaConfirmacion("Confirmar eliminar parte",
+						"La parte a eliminar tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
+						apilador.getStage());
+				if(!vc.acepta()){
+					return;
+				}
+			}
+
 			if(partesAGuardar.contains(parteAEliminar)){
 				partesAGuardar.remove(parteAEliminar);
+				piezasAGuardar.remove(parteAEliminar);
 			}
 			else{
 				partesAEliminar.add(parteAEliminar);
@@ -244,50 +279,15 @@ public class NMMaquinaController extends ControladorRomano {
 			tablaPartes.getItems().remove(parteAEliminar);
 		}
 	}
-	
+
 	public Boolean eliminarPartes() {
 		ResultadoEliminarPartes resultadoEliminarPartes;
 		StringBuffer erroresBfr = new StringBuffer();
-		StringBuffer mensajeConfirmacionBfr = new StringBuffer();
-		ArrayList<String> nombresPartesConTareasNoTerminadas = new ArrayList<>();
-		
+
 		if(partesAEliminar.isEmpty()){
 			return false;
 		}
-		
-		//Inicio transacciones al gestor
-		for(Parte parte: partesAEliminar){
-			try{
-				if(coordinador.tieneTareasNoTerminadasAsociadas(parte)){
-					nombresPartesConTareasNoTerminadas.add(parte.getNombre());
-				}
-			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-			} catch(Exception e){
-				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-			}
-		}
-				
-		if(!nombresPartesConTareasNoTerminadas.isEmpty()){
-			//armo el mensaje:
-			mensajeConfirmacionBfr.append("Advertencia: estas partes que desea eliminar tienen tareas no terminadas asociadas:\n");
-			for(String nombreParte: nombresPartesConTareasNoTerminadas){
-				mensajeConfirmacionBfr.append("\t<");
-				mensajeConfirmacionBfr.append(nombreParte);
-				mensajeConfirmacionBfr.append(">\n");
-			}
-			mensajeConfirmacionBfr.append("\n¿Está seguro de que desea continuar?");
-			//se pregunta al usuario si desea confirmar la elininación de las partes
-			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar partes",
-					mensajeConfirmacionBfr.toString(),
-					apilador.getStage());
-			if(!vc.acepta()){
-				tablaPartes.getItems().addAll(partesAEliminar);
-				partesAEliminar.clear();
-				return true;
-			}
-		}
-		
+
 		//Inicio transacciones al gestor
 		try{
 			resultadoEliminarPartes = coordinador.eliminarPartes(partesAEliminar);
@@ -298,7 +298,7 @@ public class NMMaquinaController extends ControladorRomano {
 			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -424,10 +424,13 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	public void formatearNuevaMaquina() {
-
+		titulo = "Nueva máquina - Romano";
+		lbNMMaquina.setText(titulo);
 	}
 
 	public void formatearModificarMaquina(Maquina maquina) {
+		titulo = "Modificar máquina - Romano";
+		lbNMMaquina.setText(titulo);
 		this.maquina = maquina;
 		nombreMaquina.setText(maquina.getNombre());
 		actualizar();
@@ -445,6 +448,7 @@ public class NMMaquinaController extends ControladorRomano {
 			} catch(PersistenciaException e){
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
+			apilador.getStage().setTitle(titulo);
 		});
 	}
 }

@@ -39,7 +39,7 @@
       <RowConstraints vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <Label prefWidth="180.0" text="Nueva Máquina" GridPane.columnSpan="2">
+      <Label fx:id="lbNMMaquina" prefWidth="180.0" text="Nueva Máquina" GridPane.columnSpan="2">
          <font>
             <Font size="24.0" />
          </font>
