@@ -6,11 +6,14 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Maquina;
+import proy.datos.entidades.Parte;
 import proy.datos.servicios.Filtro;
 
 public class FiltroParte extends Filtro {
@@ -19,12 +22,16 @@ public class FiltroParte extends Filtro {
 	private String namedQuery = "";
 	private EstadoStr estado;
 	private Maquina maquina;
+	private ArrayList<Parte> partes;
+	private Boolean conTareas;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
-		private Maquina maquina;
+		private Maquina maquina = null;
+		private ArrayList<Parte> partes = null;
+		private Boolean conTareas = null;
 
 		public Builder() {
 			super();
@@ -39,6 +46,16 @@ public class FiltroParte extends Filtro {
 			this.maquina = maquina;
 			return this;
 		}
+		
+		public Builder maquina(ArrayList<Parte> partes) {
+			this.partes = partes;
+			return this;
+		}
+		
+		public Builder conTareas(){
+			this.conTareas = true;
+			return this;
+		}
 
 		public FiltroParte build() {
 			return new FiltroParte(this);
@@ -48,6 +65,8 @@ public class FiltroParte extends Filtro {
 	private FiltroParte(Builder builder) {
 		this.estado = builder.estado;
 		this.maquina = builder.maquina;
+		this.partes = builder.partes;
+		this.conTareas = builder.conTareas;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -64,6 +83,12 @@ public class FiltroParte extends Filtro {
 		if(maquina != null){
 			return;
 		}
+		if(partes != null){
+			return;
+		}
+		if(conTareas != null){
+			return;
+		}
 		namedQuery = "listarPartes";
 	}
 
@@ -73,14 +98,21 @@ public class FiltroParte extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Parte " + builder.nombreEntidad;
+		String from;
+		if(conTareas == true){
+			from = " FROM Parte " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar"; 
+		}
+		else{
+			from = " FROM Parte " + builder.nombreEntidad;
+		}
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""));
+						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
+						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -111,6 +143,9 @@ public class FiltroParte extends Filtro {
 		}
 		if(maquina != null){
 			query.setParameter("maq", maquina);
+		}
+		if(partes != null){
+			query.setParameterList("pts", partes);
 		}
 		return query;
 	}
