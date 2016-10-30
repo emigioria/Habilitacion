@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarMaqui
 public class ResultadoEliminarParte extends Resultado<ErrorEliminarMaquina> {
 
 	public enum ErrorEliminarMaquina {
-		TareasNoTerminadasAsociadas;
+
 	}
 
 	public ResultadoEliminarParte(ErrorEliminarMaquina... errores) {

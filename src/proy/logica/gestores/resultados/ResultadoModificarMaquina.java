@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarM
 public class ResultadoModificarMaquina extends Resultado<ErrorModificarMaquina> {
 
 	public enum ErrorModificarMaquina {
-		NombreIncompleto, NombreRepetido;
+		NombreIncompleto, NombreRepetido
 	}
 
 	public ResultadoModificarMaquina(ErrorModificarMaquina... errores) {

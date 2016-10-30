@@ -17,7 +17,7 @@ public class ResultadoEliminarMateriales extends Resultado<ErrorEliminarMaterial
 	Map<String, List<String>> piezasAsociadasPorMaterial;
 
 	public enum ErrorEliminarMateriales {
-		PiezasActivasAsociadas;
+		PiezasActivasAsociadas
 	}
 
 	public ResultadoEliminarMateriales(Map<String, List<String>> piezasAsociadasPorMaterial, ErrorEliminarMateriales... errores) {

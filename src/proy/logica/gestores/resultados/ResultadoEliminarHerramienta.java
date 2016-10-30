@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorElimina
 public class ResultadoEliminarHerramienta extends Resultado<ErrorEliminarHerramienta> {
 
 	public enum ErrorEliminarHerramienta {
-		TareasNoTerminadasAsociadas;
+
 	}
 
 	public ResultadoEliminarHerramienta(ErrorEliminarHerramienta... errores) {

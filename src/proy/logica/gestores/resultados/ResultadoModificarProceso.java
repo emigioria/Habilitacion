@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoModificarProceso.ErrorModificarP
 public class ResultadoModificarProceso extends Resultado<ErrorModificarProceso> {
 
 	public enum ErrorModificarProceso {
-		NombreIncompleto, MaquinaIncompleta, ParteIncompleta, DescripcionIncompleta, TipoProcesoIncompleto, TiempoTeoricoPreparacionIncompleto, TiempoTeoricoProcesoIncompleto, MaquinaParteDescripcionyTipoRepetido;
+		NombreIncompleto, MaquinaIncompleta, ParteIncompleta, DescripcionIncompleta, TipoProcesoIncompleto, TiempoTeoricoPreparacionIncompleto, TiempoTeoricoProcesoIncompleto, MaquinaParteDescripcionyTipoRepetido
 	}
 
 	public ResultadoModificarProceso(ErrorModificarProceso... errores) {

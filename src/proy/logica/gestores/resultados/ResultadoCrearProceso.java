@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearProceso.ErrorCrearProceso;
 public class ResultadoCrearProceso extends Resultado<ErrorCrearProceso> {
 
 	public enum ErrorCrearProceso {
-		NombreIncompleto, MaquinaIncompleta, ParteIncompleta, DescripcionIncompleta, TipoProcesoIncompleto, TiempoTeoricoPreparacionIncompleto, TiempoTeoricoProcesoIncompleto, MaquinaParteDescripcionyTipoRepetido;
+		NombreIncompleto, MaquinaIncompleta, ParteIncompleta, DescripcionIncompleta, TipoProcesoIncompleto, TiempoTeoricoPreparacionIncompleto, TiempoTeoricoProcesoIncompleto, MaquinaParteDescripcionyTipoRepetido
 	}
 
 	public ResultadoCrearProceso(ErrorCrearProceso... errores) {
