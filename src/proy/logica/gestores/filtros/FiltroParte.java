@@ -23,15 +23,14 @@ public class FiltroParte extends Filtro {
 	private EstadoStr estado;
 	private Maquina maquina;
 	private ArrayList<Parte> partes;
-	private Boolean conTareas;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
-		private Maquina maquina = null;
-		private ArrayList<Parte> partes = null;
-		private Boolean conTareas = null;
+		private Maquina maquina;
+		private ArrayList<Parte> partes;
+		private Boolean conTareas;
 
 		public Builder() {
 			super();
@@ -46,13 +45,13 @@ public class FiltroParte extends Filtro {
 			this.maquina = maquina;
 			return this;
 		}
-		
-		public Builder maquina(ArrayList<Parte> partes) {
+
+		public Builder partes(ArrayList<Parte> partes) {
 			this.partes = partes;
 			return this;
 		}
-		
-		public Builder conTareas(){
+
+		public Builder conTareas() {
 			this.conTareas = true;
 			return this;
 		}
@@ -66,7 +65,6 @@ public class FiltroParte extends Filtro {
 		this.estado = builder.estado;
 		this.maquina = builder.maquina;
 		this.partes = builder.partes;
-		this.conTareas = builder.conTareas;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -77,30 +75,36 @@ public class FiltroParte extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		if(estado != EstadoStr.ALTA){
+		if(builder.estado != EstadoStr.ALTA){
 
 		}
-		if(maquina != null){
+		if(builder.maquina != null){
 			return;
 		}
-		if(partes != null){
+		if(builder.partes != null){
 			return;
 		}
-		if(conTareas != null){
+		if(builder.conTareas != null){
 			return;
 		}
 		namedQuery = "listarPartes";
 	}
 
 	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+		String select;
+		if(builder.conTareas != null && builder.conTareas){
+			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		}
+		else{
+			select = "SELECT " + builder.nombreEntidad;
+		}
 		return select;
 	}
 
 	private String getFrom(Builder builder) {
 		String from;
-		if(conTareas == true){
-			from = " FROM Parte " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar"; 
+		if(builder.conTareas != null && builder.conTareas){
+			from = " FROM Parte " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
 		}
 		else{
 			from = " FROM Parte " + builder.nombreEntidad;
@@ -112,7 +116,8 @@ public class FiltroParte extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""));
+						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""))
+						+ ((builder.conTareas != null) ? ((builder.conTareas) ? (builder.nombreEntidad + " = proc.parte AND tar.proceso = proc AND ") : ("")) : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

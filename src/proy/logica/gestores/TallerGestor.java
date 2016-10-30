@@ -195,7 +195,7 @@ public class TallerGestor {
 		ArrayList<ErrorCrearMateriales> erroresMateriales = new ArrayList<>();
 
 		//Creo una lista de los nombres de materiales voy a buscar en la BD
-		ArrayList<String> materiales_a_buscar_en_la_BD = new ArrayList<>();
+		ArrayList<Material> materiales_a_buscar_en_la_BD = new ArrayList<>();
 
 		//Reviso que el nombre esté completo
 		boolean nombreIncompletoEncontrado = false;
@@ -205,7 +205,7 @@ public class TallerGestor {
 			}
 			else{
 				//Si el nombre está completo lo busco en la BD
-				materiales_a_buscar_en_la_BD.add(m.getNombre());
+				materiales_a_buscar_en_la_BD.add(m);
 			}
 		}
 		//Si encontré un nombre incompleto, agrego el error
@@ -217,7 +217,7 @@ public class TallerGestor {
 		if(!materiales_a_buscar_en_la_BD.isEmpty()){
 
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
+			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales_a_buscar_en_la_BD).build());
 			if(!materiales_coincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
 				for(Material material: materiales_coincidentes){
@@ -253,13 +253,8 @@ public class TallerGestor {
 			ArrayList<Material> materialesABajaLogica;
 			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
 
-			ArrayList<String> nombresMateriales = new ArrayList<>();
-			for(Material material: materiales){
-				nombresMateriales.add(material.getNombre());
-			}
-
 			//si el material tiene piezas asociadas, se le da baja lógica
-			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMateriales).conPiezas().build());
+			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales).conPiezas().build());
 
 			//si el material no tiene piezas asociadas, se le da baja fisica
 			materialesABajaFisica.removeAll(materialesABajaLogica);

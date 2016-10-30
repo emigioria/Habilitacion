@@ -12,19 +12,20 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Material;
 import proy.datos.servicios.Filtro;
 
 public class FiltroMaterial extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
-	private ArrayList<String> nombres;
 	private EstadoStr estado;
+	private ArrayList<Material> materiales;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
-		private ArrayList<String> nombres;
+		private ArrayList<Material> materiales;
 		private Boolean conPiezas;
 		private EstadoStr estado = EstadoStr.ALTA;
 
@@ -37,9 +38,9 @@ public class FiltroMaterial extends Filtro {
 			return this;
 		}
 
-		public Builder nombres(ArrayList<String> nombres) {
-			if(nombres != null && !nombres.isEmpty()){
-				this.nombres = nombres;
+		public Builder materiales(ArrayList<Material> materiales) {
+			if(materiales != null && !materiales.isEmpty()){
+				this.materiales = materiales;
 			}
 			return this;
 		}
@@ -55,7 +56,7 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private FiltroMaterial(Builder builder) {
-		this.nombres = builder.nombres;
+		this.materiales = builder.materiales;
 		this.estado = builder.estado;
 
 		setConsulta(builder);
@@ -67,7 +68,7 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		if(builder.nombres != null){
+		if(builder.materiales != null){
 			return;
 		}
 		if(builder.estado != EstadoStr.ALTA){
@@ -104,7 +105,7 @@ public class FiltroMaterial extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""))
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + " in (:mts) AND ") : (""))
 						+ ((builder.conPiezas != null) ? ((builder.conPiezas) ? (builder.nombreEntidad + " = piez.material AND ") : ("")) : (""));
 
 		if(!where.isEmpty()){
@@ -131,8 +132,8 @@ public class FiltroMaterial extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
-		if(nombres != null){
-			query.setParameterList("nms", nombres);
+		if(materiales != null){
+			query.setParameterList("mts", materiales);
 		}
 		if(estado != null){
 			query.setParameter("est", estado);
