@@ -26,6 +26,7 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.TableCellTextViewNumber;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroParte;
@@ -82,6 +83,10 @@ public class NMMaquinaController extends ControladorRomano {
 	private void initialize() {
 		Platform.runLater(() -> {
 			tablaPartes.setEditable(true);
+			
+			//Inicialización de la columna PARTE->NOMBRE
+			
+			//Seteamos el Cell Value Factory
 			columnaNombreParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
@@ -90,6 +95,7 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleStringProperty("<Sin nombre>");
 			});
+			//Seteamos el Cell Factory
 			columnaNombreParte.setCellFactory(col -> {
 				return new TableCellTextViewString<Parte>(Parte.class) {
 
@@ -99,6 +105,7 @@ public class NMMaquinaController extends ControladorRomano {
 					}
 				};
 			});
+			//Al terminar de editar, se guarda el valor
 			columnaNombreParte.setOnEditCommit(t -> {
 				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
 				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
@@ -106,6 +113,10 @@ public class NMMaquinaController extends ControladorRomano {
 				t.getTableColumn().setVisible(true);
 			});
 
+			
+			//Inicialización de la columna PARTE->CANTIDAD
+			
+			//Seteamos el Cell Value Factory
 			columnaCantidadParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCantidad() != null){
@@ -114,6 +125,8 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleIntegerProperty(-1);
 			});
+			//Seteamos el Cell Factory
+			/*
 			columnaCantidadParte.setCellFactory(col -> {
 				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
 
@@ -123,6 +136,22 @@ public class NMMaquinaController extends ControladorRomano {
 					}
 				};
 			});
+			*/
+			
+			
+			columnaCantidadParte.setCellFactory(col -> {
+				return new TableCellTextViewNumber<Parte>(Parte.class, new IntegerStringConverter()) {
+
+					@Override
+					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+
+					}
+				};
+			});
+			
+			
+			
+			//Al terminar de editar, se guarda el valor.
 			columnaCantidadParte.setOnEditCommit(t -> {
 				if(t.getNewValue() != null){
 					t.getRowValue().setCantidad((Integer) t.getNewValue());
@@ -132,6 +161,10 @@ public class NMMaquinaController extends ControladorRomano {
 				t.getTableColumn().setVisible(true);
 			});
 
+			
+			//Inicialización de la columna PIEZA->NOMBRE
+			
+			//Seteamos el Cell Value Factory
 			columnaNombrePieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
@@ -140,6 +173,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleStringProperty("<Sin nombre>");
 			});
+			
+			
+			//Inicialización de la columna PIEZA->CANTIDAD
+			
 			columnaCantidadPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCantidad() != null){
@@ -148,6 +185,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleIntegerProperty(-1);
 			});
+			
+			
+			//Inicialización de la columna PIEZA->MATERIAL
+			
 			columnaMaterialPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getMaterial() != null){
@@ -158,6 +199,10 @@ public class NMMaquinaController extends ControladorRomano {
 				}
 				return new SimpleStringProperty("<Sin nombre>");
 			});
+			
+			
+			//Inicialización de la columna PIEZA->CODIGO->PLANO
+			
 			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCodigoPlano() != null){

@@ -6,6 +6,8 @@
  */
 package proy.gui.componentes;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 
@@ -22,33 +24,24 @@ public abstract class TableCellTextViewNumber<O> extends TableCellTextView<O, Nu
 
 	@Override
 	protected void nuevoTextField() {
-		textField = new TextField() {
-
-			@Override
-			public void replaceText(int start, int end, String text) {
-				String textoOriginal = this.getText();
-				super.replaceText(start, end, text);
-				if(!validate(this.getText())){
-					this.setText(textoOriginal);
-				}
-			}
-
-			@Override
-			public void replaceSelection(String text) {
-				String textoOriginal = this.getText();
-				super.replaceSelection(text);
-				if(!validate(this.getText())){
-					this.setText(textoOriginal);
-				}
-			}
-
-			private boolean validate(String text) {
-				if(text == null || text.isEmpty()){
-					return false;
-				}
-				return text.matches("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
-			}
-		};
-
+		
+		textField = new TextField();
+		
+		textField.textProperty().addListener(new ChangeListener<String>() {
+	        @Override
+	        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+	            if(newValue == null){
+	            	return;
+	            }
+	            if(newValue.equals("-1")){
+	            	textField.setText("");
+	            	return;
+	            }
+	            
+	        	if (!newValue.matches("\\d*")) {
+	                textField.setText(newValue.replaceAll("[^\\d]", ""));
+	            }
+	        }
+	    });
 	}
 }
