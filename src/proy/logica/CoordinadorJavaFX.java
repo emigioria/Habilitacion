@@ -126,11 +126,22 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
-		ResultadoEliminarTareas resultado = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
-		if(resultado.hayErrores()){
-			return new ResultadoEliminarPartes(resultado, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarPartes(resultadoEliminarTareas, null, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
 		}
-		return gestorTaller.eliminarPartes(partes);
+		
+		ResultadoEliminarPartes resultadoEliminarPartes = gestorTaller.eliminarPartes(partes);
+		ArrayList<Parte> partesDadasBajaLogica = resultadoEliminarPartes.getPartesDadasBajaLogica();
+		if(!partesDadasBajaLogica.isEmpty()){
+			//dar de baja logica procesos
+			ArrayList<Proceso> procesosABajaLogica = new ArrayList<>();
+			for(Parte parte: partesDadasBajaLogica){
+				procesosABajaLogica.addAll(gestorProceso.listarProcesos(new FiltroProceso.Builder().parte(parte).build()));
+			}
+			gestorProceso.bajaLogicaProcesos(procesosABajaLogica);
+		}
+		return resultadoEliminarPartes;
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {

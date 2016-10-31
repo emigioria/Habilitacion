@@ -166,6 +166,10 @@ public class Proceso {
 	public Set<Tarea> getTareas() {
 		return tareas;
 	}
+	
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
 
 	@Override
 	public int hashCode() {

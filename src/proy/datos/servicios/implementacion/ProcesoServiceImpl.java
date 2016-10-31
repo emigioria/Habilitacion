@@ -62,11 +62,13 @@ public class ProcesoServiceImpl implements ProcesoService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarProceso(Proceso proceso) throws PersistenciaException {
+	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
-			session.update(proceso);
+			for(Proceso proceso: procesos){
+				proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
+				session.update(proceso);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");

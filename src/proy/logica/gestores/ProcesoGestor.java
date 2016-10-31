@@ -48,6 +48,13 @@ public class ProcesoGestor {
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
+	
+	public void bajaLogicaProcesos(ArrayList<Proceso> procesosABajaLogica) throws PersistenciaException {
+		for(Proceso proceso: procesosABajaLogica){
+			proceso.darDeBaja();
+		}
+		persistidorProceso.actualizarProcesos(procesosABajaLogica);
+	}
 
 	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerTareas(filtro);

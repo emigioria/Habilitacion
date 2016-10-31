@@ -35,6 +35,8 @@ import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
@@ -297,6 +299,32 @@ public class NMMaquinaController extends ControladorRomano {
 		} catch(Exception e){
 			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
+		}
+		
+		//Tratamiento de errores
+		if(resultadoEliminarPartes.hayErrores()){
+			for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
+				switch(ep) {
+				case ERROR_AL_ELIMINAR_TAREAS:
+					for(ErrorEliminarTareas et: resultadoEliminarPartes.getResultadoTareas().getErrores()){
+						switch(et){
+						//no hay errores de eliminar tareas aún
+						}
+					}
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
+			}
+			
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
 		}
 
 		return false;

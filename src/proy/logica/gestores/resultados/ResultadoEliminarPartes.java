@@ -6,11 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
+import java.util.ArrayList;
+
+import proy.datos.entidades.Parte;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 
 public class ResultadoEliminarPartes extends Resultado<ErrorEliminarPartes> {
 
 	private ResultadoEliminarTareas resultadoTareas;
+	private ArrayList<Parte> partesDadasBajaLogica;
 
 	public enum ErrorEliminarPartes {
 		ERROR_AL_ELIMINAR_TAREAS
@@ -20,12 +24,17 @@ public class ResultadoEliminarPartes extends Resultado<ErrorEliminarPartes> {
 		super(errores);
 	}
 
-	public ResultadoEliminarPartes(ResultadoEliminarTareas resultadoTareas, ErrorEliminarPartes... errores) {
+	public ResultadoEliminarPartes(ResultadoEliminarTareas resultadoTareas, ArrayList<Parte> partesDadasBajaLogica, ErrorEliminarPartes... errores) {
 		this(errores);
 		this.resultadoTareas = resultadoTareas;
+		this.partesDadasBajaLogica = partesDadasBajaLogica;
 	}
 
 	public ResultadoEliminarTareas getResultadoTareas() {
 		return resultadoTareas;
+	}
+	
+	public ArrayList<Parte> getPartesDadasBajaLogica(){
+		return partesDadasBajaLogica;
 	}
 }

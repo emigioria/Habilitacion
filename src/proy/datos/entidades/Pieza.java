@@ -137,6 +137,10 @@ public class Pieza {
 		procesos.size();
 		return procesos;
 	}
+	
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
 
 	@Override
 	public int hashCode() {

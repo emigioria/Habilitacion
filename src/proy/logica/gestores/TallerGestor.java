@@ -126,8 +126,54 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> parte) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
+		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
+		
+		ArrayList<Parte> partesABajaLogica;
+		ArrayList<Parte> partesABajaFisica;
+		ArrayList<Pieza> piezasABajaLogica;
+		
+		if(!resultado.hayErrores()){
+			partesABajaFisica = new ArrayList<>(partesAEliminar);
+
+			//si la parte tiene tareas asociadas, se le da baja lógica
+			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).conTareas().build());
+
+			//si la parte no tiene tareas asociadas, se le da baja fisica
+			partesABajaFisica.removeAll(partesABajaLogica);
+
+			if(!partesABajaFisica.isEmpty()){
+				persistidorTaller.bajaPartes(partesABajaFisica);
+			}
+
+			if(!partesABajaLogica.isEmpty()){
+				
+				//dar de baja logica piezas
+				piezasABajaLogica = new ArrayList<>();
+				for(Parte parte: partesABajaLogica){
+					piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
+				}
+				for(Pieza pieza: piezasABajaLogica){
+					pieza.darDeBaja();
+				}
+				persistidorTaller.actualizarPiezas(piezasABajaLogica);
+				
+				
+				//dar de baja logica partes
+				for(Parte parte: partesABajaLogica){
+					parte.darDeBaja();
+				}
+				persistidorTaller.actualizarPartes(partesABajaLogica);
+				
+				return new ResultadoEliminarPartes(null,partesABajaLogica);
+			}
+		}
+		
+		return resultado;
+	}
+
+	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
+		return new ResultadoEliminarPartes();
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
