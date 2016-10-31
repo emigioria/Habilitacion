@@ -9,6 +9,7 @@ package proy.datos.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -54,14 +55,14 @@ public class Pieza {
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codparte", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codparte_fk"))
+	@JoinColumn(name = "codparte", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codparte_fk"), nullable = false)
 	private Parte parte;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codmaterial", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codmaterial_fk"))
+	@JoinColumn(name = "codmaterial", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codmaterial_fk"), nullable = false)
 	private Material material;
 
-	@ManyToMany(mappedBy = "piezas", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "piezas", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Proceso> procesos;
 
 	public Pieza() {
@@ -133,7 +134,12 @@ public class Pieza {
 	}
 
 	public Set<Proceso> getProcesos() {
+		procesos.size();
 		return procesos;
+	}
+	
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
 	}
 
 	@Override
@@ -161,20 +167,23 @@ public class Pieza {
 			return false;
 		}
 		Pieza other = (Pieza) obj;
-		if(cantidad == null){
-			if(other.cantidad != null){
-				return false;
-			}
-		}
-		else if(!cantidad.equals(other.cantidad)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(cantidad == null){
+			if(other.cantidad != null){
+				return false;
+			}
+		}
+		else if(!cantidad.equals(other.cantidad)){
 			return false;
 		}
 		if(codigoPlano == null){

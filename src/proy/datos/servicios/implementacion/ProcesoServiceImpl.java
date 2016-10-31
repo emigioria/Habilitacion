@@ -62,11 +62,13 @@ public class ProcesoServiceImpl implements ProcesoService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarProceso(Proceso proceso) throws PersistenciaException {
+	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
-			session.update(proceso);
+			for(Proceso proceso: procesos){
+				proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
+				session.update(proceso);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -134,6 +136,23 @@ public class ProcesoServiceImpl implements ProcesoService {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(tarea);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("eliminar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new DeleteException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void bajaTareas(ArrayList<Tarea> tareas) throws PersistenciaException {
+		try{
+			Session session = getSessionFactory().getCurrentSession();
+			for(Tarea tarea: tareas){
+				session.delete(tarea);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

@@ -41,7 +41,7 @@ public class Comentario {
 	private String texto;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"))
+	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"), nullable = false)
 	private Operario operario;
 
 	@Temporal(TemporalType.DATE)
@@ -110,20 +110,23 @@ public class Comentario {
 			return false;
 		}
 		Comentario other = (Comentario) obj;
-		if(texto == null){
-			if(other.texto != null){
-				return false;
-			}
-		}
-		else if(!texto.equals(other.texto)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(texto == null){
+			if(other.texto != null){
+				return false;
+			}
+		}
+		else if(!texto.equals(other.texto)){
 			return false;
 		}
 		if(fechaComentario == null){

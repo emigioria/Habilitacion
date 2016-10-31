@@ -70,7 +70,7 @@ public class Main extends Application {
 		iniciarHibernate();
 
 		//Crear primera ventana
-		controladorVentanaInicio = ControladorRomano.nuevaScene(VTareasController.URLVista, apilador, coordinador);
+		controladorVentanaInicio = ControladorRomano.nuevaScene(VTareasController.URL_VISTA, apilador, coordinador);
 	}
 
 	private void iniciarHibernate() {

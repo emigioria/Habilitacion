@@ -1,4 +1,12 @@
+/**
+ * Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package proy.gui.componentes;
+
+import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
@@ -11,12 +19,15 @@ import javafx.util.StringConverter;
 
 public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements ChangeListener<O> {
 
-	private TextField textField;
-	private StringConverter<T> convertidor;
+	protected TextField textField;
+	protected StringConverter<? extends T> convertidor;
+	private Class<? extends O> claseTabla;
+	private O objeto = null;
 
 	@SuppressWarnings("unchecked")
-	public TableCellTextView(StringConverter<T> convertidor) {
+	public TableCellTextView(Class<? extends O> claseTabla, StringConverter<? extends T> convertidor) {
 		super();
+		this.claseTabla = claseTabla;
 		this.convertidor = convertidor;
 		//Cuando la fila es seteada...
 		this.tableRowProperty().addListener((observable, oldValue, newValue) -> {
@@ -62,13 +73,25 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 	}
 
 	private void createTextField() {
+		nuevoTextField();
+		setTextFieldProperties();
+	}
+
+	protected void nuevoTextField() {
 		textField = new TextField();
+	}
+
+	protected void setTextFieldProperties() {
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
 		textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent t) {
 				if(t.getCode() == KeyCode.ENTER){
-					commitEdit(convertidor.fromString(textField.getText()));
+					try{
+						commitEdit(convertidor.fromString(textField.getText()));
+					} catch(Exception e){
+						commitEdit(null);
+					}
 					cancelEdit();
 				}
 				else if(t.getCode() == KeyCode.ESCAPE){
@@ -78,12 +101,14 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	private String getString() {
-		if(getTableColumn().getCellValueFactory() != null){
-			T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), (O) getTableRow().getItem())).getValue();
-			if(valor != null){
-				return valor.toString();
+		Optional.ofNullable(getTableRow().getItem()).filter(claseTabla::isInstance).map(claseTabla::cast).ifPresent(n -> objeto = n);
+		if(objeto != null){
+			if(getTableColumn().getCellValueFactory() != null){
+				T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), objeto)).getValue();
+				if(valor != null){
+					return valor.toString();
+				}
 			}
 		}
 		return getItem() == null ? "" : getItem().toString();

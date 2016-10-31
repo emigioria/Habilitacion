@@ -41,7 +41,9 @@ public class FiltroPieza extends Filtro {
 		}
 
 		public Builder materiales(ArrayList<Material> materiales) {
-			this.materiales = materiales;
+			if(materiales != null && !materiales.isEmpty()){
+				this.materiales = materiales;
+			}
 			return this;
 		}
 
@@ -135,7 +137,11 @@ public class FiltroPieza extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(materiales != null){
+			for(Material material: materiales){
+				session.update(material);
+			}
+		}
 	}
 
 	@Override

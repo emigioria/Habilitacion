@@ -10,36 +10,36 @@ import javafx.fxml.FXML;
 
 public class MenuAdministracionController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/MenuAdministracion.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/MenuAdministracion.fxml";
 
 	@FXML
 	public void administrarOperarios() {
-		ControladorRomano.nuevaScene(AOperariosController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(AOperariosController.URL_VISTA, apilador, coordinador);
 	}
 
 	@FXML
 	public void administrarMaquinas() {
-		ControladorRomano.nuevaScene(AMaquinasController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(AMaquinasController.URL_VISTA, apilador, coordinador);
 	}
 
 	@FXML
 	public void administrarProcesos() {
-		ControladorRomano.nuevaScene(AProcesosController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(AProcesosController.URL_VISTA, apilador, coordinador);
 	}
 
 	@FXML
 	public void administrarMateriales() {
-		ControladorRomano.nuevaScene(AMaterialesController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(AMaterialesController.URL_VISTA, apilador, coordinador);
 	}
 
 	@FXML
 	public void administrarHerramientas() {
-		ControladorRomano.nuevaScene(AHerramientasController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(AHerramientasController.URL_VISTA, apilador, coordinador);
 	}
 
 	@FXML
 	public void administrarTareas() {
-		ControladorRomano.nuevaScene(ATareasController.URLVista, apilador, coordinador);
+		ControladorRomano.nuevaScene(ATareasController.URL_VISTA, apilador, coordinador);
 	}
 
 	@Override

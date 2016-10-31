@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearParte.ErrorCrearParte;
 public class ResultadoCrearParte extends Resultado<ErrorCrearParte> {
 
 	public enum ErrorCrearParte {
-		NombreIncompleto, CantidadIncompleta, NombreRepetido;
+		NOMBRE_INCOMPLETO, CANTIDAD_INCOMPLETA, NOMBRE_REPETIDO
 	}
 
 	public ResultadoCrearParte(ErrorCrearParte... errores) {

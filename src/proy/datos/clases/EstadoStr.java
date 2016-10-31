@@ -7,5 +7,5 @@
 package proy.datos.clases;
 
 public enum EstadoStr {
-	ALTA, BAJA;
+	ALTA, BAJA
 }

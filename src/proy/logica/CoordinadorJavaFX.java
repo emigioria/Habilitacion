@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import proy.datos.clases.DatosLogin;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
@@ -49,10 +50,12 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
-import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarParte;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
@@ -122,8 +125,28 @@ public class CoordinadorJavaFX {
 		return gestorTaller.modificarParte(parte);
 	}
 
-	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
-		return gestorTaller.eliminarParte(parte);
+	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarPartes(resultadoEliminarTareas, null, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
+		}
+		
+		ResultadoEliminarPartes resultadoEliminarPartes = gestorTaller.eliminarPartes(partes);
+		ArrayList<Parte> partesDadasBajaLogica = resultadoEliminarPartes.getPartesDadasBajaLogica();
+		if(!partesDadasBajaLogica.isEmpty()){
+			//dar de baja logica procesos
+			ArrayList<Proceso> procesosABajaLogica = new ArrayList<>();
+			for(Parte parte: partesDadasBajaLogica){
+				procesosABajaLogica.addAll(gestorProceso.listarProcesos(new FiltroProceso.Builder().parte(parte).build()));
+			}
+			gestorProceso.bajaLogicaProcesos(procesosABajaLogica);
+		}
+		return resultadoEliminarPartes;
+	}
+
+	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).parte(parte).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
@@ -138,6 +161,11 @@ public class CoordinadorJavaFX {
 		return gestorTaller.eliminarPieza(pieza);
 	}
 
+	public Boolean tieneTareasNoTerminadasAsociadas(Pieza pieza) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).pieza(pieza).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
+	}
+
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
 		return gestorTaller.listarHerramientas(filtro);
 	}
@@ -148,6 +176,11 @@ public class CoordinadorJavaFX {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		return gestorTaller.eliminarHerramienta(herramienta);
+	}
+
+	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramienta(herramienta).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {

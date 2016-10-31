@@ -32,7 +32,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminar
 
 public class AMaterialesController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/AMateriales.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/AMateriales.fxml";
 
 	@FXML
 	private TextField nombreMaterial;
@@ -73,7 +73,7 @@ public class AMaterialesController extends ControladorRomano {
 			});
 
 			Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
-				return new TableCellTextViewString<Material>() {
+				return new TableCellTextViewString<Material>(Material.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
@@ -146,10 +146,10 @@ public class AMaterialesController extends ControladorRomano {
 		if(resultadoCrearMateriales.hayErrores()){
 			for(ErrorCrearMateriales e: resultadoCrearMateriales.getErrores()){
 				switch(e) {
-				case NombreIncompleto:
+				case NOMBRE_INCOMPLETO:
 					erroresBfr.append("Hay nombres vacíos.\n");
 					break;
-				case NombreYaExistente:
+				case NOMBRE_YA_EXISTENTE:
 					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
 					for(String nombreMaterial: resultadoCrearMateriales.getRepetidos()){
 						erroresBfr.append("\t<");
@@ -157,16 +157,15 @@ public class AMaterialesController extends ControladorRomano {
 						erroresBfr.append(">\n");
 					}
 					break;
-				case NombreIngresadoRepetido:
+				case NOMBRE_INGRESADO_REPETIDO:
 					erroresBfr.append("Se intenta añadir dos materiales con el mismo nombre.\n");
 					break;
 				}
 			}
-		}
-
-		String errores = erroresBfr.toString();
-		if(!errores.isEmpty()){
-			new VentanaError("Error al crear materiales", errores, apilador.getStage());
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al crear materiales", errores, apilador.getStage());
+			}
 		}
 		else{
 			materialesAGuardar.clear();
@@ -212,7 +211,7 @@ public class AMaterialesController extends ControladorRomano {
 		if(resultadoEliminarMateriales.hayErrores()){
 			for(ErrorEliminarMateriales e: resultadoEliminarMateriales.getErrores()){
 				switch(e) {
-				case PiezasActivasAsociadas:
+				case PIEZAS_ACTIVAS_ASOCIADAS:
 					for(String material: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().keySet()){
 						erroresBfr.append("El material <" + material + "> no se puede eliminar porque está siendo utilizado en las siguientes piezas:\n");
 						for(String pieza: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().get(material)){
@@ -224,11 +223,11 @@ public class AMaterialesController extends ControladorRomano {
 					break;
 				}
 			}
-		}
 
-		String errores = erroresBfr.toString();
-		if(!errores.isEmpty()){
-			new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+			}
 		}
 		else{
 			materialesAEliminar.clear();

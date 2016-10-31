@@ -6,6 +6,10 @@
  */
 package proy.datos.entidades;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -47,11 +52,20 @@ public class Parte {
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "codmaquina", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "parte_codmaquina_fk"), nullable = false)
 	private Maquina maquina;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
+	private Set<Pieza> piezas;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
+	private Set<Proceso> procesos;
 
 	public Parte() {
 		super();
 		estado = new Estado(EstadoStr.ALTA);
+		piezas = new HashSet<>();
+		procesos = new HashSet<>();
 	}
 
 	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
@@ -98,6 +112,20 @@ public class Parte {
 		this.estado = estado;
 	}
 
+	public Set<Pieza> getPiezas() {
+		piezas.size();
+		return piezas;
+	}
+
+	public Set<Proceso> getProcesos() {
+		procesos.size();
+		return procesos;
+	}
+	
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -122,20 +150,23 @@ public class Parte {
 			return false;
 		}
 		Parte other = (Parte) obj;
-		if(cantidad == null){
-			if(other.cantidad != null){
-				return false;
-			}
-		}
-		else if(!cantidad.equals(other.cantidad)){
-			return false;
-		}
 		if(codigo == null){
 			if(other.codigo != null){
 				return false;
 			}
 		}
 		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
+		if(cantidad == null){
+			if(other.cantidad != null){
+				return false;
+			}
+		}
+		else if(!cantidad.equals(other.cantidad)){
 			return false;
 		}
 		if(estado == null){

@@ -28,7 +28,7 @@ import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario
 
 public class AOperariosController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/AOperarios.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/AOperarios.fxml";
 
 	@FXML
 	private TableView<Operario> tablaOperarios;
@@ -74,7 +74,7 @@ public class AOperariosController extends ControladorRomano {
 			});
 
 			Callback<TableColumn<Operario, String>, TableCell<Operario, String>> call = col -> {
-				return new TableCellTextViewString<Operario>() {
+				return new TableCellTextViewString<Operario>(Operario.class) {
 
 					@Override
 					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
@@ -164,16 +164,16 @@ public class AOperariosController extends ControladorRomano {
 		if(hayErrores){
 			for(ErrorCrearOperario r: resultado.getErrores()){
 				switch(r) {
-				case NombreIncompleto:
+				case NOMBRE_INCOMPLETO:
 					errores += "El nombre no es válido.\n";
 					break;
-				case ApellidoIncompleto:
+				case APELLIDO_INCOMPLETO:
 					errores += "El apellido no es válido \n";
 					break;
-				case DNIIncompleto:
+				case DNI_INCOMPLETO:
 					errores += "El DNI no es válido \n";
 					break;
-				case DNIRepetido:
+				case DNI_REPETIDO:
 					errores += "Ya existe un operario con ese DNI \n";
 					break;
 				}

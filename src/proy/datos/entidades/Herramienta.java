@@ -48,7 +48,7 @@ public class Herramienta {
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "herramienta_codestado_fk"), nullable = false)
 	private Estado estado;
 
-	@ManyToMany(mappedBy = "herramientas", fetch = FetchType.EAGER)
+	@ManyToMany(mappedBy = "herramientas", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Proceso> procesos;
 
 	public Herramienta() {
@@ -83,6 +83,7 @@ public class Herramienta {
 	}
 
 	public Set<Proceso> getProcesos() {
+		procesos.size();
 		return procesos;
 	}
 
@@ -116,6 +117,9 @@ public class Herramienta {
 		}
 		else if(!codigo.equals(other.codigo)){
 			return false;
+		}
+		else{
+			return true;
 		}
 		if(estado == null){
 			if(other.estado != null){

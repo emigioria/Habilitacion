@@ -11,7 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerra
 public class ResultadoCrearHerramienta extends Resultado<ErrorCrearHerramienta> {
 
 	public enum ErrorCrearHerramienta {
-		NombreIncompleto, NombreRepetido;
+		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO
 	}
 
 	public ResultadoCrearHerramienta(ErrorCrearHerramienta... errores) {

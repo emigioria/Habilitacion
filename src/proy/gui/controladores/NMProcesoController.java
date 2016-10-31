@@ -19,7 +19,7 @@ import proy.datos.entidades.Proceso;
 
 public class NMProcesoController extends ControladorRomano {
 
-	public static final String URLVista = "/proy/gui/vistas/NMProceso.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/NMProceso.fxml";
 
 	@FXML
 	private TextField tiempoTeoricoPreparacion;

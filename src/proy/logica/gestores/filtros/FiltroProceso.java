@@ -10,6 +10,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Parte;
 import proy.datos.servicios.Filtro;
 
 public class FiltroProceso extends Filtro {
@@ -17,11 +18,13 @@ public class FiltroProceso extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
+	private Parte parte;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
+		private Parte parte;
 
 		public Builder() {
 			super();
@@ -29,6 +32,11 @@ public class FiltroProceso extends Filtro {
 
 		public Builder nombreEntidad(String nombreEntidad) {
 			this.nombreEntidad = nombreEntidad;
+			return this;
+		}
+		
+		public Builder parte(Parte parte){
+			this.parte = parte;
 			return this;
 		}
 
@@ -39,6 +47,7 @@ public class FiltroProceso extends Filtro {
 
 	private FiltroProceso(Builder builder) {
 		this.estado = builder.estado;
+		this.parte = builder.parte;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -49,6 +58,12 @@ public class FiltroProceso extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(estado != EstadoStr.ALTA){
+			return;
+		}
+		if(parte != null){
+			return;
+		}
 		namedQuery = "listarProcesos";
 	}
 
@@ -64,7 +79,8 @@ public class FiltroProceso extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+				+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -92,6 +108,9 @@ public class FiltroProceso extends Filtro {
 	public Query setParametros(Query query) {
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(parte != null){
+			query.setParameter("par", parte);
 		}
 		return query;
 	}

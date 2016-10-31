@@ -18,7 +18,7 @@ public interface ProcesoService {
 
 	public void guardarProceso(Proceso proceso) throws PersistenciaException;
 
-	public void actualizarProceso(Proceso proceso) throws PersistenciaException;
+	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException;
 
 	public void bajaProceso(Proceso proceso) throws PersistenciaException;
 
@@ -29,5 +29,7 @@ public interface ProcesoService {
 	public void actualizarTarea(Tarea tarea) throws PersistenciaException;
 
 	public void bajaTarea(Tarea tarea) throws PersistenciaException;
+
+	public void bajaTareas(ArrayList<Tarea> tareas) throws PersistenciaException;
 
 }

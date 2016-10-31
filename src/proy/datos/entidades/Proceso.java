@@ -9,6 +9,7 @@ package proy.datos.entidades;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -61,7 +62,7 @@ public class Proceso {
 	private Estado estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codparte", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "proceso_codparte_fk"))
+	@JoinColumn(name = "codparte", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "proceso_codparte_fk"), nullable = false)
 	private Parte parte;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -72,11 +73,15 @@ public class Proceso {
 	@JoinTable(name = "herramienta_proceso", joinColumns = @JoinColumn(name = "codproceso"), foreignKey = @ForeignKey(name = "herramienta_proceso_codproceso_fk"), inverseJoinColumns = @JoinColumn(name = "codherramienta"), inverseForeignKey = @ForeignKey(name = "herramienta_proceso_codherramienta_fk"))
 	private Set<Herramienta> herramientas;
 
+	@ManyToMany(mappedBy = "proceso", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<Tarea> tareas;
+
 	public Proceso() {
 		super();
 		herramientas = new HashSet<>();
 		piezas = new HashSet<>();
 		estado = new Estado(EstadoStr.ALTA);
+		tareas = new HashSet<>();
 	}
 
 	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
@@ -158,6 +163,14 @@ public class Proceso {
 		return herramientas;
 	}
 
+	public Set<Tarea> getTareas() {
+		return tareas;
+	}
+	
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -192,6 +205,9 @@ public class Proceso {
 		}
 		else if(!codigo.equals(other.codigo)){
 			return false;
+		}
+		else{
+			return true;
 		}
 		if(descripcion == null){
 			if(other.descripcion != null){

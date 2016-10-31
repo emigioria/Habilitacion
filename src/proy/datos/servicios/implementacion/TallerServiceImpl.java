@@ -115,11 +115,13 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarParte(Parte parte) throws PersistenciaException {
+	public void actualizarPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
-			session.update(parte);
+			for(Parte parte: partes){
+				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				session.update(parte);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -131,10 +133,12 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaParte(Parte parte) throws PersistenciaException {
+	public void bajaPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			session.delete(parte);
+			for(Parte parte: partes){
+				session.delete(parte);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");
@@ -167,11 +171,13 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarPieza(Pieza pieza) throws PersistenciaException {
+	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
-			session.update(pieza);
+			for(Pieza pieza: piezas){
+				pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+				session.update(pieza);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");

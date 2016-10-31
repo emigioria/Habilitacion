@@ -6,9 +6,9 @@
  */
 package proy.datos.entidades;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -69,7 +69,7 @@ public class Tarea {
 	private EstadoTarea estado;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codproceso", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "tarea_codProceso_fk"))
+	@JoinColumn(name = "codproceso", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "tarea_codProceso_fk"), nullable = false)
 	private Proceso proceso;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -77,11 +77,11 @@ public class Tarea {
 	private Operario operario;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "tarea")
-	private List<Pausa> pausas;
+	private Set<Pausa> pausas;
 
 	public Tarea() {
 		super();
-		pausas = new ArrayList<>();
+		pausas = new HashSet<>();
 		estado = new EstadoTarea(EstadoTareaStr.PLANIFICADA);
 	}
 
@@ -174,7 +174,7 @@ public class Tarea {
 		this.operario = operario;
 	}
 
-	public List<Pausa> getPausas() {
+	public Set<Pausa> getPausas() {
 		pausas.size();
 		return pausas;
 	}
@@ -207,6 +207,17 @@ public class Tarea {
 			return false;
 		}
 		Tarea other = (Tarea) obj;
+		if(codigo == null){
+			if(other.codigo != null){
+				return false;
+			}
+		}
+		else if(!codigo.equals(other.codigo)){
+			return false;
+		}
+		else{
+			return true;
+		}
 		if(cantidadReal == null){
 			if(other.cantidadReal != null){
 				return false;
@@ -221,14 +232,6 @@ public class Tarea {
 			}
 		}
 		else if(!cantidadSolicitada.equals(other.cantidadSolicitada)){
-			return false;
-		}
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
 			return false;
 		}
 		if(estado == null){

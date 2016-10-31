@@ -17,8 +17,6 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
-import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -43,9 +41,10 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarParte;
 
 @Service
@@ -59,17 +58,7 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearMaquina crearMaquina(Maquina maquina) throws PersistenciaException {
-		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
-		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
-			errores.add(ErrorCrearMaquina.NombreIncompleto);
-		}
-		else{
-			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
-			if(!maquinasRepetidas.isEmpty()){
-				errores.add(ErrorCrearMaquina.NombreRepetido);
-			}
-		}
-		ResultadoCrearMaquina resultado = new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
+		ResultadoCrearMaquina resultado = validarCrearMaquina(maquina);
 
 		if(!resultado.hayErrores()){
 			persistidorTaller.guardarMaquina(maquina);
@@ -78,12 +67,51 @@ public class TallerGestor {
 		return resultado;
 	}
 
+	public ResultadoCrearMaquina validarCrearMaquina(Maquina maquina) throws PersistenciaException {
+		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
+		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
+			errores.add(ErrorCrearMaquina.NOMBRE_INCOMPLETO);
+		}
+		else{
+			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
+			if(!maquinasRepetidas.isEmpty()){
+				errores.add(ErrorCrearMaquina.NOMBRE_REPETIDO);
+			}
+		}
+
+		return new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
+	}
+
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ResultadoModificarMaquina resultado = validarModificarMaquina(maquina);
+
+		if(!resultado.hayErrores()){
+			persistidorTaller.actualizarMaquina(maquina);
+		}
+
+		return resultado;
+	}
+
+	public ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
+		ArrayList<ErrorModificarMaquina> errores = new ArrayList<>();
+		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
+			errores.add(ErrorModificarMaquina.NOMBRE_INCOMPLETO);
+		}
+		else{
+			ArrayList<Maquina> maquinasRepetidas = persistidorTaller.obtenerMaquinas(new FiltroMaquina.Builder().nombre(maquina.getNombre()).build());
+			maquinasRepetidas.remove(maquina);
+			if(!maquinasRepetidas.isEmpty()){
+				errores.add(ErrorModificarMaquina.NOMBRE_REPETIDO);
+			}
+		}
+
+		return new ResultadoModificarMaquina(errores.toArray(new ErrorModificarMaquina[0]));
 	}
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		persistidorTaller.bajaMaquina(maquina);
+
+		return new ResultadoEliminarMaquina();
 	}
 
 	public ArrayList<Parte> listarPartes(FiltroParte filtro) throws PersistenciaException {
@@ -98,8 +126,54 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
+		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
+		
+		ArrayList<Parte> partesABajaLogica;
+		ArrayList<Parte> partesABajaFisica;
+		ArrayList<Pieza> piezasABajaLogica;
+		
+		if(!resultado.hayErrores()){
+			partesABajaFisica = new ArrayList<>(partesAEliminar);
+
+			//si la parte tiene tareas asociadas, se le da baja lógica
+			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).conTareas().build());
+
+			//si la parte no tiene tareas asociadas, se le da baja fisica
+			partesABajaFisica.removeAll(partesABajaLogica);
+
+			if(!partesABajaFisica.isEmpty()){
+				persistidorTaller.bajaPartes(partesABajaFisica);
+			}
+
+			if(!partesABajaLogica.isEmpty()){
+				
+				//dar de baja logica piezas
+				piezasABajaLogica = new ArrayList<>();
+				for(Parte parte: partesABajaLogica){
+					piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
+				}
+				for(Pieza pieza: piezasABajaLogica){
+					pieza.darDeBaja();
+				}
+				persistidorTaller.actualizarPiezas(piezasABajaLogica);
+				
+				
+				//dar de baja logica partes
+				for(Parte parte: partesABajaLogica){
+					parte.darDeBaja();
+				}
+				persistidorTaller.actualizarPartes(partesABajaLogica);
+				
+				return new ResultadoEliminarPartes(null,partesABajaLogica);
+			}
+		}
+		
+		return resultado;
+	}
+
+	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
+		return new ResultadoEliminarPartes();
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
@@ -129,12 +203,12 @@ public class TallerGestor {
 
 	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
 		if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
-			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreIncompleto);
+			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_INCOMPLETO);
 		}
 		else{
-			ArrayList<Herramienta> lista = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
-			if(lista.size() != 0){
-				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NombreRepetido);
+			ArrayList<Herramienta> herramientasRepetidas = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
+			if(!herramientasRepetidas.isEmpty()){
+				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_REPETIDO);
 			}
 		}
 		return new ResultadoCrearHerramienta();
@@ -167,7 +241,7 @@ public class TallerGestor {
 		ArrayList<ErrorCrearMateriales> erroresMateriales = new ArrayList<>();
 
 		//Creo una lista de los nombres de materiales voy a buscar en la BD
-		ArrayList<String> materiales_a_buscar_en_la_BD = new ArrayList<>();
+		ArrayList<Material> materiales_a_buscar_en_la_BD = new ArrayList<>();
 
 		//Reviso que el nombre esté completo
 		boolean nombreIncompletoEncontrado = false;
@@ -177,21 +251,21 @@ public class TallerGestor {
 			}
 			else{
 				//Si el nombre está completo lo busco en la BD
-				materiales_a_buscar_en_la_BD.add(m.getNombre());
+				materiales_a_buscar_en_la_BD.add(m);
 			}
 		}
 		//Si encontré un nombre incompleto, agrego el error
 		if(nombreIncompletoEncontrado){
-			erroresMateriales.add(ErrorCrearMateriales.NombreIncompleto);
+			erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INCOMPLETO);
 		}
 
 		//Si hay materiales a buscar
 		if(!materiales_a_buscar_en_la_BD.isEmpty()){
 
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(materiales_a_buscar_en_la_BD).build());
+			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales_a_buscar_en_la_BD).build());
 			if(!materiales_coincidentes.isEmpty()){
-				erroresMateriales.add(ErrorCrearMateriales.NombreYaExistente);
+				erroresMateriales.add(ErrorCrearMateriales.NOMBRE_YA_EXISTENTE);
 				for(Material material: materiales_coincidentes){
 					nombresMaterialesRepetidos.add(material.toString());
 				}
@@ -210,7 +284,7 @@ public class TallerGestor {
 				if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
 						materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
 					nombreIngresadoRepetidoEncontrado = true;
-					erroresMateriales.add(ErrorCrearMateriales.NombreIngresadoRepetido);
+					erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INGRESADO_REPETIDO);
 				}
 			}
 		}
@@ -225,13 +299,8 @@ public class TallerGestor {
 			ArrayList<Material> materialesABajaLogica;
 			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
 
-			ArrayList<String> nombresMateriales = new ArrayList<>();
-			for(Material material: materiales){
-				nombresMateriales.add(material.getNombre());
-			}
-
 			//si el material tiene piezas asociadas, se le da baja lógica
-			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMateriales).conPiezas().build());
+			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales).conPiezas().build());
 
 			//si el material no tiene piezas asociadas, se le da baja fisica
 			materialesABajaFisica.removeAll(materialesABajaLogica);
@@ -242,7 +311,7 @@ public class TallerGestor {
 
 			if(!materialesABajaLogica.isEmpty()){
 				for(Material material: materialesABajaLogica){
-					material.setEstado(new Estado(EstadoStr.BAJA));
+					material.darDeBaja();
 				}
 				persistidorTaller.actualizarMateriales(materialesABajaLogica);
 			}
@@ -274,7 +343,7 @@ public class TallerGestor {
 				}
 			}
 
-			erroresMateriales.add(ErrorEliminarMateriales.PiezasActivasAsociadas);
+			erroresMateriales.add(ErrorEliminarMateriales.PIEZAS_ACTIVAS_ASOCIADAS);
 		}
 
 		return new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, erroresMateriales.toArray(new ErrorEliminarMateriales[0]));
