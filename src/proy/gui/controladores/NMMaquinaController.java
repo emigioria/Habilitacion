@@ -88,6 +88,7 @@ public class NMMaquinaController extends ControladorRomano {
 	private ArrayList<Parte> partesAEliminar = new ArrayList<>();
 
 	private HashMap<Parte, ArrayList<Pieza>> piezasAGuardar = new HashMap<>();
+	private HashMap<Parte, ArrayList<Pieza>> piezasAEliminar = new HashMap<>();
 
 	@FXML
 	private void initialize() {
@@ -346,7 +347,52 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	public void eliminarPieza() {
+		Parte parteDePiezaAEliminar = tablaPartes.getSelectionModel().getSelectedItem();
+		Pieza piezaAEliminar = tablaPiezas.getSelectionModel().getSelectedItem();
+		if(piezaAEliminar != null){
 
+			//Se pregunta si quiere dar de baja
+			VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar pieza",
+					"¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
+					apilador.getStage());
+
+			if(!vc.acepta()){
+				return;
+			}
+
+			//Si acepta dar de baja se verifica que la pieza a eliminar no tiene tareas no terminadas asociadas
+			Boolean tieneTareasNoTerminadasAsociadas;
+			try{
+				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(piezaAEliminar);
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			} catch(Exception e){
+				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				return;
+			}
+
+			//Se pregunta si quiere dar de baja estas tareas asociadas
+			if(tieneTareasNoTerminadasAsociadas){
+				vc = new VentanaConfirmacion("Confirmar eliminar pieza",
+						"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
+						apilador.getStage());
+				if(!vc.acepta()){
+					return;
+				}
+			}
+
+			if(piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
+				piezasAGuardar.get(parteDePiezaAEliminar).remove(piezaAEliminar);
+			}
+			else{
+				if(!piezasAEliminar.containsKey(parteDePiezaAEliminar)){
+					piezasAEliminar.put(parteDePiezaAEliminar, new ArrayList<>());
+				}
+				piezasAEliminar.get(parteDePiezaAEliminar).add(piezaAEliminar);
+			}
+			tablaPiezas.getItems().remove(piezaAEliminar);
+		}
 	}
 
 	@FXML
