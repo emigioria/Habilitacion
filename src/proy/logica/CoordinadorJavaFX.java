@@ -130,7 +130,7 @@ public class CoordinadorJavaFX {
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarPartes(resultadoEliminarTareas, null, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
 		}
-		
+
 		ResultadoEliminarPartes resultadoEliminarPartes = gestorTaller.eliminarPartes(partes);
 		ArrayList<Parte> partesDadasBajaLogica = resultadoEliminarPartes.getPartesDadasBajaLogica();
 		if(!partesDadasBajaLogica.isEmpty()){
@@ -142,6 +142,10 @@ public class CoordinadorJavaFX {
 			gestorProceso.bajaLogicaProcesos(procesosABajaLogica);
 		}
 		return resultadoEliminarPartes;
+	}
+
+	public void bajaLogicaProcesos(ArrayList<Proceso> procesos) throws PersistenciaException {
+		gestorProceso.bajaLogicaProcesos(procesos);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {
@@ -176,6 +180,10 @@ public class CoordinadorJavaFX {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		return gestorTaller.eliminarHerramienta(herramienta);
+	}
+
+	public ResultadoEliminarHerramienta bajaLogicaHerramienta(Herramienta herramienta) throws PersistenciaException {
+		return gestorTaller.bajaLogicaHerramienta(herramienta);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {
@@ -246,4 +254,5 @@ public class CoordinadorJavaFX {
 	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.cancelarTarea(tarea);
 	}
+
 }

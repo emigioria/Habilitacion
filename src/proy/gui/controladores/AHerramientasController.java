@@ -18,12 +18,18 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Herramienta;
+import proy.datos.entidades.Proceso;
+import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroHerramienta;
+import proy.logica.gestores.filtros.FiltroProceso;
+import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
 
@@ -72,7 +78,7 @@ public class AHerramientasController extends ControladorRomano {
 
 			columnaNombre.setCellFactory(call);
 			columnaNombre.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue().trim());
+				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
 			});
 
 			actualizar();
@@ -95,22 +101,67 @@ public class AHerramientasController extends ControladorRomano {
 
 	@FXML
 	public void eliminarHerramienta() {
-		Herramienta hSelected = tablaHerramientas.getSelectionModel().getSelectedItem();
+		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
 
-		if(hSelected != null){
+		if(herramientaAEliminar != null){
+			ArrayList<Proceso> procesosAsociados = new ArrayList<Proceso>();
 			try{
-				coordinador.eliminarHerramienta(hSelected);
+				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
 			} catch(PersistenciaException e){
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 				return;
-			} catch(Exception e){
-				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-				return;
 			}
-			actualizar();
-		}
-		else{
-			return;
+			if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
+				VentanaConfirmacion confirmacionProcesos = new VentanaConfirmacion("¿Eliminar procesos asociados?",
+						"Al eliminar la herramienta se eliminarán los siguientes procesos: " + procesosAsociados);
+				if(confirmacionProcesos.acepta()){
+					ArrayList<Tarea> tareasNoTerminadas = new ArrayList<Tarea>();
+					try{
+						tareasNoTerminadas = coordinador.listarTareas(new FiltroTarea.Builder().herramienta(herramientaAEliminar).noEstado(EstadoTareaStr.FINALIZADA).build());
+					} catch(PersistenciaException e){
+						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+						return;
+					}
+					if(!tareasNoTerminadas.isEmpty()){ //hay tareas no terminadas, las elimino tambien?
+						VentanaConfirmacion confirmacionTareas = new VentanaConfirmacion("¿Eliminar tareas asociados?",
+								"Al eliminar la herramienta se eliminarán las siguientes tareas: " + tareasNoTerminadas);
+						if(confirmacionTareas.acepta()){
+							for(Tarea tarea: tareasNoTerminadas){
+								try{
+									coordinador.eliminarTarea(tarea);
+								} catch(PersistenciaException e){
+									PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+									return;
+								}
+							}
+						}
+						else{ //si no quiere eliminar las tareas, sale
+							return;
+						}
+					}
+					//elimina logicamente la herramienta y los procesos
+					try{
+						coordinador.bajaLogicaHerramienta(herramientaAEliminar);
+						coordinador.bajaLogicaProcesos(procesosAsociados);
+					} catch(PersistenciaException e){
+						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+						return;
+					}
+				}
+			}
+			else{ //si no tiene procesos asociados, elimina fisicamente
+				try{
+					coordinador.eliminarHerramienta(herramientaAEliminar);
+				} catch(PersistenciaException e){
+					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+					return;
+				} catch(Exception e){
+					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+					return;
+				}
+				actualizar();
+			}
+
 		}
 	}
 
@@ -153,20 +204,28 @@ public class AHerramientasController extends ControladorRomano {
 		}
 		else{
 			tablaHerramientas.setEditable(false);
+			herramientasAGuardar.clear();
 		}
 
 	}
 
 	public void buscar() {
-		FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreHerramienta.getText()).build();
-		ArrayList<Herramienta> result = null;
-		try{
-			result = coordinador.listarHerramientas(filtro);
-		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+		String nombreBuscado = nombreHerramienta.getText();
+		if(nombreBuscado.isEmpty()){
+			actualizar();
+			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 		}
-		tablaHerramientas.getItems().clear();
-		tablaHerramientas.getItems().addAll(result);
+		else{
+			FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreBuscado).build();
+			ArrayList<Herramienta> resultado = null;
+			try{
+				resultado = coordinador.listarHerramientas(filtro);
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			}
+			tablaHerramientas.getItems().clear();
+			tablaHerramientas.getItems().addAll(resultado);
+		}
 	}
 
 	@Override
@@ -179,5 +238,19 @@ public class AHerramientasController extends ControladorRomano {
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
+	}
+
+	@Override
+	public void salir() {
+		if(herramientasAGuardar.isEmpty()){
+			super.salir();
+		}
+		else{
+			VentanaConfirmacion confirmacion = new VentanaConfirmacion("¿Quiere salir sin guardar?",
+					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.");
+			if(confirmacion.acepta()){
+				super.salir();
+			}
+		}
 	}
 }

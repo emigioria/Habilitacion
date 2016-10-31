@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -128,11 +130,11 @@ public class TallerGestor {
 
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
 		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
-		
+
 		ArrayList<Parte> partesABajaLogica;
 		ArrayList<Parte> partesABajaFisica;
 		ArrayList<Pieza> piezasABajaLogica;
-		
+
 		if(!resultado.hayErrores()){
 			partesABajaFisica = new ArrayList<>(partesAEliminar);
 
@@ -147,7 +149,7 @@ public class TallerGestor {
 			}
 
 			if(!partesABajaLogica.isEmpty()){
-				
+
 				//dar de baja logica piezas
 				piezasABajaLogica = new ArrayList<>();
 				for(Parte parte: partesABajaLogica){
@@ -157,18 +159,17 @@ public class TallerGestor {
 					pieza.darDeBaja();
 				}
 				persistidorTaller.actualizarPiezas(piezasABajaLogica);
-				
-				
+
 				//dar de baja logica partes
 				for(Parte parte: partesABajaLogica){
 					parte.darDeBaja();
 				}
 				persistidorTaller.actualizarPartes(partesABajaLogica);
-				
-				return new ResultadoEliminarPartes(null,partesABajaLogica);
+
+				return new ResultadoEliminarPartes(null, partesABajaLogica);
 			}
 		}
-		
+
 		return resultado;
 	}
 
@@ -194,7 +195,6 @@ public class TallerGestor {
 
 	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
 		ResultadoCrearHerramienta resultado = validarCrearHerramienta(herramienta);
-
 		if(!resultado.hayErrores()){
 			persistidorTaller.guardarHerramienta(herramienta);
 		}
@@ -216,6 +216,12 @@ public class TallerGestor {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		persistidorTaller.bajaHerramienta(herramienta);
+		return new ResultadoEliminarHerramienta();
+	}
+
+	public ResultadoEliminarHerramienta bajaLogicaHerramienta(Herramienta herramienta) throws PersistenciaException {
+		herramienta.setEstado(new Estado(EstadoStr.BAJA));
+		persistidorTaller.actualizarHerramienta(herramienta);
 		return new ResultadoEliminarHerramienta();
 	}
 
