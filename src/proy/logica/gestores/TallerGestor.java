@@ -8,9 +8,11 @@ package proy.logica.gestores;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -43,7 +45,10 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarPartes;
@@ -127,7 +132,16 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarPartes validarModificarPartes(Maquina maquina, ArrayList<Parte> partes) throws PersistenciaException{
+	public ResultadoModificarPartes modificarPartes(ArrayList<Parte> partes) throws PersistenciaException {
+		ResultadoModificarPartes resultado = validarModificarPartes(partes);
+		if(!resultado.hayErrores()){
+			persistidorTaller.actualizarPartes(partes);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarPartes validarModificarPartes(ArrayList<Parte> partes) throws PersistenciaException {
+		Maquina maquina = partes.get(0).getMaquina();
 		ArrayList<String> nombresPartesRepetidos = new ArrayList<>();
 		ListIterator<Parte> itPartesAModificar = null, itPartesModificadas = null;
 		Parte parteAModificar = null, parteModificada = null;
@@ -154,7 +168,7 @@ public class TallerGestor {
 			erroresModificarPartes.add(ErrorModificarPartes.NOMBRE_INCOMPLETO);
 		}
 
-		//Si hay materiales a buscar
+		//Si hay partes a buscar
 		if(!nombresPartesABuscarEnLaBD.isEmpty()){
 
 			//busco en la BD partes cuyo nombre coincida con el de alguna de las nuevas partes
@@ -185,7 +199,7 @@ public class TallerGestor {
 		if(nombreIngresadoRepetidoEncontrado){
 			erroresModificarPartes.add(ErrorModificarPartes.NOMBRE_INGRESADO_REPETIDO);
 		}
-		
+
 		return new ResultadoModificarPartes(nombresPartesRepetidos, erroresModificarPartes.toArray(new ErrorModificarPartes[0]));
 	}
 
@@ -209,23 +223,22 @@ public class TallerGestor {
 			if(!partesABajaLogica.isEmpty()){
 
 				for(Parte parte: partesABajaLogica){
-					
+
 					//dar de baja logica piezas
 					for(Pieza pieza: parte.getPiezas()){
 						pieza.darDeBaja();
 					}
-					
+
 					//dar de baja logica procesos
 					for(Proceso proceso: parte.getProcesos()){
 						proceso.darDeBaja();
 					}
-					
+
 					//dar de baja logica parte
 					parte.darDeBaja();
 				}
 
-
-				persistidorTaller.actualizarPartes(partesABajaLogica); //Alactualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
+				persistidorTaller.actualizarPartes(partesABajaLogica); //Al actualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
 			}
 		}
 
@@ -233,14 +246,27 @@ public class TallerGestor {
 	}
 
 	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
-		//TODO validar que se pueden eliminar las partes y sus piezas y procesos asociados
+		Set<ErrorEliminarPartes> errores = new HashSet<>();
+
+		//Verifico si se pueden borrar las piezas y procesos asociados
+		Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas = new HashMap<>();
+		Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos = new HashMap<>();
 		for(Parte parte: partesAEliminar){
-			this.validarEliminarPiezas(new ArrayList<>(parte.getPiezas()));
+			resultadosEliminarPiezas.put(parte.toString(), this.validarEliminarPiezas(new ArrayList<>(parte.getPiezas())));
+			resultadosEliminarProcesos.put(parte.toString(), gestorProceso.validarEliminarProcesos(new ArrayList<>(parte.getProcesos())));
 		}
-		for(Parte parte: partesAEliminar){
-			gestorProceso.validarEliminarProcesos(new ArrayList<>(parte.getProcesos()));
+		for(ResultadoEliminarPiezas resultado: resultadosEliminarPiezas.values()){
+			if(resultado.hayErrores()){
+				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PIEZAS);
+			}
 		}
-		return new ResultadoEliminarPartes();
+		for(ResultadoEliminarProcesos resultado: resultadosEliminarProcesos.values()){
+			if(resultado.hayErrores()){
+				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PROCESOS);
+			}
+		}
+
+		return new ResultadoEliminarPartes(resultadosEliminarPiezas, resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPartes[0]));
 	}
 
 	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
@@ -253,10 +279,10 @@ public class TallerGestor {
 
 	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
 		ResultadoEliminarPiezas resultado = validarEliminarPiezas(piezasAEliminar);
-		
+
 		ArrayList<Pieza> piezasABajaLogica;
 		ArrayList<Pieza> piezasABajaFisica;
-		
+
 		if(!resultado.hayErrores()){
 			piezasABajaFisica = new ArrayList<>(piezasAEliminar);
 
@@ -274,13 +300,17 @@ public class TallerGestor {
 			}
 
 			if(!piezasABajaLogica.isEmpty()){
-				//dar de baja logica piezas
 				for(Pieza pieza: piezasABajaLogica){
+					//dar de baja logica procesos
+					for(Proceso proceso: pieza.getProcesos()){
+						proceso.darDeBaja();
+					}
+
+					//dar de baja logica pieza
 					pieza.darDeBaja();
 				}
+
 				persistidorTaller.actualizarPiezas(piezasABajaLogica);
-				
-				return new ResultadoEliminarPiezas(null,piezasABajaLogica);
 			}
 		}
 
@@ -288,7 +318,20 @@ public class TallerGestor {
 	}
 
 	private ResultadoEliminarPiezas validarEliminarPiezas(ArrayList<Pieza> piezasAEliminar) {
-		return new ResultadoEliminarPiezas();
+		Set<ErrorEliminarPartes> errores = new HashSet<>();
+
+		//Verifico si se pueden borrar las piezas y procesos asociados
+		Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos = new HashMap<>();
+		for(Pieza pieza: piezasAEliminar){
+			resultadosEliminarProcesos.put(pieza.toString(), gestorProceso.validarEliminarProcesos(new ArrayList<>(pieza.getProcesos())));
+		}
+		for(ResultadoEliminarProcesos resultado: resultadosEliminarProcesos.values()){
+			if(resultado.hayErrores()){
+				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PROCESOS);
+			}
+		}
+
+		return new ResultadoEliminarPiezas(resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPiezas[0]));
 	}
 
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {

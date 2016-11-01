@@ -121,8 +121,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearParte(parte);
 	}
 	
-	public ResultadoModificarPartes validarModificarPartes(Maquina maquina, ArrayList<Parte> partes) throws PersistenciaException{
-		return gestorTaller.validarModificarPartes(maquina, partes);
+	public ResultadoModificarPartes modificarParte(ArrayList<Parte> partes) throws PersistenciaException {
+		return gestorTaller.modificarPartes(partes);
 	}
 
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {

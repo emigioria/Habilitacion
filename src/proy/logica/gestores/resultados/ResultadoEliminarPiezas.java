@@ -6,35 +6,38 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.ArrayList;
+import java.util.Map;
 
-import proy.datos.entidades.Pieza;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
 
 public class ResultadoEliminarPiezas extends Resultado<ErrorEliminarPiezas> {
 
 	private ResultadoEliminarTareas resultadoTareas;
-	private ArrayList<Pieza> piezasDadasBajaLogica;
+	private Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos;
 
 	public enum ErrorEliminarPiezas {
-		ERROR_AL_ELIMINAR_TAREAS
+		ERROR_AL_ELIMINAR_TAREAS, ERROR_AL_ELIMINAR_PROCESOS
 	}
 
 	public ResultadoEliminarPiezas(ErrorEliminarPiezas... errores) {
 		super(errores);
 	}
 
-	public ResultadoEliminarPiezas(ResultadoEliminarTareas resultadoTareas, ArrayList<Pieza> piezasDadasBajaLogica, ErrorEliminarPiezas... errores) {
+	public ResultadoEliminarPiezas(Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos, ErrorEliminarPiezas... errores) {
+		super(errores);
+		this.resultadosEliminarProcesos = resultadosEliminarProcesos;
+	}
+
+	public ResultadoEliminarPiezas(ResultadoEliminarTareas resultadoTareas, ErrorEliminarPiezas... errores) {
 		super(errores);
 		this.resultadoTareas = resultadoTareas;
-		this.piezasDadasBajaLogica = piezasDadasBajaLogica;
 	}
 
 	public ResultadoEliminarTareas getResultadoTareas() {
 		return resultadoTareas;
 	}
 
-	public ArrayList<Pieza> getPiezasDadasBajaLogica() {
-		return piezasDadasBajaLogica;
+	public Map<String, ResultadoEliminarProcesos> getResultadosEliminarProcesos() {
+		return resultadosEliminarProcesos;
 	}
 }
