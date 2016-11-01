@@ -8,6 +8,9 @@ package proy.gui.controladores;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.jdbc.object.GenericStoredProcedure;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -30,6 +33,7 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
+import proy.logica.gestores.TallerGestor;
 import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
@@ -38,6 +42,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -317,10 +322,10 @@ public class NMMaquinaController extends ControladorRomano {
 					tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas());
 					break;
 				case ERROR_AL_ELIMINAR_PIEZAS:
-					//TODO procesar error
+					tratarErroresEliminarPiezas(resultadoEliminarPartes.getResultadosEliminarPiezas());
 					break;
 				case ERROR_AL_ELIMINAR_PROCESOS:
-					//TODO procesar error
+					tratarErroresEliminarProcesos(resultadoEliminarPartes.getResultadosEliminarProcesos());
 					break;
 				}
 			}
@@ -337,6 +342,14 @@ public class NMMaquinaController extends ControladorRomano {
 			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
 			return false;
 		}
+	}
+
+	private void tratarErroresEliminarProcesos(Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos) {
+		//no hay errores de eliminar procesos aun
+	}
+
+	private void tratarErroresEliminarPiezas(Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas) {
+		//no hay errores de eliminar piezas aun
 	}
 
 	private void tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
@@ -526,7 +539,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
-
 		//TODO guardar partes: las partes y las piezas se guardan por cascada (no olvidar setear todas las relaciones).
 		if(this.eliminarPiezas()){
 			return true;
@@ -534,6 +546,8 @@ public class NMMaquinaController extends ControladorRomano {
 		if(this.eliminarPartes()){
 			return true;
 		}
+		
+		coordinador.modificarParte(maquina.getPartes());
 
 		//Inicio transacciones al gestor
 		try{
