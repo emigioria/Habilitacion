@@ -23,7 +23,6 @@ public class FiltroProceso extends Filtro {
 	private EstadoStr estado;
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
-	private ArrayList<Herramienta> herramientas;
 
 	public static class Builder {
 
@@ -31,7 +30,6 @@ public class FiltroProceso extends Filtro {
 		private EstadoStr estado = EstadoStr.ALTA;
 		private Parte parte;
 		private ArrayList<Pieza> piezas;
-		private ArrayList<Herramienta> herramientas;
 
 		public Builder() {
 			super();
@@ -41,22 +39,14 @@ public class FiltroProceso extends Filtro {
 			this.nombreEntidad = nombreEntidad;
 			return this;
 		}
-		
+
 		public Builder parte(Parte parte) {
 			this.parte = parte;
 			return this;
 		}
-		
-		public Builder piezas(ArrayList<Pieza> piezas){
-			this.piezas = piezas;
-			return this;
-		}
 
-		public Builder herramienta(Herramienta herramienta) {
-			if(herramienta != null){
-				this.herramientas = new ArrayList<>();
-				this.herramientas.add(herramienta);
-			}
+		public Builder piezas(ArrayList<Pieza> piezas) {
+			this.piezas = piezas;
 			return this;
 		}
 
@@ -98,7 +88,7 @@ public class FiltroProceso extends Filtro {
 
 	private String getFrom(Builder builder) {
 		String from;
-		if(piezas != null){
+		if(builder.piezas != null){
 			from = " FROM Proceso " + builder.nombreEntidad + " INNER JOIN " + builder.nombreEntidad + ".piezas piez";
 		}
 		else{
@@ -110,9 +100,8 @@ public class FiltroProceso extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-				+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-				+ ((builder.piezas != null) ? ("piez in :pzs AND ") : (""))
-				+ ((builder.herramientas != null) ? ("herr in (:hes) AND ") : (""));
+						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
+						+ ((builder.piezas != null) ? ("piez in :pzs AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -146,9 +135,6 @@ public class FiltroProceso extends Filtro {
 		}
 		if(piezas != null){
 			query.setParameterList("pzs", piezas);
-		}
-		if(herramientas != null){
-			query.setParameter("hes", herramientas);
 		}
 		return query;
 	}

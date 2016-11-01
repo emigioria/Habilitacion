@@ -28,7 +28,6 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroHerramienta;
-import proy.logica.gestores.filtros.FiltroProceso;
 import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
@@ -100,22 +99,16 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarHerramienta() {
+	public void eliminarHerramienta() { //TODO cambiar para que este homogeneo con ABM Material
 		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
 
 		if(herramientaAEliminar != null){
-			ArrayList<Proceso> procesosAsociados = new ArrayList<Proceso>();
-			try{
-				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
-			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				return;
-			}
+			ArrayList<Proceso> procesosAsociados = new ArrayList<>(herramientaAEliminar.getProcesos());
 			if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 				VentanaConfirmacion confirmacionProcesos = new VentanaConfirmacion("¿Eliminar procesos asociados?",
 						"Al eliminar la herramienta se eliminarán los siguientes procesos: " + procesosAsociados);
 				if(confirmacionProcesos.acepta()){
-					ArrayList<Tarea> tareasNoTerminadas = new ArrayList<Tarea>();
+					ArrayList<Tarea> tareasNoTerminadas = new ArrayList<>();
 					try{
 						tareasNoTerminadas = coordinador.listarTareas(new FiltroTarea.Builder().herramienta(herramientaAEliminar).noEstado(EstadoTareaStr.FINALIZADA).build());
 					} catch(PersistenciaException e){
@@ -141,8 +134,12 @@ public class AHerramientasController extends ControladorRomano {
 					}
 					//elimina logicamente la herramienta y los procesos
 					try{
-						coordinador.bajaLogicaHerramienta(herramientaAEliminar);
-						coordinador.bajaLogicaProcesos(procesosAsociados);
+						herramientaAEliminar.darDeBaja();
+						coordinador.eliminarHerramienta(herramientaAEliminar); //TODO poner bien
+						for(Proceso proceso: procesosAsociados){
+							proceso.darDeBaja();
+							coordinador.eliminarProceso(proceso); //TODO poner bien
+						}
 					} catch(PersistenciaException e){
 						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 						return;
@@ -165,7 +162,7 @@ public class AHerramientasController extends ControladorRomano {
 		}
 	}
 
-	public void guardarHerramienta() {
+	public void guardarHerramienta() { //TODO cambiar para que este homogeneo con ABM Material
 		ResultadoCrearHerramienta resultado = null;
 		Boolean hayErrores;
 		String errores = "";
@@ -210,13 +207,12 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	public void buscar() {
-		String nombreBuscado = nombreHerramienta.getText();
+		String nombreBuscado = nombreHerramienta.getText().trim();
 		if(nombreBuscado.isEmpty()){
 			actualizar();
-			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 		}
 		else{
-			FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreBuscado).build();
+			FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreBuscado.toLowerCase()).build();
 			ArrayList<Herramienta> resultado = null;
 			try{
 				resultado = coordinador.listarHerramientas(filtro);
@@ -224,6 +220,7 @@ public class AHerramientasController extends ControladorRomano {
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 			tablaHerramientas.getItems().clear();
+			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			tablaHerramientas.getItems().addAll(resultado);
 		}
 	}
@@ -234,6 +231,7 @@ public class AHerramientasController extends ControladorRomano {
 			try{
 				tablaHerramientas.getItems().clear();
 				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
+				tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			} catch(PersistenciaException e){
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}

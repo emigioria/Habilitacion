@@ -24,6 +24,7 @@ import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
+import proy.datos.entidades.Proceso;
 import proy.datos.servicios.TallerService;
 import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.filtros.FiltroHerramienta;
@@ -54,6 +55,9 @@ public class TallerGestor {
 
 	@Resource
 	private TallerService persistidorTaller;
+
+	@Resource
+	private ProcesoGestor gestorProceso;
 
 	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerMaquinas(filtro);
@@ -131,12 +135,9 @@ public class TallerGestor {
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
 		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
 
-		ArrayList<Parte> partesABajaLogica;
-		ArrayList<Parte> partesABajaFisica;
-		ArrayList<Pieza> piezasABajaLogica;
-
 		if(!resultado.hayErrores()){
-			partesABajaFisica = new ArrayList<>(partesAEliminar);
+			ArrayList<Parte> partesABajaFisica = new ArrayList<>(partesAEliminar);
+			ArrayList<Parte> partesABajaLogica;
 
 			//si la parte tiene tareas asociadas, se le da baja lógica
 			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).conTareas().build());
@@ -151,22 +152,24 @@ public class TallerGestor {
 			if(!partesABajaLogica.isEmpty()){
 
 				//dar de baja logica piezas
-				piezasABajaLogica = new ArrayList<>();
 				for(Parte parte: partesABajaLogica){
-					piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
+					for(Pieza pieza: parte.getPiezas()){
+						pieza.darDeBaja();
+					}
 				}
-				for(Pieza pieza: piezasABajaLogica){
-					pieza.darDeBaja();
+
+				//dar de baja logica procesos
+				for(Parte parte: partesABajaLogica){
+					for(Proceso proceso: parte.getProcesos()){
+						proceso.darDeBaja();
+					}
 				}
-				persistidorTaller.actualizarPiezas(piezasABajaLogica);
 
 				//dar de baja logica partes
 				for(Parte parte: partesABajaLogica){
 					parte.darDeBaja();
 				}
-				persistidorTaller.actualizarPartes(partesABajaLogica);
-
-				return new ResultadoEliminarPartes(null, partesABajaLogica);
+				persistidorTaller.actualizarPartes(partesABajaLogica); //Alactualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
 			}
 		}
 
@@ -174,6 +177,13 @@ public class TallerGestor {
 	}
 
 	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
+		//TODO validar que se pueden eliminar las partes y sus piezas y procesos asociados
+		for(Parte parte: partesAEliminar){
+			this.validarEliminarPiezas(new ArrayList<>(parte.getPiezas()));
+		}
+		for(Parte parte: partesAEliminar){
+			gestorProceso.validarEliminarProcesos(new ArrayList<>(parte.getProcesos()));
+		}
 		return new ResultadoEliminarPartes();
 	}
 
@@ -249,12 +259,6 @@ public class TallerGestor {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		persistidorTaller.bajaHerramienta(herramienta);
-		return new ResultadoEliminarHerramienta();
-	}
-
-	public ResultadoEliminarHerramienta bajaLogicaHerramienta(Herramienta herramienta) throws PersistenciaException {
-		herramienta.setEstado(new Estado(EstadoStr.BAJA));
-		persistidorTaller.actualizarHerramienta(herramienta);
 		return new ResultadoEliminarHerramienta();
 	}
 

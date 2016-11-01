@@ -15,7 +15,7 @@ public class ResultadoEliminarPiezas extends Resultado<ErrorEliminarPiezas> {
 
 	private ResultadoEliminarTareas resultadoTareas;
 	private ArrayList<Pieza> piezasDadasBajaLogica;
-	
+
 	public enum ErrorEliminarPiezas {
 		ERROR_AL_ELIMINAR_TAREAS
 	}
@@ -23,18 +23,18 @@ public class ResultadoEliminarPiezas extends Resultado<ErrorEliminarPiezas> {
 	public ResultadoEliminarPiezas(ErrorEliminarPiezas... errores) {
 		super(errores);
 	}
-	
+
 	public ResultadoEliminarPiezas(ResultadoEliminarTareas resultadoTareas, ArrayList<Pieza> piezasDadasBajaLogica, ErrorEliminarPiezas... errores) {
 		super(errores);
 		this.resultadoTareas = resultadoTareas;
 		this.piezasDadasBajaLogica = piezasDadasBajaLogica;
 	}
-	
+
 	public ResultadoEliminarTareas getResultadoTareas() {
 		return resultadoTareas;
 	}
-	
-	public ArrayList<Pieza> getPiezasDadasBajaLogica(){
+
+	public ArrayList<Pieza> getPiezasDadasBajaLogica() {
 		return piezasDadasBajaLogica;
 	}
 }
