@@ -149,24 +149,23 @@ public class TallerGestor {
 
 			if(!partesABajaLogica.isEmpty()){
 
-				//dar de baja logica piezas
 				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica piezas
 					for(Pieza pieza: parte.getPiezas()){
 						pieza.darDeBaja();
 					}
-				}
-
-				//dar de baja logica procesos
-				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica procesos
 					for(Proceso proceso: parte.getProcesos()){
 						proceso.darDeBaja();
 					}
-				}
-
-				//dar de baja logica partes
-				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica parte
 					parte.darDeBaja();
 				}
+
+
 				persistidorTaller.actualizarPartes(partesABajaLogica); //Alactualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
 			}
 		}
@@ -195,10 +194,10 @@ public class TallerGestor {
 
 	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
 		ResultadoEliminarPiezas resultado = validarEliminarPiezas(piezasAEliminar);
-
+		
 		ArrayList<Pieza> piezasABajaLogica;
 		ArrayList<Pieza> piezasABajaFisica;
-
+		
 		if(!resultado.hayErrores()){
 			piezasABajaFisica = new ArrayList<>(piezasAEliminar);
 
@@ -209,31 +208,21 @@ public class TallerGestor {
 			piezasABajaFisica.removeAll(piezasABajaLogica);
 
 			if(!piezasABajaFisica.isEmpty()){
-				//persistidorTaller.bajaPiezas(piezasABajaFisica);
+				for(Pieza pieza: piezasABajaFisica){
+					pieza.getParte().getPiezas().remove(pieza);
+				}
+				persistidorTaller.bajaPiezas(piezasABajaFisica);
 			}
-			/*
-			 * if(!piezasABajaLogica.isEmpty()){
-			 * 
-			 * //dar de baja logica piezas
-			 * piezasABajaLogica = new ArrayList<>();
-			 * for(Parte parte: piezasABajaLogica){
-			 * piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
-			 * }
-			 * for(Pieza pieza: piezasABajaLogica){
-			 * pieza.darDeBaja();
-			 * }
-			 * persistidorTaller.actualizarPiezas(piezasABajaLogica);
-			 * 
-			 * 
-			 * //dar de baja logica partes
-			 * for(Parte parte: piezasABajaLogica){
-			 * parte.darDeBaja();
-			 * }
-			 * persistidorTaller.actualizarPartes(piezasABajaLogica);
-			 * 
-			 * return new ResultadoEliminarPartes(null,piezasABajaLogica);
-			 * }
-			 */
+
+			if(!piezasABajaLogica.isEmpty()){
+				//dar de baja logica piezas
+				for(Pieza pieza: piezasABajaLogica){
+					pieza.darDeBaja();
+				}
+				persistidorTaller.actualizarPiezas(piezasABajaLogica);
+				
+				return new ResultadoEliminarPiezas(null,piezasABajaLogica);
+			}
 		}
 
 		return resultado;

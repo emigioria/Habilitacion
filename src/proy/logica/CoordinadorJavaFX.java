@@ -154,14 +154,7 @@ public class CoordinadorJavaFX {
 			return new ResultadoEliminarPiezas(resultadoEliminarTareas, null, ErrorEliminarPiezas.ERROR_AL_ELIMINAR_TAREAS);
 		}
 		
-		ResultadoEliminarPiezas resultadoEliminarPiezas = gestorTaller.eliminarPiezas(piezasAEliminar);
-		ArrayList<Pieza> piezasDadasBajaLogica = resultadoEliminarPiezas.getPiezasDadasBajaLogica();
-		if(!piezasDadasBajaLogica.isEmpty()){
-			//dar de baja logica procesos
-			ArrayList<Proceso> procesosABajaLogica = gestorProceso.listarProcesos(new FiltroProceso.Builder().piezas(piezasDadasBajaLogica).build());
-			gestorProceso.bajaLogicaProcesos(procesosABajaLogica);
-		}
-		return resultadoEliminarPiezas;
+		return gestorTaller.eliminarPiezas(piezasAEliminar);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Pieza pieza) throws PersistenciaException {

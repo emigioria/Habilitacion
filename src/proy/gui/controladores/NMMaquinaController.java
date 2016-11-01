@@ -38,7 +38,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
@@ -234,6 +234,7 @@ public class NMMaquinaController extends ControladorRomano {
 	public void nuevaParte() {
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
+		piezasAGuardar.put(nuevaParte, new ArrayList<>());
 		tablaPartes.getItems().add(0, nuevaParte);
 	}
 
@@ -296,7 +297,6 @@ public class NMMaquinaController extends ControladorRomano {
 		if(partesAEliminar.isEmpty()){
 			return false;
 		}
-		maquina.getPartes().removeAll(partesAEliminar);
 
 		//Inicio transacciones al gestor
 		try{
@@ -308,17 +308,13 @@ public class NMMaquinaController extends ControladorRomano {
 			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
-
+		
 		//Tratamiento de errores
 		if(resultadoEliminarPartes.hayErrores()){
 			for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					for(ErrorEliminarTareas et: resultadoEliminarPartes.getResultadoTareas().getErrores()){
-						switch(et) {
-						//no hay errores de eliminar tareas aún
-						}
-					}
+					tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas());
 					break;
 				case ERROR_AL_ELIMINAR_PIEZAS:
 					//TODO procesar error
@@ -333,7 +329,7 @@ public class NMMaquinaController extends ControladorRomano {
 			if(!errores.isEmpty()){
 				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
 			}
-
+			
 			return true;
 		}
 		else{
@@ -341,6 +337,10 @@ public class NMMaquinaController extends ControladorRomano {
 			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
 			return false;
 		}
+	}
+
+	private void tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
+		//no hay errores de eliminar tareas aun
 	}
 
 	@FXML
@@ -409,27 +409,23 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 		tablaPiezas.getItems().remove(piezaAEliminar);
 	}
-
-	private Boolean eliminarPiezas() {
-		ResultadoEliminarPiezas resultado;
+	
+	private Boolean eliminarPiezas(){
+		ResultadoEliminarPiezas resultadoEliminarPiezas;
 		StringBuffer erroresBfr = new StringBuffer();
 		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
-
+		
 		//comprueba si hay piezas que eliminar y las agrega a una misma lista
-		for(Parte parte: piezasAEliminar.keySet()){
-			ArrayList<Pieza> piezas = piezasAEliminar.get(parte);
-			if(!piezas.isEmpty()){
-				piezasAEliminarCompilado.addAll(piezas);
-				parte.getPiezas().removeAll(piezas);
-			}
+		for(ArrayList<Pieza> piezas: piezasAEliminar.values()){
+			piezasAEliminarCompilado.addAll(piezas);
 		}
 		if(piezasAEliminarCompilado.isEmpty()){
 			return false;
 		}
-
+		
 		//Inicio transacciones al gestor
 		try{
-			resultado = coordinador.eliminarPiezas(piezasAEliminarCompilado);
+			resultadoEliminarPiezas = coordinador.eliminarPiezas(piezasAEliminarCompilado);
 		} catch(PersistenciaException e){
 			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return true;
@@ -437,21 +433,22 @@ public class NMMaquinaController extends ControladorRomano {
 			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
-
+		
 		//Tratamiento de errores
-		if(resultado.hayErrores()){
-			for(ErrorEliminarPiezas ep: resultado.getErrores()){
+		if(resultadoEliminarPiezas.hayErrores()){
+			for(ErrorEliminarPiezas ep: resultadoEliminarPiezas.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					//TODO procesar error
+					tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas());
 					break;
 				}
 			}
+
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
 				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
 			}
-
+			
 			return true;
 		}
 		else{
