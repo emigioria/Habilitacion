@@ -46,7 +46,8 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
-import proy.logica.gestores.resultados.ResultadoModificarParte;
+import proy.logica.gestores.resultados.ResultadoModificarPartes;
+import proy.logica.gestores.resultados.ResultadoModificarPartes.ErrorModificarPartes;
 
 @Service
 public class TallerGestor {
@@ -126,8 +127,66 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarParte modificarParte(Parte parte) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoModificarPartes validarModificarPartes(Maquina maquina, ArrayList<Parte> partes) throws PersistenciaException{
+		ArrayList<String> nombresPartesRepetidos = new ArrayList<>();
+		ListIterator<Parte> itPartesAModificar = null, itPartesModificadas = null;
+		Parte parteAModificar = null, parteModificada = null;
+
+		//Creo la lista de errores
+		ArrayList<ErrorModificarPartes> erroresModificarPartes = new ArrayList<>();
+
+		//Creo una lista de los nombres de partes que voy a buscar en la BD
+		ArrayList<String> nombresPartesABuscarEnLaBD = new ArrayList<>();
+
+		//Reviso que el nombre esté completo
+		boolean nombreIncompletoEncontrado = false;
+		for(Parte parte: partes){
+			if(parte.getNombre() == null || parte.getNombre().isEmpty()){
+				nombreIncompletoEncontrado = true;
+			}
+			else{
+				//Si el nombre está completo lo busco en la BD
+				nombresPartesABuscarEnLaBD.add(parte.getNombre());
+			}
+		}
+		//Si encontré un nombre incompleto, agrego el error
+		if(nombreIncompletoEncontrado){
+			erroresModificarPartes.add(ErrorModificarPartes.NOMBRE_INCOMPLETO);
+		}
+
+		//Si hay materiales a buscar
+		if(!nombresPartesABuscarEnLaBD.isEmpty()){
+
+			//busco en la BD partes cuyo nombre coincida con el de alguna de las nuevas partes
+			ArrayList<Parte> partes_coincidentes = persistidorTaller.obtenerPartes(new FiltroParte.Builder().maquina(maquina).nombres(nombresPartesABuscarEnLaBD).build());
+			if(!partes_coincidentes.isEmpty()){
+				erroresModificarPartes.add(ErrorModificarPartes.NOMBRE_YA_EXISTENTE);
+				for(Parte parte: partes_coincidentes){
+					nombresPartesRepetidos.add(parte.toString());
+				}
+			}
+		}
+
+		//veo si hay nombres que se repiten entre los nuevos materiales
+		boolean nombreIngresadoRepetidoEncontrado = false;
+		itPartesAModificar = partes.listIterator();
+
+		while(itPartesAModificar.hasNext() && !nombreIngresadoRepetidoEncontrado){
+			parteAModificar = itPartesAModificar.next();
+			itPartesModificadas = partes.listIterator(itPartesAModificar.nextIndex());
+			while(itPartesModificadas.hasNext() && !nombreIngresadoRepetidoEncontrado){
+				parteModificada = itPartesModificadas.next();
+				if(parteAModificar.getNombre() != null && parteModificada.getNombre() != null &&
+						parteAModificar.getNombre().equals(parteModificada.getNombre())){
+					nombreIngresadoRepetidoEncontrado = true;
+				}
+			}
+		}
+		if(nombreIngresadoRepetidoEncontrado){
+			erroresModificarPartes.add(ErrorModificarPartes.NOMBRE_INGRESADO_REPETIDO);
+		}
+		
+		return new ResultadoModificarPartes(nombresPartesRepetidos, erroresModificarPartes.toArray(new ErrorModificarPartes[0]));
 	}
 
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {

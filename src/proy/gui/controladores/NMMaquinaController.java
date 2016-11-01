@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.jdbc.object.GenericStoredProcedure;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,7 +31,6 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
-import proy.logica.gestores.TallerGestor;
 import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
@@ -43,9 +40,12 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPart
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoModificarPartes;
+import proy.logica.gestores.resultados.ResultadoModificarPartes.ErrorModificarPartes;
 
 public class NMMaquinaController extends ControladorRomano {
 
@@ -239,7 +239,6 @@ public class NMMaquinaController extends ControladorRomano {
 	public void nuevaParte() {
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
-		piezasAGuardar.put(nuevaParte, new ArrayList<>());
 		tablaPartes.getItems().add(0, nuevaParte);
 	}
 
@@ -319,7 +318,7 @@ public class NMMaquinaController extends ControladorRomano {
 			for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas());
+					erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas()));
 					break;
 				case ERROR_AL_ELIMINAR_PIEZAS:
 					tratarErroresEliminarPiezas(resultadoEliminarPartes.getResultadosEliminarPiezas());
@@ -352,8 +351,16 @@ public class NMMaquinaController extends ControladorRomano {
 		//no hay errores de eliminar piezas aun
 	}
 
-	private void tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
-		//no hay errores de eliminar tareas aun
+	private String tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
+		String errores = "";
+		if(resultadoTareas.hayErrores()){
+			for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+				switch(ep) {
+				//Todavia no hay errores en eliminar tarea
+				}
+			}
+		}
+		return errores;
 	}
 
 	@FXML
@@ -452,7 +459,7 @@ public class NMMaquinaController extends ControladorRomano {
 			for(ErrorEliminarPiezas ep: resultadoEliminarPiezas.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas());
+					erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas()));
 					break;
 				}
 			}
@@ -539,6 +546,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
+		
 		//TODO guardar partes: las partes y las piezas se guardan por cascada (no olvidar setear todas las relaciones).
 		if(this.eliminarPiezas()){
 			return true;
@@ -546,8 +554,9 @@ public class NMMaquinaController extends ControladorRomano {
 		if(this.eliminarPartes()){
 			return true;
 		}
-		
-		coordinador.modificarParte(maquina.getPartes());
+		if(this.validarModificarPartes()){
+			return true;
+		}
 
 		//Inicio transacciones al gestor
 		try{
@@ -581,6 +590,60 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 		else{
 			new VentanaInformacion("Operación exitosa", "Se ha modificado la máquina con éxito");
+			return false;
+		}
+	}
+
+	private boolean validarModificarPartes() {
+		ResultadoModificarPartes resultadoModificarPartes;
+		StringBuffer erroresBfr = new StringBuffer();
+		
+		maquina.getPartes().addAll(partesAGuardar);
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoModificarPartes = coordinador.validarModificarPartes(maquina, new ArrayList<>(maquina.getPartes())); //por ahora no distingue cuales partes cambiaron y cuales no
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return true;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return true;
+		}
+		
+		//Tratamiento de errores
+		if(resultadoModificarPartes.hayErrores()){
+			for(ErrorModificarPartes e: resultadoModificarPartes.getErrores()){
+				switch(e) {
+				case NOMBRE_INCOMPLETO:
+					erroresBfr.append("Hay nombres vacíos.\n");
+					break;
+				case CANTIDAD_INCOMPLETA:
+					erroresBfr.append("Hay cantidades no seteadas");
+				case NOMBRE_YA_EXISTENTE:
+					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
+					for(String nombreParte: resultadoModificarPartes.getRepetidos()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(nombreParte);
+						erroresBfr.append(">\n");
+					}
+					break;
+				case NOMBRE_INGRESADO_REPETIDO:
+					erroresBfr.append("Se intenta añadir dos partes con el mismo nombre.\n");
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al modificar las partes", errores, apilador.getStage());
+			}
+			
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han modificado correctamente las partes");
 			return false;
 		}
 	}

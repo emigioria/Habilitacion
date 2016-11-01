@@ -23,6 +23,7 @@ public class FiltroParte extends Filtro {
 	private EstadoStr estado;
 	private Maquina maquina;
 	private ArrayList<Parte> partes;
+	private ArrayList<String> nombres;
 
 	public static class Builder {
 
@@ -31,6 +32,7 @@ public class FiltroParte extends Filtro {
 		private Maquina maquina;
 		private ArrayList<Parte> partes;
 		private Boolean conTareas;
+		private ArrayList<String> nombres;
 
 		public Builder() {
 			super();
@@ -57,6 +59,11 @@ public class FiltroParte extends Filtro {
 			this.conTareas = true;
 			return this;
 		}
+		
+		public Builder nombres(ArrayList<String> nombres){
+			this.nombres = nombres;
+			return this;
+		}
 
 		public FiltroParte build() {
 			return new FiltroParte(this);
@@ -67,6 +74,7 @@ public class FiltroParte extends Filtro {
 		this.estado = builder.estado;
 		this.maquina = builder.maquina;
 		this.partes = builder.partes;
+		this.nombres = builder.nombres;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -87,6 +95,9 @@ public class FiltroParte extends Filtro {
 			return;
 		}
 		if(builder.conTareas != null){
+			return;
+		}
+		if(builder.nombres != null){
 			return;
 		}
 		namedQuery = "listarPartes";
@@ -118,7 +129,8 @@ public class FiltroParte extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""));
+						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in :nms AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -152,6 +164,9 @@ public class FiltroParte extends Filtro {
 		}
 		if(partes != null){
 			query.setParameterList("pts", partes);
+		}
+		if(nombres != null){
+			query.setParameterList("nms", nombres);
 		}
 		return query;
 	}
