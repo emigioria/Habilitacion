@@ -148,10 +148,10 @@ public class FiltroPieza extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in :mts AND ") : (""))
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in (:mts) AND ") : (""))
 						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in :pzs AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in :prs AND ") : (""));
+						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in (:pzs) AND ") : (""))
+						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

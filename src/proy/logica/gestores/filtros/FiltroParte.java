@@ -129,8 +129,8 @@ public class FiltroParte extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in :nms AND ") : (""));
+						+ ((builder.partes != null) ? (builder.nombreEntidad + " in (:pts) AND ") : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

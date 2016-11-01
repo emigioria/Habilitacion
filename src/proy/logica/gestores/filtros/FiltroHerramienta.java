@@ -103,7 +103,7 @@ public class FiltroHerramienta extends Filtro {
 		String where =
 				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
 						+ ((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in :prs AND ") : (""));
+						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;

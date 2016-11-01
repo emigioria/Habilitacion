@@ -343,17 +343,17 @@ public class TallerGestor {
 		ArrayList<ErrorCrearMateriales> erroresMateriales = new ArrayList<>();
 
 		//Creo una lista de los nombres de materiales voy a buscar en la BD
-		ArrayList<Material> materiales_a_buscar_en_la_BD = new ArrayList<>();
+		ArrayList<String> nombresMaterialesABuscarEnLaBD = new ArrayList<>();
 
 		//Reviso que el nombre esté completo
 		boolean nombreIncompletoEncontrado = false;
-		for(Material m: materiales){
-			if(m.getNombre() == null || m.getNombre().isEmpty()){
+		for(Material material: materiales){
+			if(material.getNombre() == null || material.getNombre().isEmpty()){
 				nombreIncompletoEncontrado = true;
 			}
 			else{
 				//Si el nombre está completo lo busco en la BD
-				materiales_a_buscar_en_la_BD.add(m);
+				nombresMaterialesABuscarEnLaBD.add(material.getNombre());
 			}
 		}
 		//Si encontré un nombre incompleto, agrego el error
@@ -362,10 +362,10 @@ public class TallerGestor {
 		}
 
 		//Si hay materiales a buscar
-		if(!materiales_a_buscar_en_la_BD.isEmpty()){
+		if(!nombresMaterialesABuscarEnLaBD.isEmpty()){
 
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales_a_buscar_en_la_BD).build());
+			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMaterialesABuscarEnLaBD).build());
 			if(!materiales_coincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NOMBRE_YA_EXISTENTE);
 				for(Material material: materiales_coincidentes){

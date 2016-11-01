@@ -137,8 +137,8 @@ public class FiltroProceso extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-						+ ((builder.piezas != null) ? ("piez in :pzs AND ") : (""))
-						+ ((builder.herramientas != null) ? ("herr in :hes AND ") : (""));
+						+ ((builder.piezas != null) ? ("piez in (:pzs) AND ") : (""))
+						+ ((builder.herramientas != null) ? ("herr in (:hes) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
