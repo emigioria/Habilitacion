@@ -547,7 +547,6 @@ public class NMMaquinaController extends ControladorRomano {
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
 		
-		//TODO guardar partes: las partes y las piezas se guardan por cascada (no olvidar setear todas las relaciones).
 		if(this.eliminarPiezas()){
 			return true;
 		}
@@ -557,6 +556,7 @@ public class NMMaquinaController extends ControladorRomano {
 		if(this.validarModificarPartes()){
 			return true;
 		}
+		maquina.getPartes().addAll(partesAGuardar);
 
 		//Inicio transacciones al gestor
 		try{
@@ -598,11 +598,13 @@ public class NMMaquinaController extends ControladorRomano {
 		ResultadoModificarPartes resultadoModificarPartes;
 		StringBuffer erroresBfr = new StringBuffer();
 		
-		maquina.getPartes().addAll(partesAGuardar);
+		//por ahora no distingue cuales partes cambiaron y cuales no
+		ArrayList<Parte> partesAModificar = new ArrayList<>(maquina.getPartes());
+		partesAModificar.addAll(partesAGuardar);
 
 		//Inicio transacciones al gestor
 		try{
-			resultadoModificarPartes = coordinador.validarModificarPartes(maquina, new ArrayList<>(maquina.getPartes())); //por ahora no distingue cuales partes cambiaron y cuales no
+			resultadoModificarPartes = coordinador.validarModificarPartes(maquina, partesAModificar);
 		} catch(PersistenciaException e){
 			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return true;
@@ -642,8 +644,6 @@ public class NMMaquinaController extends ControladorRomano {
 			return true;
 		}
 		else{
-			partesAEliminar.clear();
-			new VentanaInformacion("Operación exitosa", "Se han modificado correctamente las partes");
 			return false;
 		}
 	}
