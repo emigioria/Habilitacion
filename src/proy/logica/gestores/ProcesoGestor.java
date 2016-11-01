@@ -22,6 +22,7 @@ import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
@@ -48,12 +49,9 @@ public class ProcesoGestor {
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
-	
-	public void bajaLogicaProcesos(ArrayList<Proceso> procesosABajaLogica) throws PersistenciaException {
-		for(Proceso proceso: procesosABajaLogica){
-			proceso.darDeBaja();
-		}
-		persistidorProceso.actualizarProcesos(procesosABajaLogica);
+
+	public ResultadoEliminarProcesos validarEliminarProcesos(ArrayList<Proceso> procesos) {
+		return new ResultadoEliminarProcesos();
 	}
 
 	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
@@ -130,4 +128,5 @@ public class ProcesoGestor {
 	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
+
 }

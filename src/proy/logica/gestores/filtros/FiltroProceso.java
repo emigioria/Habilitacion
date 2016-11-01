@@ -6,14 +6,10 @@
  */
 package proy.logica.gestores.filtros;
 
-import java.util.ArrayList;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Herramienta;
-import proy.datos.entidades.Parte;
 import proy.datos.servicios.Filtro;
 
 public class FiltroProceso extends Filtro {
@@ -21,15 +17,11 @@ public class FiltroProceso extends Filtro {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
-	private Parte parte;
-	private ArrayList<Herramienta> herramientas;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
-		private Parte parte;
-		private ArrayList<Herramienta> herramientas;
 
 		public Builder() {
 			super();
@@ -40,19 +32,6 @@ public class FiltroProceso extends Filtro {
 			return this;
 		}
 
-		public Builder parte(Parte parte) {
-			this.parte = parte;
-			return this;
-		}
-
-		public Builder herramienta(Herramienta herramienta) {
-			if(herramienta != null){
-				this.herramientas = new ArrayList<>();
-				this.herramientas.add(herramienta);
-			}
-			return this;
-		}
-
 		public FiltroProceso build() {
 			return new FiltroProceso(this);
 		}
@@ -60,7 +39,6 @@ public class FiltroProceso extends Filtro {
 
 	private FiltroProceso(Builder builder) {
 		this.estado = builder.estado;
-		this.parte = builder.parte;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -72,9 +50,6 @@ public class FiltroProceso extends Filtro {
 
 	private void setNamedQuery(Builder builder) {
 		if(estado != EstadoStr.ALTA){
-			return;
-		}
-		if(parte != null){
 			return;
 		}
 		namedQuery = "listarProcesos";
@@ -92,9 +67,7 @@ public class FiltroProceso extends Filtro {
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-						+ ((builder.herramientas != null) ? ("herr in (:hes) AND ") : (""));
+				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -122,12 +95,6 @@ public class FiltroProceso extends Filtro {
 	public Query setParametros(Query query) {
 		if(estado != null){
 			query.setParameter("est", estado);
-		}
-		if(parte != null){
-			query.setParameter("par", parte);
-		}
-		if(herramientas != null){
-			query.setParameter("hes", herramientas);
 		}
 		return query;
 	}
