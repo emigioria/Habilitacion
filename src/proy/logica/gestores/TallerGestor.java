@@ -42,7 +42,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarParte;
@@ -184,8 +184,53 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoEliminarPieza eliminarPieza(Pieza pieza) throws PersistenciaException {
-		throw new NotYetImplementedException();
+	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
+		ResultadoEliminarPiezas resultado = validarEliminarPiezas(piezasAEliminar);
+		
+		ArrayList<Pieza> piezasABajaLogica;
+		ArrayList<Pieza> piezasABajaFisica;
+		
+		if(!resultado.hayErrores()){
+			piezasABajaFisica = new ArrayList<>(piezasAEliminar);
+
+			//si la parte tiene tareas asociadas, se le da baja lógica
+			piezasABajaLogica = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().piezas(piezasAEliminar).conTareas().build());
+
+			//si la parte no tiene tareas asociadas, se le da baja fisica
+			piezasABajaFisica.removeAll(piezasABajaLogica);
+
+			if(!piezasABajaFisica.isEmpty()){
+				//persistidorTaller.bajaPiezas(piezasABajaFisica);
+			}
+/*
+			if(!piezasABajaLogica.isEmpty()){
+				
+				//dar de baja logica piezas
+				piezasABajaLogica = new ArrayList<>();
+				for(Parte parte: piezasABajaLogica){
+					piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
+				}
+				for(Pieza pieza: piezasABajaLogica){
+					pieza.darDeBaja();
+				}
+				persistidorTaller.actualizarPiezas(piezasABajaLogica);
+				
+				
+				//dar de baja logica partes
+				for(Parte parte: piezasABajaLogica){
+					parte.darDeBaja();
+				}
+				persistidorTaller.actualizarPartes(piezasABajaLogica);
+				
+				return new ResultadoEliminarPartes(null,piezasABajaLogica);
+			}*/
+		}
+
+		return resultado;
+	}
+
+	private ResultadoEliminarPiezas validarEliminarPiezas(ArrayList<Pieza> piezasAEliminar) {
+		return new ResultadoEliminarPiezas();
 	}
 
 	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {

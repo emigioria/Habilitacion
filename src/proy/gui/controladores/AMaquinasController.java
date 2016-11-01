@@ -124,6 +124,7 @@ public class AMaquinasController extends ControladorRomano {
 			}
 		}
 		else{
+			tablaMaquinas.getItems().remove(maquina);
 			new VentanaInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito");
 		}
 	}

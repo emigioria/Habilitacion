@@ -36,6 +36,7 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -265,7 +266,7 @@ public class NMMaquinaController extends ControladorRomano {
 			//Se pregunta si quiere dar de baja estas tareas asociadas
 			if(tieneTareasNoTerminadasAsociadas){
 				vc = new VentanaConfirmacion("Confirmar eliminar parte",
-						"La parte a eliminar tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
+						"La parte a eliminar tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
 						apilador.getStage());
 				if(!vc.acepta()){
 					return;
@@ -275,6 +276,7 @@ public class NMMaquinaController extends ControladorRomano {
 			if(partesAGuardar.contains(parteAEliminar)){
 				partesAGuardar.remove(parteAEliminar);
 				piezasAGuardar.remove(parteAEliminar);
+				piezasAEliminar.remove(parteAEliminar);
 			}
 			else{
 				partesAEliminar.add(parteAEliminar);
@@ -375,7 +377,7 @@ public class NMMaquinaController extends ControladorRomano {
 			//Se pregunta si quiere dar de baja estas tareas asociadas
 			if(tieneTareasNoTerminadasAsociadas){
 				vc = new VentanaConfirmacion("Confirmar eliminar pieza",
-						"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
+						"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
 						apilador.getStage());
 				if(!vc.acepta()){
 					return;
@@ -393,6 +395,63 @@ public class NMMaquinaController extends ControladorRomano {
 			}
 			tablaPiezas.getItems().remove(piezaAEliminar);
 		}
+	}
+	
+	private Boolean eliminarPiezas(){
+		ResultadoEliminarPiezas resultadoEliminarPiezas;
+		StringBuffer erroresBfr = new StringBuffer();
+		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
+		boolean hayPiezasQueEliminar = false;
+		
+		//comprueba si hay piezas que eliminar y las agrega a una misma lista
+		for(ArrayList<Pieza> piezas: piezasAEliminar.values()){
+			if(!piezas.isEmpty()){
+				hayPiezasQueEliminar = true;
+				piezasAEliminarCompilado.addAll(piezas);
+			}
+		}
+		if(!hayPiezasQueEliminar){
+			return false;
+		}
+		
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarPiezas = coordinador.eliminarPiezas(piezasAEliminarCompilado);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return true;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return true;
+		}
+		
+		//Tratamiento de errores
+		if(resultadoEliminarPiezas.hayErrores()){
+/*			for(ErrorEliminarPartes ep: resultadoEliminarPiezas.getErrores()){
+				switch(ep) {
+				case ERROR_AL_ELIMINAR_TAREAS:
+					for(ErrorEliminarTareas et: resultadoEliminarPiezas.getResultadoTareas().getErrores()){
+						switch(et){
+						//no hay errores de eliminar tareas aún
+						}
+					}
+					break;
+				}
+			}
+*/
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
+			}
+			
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
+		}
+
+		return false;
 	}
 
 	@FXML
