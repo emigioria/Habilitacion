@@ -189,10 +189,12 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaPieza(Pieza pieza) throws PersistenciaException {
+	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
 		try{
-			Session session = getSessionFactory().getCurrentSession();
-			session.delete(pieza);
+			for(Pieza pieza: piezas){
+				Session session = getSessionFactory().getCurrentSession();
+				session.delete(pieza);
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

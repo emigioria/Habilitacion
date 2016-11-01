@@ -201,30 +201,18 @@ public class TallerGestor {
 			piezasABajaFisica.removeAll(piezasABajaLogica);
 
 			if(!piezasABajaFisica.isEmpty()){
-				//persistidorTaller.bajaPiezas(piezasABajaFisica);
+				persistidorTaller.bajaPiezas(piezasABajaFisica);
 			}
-/*
+
 			if(!piezasABajaLogica.isEmpty()){
-				
 				//dar de baja logica piezas
-				piezasABajaLogica = new ArrayList<>();
-				for(Parte parte: piezasABajaLogica){
-					piezasABajaLogica.addAll(persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().parte(parte).build()));
-				}
 				for(Pieza pieza: piezasABajaLogica){
 					pieza.darDeBaja();
 				}
 				persistidorTaller.actualizarPiezas(piezasABajaLogica);
 				
-				
-				//dar de baja logica partes
-				for(Parte parte: piezasABajaLogica){
-					parte.darDeBaja();
-				}
-				persistidorTaller.actualizarPartes(piezasABajaLogica);
-				
-				return new ResultadoEliminarPartes(null,piezasABajaLogica);
-			}*/
+				return new ResultadoEliminarPiezas(null,piezasABajaLogica);
+			}
 		}
 
 		return resultado;

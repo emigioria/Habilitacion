@@ -39,7 +39,7 @@ public interface TallerService {
 
 	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
 
-	public void bajaPieza(Pieza pieza) throws PersistenciaException;
+	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
 
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException;
 
