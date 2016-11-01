@@ -36,6 +36,8 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -265,10 +267,10 @@ public class NMMaquinaController extends ControladorRomano {
 			return;
 		}
 
-		//Se pregunta si quiere dar de baja sus tareas asociadas
+		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = new VentanaConfirmacion("Confirmar eliminar parte",
-					"La parte a eliminar tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
+					"La parte a eliminar tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
 					apilador.getStage());
 			if(!vc.acepta()){
 				return;
@@ -286,13 +288,15 @@ public class NMMaquinaController extends ControladorRomano {
 		tablaPartes.getItems().remove(parteAEliminar);
 	}
 
-	public Boolean eliminarPartes() {
+	private Boolean eliminarPartes() {
 		ResultadoEliminarPartes resultadoEliminarPartes;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		//Tomar datos de la vista
 		if(partesAEliminar.isEmpty()){
 			return false;
 		}
+		maquina.getPartes().removeAll(partesAEliminar);
 
 		//Inicio transacciones al gestor
 		try{
@@ -387,7 +391,7 @@ public class NMMaquinaController extends ControladorRomano {
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = new VentanaConfirmacion("Confirmar eliminar pieza",
-					"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
+					"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
 					apilador.getStage());
 			if(!vc.acepta()){
 				return;
@@ -404,6 +408,58 @@ public class NMMaquinaController extends ControladorRomano {
 			piezasAEliminar.get(parteDePiezaAEliminar).add(piezaAEliminar);
 		}
 		tablaPiezas.getItems().remove(piezaAEliminar);
+	}
+
+	private Boolean eliminarPiezas() {
+		ResultadoEliminarPiezas resultado;
+		StringBuffer erroresBfr = new StringBuffer();
+		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
+
+		//comprueba si hay piezas que eliminar y las agrega a una misma lista
+		for(Parte parte: piezasAEliminar.keySet()){
+			ArrayList<Pieza> piezas = piezasAEliminar.get(parte);
+			if(!piezas.isEmpty()){
+				piezasAEliminarCompilado.addAll(piezas);
+				parte.getPiezas().removeAll(piezas);
+			}
+		}
+		if(piezasAEliminarCompilado.isEmpty()){
+			return false;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultado = coordinador.eliminarPiezas(piezasAEliminarCompilado);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return true;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return true;
+		}
+
+		//Tratamiento de errores
+		if(resultado.hayErrores()){
+			for(ErrorEliminarPiezas ep: resultado.getErrores()){
+				switch(ep) {
+				case ERROR_AL_ELIMINAR_TAREAS:
+					//TODO procesar error
+					break;
+				}
+			}
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
+			}
+
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
+		}
+
+		return false;
 	}
 
 	@FXML
@@ -474,14 +530,17 @@ public class NMMaquinaController extends ControladorRomano {
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
 
-		//TODO guardar partes, las piezas se guardan por cascada (no olvidar setear todas las relaciones). Acordarse de validar la creación de piezas.
+		//TODO guardar partes: las partes y las piezas se guardan por cascada (no olvidar setear todas las relaciones).
+		if(this.eliminarPiezas()){
+			return true;
+		}
 		if(this.eliminarPartes()){
 			return true;
 		}
 
 		//Inicio transacciones al gestor
 		try{
-			resultado = coordinador.modificarMaquina(maquina);
+			resultado = coordinador.modificarMaquina(maquina); //Acordarse de validar la creacion de piezas y partes
 		} catch(PersistenciaException e){
 			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			return true;

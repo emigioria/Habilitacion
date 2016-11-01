@@ -14,6 +14,7 @@ import org.hibernate.Session;
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
+import proy.datos.entidades.Pieza;
 import proy.datos.servicios.Filtro;
 
 public class FiltroPieza extends Filtro {
@@ -23,13 +24,16 @@ public class FiltroPieza extends Filtro {
 	private EstadoStr estado;
 	private ArrayList<Material> materiales;
 	private Parte parte;
-
+	private ArrayList<Pieza> piezas;
+	
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
 		private ArrayList<Material> materiales = null;
 		private Parte parte = null;
+		private ArrayList<Pieza> piezas;
+		private Boolean conTareas;
 
 		public Builder() {
 			super();
@@ -51,6 +55,16 @@ public class FiltroPieza extends Filtro {
 			this.parte = parte;
 			return this;
 		}
+		
+		public Builder piezas(ArrayList<Pieza> piezas){
+			this.piezas = piezas;
+			return this;
+		}
+		
+		public Builder conTareas(){
+			this.conTareas = true;
+			return this;
+		}
 
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
@@ -61,6 +75,7 @@ public class FiltroPieza extends Filtro {
 		this.estado = builder.estado;
 		this.materiales = builder.materiales;
 		this.parte = builder.parte;
+		this.piezas = builder.piezas;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -80,16 +95,34 @@ public class FiltroPieza extends Filtro {
 		if(builder.parte != null){
 			return;
 		}
+		if(builder.piezas != null){
+			return;
+		}
+		if(builder.conTareas != null){
+			return;
+		}
 		namedQuery = "listarPiezas";
 	}
 
 	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+		String select;
+		if(builder.conTareas != null && builder.conTareas){
+			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		}
+		else{
+			select = "SELECT " + builder.nombreEntidad;
+		}
 		return select;
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Pieza " + builder.nombreEntidad;
+		String from;
+		if(builder.conTareas != null && builder.conTareas){
+			from = " FROM Pieza " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
+		}
+		else{
+			from = " FROM Pieza " + builder.nombreEntidad;
+		}
 		return from;
 	}
 
@@ -97,7 +130,8 @@ public class FiltroPieza extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in :mts AND ") : (""))
-						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""));
+						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
+						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in :pzs AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -131,6 +165,9 @@ public class FiltroPieza extends Filtro {
 		}
 		if(parte != null){
 			query.setParameter("par", parte);
+		}
+		if(piezas != null){
+			query.setParameterList("pzs", piezas);
 		}
 		return query;
 	}

@@ -7,7 +7,6 @@
 package proy.logica;
 
 import java.util.ArrayList;
-
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -52,7 +51,8 @@ import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
@@ -147,8 +147,21 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearPieza(pieza);
 	}
 
-	public ResultadoEliminarPieza eliminarPieza(Pieza pieza) throws PersistenciaException {
-		return gestorTaller.eliminarPieza(pieza);
+	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
+		
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).piezas(piezasAEliminar).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarPiezas(resultadoEliminarTareas, null, ErrorEliminarPiezas.ERROR_AL_ELIMINAR_TAREAS);
+		}
+		
+		ResultadoEliminarPiezas resultadoEliminarPiezas = gestorTaller.eliminarPiezas(piezasAEliminar);
+		ArrayList<Pieza> piezasDadasBajaLogica = resultadoEliminarPiezas.getPiezasDadasBajaLogica();
+		if(!piezasDadasBajaLogica.isEmpty()){
+			//dar de baja logica procesos
+			ArrayList<Proceso> procesosABajaLogica = gestorProceso.listarProcesos(new FiltroProceso.Builder().piezas(piezasDadasBajaLogica).build());
+			gestorProceso.bajaLogicaProcesos(procesosABajaLogica);
+		}
+		return resultadoEliminarPiezas;
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Pieza pieza) throws PersistenciaException {
