@@ -17,8 +17,6 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
-import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Estado;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -151,24 +149,23 @@ public class TallerGestor {
 
 			if(!partesABajaLogica.isEmpty()){
 
-				//dar de baja logica piezas
 				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica piezas
 					for(Pieza pieza: parte.getPiezas()){
 						pieza.darDeBaja();
 					}
-				}
-
-				//dar de baja logica procesos
-				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica procesos
 					for(Proceso proceso: parte.getProcesos()){
 						proceso.darDeBaja();
 					}
-				}
-
-				//dar de baja logica partes
-				for(Parte parte: partesABajaLogica){
+					
+					//dar de baja logica parte
 					parte.darDeBaja();
 				}
+
+
 				persistidorTaller.actualizarPartes(partesABajaLogica); //Alactualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
 			}
 		}
@@ -211,6 +208,9 @@ public class TallerGestor {
 			piezasABajaFisica.removeAll(piezasABajaLogica);
 
 			if(!piezasABajaFisica.isEmpty()){
+				for(Pieza pieza: piezasABajaFisica){
+					pieza.getParte().getPiezas().remove(pieza);
+				}
 				persistidorTaller.bajaPiezas(piezasABajaFisica);
 			}
 

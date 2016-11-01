@@ -38,7 +38,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
@@ -297,7 +297,6 @@ public class NMMaquinaController extends ControladorRomano {
 		if(partesAEliminar.isEmpty()){
 			return false;
 		}
-		maquina.getPartes().removeAll(partesAEliminar);
 
 		//Inicio transacciones al gestor
 		try{
@@ -415,15 +414,10 @@ public class NMMaquinaController extends ControladorRomano {
 		ResultadoEliminarPiezas resultadoEliminarPiezas;
 		StringBuffer erroresBfr = new StringBuffer();
 		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
-		boolean hayPiezasQueEliminar = false;
 		
 		//comprueba si hay piezas que eliminar y las agrega a una misma lista
-		for(Parte parte: piezasAEliminar.keySet()){
-			ArrayList<Pieza> piezas = piezasAEliminar.get(parte);
-			if(!piezas.isEmpty()){
-				piezasAEliminarCompilado.addAll(piezas);
-				parte.getPiezas().removeAll(piezas);
-			}
+		for(ArrayList<Pieza> piezas: piezasAEliminar.values()){
+			piezasAEliminarCompilado.addAll(piezas);
 		}
 		if(piezasAEliminarCompilado.isEmpty()){
 			return false;
