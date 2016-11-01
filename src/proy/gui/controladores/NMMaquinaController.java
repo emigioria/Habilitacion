@@ -623,7 +623,7 @@ public class NMMaquinaController extends ControladorRomano {
 				case CANTIDAD_INCOMPLETA:
 					erroresBfr.append("Hay cantidades no seteadas");
 				case NOMBRE_YA_EXISTENTE:
-					erroresBfr.append("Estos materiales ya existen en el sistema:\n");
+					erroresBfr.append("Estas partes ya existen en el sistema:\n");
 					for(String nombreParte: resultadoModificarPartes.getRepetidos()){
 						erroresBfr.append("\t<");
 						erroresBfr.append(nombreParte);
