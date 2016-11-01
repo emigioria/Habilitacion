@@ -38,6 +38,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -234,7 +235,6 @@ public class NMMaquinaController extends ControladorRomano {
 	public void nuevaParte() {
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
-		piezasAGuardar.put(nuevaParte, new ArrayList<>());
 		tablaPartes.getItems().add(0, nuevaParte);
 	}
 
@@ -314,7 +314,7 @@ public class NMMaquinaController extends ControladorRomano {
 			for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas());
+					erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas()));
 					break;
 				case ERROR_AL_ELIMINAR_PIEZAS:
 					//TODO procesar error
@@ -339,8 +339,16 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 	}
 
-	private void tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
-		//no hay errores de eliminar tareas aun
+	private String tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
+		String errores = "";
+		if(resultadoTareas.hayErrores()){
+			for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+				switch(ep) {
+				//Todavia no hay errores en eliminar tarea
+				}
+			}
+		}
+		return errores;
 	}
 
 	@FXML
@@ -439,7 +447,7 @@ public class NMMaquinaController extends ControladorRomano {
 			for(ErrorEliminarPiezas ep: resultadoEliminarPiezas.getErrores()){
 				switch(ep) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas());
+					erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas()));
 					break;
 				}
 			}
