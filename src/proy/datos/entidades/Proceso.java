@@ -156,17 +156,20 @@ public class Proceso {
 	}
 
 	public Set<Pieza> getPiezas() {
+		piezas.size();
 		return piezas;
 	}
 
 	public Set<Herramienta> getHerramientas() {
+		herramientas.size();
 		return herramientas;
 	}
 
 	public Set<Tarea> getTareas() {
+		tareas.size();
 		return tareas;
 	}
-	
+
 	public void darDeBaja() {
 		this.setEstado(new Estado(EstadoStr.BAJA));
 	}

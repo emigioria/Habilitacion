@@ -12,6 +12,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.servicios.Filtro;
@@ -23,6 +24,7 @@ public class FiltroProceso extends Filtro {
 	private EstadoStr estado;
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
+	private ArrayList<Herramienta> herramientas;
 
 	public static class Builder {
 
@@ -30,6 +32,7 @@ public class FiltroProceso extends Filtro {
 		private EstadoStr estado = EstadoStr.ALTA;
 		private Parte parte;
 		private ArrayList<Pieza> piezas;
+		private ArrayList<Herramienta> herramientas;
 
 		public Builder() {
 			super();
@@ -46,7 +49,24 @@ public class FiltroProceso extends Filtro {
 		}
 
 		public Builder piezas(ArrayList<Pieza> piezas) {
-			this.piezas = piezas;
+			if(piezas != null && !piezas.isEmpty()){
+				this.piezas = piezas;
+			}
+			return this;
+		}
+
+		public Builder herramienta(Herramienta herramienta) {
+			if(herramienta != null){
+				this.herramientas = new ArrayList<>();
+				this.herramientas.add(herramienta);
+			}
+			return this;
+		}
+
+		public Builder herramientas(ArrayList<Herramienta> herramientas) {
+			if(herramientas != null && !herramientas.isEmpty()){
+				this.herramientas = herramientas;
+			}
 			return this;
 		}
 
@@ -59,6 +79,7 @@ public class FiltroProceso extends Filtro {
 		this.estado = builder.estado;
 		this.parte = builder.parte;
 		this.piezas = builder.piezas;
+		this.herramientas = builder.herramientas;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -78,18 +99,33 @@ public class FiltroProceso extends Filtro {
 		if(builder.piezas != null){
 			return;
 		}
+		if(builder.herramientas != null){
+			return;
+		}
 		namedQuery = "listarProcesos";
 	}
 
 	private String getSelect(Builder builder) {
-		String select = "SELECT DISTINCT" + builder.nombreEntidad;
+		String select;
+		if(builder.piezas != null && herramientas != null){
+			select = "SELECT DISTINCT" + builder.nombreEntidad;
+		}
+		else{
+			select = "SELECT " + builder.nombreEntidad;
+		}
 		return select;
 	}
 
 	private String getFrom(Builder builder) {
 		String from;
+		if(builder.piezas != null && herramientas != null){
+			from = " FROM Proceso " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".piezas piez, " + builder.nombreEntidad + ".herramientas herr";
+		}
 		if(builder.piezas != null){
-			from = " FROM Proceso " + builder.nombreEntidad + " INNER JOIN " + builder.nombreEntidad + ".piezas piez";
+			from = " FROM Proceso " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".piezas piez";
+		}
+		if(herramientas != null){
+			from = " FROM Proceso " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".herramientas herr";
 		}
 		else{
 			from = " FROM Proceso " + builder.nombreEntidad;
@@ -101,7 +137,8 @@ public class FiltroProceso extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-						+ ((builder.piezas != null) ? ("piez in :pzs AND ") : (""));
+						+ ((builder.piezas != null) ? ("piez in :pzs AND ") : (""))
+						+ ((builder.herramientas != null) ? ("herr in :hes AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -136,12 +173,27 @@ public class FiltroProceso extends Filtro {
 		if(piezas != null){
 			query.setParameterList("pzs", piezas);
 		}
+		if(herramientas != null){
+			query.setParameterList("hes", herramientas);
+		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(parte != null){
+			session.update(parte);
+		}
+		if(piezas != null){
+			for(Pieza pieza: piezas){
+				session.update(pieza);
+			}
+		}
+		if(herramientas != null){
+			for(Herramienta herramienta: herramientas){
+				session.update(herramienta);
+			}
+		}
 	}
 
 	@Override

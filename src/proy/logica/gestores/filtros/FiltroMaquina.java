@@ -70,7 +70,7 @@ public class FiltroMaquina extends Filtro {
 	}
 
 	private String getWhere(Builder builder) {
-		String where = ((builder.nombre != null) ? (builder.nombreEntidad + ".nombre = :nom AND ") : (""));
+		String where = ((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -97,7 +97,7 @@ public class FiltroMaquina extends Filtro {
 	@Override
 	public Query setParametros(Query query) {
 		if(nombre != null){
-			query.setParameter("nom", nombre);
+			query.setParameter("nom", "%" + nombre + "%");
 		}
 		return query;
 	}

@@ -28,6 +28,7 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.filtros.FiltroHerramienta;
+import proy.logica.gestores.filtros.FiltroProceso;
 import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
@@ -103,7 +104,13 @@ public class AHerramientasController extends ControladorRomano {
 		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
 
 		if(herramientaAEliminar != null){
-			ArrayList<Proceso> procesosAsociados = new ArrayList<>(herramientaAEliminar.getProcesos());
+			ArrayList<Proceso> procesosAsociados = new ArrayList<>();
+			try{
+				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				return;
+			}
 			if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 				VentanaConfirmacion confirmacionProcesos = new VentanaConfirmacion("¿Eliminar procesos asociados?",
 						"Al eliminar la herramienta se eliminarán los siguientes procesos: " + procesosAsociados);

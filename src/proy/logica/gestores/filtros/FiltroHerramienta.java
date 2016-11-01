@@ -6,24 +6,29 @@
  */
 package proy.logica.gestores.filtros;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Proceso;
 import proy.datos.servicios.Filtro;
 
 public class FiltroHerramienta extends Filtro {
 
 	private String consulta = "";
 	private String namedQuery = "";
-	private String nombre;
 	private EstadoStr estado;
+	private String nombre;
+	private ArrayList<Proceso> procesos;
 
 	public static class Builder {
 
+		private EstadoStr estado = EstadoStr.ALTA;
 		private String nombreEntidad = "h";
 		private String nombre;
-		private EstadoStr estado = EstadoStr.ALTA;
+		private ArrayList<Proceso> procesos;
 
 		public Builder() {
 			super();
@@ -39,6 +44,13 @@ public class FiltroHerramienta extends Filtro {
 			return this;
 		}
 
+		public Builder procesos(ArrayList<Proceso> procesos) {
+			if(procesos != null && !procesos.isEmpty()){
+				this.procesos = procesos;
+			}
+			return this;
+		}
+
 		public FiltroHerramienta build() {
 			return new FiltroHerramienta(this);
 		}
@@ -48,6 +60,7 @@ public class FiltroHerramienta extends Filtro {
 	private FiltroHerramienta(Builder builder) {
 		this.nombre = builder.nombre;
 		this.estado = builder.estado;
+		this.procesos = builder.procesos;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -58,10 +71,13 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.estado != EstadoStr.ALTA){
+			return;
+		}
 		if(builder.nombre != null){
 			return;
 		}
-		if(builder.estado != EstadoStr.ALTA){
+		if(builder.procesos != null){
 			return;
 		}
 		namedQuery = "listarHerramientas";
@@ -73,14 +89,21 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Herramienta " + builder.nombreEntidad;
+		String from;
+		if(procesos != null){
+			from = " FROM Herramienta " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc";
+		}
+		else{
+			from = " FROM Herramienta " + builder.nombreEntidad;
+		}
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
 		String where =
-				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre = :nom AND ") : ("")) +
-						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+						+ ((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((builder.procesos != null) ? ("proc in :prs AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -106,18 +129,25 @@ public class FiltroHerramienta extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
-		if(nombre != null){
-			query.setParameter("nom", nombre);
-		}
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(nombre != null){
+			query.setParameter("nom", "%" + nombre + "%");
+		}
+		if(procesos != null){
+			query.setParameter("prs", procesos);
 		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(procesos != null){
+			for(Proceso proceso: procesos){
+				session.update(proceso);
+			}
+		}
 	}
 
 	@Override

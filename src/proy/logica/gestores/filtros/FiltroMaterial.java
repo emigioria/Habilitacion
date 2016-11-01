@@ -143,7 +143,11 @@ public class FiltroMaterial extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(materiales != null){
+			for(Material material: materiales){
+				session.update(material);
+			}
+		}
 	}
 
 	@Override

@@ -78,7 +78,7 @@ public class FiltroParte extends Filtro {
 
 	private void setNamedQuery(Builder builder) {
 		if(builder.estado != EstadoStr.ALTA){
-
+			return;
 		}
 		if(builder.maquina != null){
 			return;
@@ -118,8 +118,7 @@ public class FiltroParte extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""))
-						+ ((builder.conTareas != null) ? ((builder.conTareas) ? (builder.nombreEntidad + " = proc.parte AND tar.proceso = proc AND ") : ("")) : (""));
+						+ ((builder.partes != null) ? (builder.nombreEntidad + " in :pts AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -161,6 +160,11 @@ public class FiltroParte extends Filtro {
 	public void updateParametros(Session session) {
 		if(maquina != null){
 			session.update(maquina);
+		}
+		if(partes != null){
+			for(Parte parte: partes){
+				session.update(parte);
+			}
 		}
 	}
 
