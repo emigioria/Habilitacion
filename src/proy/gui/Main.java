@@ -29,7 +29,6 @@ public class Main extends Application {
 	private CoordinadorJavaFX coordinador;
 	private Stage stagePrincipal;
 	private ApplicationContext appContext;
-	private ControladorRomano controladorVentanaInicio;
 
 	public static void main(String[] args) {
 		//Ocultar logs
@@ -68,9 +67,6 @@ public class Main extends Application {
 		});
 
 		iniciarHibernate();
-
-		//Crear primera ventana
-		controladorVentanaInicio = ControladorRomano.nuevaScene(VTareasController.URL_VISTA, apilador, coordinador);
 	}
 
 	private void iniciarHibernate() {
@@ -83,9 +79,6 @@ public class Main extends Application {
 			public Boolean call() throws Exception {
 				appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 				coordinador = appContext.getBean(CoordinadorJavaFX.class);
-				if(controladorVentanaInicio != null){
-					controladorVentanaInicio.setCoordinador(coordinador);
-				}
 				return true;
 			}
 		};
@@ -101,6 +94,8 @@ public class Main extends Application {
 				(event) -> {
 					ventanaEspera.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 					ventanaEspera.hide();
+					//Crear primera ventana
+					ControladorRomano.nuevaScene(VTareasController.URL_VISTA, apilador, coordinador);
 				});
 
 		//Si falla, informa al usuario del error y cierra la aplicacion

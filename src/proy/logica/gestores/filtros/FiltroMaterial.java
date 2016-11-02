@@ -51,8 +51,8 @@ public class FiltroMaterial extends Filtro {
 			this.conPiezas = true;
 			return this;
 		}
-		
-		public Builder nombres(ArrayList<String> nombres){
+
+		public Builder nombres(ArrayList<String> nombres) {
 			this.nombres = nombres;
 			return this;
 		}
@@ -65,6 +65,7 @@ public class FiltroMaterial extends Filtro {
 	private FiltroMaterial(Builder builder) {
 		this.materiales = builder.materiales;
 		this.estado = builder.estado;
+		this.nombres = builder.nombres;
 
 		setConsulta(builder);
 		setNamedQuery(builder);

@@ -27,6 +27,7 @@ import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.servicios.TallerService;
+import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroMaquina;
@@ -45,6 +46,7 @@ import proy.logica.gestores.resultados.ResultadoCrearModificarPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
@@ -393,6 +395,10 @@ public class TallerGestor {
 		return new ResultadoEliminarHerramienta();
 	}
 
+	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		throw new NotYetImplementedException();
+	}
+
 	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerMateriales(filtro);
 	}
@@ -480,7 +486,11 @@ public class TallerGestor {
 			materialesABajaFisica.removeAll(materialesABajaLogica);
 
 			if(!materialesABajaFisica.isEmpty()){
-				persistidorTaller.bajaMateriales(materialesABajaFisica);
+				try{
+					persistidorTaller.bajaMateriales(materialesABajaFisica);
+				} catch(ObjNotFoundException e){ //TODO probar y ver si esto anda para extenderlo en todas las bajas
+					persistidorTaller.bajaMateriales(persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materialesABajaFisica).build()));
+				}
 			}
 
 			if(!materialesABajaLogica.isEmpty()){

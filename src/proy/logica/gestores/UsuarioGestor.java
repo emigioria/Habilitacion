@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import proy.comun.EncriptadorPassword;
 import proy.datos.clases.DatosLogin;
 import proy.datos.clases.EstadoStr;
-import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Estado;
@@ -144,7 +143,7 @@ public class UsuarioGestor {
 
 	//probar a ver si anda!
 	private Boolean bajaLogicaOperario(Operario operario) throws PersistenciaException {
-		ArrayList<Tarea> tareas = persistidorProcesos.obtenerTareas(new FiltroTarea.Builder().operario(operario).noEstado(EstadoTareaStr.FINALIZADA).build());
+		ArrayList<Tarea> tareas = persistidorProcesos.obtenerTareas(new FiltroTarea.Builder().operario(operario).build());
 		if(!tareas.isEmpty()){
 			operario.setEstado(new Estado(EstadoStr.BAJA));
 			persistidorUsuario.actualizarOperario(operario);

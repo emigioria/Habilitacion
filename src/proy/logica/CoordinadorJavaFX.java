@@ -7,6 +7,7 @@
 package proy.logica;
 
 import java.util.ArrayList;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -46,6 +47,8 @@ import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
@@ -94,6 +97,7 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
+		//TODO agregar eliminar tareas no finalizadas
 		return gestorUsuario.eliminarOperario(operario);
 	}
 
@@ -120,7 +124,7 @@ public class CoordinadorJavaFX {
 	public ResultadoCrearParte crearParte(Parte parte) throws PersistenciaException {
 		return gestorTaller.crearParte(parte);
 	}
-	
+
 	public ResultadoModificarPartes modificarParte(ArrayList<Parte> partes) throws PersistenciaException {
 		return gestorTaller.modificarPartes(partes);
 	}
@@ -148,12 +152,12 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
-		
+
 		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).piezas(piezasAEliminar).build()));
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarPiezas(resultadoEliminarTareas, null, ErrorEliminarPiezas.ERROR_AL_ELIMINAR_TAREAS);
 		}
-		
+
 		return gestorTaller.eliminarPiezas(piezasAEliminar);
 	}
 
@@ -172,6 +176,15 @@ public class CoordinadorJavaFX {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		return gestorTaller.eliminarHerramienta(herramienta);
+	}
+
+	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramientas(herramientas).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarHerramientas(resultadoEliminarTareas, null, ErrorEliminarHerramientas.ERROR_AL_ELIMINAR_TAREAS);
+		}
+
+		return gestorTaller.eliminarHerramientas(herramientas);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {

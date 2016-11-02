@@ -176,15 +176,16 @@ public class AMaterialesController extends ControladorRomano {
 	@FXML
 	public void eliminarMaterial() {
 		Material materialAEliminar = tablaMateriales.getSelectionModel().getSelectedItem();
-		if(materialAEliminar != null){
-			if(materialesAGuardar.contains(materialAEliminar)){
-				materialesAGuardar.remove(materialAEliminar);
-			}
-			else{
-				materialesAEliminar.add(materialAEliminar);
-			}
-			tablaMateriales.getItems().remove(materialAEliminar);
+		if(materialAEliminar == null){
+			return;
 		}
+		if(materialesAGuardar.contains(materialAEliminar)){
+			materialesAGuardar.remove(materialAEliminar);
+		}
+		else{
+			materialesAEliminar.add(materialAEliminar);
+		}
+		tablaMateriales.getItems().remove(materialAEliminar);
 	}
 
 	private void eliminarMateriales() {

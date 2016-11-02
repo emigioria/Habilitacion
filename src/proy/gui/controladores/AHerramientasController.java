@@ -18,20 +18,23 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import proy.datos.clases.EstadoTareaStr;
+import proy.comun.FormateadorString;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Proceso;
-import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
+import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroProceso;
-import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
 import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 
 public class AHerramientasController extends ControladorRomano {
 
@@ -46,8 +49,9 @@ public class AHerramientasController extends ControladorRomano {
 	@FXML
 	private TableColumn<Herramienta, String> columnaNombre;
 
-	@FXML
 	private ArrayList<Herramienta> herramientasAGuardar = new ArrayList<>();
+
+	private ArrayList<Herramienta> herramientasAEliminar = new ArrayList<>();
 
 	@FXML
 	private void initialize() {
@@ -55,11 +59,11 @@ public class AHerramientasController extends ControladorRomano {
 
 			columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
-				else{
-					return new SimpleStringProperty("<Sin Nombre>");
-				}
+				return new SimpleStringProperty("<Sin Nombre>");
 			});
 
 			Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
@@ -78,7 +82,10 @@ public class AHerramientasController extends ControladorRomano {
 
 			columnaNombre.setCellFactory(call);
 			columnaNombre.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+				String nombre = t.getNewValue().toLowerCase().trim();
+				if(!nombre.isEmpty()){
+					t.getRowValue().setNombre(nombre);
+				}
 			});
 
 			actualizar();
@@ -99,77 +106,7 @@ public class AHerramientasController extends ControladorRomano {
 
 	}
 
-	@FXML
-	public void eliminarHerramienta() { //TODO cambiar para que este homogeneo con ABM Material
-		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
-
-		if(herramientaAEliminar != null){
-			ArrayList<Proceso> procesosAsociados = new ArrayList<>();
-			try{
-				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
-			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				return;
-			}
-			if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
-				VentanaConfirmacion confirmacionProcesos = new VentanaConfirmacion("¿Eliminar procesos asociados?",
-						"Al eliminar la herramienta se eliminarán los siguientes procesos: " + procesosAsociados);
-				if(confirmacionProcesos.acepta()){
-					ArrayList<Tarea> tareasNoTerminadas = new ArrayList<>();
-					try{
-						tareasNoTerminadas = coordinador.listarTareas(new FiltroTarea.Builder().herramienta(herramientaAEliminar).noEstado(EstadoTareaStr.FINALIZADA).build());
-					} catch(PersistenciaException e){
-						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-						return;
-					}
-					if(!tareasNoTerminadas.isEmpty()){ //hay tareas no terminadas, las elimino tambien?
-						VentanaConfirmacion confirmacionTareas = new VentanaConfirmacion("¿Eliminar tareas asociados?",
-								"Al eliminar la herramienta se eliminarán las siguientes tareas: " + tareasNoTerminadas);
-						if(confirmacionTareas.acepta()){
-							for(Tarea tarea: tareasNoTerminadas){
-								try{
-									coordinador.eliminarTarea(tarea);
-								} catch(PersistenciaException e){
-									PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-									return;
-								}
-							}
-						}
-						else{ //si no quiere eliminar las tareas, sale
-							return;
-						}
-					}
-					//elimina logicamente la herramienta y los procesos
-					try{
-						herramientaAEliminar.darDeBaja();
-						coordinador.eliminarHerramienta(herramientaAEliminar); //TODO poner bien
-						for(Proceso proceso: procesosAsociados){
-							proceso.darDeBaja();
-							coordinador.eliminarProceso(proceso); //TODO poner bien
-						}
-					} catch(PersistenciaException e){
-						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-						return;
-					}
-				}
-			}
-			else{ //si no tiene procesos asociados, elimina fisicamente
-				try{
-					coordinador.eliminarHerramienta(herramientaAEliminar);
-				} catch(PersistenciaException e){
-					PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-					return;
-				} catch(Exception e){
-					PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-					return;
-				}
-				actualizar();
-			}
-
-		}
-	}
-
-	public void guardarHerramienta() { //TODO cambiar para que este homogeneo con ABM Material
+	private void nuevasHerramientas() { //TODO hacer para varias herramientas
 		ResultadoCrearHerramienta resultado = null;
 		Boolean hayErrores;
 		String errores = "";
@@ -211,6 +148,122 @@ public class AHerramientasController extends ControladorRomano {
 			herramientasAGuardar.clear();
 		}
 
+	}
+
+	@FXML
+	public void guardar() {
+		eliminarHerramientas();
+		nuevasHerramientas();
+	}
+
+	@FXML
+	public void eliminarHerramienta() {
+		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
+
+		if(herramientaAEliminar == null){
+			return;
+		}
+
+		//Se pregunta si quiere dar de baja
+		ArrayList<Proceso> procesosAsociados = new ArrayList<>();
+		try{
+			procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		VentanaConfirmacion vc;
+		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
+			vc = new VentanaConfirmacion("Confirmar eliminar herramienta",
+					"Al eliminar la herramienta se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminar la herramienta <" + herramientaAEliminar + ">?", apilador.getStage()); //TODO hacer lindo el cartelito
+			if(!vc.acepta()){
+				return;
+			}
+		}
+
+		//Si acepta dar de baja se verifica que la herramienta a eliminar no tiene tareas no terminadas asociadas
+		Boolean tieneTareasNoTerminadasAsociadas = false;
+		try{
+			if(!herramientasAGuardar.contains(herramientaAEliminar)){
+				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(herramientaAEliminar);
+			}
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Se pregunta si quiere dar de baja estas tareas asociadas
+		if(tieneTareasNoTerminadasAsociadas){
+			vc = new VentanaConfirmacion("Confirmar eliminar herramienta",
+					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
+					apilador.getStage());
+			if(!vc.acepta()){
+				return;
+			}
+		}
+
+		if(herramientasAGuardar.contains(herramientaAEliminar)){
+			herramientasAGuardar.remove(herramientaAEliminar);
+		}
+		else{
+			herramientasAEliminar.add(herramientaAEliminar);
+		}
+		tablaHerramientas.getItems().remove(herramientaAEliminar);
+	}
+
+	private void eliminarHerramientas() {
+		ResultadoEliminarHerramientas resultadoEliminarHerramientas;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		if(herramientasAEliminar.isEmpty()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarHerramientas = coordinador.eliminarHerramientas(herramientasAEliminar);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarHerramientas.hayErrores()){
+			for(ErrorEliminarHerramientas e: resultadoEliminarHerramientas.getErrores()){
+				switch(e) {
+				case ERROR_AL_ELIMINAR_TAREAS:
+					ResultadoEliminarTareas resultadoTareas = resultadoEliminarHerramientas.getResultadoTareas();
+					if(resultadoTareas.hayErrores()){
+						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+							switch(ep) {
+							//Todavia no hay errores en eliminar tarea
+							}
+						}
+					}
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+			}
+		}
+		else{
+			herramientasAEliminar.clear();
+			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.");
+		}
 	}
 
 	public void buscar() {
