@@ -7,6 +7,7 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,9 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
@@ -115,7 +119,32 @@ public class TallerGestor {
 			}
 		}
 
+		ResultadoCrearModificarPartes resultado = validarPartes(maquina.getPartes());
+		if(resultado.hayErrores()){
+			//errores.add();
+		}
+
 		return new ResultadoModificarMaquina(errores.toArray(new ErrorModificarMaquina[0]));
+	}
+
+	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partes) {
+		Set<ErrorCrearModificarPartes> errores = new HashSet<>();
+		Map<String, ResultadoCrearModificarPiezas> resultadosCrearModificarPiezas = new HashMap<>();
+
+		for(Parte parte: partes){
+			ResultadoCrearModificarPiezas resultado = validarPiezas(parte.getPiezas());
+			if(resultado.hayErrores()){
+				resultadosCrearModificarPiezas.put(parte.toString(), resultado);
+				errores.add(ErrorCrearModificarPartes.ERROR_AL_CREAR_O_MODIFICAR_PIEZAS);
+			}
+		}
+
+		return new ResultadoCrearModificarPartes(resultadosCrearModificarPiezas, errores.toArray(new ErrorCrearModificarPartes[0]));
+	}
+
+	public ResultadoCrearModificarPiezas validarPiezas(Collection<Pieza> piezas) {
+
+		return new ResultadoCrearModificarPiezas();
 	}
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {

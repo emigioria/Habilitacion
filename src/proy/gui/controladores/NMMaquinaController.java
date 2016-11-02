@@ -219,9 +219,14 @@ public class NMMaquinaController extends ControladorRomano {
 						if(nuevo != null){
 							if(!partesAGuardar.contains(nuevo)){
 								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
+								if(!piezasAGuardar.containsKey(nuevo)){
+									tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+								}
 							}
 							else{
-								tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+								if(!piezasAGuardar.containsKey(nuevo)){
+									tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+								}
 							}
 						}
 					} catch(PersistenciaException e){
@@ -524,10 +529,16 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
+		maquina.getPartes().clear();
 		maquina.getPartes().addAll(partesAGuardar);
 		for(Parte parte: partesAGuardar){
+			parte.setMaquina(maquina);
 			if(piezasAGuardar.containsKey(parte)){
+				parte.getPiezas().clear();
 				parte.getPiezas().addAll(piezasAGuardar.get(parte));
+				for(Pieza pieza: parte.getPiezas()){
+					pieza.setParte(parte);
+				}
 			}
 		}
 
@@ -644,6 +655,8 @@ public class NMMaquinaController extends ControladorRomano {
 				if(maquina != null){
 					tablaPartes.getItems().clear();
 					tablaPartes.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(maquina).build()));
+					tablaPartes.getItems().removeAll(partesAEliminar);
+					tablaPartes.getItems().addAll(partesAGuardar);
 					tablaPiezas.getItems().clear();
 				}
 			} catch(PersistenciaException e){
