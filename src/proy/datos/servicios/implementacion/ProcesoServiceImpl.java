@@ -65,9 +65,16 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			for(Proceso proceso: procesos){
+			Proceso proceso;
+			for(int i = 0; i < procesos.size(); i++){
+				proceso = procesos.get(i);
 				proceso.setEstado(AttachEstado.attachEstado(session, proceso.getEstado()));
 				session.update(proceso);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -150,8 +157,15 @@ public class ProcesoServiceImpl implements ProcesoService {
 	public void bajaTareas(ArrayList<Tarea> tareas) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			for(Tarea tarea: tareas){
+			Tarea tarea;
+			for(int i = 0; i < tareas.size(); i++){
+				tarea = tareas.get(i);
 				session.delete(tarea);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

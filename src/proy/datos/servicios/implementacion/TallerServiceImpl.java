@@ -118,9 +118,16 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			for(Parte parte: partes){
+			Parte parte;
+			for(int i = 0; i < partes.size(); i++){
+				parte = partes.get(i);
 				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
 				session.update(parte);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -136,8 +143,15 @@ public class TallerServiceImpl implements TallerService {
 	public void bajaPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			for(Parte parte: partes){
+			Parte parte;
+			for(int i = 0; i < partes.size(); i++){
+				parte = partes.get(i);
 				session.delete(parte);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -174,9 +188,16 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			for(Pieza pieza: piezas){
+			Pieza pieza;
+			for(int i = 0; i < piezas.size(); i++){
+				pieza = piezas.get(i);
 				pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
 				session.update(pieza);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -191,9 +212,16 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(rollbackFor = PersistenciaException.class)
 	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
 		try{
-			for(Pieza pieza: piezas){
+			Pieza pieza;
+			for(int i = 0; i < piezas.size(); i++){
+				pieza = piezas.get(i);
 				Session session = getSessionFactory().getCurrentSession();
 				session.delete(pieza);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -269,9 +297,16 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			for(Material material: materiales){
+			Material material;
+			for(int i = 0; i < materiales.size(); i++){
+				material = materiales.get(i);
 				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
 				session.save(material);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(Exception e){
 			e.printStackTrace();
@@ -284,9 +319,16 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			for(Material material: materiales){
+			Material material;
+			for(int i = 0; i < materiales.size(); i++){
+				material = materiales.get(i);
 				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
 				session.update(material);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -302,8 +344,15 @@ public class TallerServiceImpl implements TallerService {
 	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			for(Material material: materiales){
+			Material material;
+			for(int i = 0; i < materiales.size(); i++){
+				material = materiales.get(i);
 				session.delete(material);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
