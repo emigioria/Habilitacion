@@ -21,7 +21,9 @@ import proy.datos.entidades.Operario;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
+import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroOperario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
@@ -122,6 +124,7 @@ public class AOperariosController extends ControladorRomano {
 		Operario oSelected = tablaOperarios.getSelectionModel().getSelectedItem();
 
 		if(oSelected != null){
+
 			try{
 				coordinador.eliminarOperario(oSelected);
 			} catch(PersistenciaException e){
@@ -132,6 +135,9 @@ public class AOperariosController extends ControladorRomano {
 				return;
 			}
 			actualizar();
+			String mensaje = "Los datos del operario " + oSelected.getNombre() +
+					" " + oSelected.getApellido() + " han sido eliminados del sistema.";
+			new VentanaInformacion("Operario Guardado", mensaje);
 		}
 		else{
 			return;
@@ -179,11 +185,12 @@ public class AOperariosController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+				new VentanaError("Error al crear operario", errores, apilador.getStage());
 			}
 		}
 		else{
 			tablaOperarios.setEditable(false);
+			operariosAGuardar.clear();
 		}
 
 	}
@@ -198,5 +205,19 @@ public class AOperariosController extends ControladorRomano {
 				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
 		});
+	}
+
+	@Override
+	public void salir() {
+		if(operariosAGuardar.isEmpty()){
+			super.salir();
+		}
+		else{
+			VentanaConfirmacion confirmacion = new VentanaConfirmacion("¿Quiere salir sin guardar?",
+					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.");
+			if(confirmacion.acepta()){
+				super.salir();
+			}
+		}
 	}
 }

@@ -39,6 +39,11 @@ public class FiltroOperario extends Filtro {
 			return this;
 		}
 
+		public Builder estado(EstadoStr estado) {
+			this.estado = estado;
+			return this;
+		}
+
 		public FiltroOperario build() {
 			return new FiltroOperario(this);
 		}
@@ -60,7 +65,7 @@ public class FiltroOperario extends Filtro {
 		if(builder.dni != null){
 			return;
 		}
-		if(builder.estado != EstadoStr.ALTA){
+		if(builder.estado != null){
 			return;
 		}
 		namedQuery = "listarOperarios";

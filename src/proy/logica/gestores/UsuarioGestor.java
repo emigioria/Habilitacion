@@ -15,14 +15,20 @@ import org.springframework.stereotype.Service;
 
 import proy.comun.EncriptadorPassword;
 import proy.datos.clases.DatosLogin;
+import proy.datos.clases.EstadoStr;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
+import proy.datos.entidades.Estado;
 import proy.datos.entidades.Operario;
+import proy.datos.entidades.Tarea;
+import proy.datos.servicios.ProcesoService;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.filtros.FiltroAdministrador;
 import proy.logica.gestores.filtros.FiltroComentario;
 import proy.logica.gestores.filtros.FiltroOperario;
+import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
@@ -35,6 +41,8 @@ public class UsuarioGestor {
 
 	@Resource
 	private UsuarioService persistidorUsuario;
+	@Resource
+	private ProcesoService persistidorProcesos;
 
 	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
 		ArrayList<ErrorAutenticacion> errores = new ArrayList<>();
@@ -82,7 +90,8 @@ public class UsuarioGestor {
 
 	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {
 		ResultadoCrearOperario resultado = validarCrearOperario(operario);
-		if(!resultado.hayErrores()){
+		Boolean anterior = verificarOperarioAnterior(operario);
+		if(!resultado.hayErrores() && !anterior){
 			persistidorUsuario.guardarOperario(operario);
 		}
 		return resultado;
@@ -110,16 +119,39 @@ public class UsuarioGestor {
 		return new ResultadoCrearOperario(errores.toArray(new ErrorCrearOperario[errores.size()]));
 	}
 
-	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
-		ResultadoEliminarOperario resultado = validarEliminarOperario(operario);
-		if(!resultado.hayErrores()){
-			persistidorUsuario.bajaOperario(operario);
+	private Boolean verificarOperarioAnterior(Operario operario) throws PersistenciaException {
+		ArrayList<Operario> anteriores = persistidorUsuario.obtenerOperarios(new FiltroOperario.Builder().dni(operario.getDNI()).estado(EstadoStr.BAJA).build());
+		if(anteriores.size() == 1){
+			Operario anterior = anteriores.get(0);
+			anterior.setApellido(operario.getApellido());
+			anterior.setNombre(operario.getNombre());
+			anterior.setEstado(new Estado(EstadoStr.ALTA));
+			persistidorUsuario.actualizarOperario(anterior);
+			return true;
 		}
-		return resultado;
+		else{
+			return false;
+		}
+
 	}
 
-	private ResultadoEliminarOperario validarEliminarOperario(Operario operario) {
-		// TODO Auto-generated method stub
+	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
+		if(!bajaLogicaOperario(operario)){
+			persistidorUsuario.bajaOperario(operario);
+		}
 		return new ResultadoEliminarOperario();
+	}
+
+	//probar a ver si anda!
+	private Boolean bajaLogicaOperario(Operario operario) throws PersistenciaException {
+		ArrayList<Tarea> tareas = persistidorProcesos.obtenerTareas(new FiltroTarea.Builder().operario(operario).noEstado(EstadoTareaStr.FINALIZADA).build());
+		if(!tareas.isEmpty()){
+			operario.setEstado(new Estado(EstadoStr.BAJA));
+			persistidorUsuario.actualizarOperario(operario);
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 }
