@@ -9,21 +9,21 @@ package proy.logica.gestores.resultados;
 import java.util.Collection;
 import java.util.HashSet;
 
-import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
+import proy.logica.gestores.resultados.ResultadoModificarPartes.ErrorModificarPartes;
 
-public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
-
+public class ResultadoModificarPartes extends Resultado<ErrorModificarPartes> {
+	
 	HashSet<String> nombresYaExistentes;
 
-	public enum ErrorCrearMateriales {
-		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO
+	public enum ErrorModificarPartes {
+		NOMBRE_INCOMPLETO, CANTIDAD_INCOMPLETA, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO
 	}
 
-	public ResultadoCrearMateriales(Collection<String> nombresYaExistentes, ErrorCrearMateriales... errores) {
+	public ResultadoModificarPartes(Collection<String> nombresYaExistentes, ErrorModificarPartes... errores) {
 		super(errores);
 		this.nombresYaExistentes = new HashSet<>(nombresYaExistentes);
 	}
-
+	
 	public HashSet<String> getRepetidos() {
 		return nombresYaExistentes;
 	}

@@ -6,15 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
-import proy.logica.gestores.resultados.ResultadoModificarParte.ErrorModificarParte;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPiezas.ErrorCrearModificarPiezas;
 
-public class ResultadoModificarParte extends Resultado<ErrorModificarParte> {
+public class ResultadoCrearModificarPiezas extends Resultado<ErrorCrearModificarPiezas> {
 
-	public enum ErrorModificarParte {
-		NOMBRE_INCOMPLETO, CANTIDAD_INCOMPLETA, NOMBRE_REPETIDO
+	public enum ErrorCrearModificarPiezas {
+
 	}
 
-	public ResultadoModificarParte(ErrorModificarParte... errores) {
+	public ResultadoCrearModificarPiezas(ErrorCrearModificarPiezas... errores) {
 		super(errores);
 	}
 }

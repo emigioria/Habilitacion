@@ -21,6 +21,7 @@ public class FiltroMaterial extends Filtro {
 	private String namedQuery = "";
 	private EstadoStr estado;
 	private ArrayList<Material> materiales;
+	private ArrayList<String> nombres;
 
 	public static class Builder {
 
@@ -28,6 +29,7 @@ public class FiltroMaterial extends Filtro {
 		private ArrayList<Material> materiales;
 		private Boolean conPiezas;
 		private EstadoStr estado = EstadoStr.ALTA;
+		private ArrayList<String> nombres;
 
 		public Builder() {
 			super();
@@ -47,6 +49,11 @@ public class FiltroMaterial extends Filtro {
 
 		public Builder conPiezas() {
 			this.conPiezas = true;
+			return this;
+		}
+		
+		public Builder nombres(ArrayList<String> nombres){
+			this.nombres = nombres;
 			return this;
 		}
 
@@ -75,6 +82,9 @@ public class FiltroMaterial extends Filtro {
 			return;
 		}
 		if(builder.conPiezas != null){
+			return;
+		}
+		if(builder.nombres != null){
 			return;
 		}
 		namedQuery = "listarMateriales";
@@ -106,7 +116,8 @@ public class FiltroMaterial extends Filtro {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((builder.materiales != null) ? (builder.nombreEntidad + " in (:mts) AND ") : (""))
-						+ ((builder.conPiezas != null) ? ((builder.conPiezas) ? (builder.nombreEntidad + " = piez.material AND ") : ("")) : (""));
+						+ ((builder.conPiezas != null) ? ((builder.conPiezas) ? (builder.nombreEntidad + " = piez.material AND ") : ("")) : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -138,12 +149,19 @@ public class FiltroMaterial extends Filtro {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
+		if(nombres != null){
+			query.setParameterList("nms", nombres);
+		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-
+		if(materiales != null){
+			for(Material material: materiales){
+				session.update(material);
+			}
+		}
 	}
 
 	@Override

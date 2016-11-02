@@ -56,7 +56,7 @@ public class UsuarioGestor {
 			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
 			Administrador admin = administradores.get(0);
 			String sal = admin.getSal();
-			String contraIngresada = EncriptadorPassword.encriptarMD5(login.getContrasenia(), sal);
+			String contraIngresada = EncriptadorPassword.encriptar(login.getContrasenia(), sal);
 			if(!contraIngresada.equals(admin.getContrasenia())){
 				//Si no coincide falla
 				errores.add(ErrorAutenticacion.DATOS_INVALIDOS);

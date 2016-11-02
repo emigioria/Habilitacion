@@ -33,7 +33,7 @@ public abstract class EncriptadorPassword {
 	 *            sal para ocultar la palabra.
 	 * @return String
 	 */
-	public static String encriptarMD5(char[] palabra, String sal) {
+	public static String encriptar(char[] palabra, String sal) {
 		return new String(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes(), ITERATIONS, KEY_LENGTH));
 	}
 

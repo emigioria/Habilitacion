@@ -27,4 +27,26 @@ public abstract class Resultado<T> {
 		return new ArrayList<>(errores);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if(obj == null){
+			return false;
+		}
+		if(getClass() != obj.getClass()){
+			return false;
+		}
+		Resultado<?> other = (Resultado<?>) obj;
+		if(errores == null){
+			if(other.errores != null){
+				return false;
+			}
+		}
+		else if(!errores.equals(other.errores)){
+			return false;
+		}
+		return true;
+	}
 }

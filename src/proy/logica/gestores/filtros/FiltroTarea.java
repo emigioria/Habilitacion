@@ -282,14 +282,23 @@ public class FiltroTarea extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
+		if(operario != null){
+			session.update(operario);
+		}
 		if(herramientas != null){
-			session.update(herramientas);
+			for(Herramienta herramienta: herramientas){
+				session.update(herramienta);
+			}
 		}
 		if(partes != null){
-			session.update(partes);
+			for(Parte parte: partes){
+				session.update(parte);
+			}
 		}
 		if(piezas != null){
-			session.update(piezas);
+			for(Pieza pieza: piezas){
+				session.update(pieza);
+			}
 		}
 		if(proceso != null){
 			session.update(proceso);

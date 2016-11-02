@@ -12,7 +12,7 @@ package proy.excepciones;
  * @author Acosta - Gioria - Moretti - Rebechi
  *
  */
-public class PersistenciaException extends Exception {
+public abstract class PersistenciaException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
