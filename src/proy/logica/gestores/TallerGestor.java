@@ -8,8 +8,10 @@ package proy.logica.gestores;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -129,11 +131,105 @@ public class TallerGestor {
 		return new ResultadoModificarMaquina(errores.toArray(new ErrorModificarMaquina[0]));
 	}
 
-	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partes) {
+	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partesAGuardarOModificar) throws PersistenciaException{
 		Set<ErrorCrearModificarPartes> errores = new HashSet<>();
 		Map<String, ResultadoCrearModificarPiezas> resultadosCrearModificarPiezas = new HashMap<>();
-
-		for(Parte parte: partes){
+		Map<Maquina, ArrayList<ErrorCrearModificarPartes>> erroresPorMaquina = new HashMap<>();
+		Map<Maquina, HashSet<String>> nombresYaExistentesPorMaquina = new HashMap<>();
+		
+		//divido las partes por máquina. Solo me quedo con sus nombres
+		Map<Maquina, ArrayList<String>> nombresPartesPorMaquina = new HashMap<>();
+		for(Parte parte: partesAGuardarOModificar){
+			if(!nombresPartesPorMaquina.containsKey(parte.getMaquina())){
+				nombresPartesPorMaquina.put(parte.getMaquina(), new ArrayList<String>());
+			}
+			nombresPartesPorMaquina.get(parte.getMaquina()).add(parte.getNombre());
+		}
+		
+		//Busco si hay nombres incompletos, y me quedo solo con los completos.
+		boolean nombreIncompletoEncontrado = false;
+		@SuppressWarnings("unused")
+		boolean nombreIncompletoEncontradoPorMaquina;
+		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
+			nombreIncompletoEncontradoPorMaquina = false;
+			Iterator<String> it = maquinaYPartes.getValue().iterator();
+			while(it.hasNext()){
+				String nombreParte = it.next();
+				if(nombreParte == null || nombreParte.isEmpty()){
+					nombreIncompletoEncontradoPorMaquina = true;
+					it.remove();
+				}
+			}
+			if(nombreIncompletoEncontradoPorMaquina = true){
+				nombreIncompletoEncontrado = true;
+				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
+					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
+				}
+				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
+			}
+		}
+		if(nombreIncompletoEncontrado){
+			errores.add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
+		}
+		
+		//Ordeno los nombres alfabéticamente para que nombres iguales queden uno al lado del otro
+		for(ArrayList<String> nombresPartes: nombresPartesPorMaquina.values()){
+			Collections.sort(nombresPartes);
+		}
+		
+		//Veo si hay repeticiones entre los nombres que que el usuario quiere guardar, y las remuevo
+		boolean nombreIngresadoRepetidoEncontrado = false;
+		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
+			Iterator<String> it = maquinaYPartes.getValue().iterator();
+			String nombrePrevio = "";
+			String nombreActual;
+			boolean nombreIngresadoRepetidoEncontradoPorMaquina = false;
+			while(it.hasNext()){
+				nombreActual = it.next();
+				if(nombreActual.equals(nombrePrevio)){
+					nombreIngresadoRepetidoEncontradoPorMaquina = true;
+					it.remove();
+				}
+				else{
+					nombrePrevio = nombreActual;
+				}
+			}
+			if(nombreIngresadoRepetidoEncontradoPorMaquina){
+				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
+					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
+				}
+				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
+			}
+		}
+		if(nombreIngresadoRepetidoEncontrado){
+			errores.add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
+		}
+		
+		
+		//Busco en la BD coincidencias en los nombres
+		boolean nombresYaExistentesEncontrados = false;
+		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
+			ArrayList<Parte> partesConNombreCoincidentePorMaquina = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(maquinaYPartes.getValue()).build());
+			if(!partesConNombreCoincidentePorMaquina.isEmpty()){
+				nombresYaExistentesEncontrados = true;
+				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
+					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
+				}
+				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
+			}
+			for(Parte parte: partesConNombreCoincidentePorMaquina){
+				if(!nombresYaExistentesPorMaquina.containsKey(maquinaYPartes.getKey())){
+					nombresYaExistentesPorMaquina.put(maquinaYPartes.getKey(), new HashSet<>());
+				}
+				nombresYaExistentesPorMaquina.get(maquinaYPartes.getKey()).add(parte.getNombre());
+			}
+		}
+		if(nombresYaExistentesEncontrados){
+			errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
+		}
+		
+		//Valido la creación o modificación de las piezas de cada parte
+		for(Parte parte: partesAGuardarOModificar){
 			ResultadoCrearModificarPiezas resultado = validarPiezas(parte.getPiezas());
 			if(resultado.hayErrores()){
 				resultadosCrearModificarPiezas.put(parte.toString(), resultado);
@@ -141,11 +237,13 @@ public class TallerGestor {
 			}
 		}
 
-		return new ResultadoCrearModificarPartes(resultadosCrearModificarPiezas, errores.toArray(new ErrorCrearModificarPartes[0]));
+		return new ResultadoCrearModificarPartes(erroresPorMaquina, nombresYaExistentesPorMaquina, resultadosCrearModificarPiezas, errores.toArray(new ErrorCrearModificarPartes[0]));
 	}
 
 	public ResultadoCrearModificarPiezas validarPiezas(Collection<Pieza> piezas) {
-
+		
+		
+		
 		return new ResultadoCrearModificarPiezas();
 	}
 

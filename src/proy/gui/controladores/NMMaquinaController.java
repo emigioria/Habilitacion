@@ -219,14 +219,9 @@ public class NMMaquinaController extends ControladorRomano {
 						if(nuevo != null){
 							if(!partesAGuardar.contains(nuevo)){
 								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
-								if(!piezasAGuardar.containsKey(nuevo)){
-									tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
-								}
 							}
-							else{
-								if(!piezasAGuardar.containsKey(nuevo)){
+							if(!piezasAGuardar.containsKey(nuevo)){
 									tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
-								}
 							}
 						}
 					} catch(PersistenciaException e){
@@ -279,7 +274,7 @@ public class NMMaquinaController extends ControladorRomano {
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = new VentanaConfirmacion("Confirmar eliminar parte",
-					"La parte a eliminar tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
+					"La parte <" + parteAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
 					apilador.getStage());
 			if(!vc.acepta()){
 				return;
@@ -448,22 +443,29 @@ public class NMMaquinaController extends ControladorRomano {
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = new VentanaConfirmacion("Confirmar eliminar pieza",
-					"La pieza a eliminar corresponde a una parte que tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
+					"La pieza <" + piezaAEliminar + "> corresponde a una parte que tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la pieza?",
 					apilador.getStage());
 			if(!vc.acepta()){
 				return;
 			}
 		}
 
+		//Si la pieza a eliminar era nueva
 		if(piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
 			piezasAGuardar.get(parteDePiezaAEliminar).remove(piezaAEliminar);
+			if(piezasAGuardar.get(parteDePiezaAEliminar).isEmpty()){
+				piezasAGuardar.remove(parteDePiezaAEliminar);
+			}
 		}
+		//Si la pieza a eliminar existe en la BD
 		else{
 			if(!piezasAEliminar.containsKey(parteDePiezaAEliminar)){
 				piezasAEliminar.put(parteDePiezaAEliminar, new ArrayList<>());
 			}
 			piezasAEliminar.get(parteDePiezaAEliminar).add(piezaAEliminar);
 		}
+		
+		//La quitamos de la tabla
 		tablaPiezas.getItems().remove(piezaAEliminar);
 	}
 
