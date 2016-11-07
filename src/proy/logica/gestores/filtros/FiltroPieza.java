@@ -27,6 +27,7 @@ public class FiltroPieza extends Filtro {
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
 	private ArrayList<Proceso> procesos;
+	private ArrayList<String> nombres;
 
 	public static class Builder {
 
@@ -37,6 +38,7 @@ public class FiltroPieza extends Filtro {
 		private ArrayList<Pieza> piezas;
 		private Boolean conTareas;
 		private ArrayList<Proceso> procesos;
+		private ArrayList<String> nombres;
 
 		public Builder() {
 			super();
@@ -77,6 +79,11 @@ public class FiltroPieza extends Filtro {
 			this.conTareas = true;
 			return this;
 		}
+		
+		public Builder nombres(ArrayList<String> nombres){
+			this.nombres = nombres;
+			return this;
+		}
 
 		public FiltroPieza build() {
 			return new FiltroPieza(this);
@@ -89,6 +96,7 @@ public class FiltroPieza extends Filtro {
 		this.parte = builder.parte;
 		this.piezas = builder.piezas;
 		this.procesos = builder.procesos;
+		this.nombres = builder.nombres;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -115,6 +123,9 @@ public class FiltroPieza extends Filtro {
 			return;
 		}
 		if(builder.procesos != null){
+			return;
+		}
+		if(builder.nombres != null){
 			return;
 		}
 		namedQuery = "listarPiezas";
@@ -151,7 +162,8 @@ public class FiltroPieza extends Filtro {
 						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in (:mts) AND ") : (""))
 						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
 						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in (:pzs) AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""));
+						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -191,6 +203,9 @@ public class FiltroPieza extends Filtro {
 		}
 		if(procesos != null){
 			query.setParameter("prs", procesos);
+		}
+		if(nombres != null){
+			query.setParameterList("nms", nombres);
 		}
 		return query;
 	}

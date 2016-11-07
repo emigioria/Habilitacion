@@ -9,6 +9,7 @@ package proy.logica.gestores;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -44,7 +45,8 @@ import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearModificarPiezas;
+import proy.logica.gestores.resultados.ResultadoCrearPiezas;
+import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
@@ -111,6 +113,7 @@ public class TallerGestor {
 	}
 
 	public ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
+		ResultadoCrearModificarPartes resultadoCrearModificarPartes;
 		ArrayList<ErrorModificarMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
 			errores.add(ErrorModificarMaquina.NOMBRE_INCOMPLETO);
@@ -123,128 +126,171 @@ public class TallerGestor {
 			}
 		}
 
-		ResultadoCrearModificarPartes resultado = validarPartes(maquina.getPartes());
-		if(resultado.hayErrores()){
-			//errores.add();
+		//Valido la creacion o modificación de las partes de la maquina
+		ArrayList<Maquina> listaConEstaMaquina = new ArrayList<>();
+		listaConEstaMaquina.add(maquina);
+		resultadoCrearModificarPartes = validarPartes(listaConEstaMaquina).get(maquina);
+		if(resultadoCrearModificarPartes.hayErrores()){
+			errores.add(ErrorModificarMaquina.ERROR_AL_CREAR_O_MODIFICAR_PARTES);
 		}
 
-		return new ResultadoModificarMaquina(errores.toArray(new ErrorModificarMaquina[0]));
+		return new ResultadoModificarMaquina(resultadoCrearModificarPartes, errores.toArray(new ErrorModificarMaquina[0]));
 	}
 
-	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partesAGuardarOModificar) throws PersistenciaException{
-		Set<ErrorCrearModificarPartes> errores = new HashSet<>();
-		Map<String, ResultadoCrearModificarPiezas> resultadosCrearModificarPiezas = new HashMap<>();
-		Map<Maquina, ArrayList<ErrorCrearModificarPartes>> erroresPorMaquina = new HashMap<>();
-		Map<Maquina, HashSet<String>> nombresYaExistentesPorMaquina = new HashMap<>();
-		
-		//divido las partes por máquina. Solo me quedo con sus nombres
-		Map<Maquina, ArrayList<String>> nombresPartesPorMaquina = new HashMap<>();
-		for(Parte parte: partesAGuardarOModificar){
-			if(!nombresPartesPorMaquina.containsKey(parte.getMaquina())){
-				nombresPartesPorMaquina.put(parte.getMaquina(), new ArrayList<String>());
-			}
-			nombresPartesPorMaquina.get(parte.getMaquina()).add(parte.getNombre());
-		}
-		
-		//Busco si hay nombres incompletos, y me quedo solo con los completos.
-		boolean nombreIncompletoEncontrado = false;
-		@SuppressWarnings("unused")
-		boolean nombreIncompletoEncontradoPorMaquina;
-		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
-			nombreIncompletoEncontradoPorMaquina = false;
-			Iterator<String> it = maquinaYPartes.getValue().iterator();
+	/**validarPartes()
+	 * 
+	 * valida que las partes que se están creando o los cambios que se le hicieron a viejas partes se pueden persistir.
+	 * Las partes pueden pertenecer a distintas máquinas.
+	 * Incluye la validación de la creación o modificación de las piezas pertenecientes a esas partes
+	 * 
+	 * @param maquinasDeLasPartesAValidar son las partes nuevas y/o las partes viejas que se quieren modificar.
+	 * @return
+	 * @throws PersistenciaException
+	 */
+	public Map<Maquina, ResultadoCrearModificarPartes> validarPartes(Collection<Maquina> maquinasDeLasPartesAValidar) throws PersistenciaException{
+		Map<Maquina, ResultadoCrearModificarPartes> resultadosCrearModificarPartes = new HashMap<>();
+		Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas;
+		ArrayList<ErrorCrearModificarPartes> errores = new ArrayList<>();
+		List<Parte> partesAValidar;
+		for(Maquina maquina: maquinasDeLasPartesAValidar){
+			partesAValidar = new ArrayList<>(maquina.getPartes());
+			
+			Iterator<Parte> it = partesAValidar.iterator();
+			Parte parteActual;
+			boolean nombreIncompletoEncontrado = false;
 			while(it.hasNext()){
-				String nombreParte = it.next();
-				if(nombreParte == null || nombreParte.isEmpty()){
-					nombreIncompletoEncontradoPorMaquina = true;
+				parteActual = it.next();
+				if(parteActual.getNombre() == null || parteActual.getNombre().isEmpty()){
+					nombreIncompletoEncontrado = true;
 					it.remove();
 				}
 			}
-			if(nombreIncompletoEncontradoPorMaquina = true){
-				nombreIncompletoEncontrado = true;
-				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
-					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
-				}
-				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
+			if(nombreIncompletoEncontrado){
+				errores.add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
 			}
-		}
-		if(nombreIncompletoEncontrado){
-			errores.add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
+			
+			//las ordeno por nombre
+			Collections.sort(partesAValidar, new Comparator<Parte>() {
+				@Override
+				public int compare(Parte p1, Parte p2) {
+					return p1.getNombre().compareTo(p2.getNombre());
+				}
+			});
+			
+			//busco coincidencias entre los nombres de las piezas ingresadas
+			if(!partesAValidar.isEmpty()){
+				Iterator<Parte> it2 = partesAValidar.iterator();
+				Parte anterior = it2.next();
+				Parte actual;
+				boolean nombreIngresadoRepetidoEncontrado = false;
+				while(it2.hasNext()){
+					actual = it2.next();
+					if(actual.getNombre().equals(anterior.getNombre())){
+						nombreIngresadoRepetidoEncontrado = true;
+						it2.remove();
+					}
+				}
+				if(nombreIngresadoRepetidoEncontrado){
+					errores.add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
+				}
+			}
+			
+			//busco coincidencias con los nombres de las piezas de la BD
+			ArrayList<String> nombresDePartes = new ArrayList<>();
+			for(Parte parte: partesAValidar){
+				nombresDePartes.add(parte.getNombre());
+			}
+			ArrayList<Parte> partesConNombreCoincidente = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(nombresDePartes).maquina(maquina).build());
+			if(!partesConNombreCoincidente.isEmpty()){
+				errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
+			}
+			
+			//Valido la creación de las piezas de cada parte
+			resultadosCrearPiezas = validarPiezas(partesAValidar);
+			Iterator<ResultadoCrearPiezas> it2 = resultadosCrearPiezas.values().iterator();
+			boolean errorAlCrearPiezasEncontrado = false;
+			while(!errorAlCrearPiezasEncontrado && it2.hasNext()){
+				if(it2.next().hayErrores()){
+					errorAlCrearPiezasEncontrado = true;
+					errores.add(ErrorCrearModificarPartes.ERROR_AL_CREAR_PIEZAS);
+				}
+			}
+			
+			resultadosCrearModificarPartes.put(maquina, new ResultadoCrearModificarPartes(resultadosCrearPiezas, partesConNombreCoincidente, errores.toArray(new ErrorCrearModificarPartes[0])));
 		}
 		
-		//Ordeno los nombres alfabéticamente para que nombres iguales queden uno al lado del otro
-		for(ArrayList<String> nombresPartes: nombresPartesPorMaquina.values()){
-			Collections.sort(nombresPartes);
-		}
-		
-		//Veo si hay repeticiones entre los nombres que que el usuario quiere guardar, y las remuevo
-		boolean nombreIngresadoRepetidoEncontrado = false;
-		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
-			Iterator<String> it = maquinaYPartes.getValue().iterator();
-			String nombrePrevio = "";
-			String nombreActual;
-			boolean nombreIngresadoRepetidoEncontradoPorMaquina = false;
-			while(it.hasNext()){
-				nombreActual = it.next();
-				if(nombreActual.equals(nombrePrevio)){
-					nombreIngresadoRepetidoEncontradoPorMaquina = true;
-					it.remove();
-				}
-				else{
-					nombrePrevio = nombreActual;
-				}
-			}
-			if(nombreIngresadoRepetidoEncontradoPorMaquina){
-				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
-					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
-				}
-				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
-			}
-		}
-		if(nombreIngresadoRepetidoEncontrado){
-			errores.add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
-		}
-		
-		
-		//Busco en la BD coincidencias en los nombres
-		boolean nombresYaExistentesEncontrados = false;
-		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
-			ArrayList<Parte> partesConNombreCoincidentePorMaquina = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(maquinaYPartes.getValue()).build());
-			if(!partesConNombreCoincidentePorMaquina.isEmpty()){
-				nombresYaExistentesEncontrados = true;
-				if(!erroresPorMaquina.containsKey(maquinaYPartes.getKey())){
-					erroresPorMaquina.put(maquinaYPartes.getKey(), new ArrayList<>());
-				}
-				erroresPorMaquina.get(maquinaYPartes.getKey()).add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
-			}
-			for(Parte parte: partesConNombreCoincidentePorMaquina){
-				if(!nombresYaExistentesPorMaquina.containsKey(maquinaYPartes.getKey())){
-					nombresYaExistentesPorMaquina.put(maquinaYPartes.getKey(), new HashSet<>());
-				}
-				nombresYaExistentesPorMaquina.get(maquinaYPartes.getKey()).add(parte.getNombre());
-			}
-		}
-		if(nombresYaExistentesEncontrados){
-			errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
-		}
-		
-		//Valido la creación o modificación de las piezas de cada parte
-		for(Parte parte: partesAGuardarOModificar){
-			ResultadoCrearModificarPiezas resultado = validarPiezas(parte.getPiezas());
-			if(resultado.hayErrores()){
-				resultadosCrearModificarPiezas.put(parte.toString(), resultado);
-				errores.add(ErrorCrearModificarPartes.ERROR_AL_CREAR_O_MODIFICAR_PIEZAS);
-			}
-		}
-
-		return new ResultadoCrearModificarPartes(erroresPorMaquina, nombresYaExistentesPorMaquina, resultadosCrearModificarPiezas, errores.toArray(new ErrorCrearModificarPartes[0]));
+		return resultadosCrearModificarPartes;
 	}
 
-	public ResultadoCrearModificarPiezas validarPiezas(Collection<Pieza> piezas) {
+	/**validarPiezas()
+	 * 
+	 * valida que las piezas que se están creando o los cambios que se le hicieron a viejas piezas se pueden persistir.
+	 * Las piezas pueden pertenecer a distintas partes.
+	 * 
+	 * @param piezasAGuardarOModificar son las piezas nuevas y/o las piezas viejas que se quieren modificar.
+	 * @return
+	 */
+	public Map<Parte, ResultadoCrearPiezas> validarPiezas(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
+		Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas = new HashMap<>();
+		ArrayList<ErrorCrearPiezas> errores = new ArrayList<>();
+		List<Pieza> piezasAValidar;
+		for(Parte parte: partesDeLasPiezasAValidar){
+			piezasAValidar = new ArrayList<>(parte.getPiezas());
+			
+			Iterator<Pieza> it = piezasAValidar.iterator();
+			Pieza piezaActual;
+			boolean nombreIncompletoEncontrado = false;
+			while(it.hasNext()){
+				piezaActual = it.next();
+				if(piezaActual.getNombre() == null || piezaActual.getNombre().isEmpty()){
+					nombreIncompletoEncontrado = true;
+					it.remove();
+				}
+			}
+			if(nombreIncompletoEncontrado){
+				errores.add(ErrorCrearPiezas.NOMBRE_INCOMPLETO);
+			}
+			
+			//las ordeno por nombre
+			Collections.sort(piezasAValidar, new Comparator<Pieza>() {
+				@Override
+				public int compare(Pieza p1, Pieza p2) {
+					return p1.getNombre().compareTo(p2.getNombre());
+				}
+			});
+			
+			//busco coincidencias entre los nombres de las piezas ingresadas
+			if(!piezasAValidar.isEmpty()){
+				Iterator<Pieza> it2 = piezasAValidar.iterator();
+				Pieza anterior = it2.next();
+				Pieza actual;
+				boolean nombreIngresadoRepetidoEncontrado = false;
+				while(it2.hasNext()){
+					actual = it2.next();
+					if(actual.getNombre().equals(anterior.getNombre())){
+						nombreIngresadoRepetidoEncontrado = true;
+						it2.remove();
+					}
+				}
+				if(nombreIngresadoRepetidoEncontrado){
+					errores.add(ErrorCrearPiezas.NOMBRE_INGRESADO_REPETIDO);
+				}
+			}
+			
+			//busco coincidencias con los nombres de las piezas de la BD
+			ArrayList<String> nombresDePiezas = new ArrayList<>();
+			for(Pieza pieza: piezasAValidar){
+				nombresDePiezas.add(pieza.getNombre());
+			}
+			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).build());
+			if(!piezasConNombreCoincidente.isEmpty()){
+				errores.add(ErrorCrearPiezas.NOMBRE_YA_EXISTENTE);
+			}
+			
+			resultadosCrearPiezas.put(parte, new ResultadoCrearPiezas(piezasConNombreCoincidente, errores.toArray(new ErrorCrearPiezas[0])));
+		}
 		
-		
-		
-		return new ResultadoCrearModificarPiezas();
+		return resultadosCrearPiezas;
 	}
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
@@ -332,6 +378,14 @@ public class TallerGestor {
 		return new ResultadoModificarPartes(nombresPartesRepetidos, erroresModificarPartes.toArray(new ErrorModificarPartes[0]));
 	}
 
+	/**eliminarPartes()
+	 * 
+	 * se encarga de dar baja física o lógica a partes que pueden pertenecer a distintas máquinas
+	 * 
+	 * @param partesAEliminar son las partes que se quieren eliminar
+	 * @return
+	 * @throws PersistenciaException
+	 */
 	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
 		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
 
@@ -374,6 +428,14 @@ public class TallerGestor {
 		return resultado;
 	}
 
+	/**validarEliminarPartes
+	 * 
+	 * hace la validación de que las partes se pueden eliminar. Incluye la validación de la eliminación de piezas y
+	 * procesos asociados
+	 * 
+	 * @param partesAEliminar son las partes cuya eliminación se va a validar
+	 * @return
+	 */
 	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
 		Set<ErrorEliminarPartes> errores = new HashSet<>();
 
@@ -406,6 +468,14 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
+	/**eliminarPiezas()
+	 * 
+	 * se encarga de dar baja física o lógica a piezas que pueden pertenecer a distintas partes
+	 * 
+	 * @param piezasAEliminar son las piezas que se quieren eliminar
+	 * @return
+	 * @throws PersistenciaException
+	 */
 	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
 		ResultadoEliminarPiezas resultado = validarEliminarPiezas(piezasAEliminar);
 
@@ -445,7 +515,15 @@ public class TallerGestor {
 
 		return resultado;
 	}
-
+	
+	/**validarEliminarPiezas
+	 * 
+	 * hace la validación de que las piezas se pueden eliminar. Incluye la validación de la eliminación de
+	 * procesos asociados
+	 * 
+	 * @param piezasAEliminar son las piezas cuya eliminación se va a validar
+	 * @return
+	 */
 	private ResultadoEliminarPiezas validarEliminarPiezas(ArrayList<Pieza> piezasAEliminar) {
 		Set<ErrorEliminarPartes> errores = new HashSet<>();
 

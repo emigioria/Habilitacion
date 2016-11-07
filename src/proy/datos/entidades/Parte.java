@@ -55,10 +55,10 @@ public class Parte {
 	@JoinColumn(name = "codmaquina", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "parte_codmaquina_fk"), nullable = false)
 	private Maquina maquina;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = false, fetch = FetchType.LAZY)
 	private Set<Pieza> piezas;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = false, fetch = FetchType.LAZY)
 	private Set<Proceso> procesos;
 
 	public Parte() {
