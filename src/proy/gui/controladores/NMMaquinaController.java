@@ -7,7 +7,7 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
@@ -26,7 +26,6 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
 import proy.comun.FormateadorString;
-import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
@@ -105,8 +104,8 @@ public class NMMaquinaController extends ControladorRomano {
 	private ArrayList<Parte> partesAGuardar = new ArrayList<>(); //Partes nuevas no persistidas
 	private ArrayList<Parte> partesAEliminar = new ArrayList<>(); //Partes persistidas a eliminar
 
-	private HashMap<Parte, ArrayList<Pieza>> piezasAGuardar = new HashMap<>(); //Piezas nuevas no persistidas
-	private HashMap<Parte, ArrayList<Pieza>> piezasAEliminar = new HashMap<>(); //Piezas persistidas a eliminar
+	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new IdentityHashMap<>(); //Piezas nuevas no persistidas
+	private Map<Parte, ArrayList<Pieza>> piezasAEliminar = new IdentityHashMap<>(); //Piezas persistidas a eliminar
 
 	@FXML
 	private void initialize() {
@@ -130,7 +129,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 					@Override
 					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-						
+
 					}
 				};
 			});
@@ -187,7 +186,7 @@ public class NMMaquinaController extends ControladorRomano {
 			//Seteamos el Cell Factory
 			columnaNombrePieza.setCellFactory(col -> {
 				return new TableCellTextViewString<Pieza>(Pieza.class) {
-					
+
 					@Override
 					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
 						this.setEditable(false);
@@ -195,7 +194,10 @@ public class NMMaquinaController extends ControladorRomano {
 							return;
 						}
 						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(piezasAGuardar.containsKey(parteSeleccionada)){
+						if(parteSeleccionada == null){
+							return;
+						}
+						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
 							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
 						}
 					}
@@ -231,7 +233,10 @@ public class NMMaquinaController extends ControladorRomano {
 							return;
 						}
 						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(piezasAGuardar.containsKey(parteSeleccionada)){
+						if(parteSeleccionada == null){
+							return;
+						}
+						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
 							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
 						}
 					}
@@ -249,19 +254,27 @@ public class NMMaquinaController extends ControladorRomano {
 
 			//Inicialización de la columna PIEZA->MATERIAL
 
-			columnaMaterialPieza.setCellValueFactory( new PropertyValueFactory<Pieza, Material>("material"));
-			ArrayList<Material> materiales = new ArrayList<>();
+			columnaMaterialPieza.setCellValueFactory(new PropertyValueFactory<Pieza, Material>("material"));
 			try{
-				materiales = coordinador.listarMateriales(new FiltroMaterial.Builder().build());
+				columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
+			} catch(PersistenciaException e){
+				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
 			}
-			catch(PersistenciaException e){
-				
-			}
-			columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(materiales)));
 			columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
+
 				@Override
-				public void handle(CellEditEvent<Pieza,Material> t) {
-					t.getRowValue().setMaterial(t.getNewValue());
+				public void handle(CellEditEvent<Pieza, Material> t) {
+					if(t.getNewValue() != null){
+						Pieza pieza = t.getRowValue();
+						for(ArrayList<Pieza> piezas: piezasAGuardar.values()){
+							if(piezas.contains(pieza)){
+								pieza.setMaterial(t.getNewValue());
+							}
+						}
+					}
+					//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+					t.getTableColumn().setVisible(false);
+					t.getTableColumn().setVisible(true);
 				};
 			});
 
@@ -271,7 +284,7 @@ public class NMMaquinaController extends ControladorRomano {
 			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getCodigoPlano() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getCodigoPlano()));
+						return new SimpleStringProperty(param.getValue().getCodigoPlano());
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");
@@ -279,7 +292,7 @@ public class NMMaquinaController extends ControladorRomano {
 			//Seteamos el Cell Factory
 			columnaCodigoPlanoPieza.setCellFactory(col -> {
 				return new TableCellTextViewString<Pieza>(Pieza.class) {
-					
+
 					@Override
 					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
 						this.setEditable(false);
@@ -287,16 +300,20 @@ public class NMMaquinaController extends ControladorRomano {
 							return;
 						}
 						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(piezasAGuardar.containsKey(parteSeleccionada)){
-							ArrayList<Pieza> piezas = piezasAGuardar.get(parteSeleccionada);
-							this.setEditable(piezas.contains(newValue));
+						if(parteSeleccionada == null){
+							return;
+						}
+						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
 						}
 					}
 				};
 			});
 			//Al terminar de editar, se guarda el valor
-			columnaCodigoPlanoPieza.setOnEditCommit(t -> {
-				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+			columnaCodigoPlanoPieza.setOnEditCommit(t ->
+
+			{
+				t.getRowValue().setCodigoPlano(t.getNewValue().trim());
 				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
 				t.getTableColumn().setVisible(false);
 				t.getTableColumn().setVisible(true);
@@ -311,8 +328,8 @@ public class NMMaquinaController extends ControladorRomano {
 							if(!partesAGuardar.contains(nuevo)){
 								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
 							}
-							if(piezasAGuardar.containsKey(nuevo)){
-									tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+							if(piezasAGuardar.get(nuevo) != null && !piezasAGuardar.get(nuevo).isEmpty()){
+								tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
 							}
 						}
 					} catch(PersistenciaException e){
@@ -322,6 +339,7 @@ public class NMMaquinaController extends ControladorRomano {
 			});
 
 			actualizar();
+
 		});
 	}
 
@@ -493,12 +511,14 @@ public class NMMaquinaController extends ControladorRomano {
 			return;
 		}
 		Pieza nuevaPieza = new Pieza();
-		if(!piezasAGuardar.containsKey(parteDePiezaAGuardar)){
+		if(piezasAGuardar.get(parteDePiezaAGuardar) == null || piezasAGuardar.get(parteDePiezaAGuardar).isEmpty()){
 			piezasAGuardar.put(parteDePiezaAGuardar, new ArrayList<>());
 		}
 		piezasAGuardar.get(parteDePiezaAGuardar).add(nuevaPieza);
 		tablaPiezas.getItems().add(0, nuevaPieza);
-		tablaPiezas.setEditable(true);
+		if(!tablaPiezas.isEditable()){
+			tablaPiezas.setEditable(true);
+		}
 	}
 
 	@FXML
@@ -521,7 +541,7 @@ public class NMMaquinaController extends ControladorRomano {
 		//Si acepta dar de baja se verifica que la pieza a eliminar no tiene tareas no terminadas asociadas
 		Boolean tieneTareasNoTerminadasAsociadas = false;
 		try{
-			if(!piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
+			if(piezasAGuardar.get(parteDePiezaAEliminar) == null || !piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
 				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(piezaAEliminar);
 			}
 		} catch(PersistenciaException e){
@@ -551,12 +571,12 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 		//Si la pieza a eliminar existe en la BD
 		else{
-			if(!piezasAEliminar.containsKey(parteDePiezaAEliminar)){
+			if(piezasAGuardar.get(parteDePiezaAEliminar) == null || piezasAGuardar.get(parteDePiezaAEliminar).isEmpty()){
 				piezasAEliminar.put(parteDePiezaAEliminar, new ArrayList<>());
 			}
 			piezasAEliminar.get(parteDePiezaAEliminar).add(piezaAEliminar);
 		}
-		
+
 		//La quitamos de la tabla
 		tablaPiezas.getItems().remove(piezaAEliminar);
 	}
@@ -627,7 +647,7 @@ public class NMMaquinaController extends ControladorRomano {
 		maquina.getPartes().addAll(partesAGuardar);
 		for(Parte parte: partesAGuardar){
 			parte.setMaquina(maquina);
-			if(piezasAGuardar.containsKey(parte)){
+			if(piezasAGuardar.get(parte) != null && !piezasAGuardar.get(parte).isEmpty()){
 				parte.getPiezas().clear();
 				parte.getPiezas().addAll(piezasAGuardar.get(parte));
 				for(Pieza pieza: parte.getPiezas()){
@@ -686,15 +706,13 @@ public class NMMaquinaController extends ControladorRomano {
 		if(this.eliminarPartes()){
 			return true;
 		}
-		
+
 		maquina.getPartes().addAll(partesAGuardar);
 		maquina.getPartes().removeAll(tablaPartes.getItems());
 		maquina.getPartes().addAll(tablaPartes.getItems());
-		maquina.getPartes().removeIf(p -> {return p.getEstado().equals(EstadoStr.BAJA);});
-		
+
 		for(Parte parte: maquina.getPartes()){
-			if(piezasAGuardar.containsKey(parte)){
-				parte.getPiezas().removeIf(p -> {return p.getEstado().equals(EstadoStr.BAJA);});
+			if(piezasAGuardar.get(parte) != null && !piezasAGuardar.get(parte).isEmpty()){
 				parte.getPiezas().addAll(piezasAGuardar.get(parte));
 			}
 		}
@@ -743,9 +761,9 @@ public class NMMaquinaController extends ControladorRomano {
 		for(int i = 0; i < nivelIndentacion; i++){
 			indentacion.append('\t');
 		}
-		
+
 		for(ErrorCrearModificarPartes e: resultadoCrearModificarPartes.getErrores()){
-			switch(e){
+			switch(e) {
 			case NOMBRE_INCOMPLETO:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Hay partes con nombre vacío.\n");
@@ -757,23 +775,23 @@ public class NMMaquinaController extends ControladorRomano {
 			case NOMBRE_YA_EXISTENTE:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Estas partes ya existen en el sistema:\n");
-				for(Parte parte: resultadoCrearModificarPartes.getPartesConNombreYaExistente()){
+				for(String parte: resultadoCrearModificarPartes.getNombresYaExistentes()){
 					erroresBfr.append("\t<");
-					erroresBfr.append(parte.getNombre());
+					erroresBfr.append(parte);
 					erroresBfr.append(">\n");
 				}
 				break;
 			case ERROR_AL_CREAR_PIEZAS:
-				for(Map.Entry<Parte, ResultadoCrearPiezas> ParteYResultadoCrearPiezas : resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
+				for(Map.Entry<String, ResultadoCrearPiezas> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
 					erroresBfr.append(indentacion);
 					erroresBfr.append("Errores en la creación de las piezas para la parte <");
 					erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
 					erroresBfr.append(">:\n");
-					erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion +1));
+					erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
 				}
 			}
 		}
-		
+
 		return erroresBfr.toString();
 	}
 
@@ -783,9 +801,9 @@ public class NMMaquinaController extends ControladorRomano {
 		for(int i = 0; i < nivelIndentacion; i++){
 			indentacion.append('\t');
 		}
-		
+
 		for(ErrorCrearPiezas e: resultadoCrearPiezas.getErrores()){
-			switch(e){
+			switch(e) {
 			case NOMBRE_INCOMPLETO:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Hay piezas con nombre vacío.\n");
@@ -797,15 +815,15 @@ public class NMMaquinaController extends ControladorRomano {
 			case NOMBRE_YA_EXISTENTE:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Estas piezas ya existen en el sistema:\n");
-				for(Pieza pieza: resultadoCrearPiezas.getPiezasConNombreYaExistente()){
+				for(String pieza: resultadoCrearPiezas.getNombresYaExistentes()){
 					erroresBfr.append("\t<");
-					erroresBfr.append(pieza.getNombre());
+					erroresBfr.append(pieza);
 					erroresBfr.append(">\n");
 				}
 				break;
 			}
 		}
-		
+
 		return erroresBfr.toString();
 	}
 

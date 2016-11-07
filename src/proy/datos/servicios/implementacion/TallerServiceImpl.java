@@ -55,6 +55,12 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarMaquina(Maquina maquina) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
+			for(Parte parte: maquina.getPartes()){
+				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				for(Pieza pieza: parte.getPiezas()){
+					pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+				}
+			}
 			session.save(maquina);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -67,6 +73,12 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarMaquina(Maquina maquina) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
+			for(Parte parte: maquina.getPartes()){
+				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				for(Pieza pieza: parte.getPiezas()){
+					pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+				}
+			}
 			session.update(maquina);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

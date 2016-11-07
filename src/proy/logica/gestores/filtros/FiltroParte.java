@@ -24,6 +24,7 @@ public class FiltroParte extends Filtro {
 	private Maquina maquina;
 	private ArrayList<Parte> partes;
 	private ArrayList<String> nombres;
+	private Boolean sinUnir = false;
 
 	public static class Builder {
 
@@ -33,6 +34,7 @@ public class FiltroParte extends Filtro {
 		private ArrayList<Parte> partes;
 		private Boolean conTareas;
 		private ArrayList<String> nombres;
+		private Boolean sinUnir = false;
 
 		public Builder() {
 			super();
@@ -59,9 +61,14 @@ public class FiltroParte extends Filtro {
 			this.conTareas = true;
 			return this;
 		}
-		
-		public Builder nombres(ArrayList<String> nombres){
+
+		public Builder nombres(ArrayList<String> nombres) {
 			this.nombres = nombres;
+			return this;
+		}
+
+		public Builder sinUnir() {
+			this.sinUnir = true;
 			return this;
 		}
 
@@ -75,6 +82,7 @@ public class FiltroParte extends Filtro {
 		this.maquina = builder.maquina;
 		this.partes = builder.partes;
 		this.nombres = builder.nombres;
+		this.sinUnir = builder.sinUnir;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -173,6 +181,9 @@ public class FiltroParte extends Filtro {
 
 	@Override
 	public void updateParametros(Session session) {
+		if(sinUnir){
+			return;
+		}
 		if(maquina != null){
 			session.update(maquina);
 		}

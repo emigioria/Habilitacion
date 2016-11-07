@@ -9,6 +9,9 @@ package proy.comun;
 public abstract class FormateadorString {
 
 	public static String primeraMayuscula(String entrada) {
+		if(entrada == null){
+			return null;
+		}
 		switch(entrada.length()) {
 		// Los strings vacíos se retornan como están.
 		case 0:

@@ -6,17 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 
-import proy.datos.entidades.Parte;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas;
 
 public class ResultadoCrearModificarPartes extends Resultado<ErrorCrearModificarPartes> {
 
-	private Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas;
-	ArrayList<Parte> partesConNombreYaExistente;
+	private Map<String, ResultadoCrearPiezas> resultadosCrearPiezas;
+	private Set<String> nombresYaExistentes;
 
 	public enum ErrorCrearModificarPartes {
 		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO,
@@ -27,17 +25,17 @@ public class ResultadoCrearModificarPartes extends Resultado<ErrorCrearModificar
 		super(errores);
 	}
 
-	public ResultadoCrearModificarPartes(Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas, ArrayList<Parte> partesConNombreYaExistente, ErrorCrearModificarPartes... errores) {
+	public ResultadoCrearModificarPartes(Map<String, ResultadoCrearPiezas> resultadosCrearPiezas, Set<String> nombresYaExistentes, ErrorCrearModificarPartes... errores) {
 		super(errores);
-		this.partesConNombreYaExistente = partesConNombreYaExistente;
+		this.nombresYaExistentes = nombresYaExistentes;
 		this.resultadosCrearPiezas = resultadosCrearPiezas;
 	}
 
-	public ArrayList<Parte> getPartesConNombreYaExistente(){
-		return partesConNombreYaExistente;
+	public Set<String> getNombresYaExistentes() {
+		return this.nombresYaExistentes;
 	}
-	
-	public Map<Parte, ResultadoCrearPiezas> getResultadosCrearPiezas() {
+
+	public Map<String, ResultadoCrearPiezas> getResultadosCrearPiezas() {
 		return resultadosCrearPiezas;
 	}
 }

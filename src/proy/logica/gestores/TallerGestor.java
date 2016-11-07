@@ -23,6 +23,7 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
@@ -45,10 +46,10 @@ import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
+import proy.logica.gestores.resultados.ResultadoCrearPiezas;
+import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
@@ -137,24 +138,28 @@ public class TallerGestor {
 		return new ResultadoModificarMaquina(resultadoCrearModificarPartes, errores.toArray(new ErrorModificarMaquina[0]));
 	}
 
-	/**validarPartes()
-	 * 
+	/**
+	 * validarPartes()
+	 *
 	 * valida que las partes que se están creando o los cambios que se le hicieron a viejas partes se pueden persistir.
 	 * Las partes pueden pertenecer a distintas máquinas.
 	 * Incluye la validación de la creación o modificación de las piezas pertenecientes a esas partes
-	 * 
-	 * @param maquinasDeLasPartesAValidar son las partes nuevas y/o las partes viejas que se quieren modificar.
+	 *
+	 * @param maquinasDeLasPartesAValidar
+	 *            son las partes nuevas y/o las partes viejas que se quieren modificar.
 	 * @return
 	 * @throws PersistenciaException
 	 */
-	public Map<Maquina, ResultadoCrearModificarPartes> validarPartes(Collection<Maquina> maquinasDeLasPartesAValidar) throws PersistenciaException{
+	public Map<Maquina, ResultadoCrearModificarPartes> validarPartes(Collection<Maquina> maquinasDeLasPartesAValidar) throws PersistenciaException {
 		Map<Maquina, ResultadoCrearModificarPartes> resultadosCrearModificarPartes = new HashMap<>();
 		Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas;
 		ArrayList<ErrorCrearModificarPartes> errores = new ArrayList<>();
 		List<Parte> partesAValidar;
 		for(Maquina maquina: maquinasDeLasPartesAValidar){
 			partesAValidar = new ArrayList<>(maquina.getPartes());
-			
+			partesAValidar.removeIf(t -> {
+				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
+			});
 			Iterator<Parte> it = partesAValidar.iterator();
 			Parte parteActual;
 			boolean nombreIncompletoEncontrado = false;
@@ -168,7 +173,7 @@ public class TallerGestor {
 			if(nombreIncompletoEncontrado){
 				errores.add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
 			}
-			
+
 			//las ordeno por nombre
 			Collections.sort(partesAValidar, new Comparator<Parte>() {
 				@Override
@@ -176,7 +181,7 @@ public class TallerGestor {
 					return p1.getNombre().compareTo(p2.getNombre());
 				}
 			});
-			
+
 			//busco coincidencias entre los nombres de las piezas ingresadas
 			if(!partesAValidar.isEmpty()){
 				Iterator<Parte> it2 = partesAValidar.iterator();
@@ -194,17 +199,21 @@ public class TallerGestor {
 					errores.add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
 				}
 			}
-			
+
 			//busco coincidencias con los nombres de las piezas de la BD
 			ArrayList<String> nombresDePartes = new ArrayList<>();
 			for(Parte parte: partesAValidar){
 				nombresDePartes.add(parte.getNombre());
 			}
-			ArrayList<Parte> partesConNombreCoincidente = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(nombresDePartes).maquina(maquina).build());
+			ArrayList<Parte> partesConNombreCoincidente = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(nombresDePartes).maquina(maquina).sinUnir().build());
+			Set<String> nombresPartesRepetidas = new HashSet<>();
 			if(!partesConNombreCoincidente.isEmpty()){
 				errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
+				for(Parte parte: partesConNombreCoincidente){
+					nombresPartesRepetidas.add(parte.toString());
+				}
 			}
-			
+
 			//Valido la creación de las piezas de cada parte
 			resultadosCrearPiezas = validarPiezas(partesAValidar);
 			Iterator<ResultadoCrearPiezas> it2 = resultadosCrearPiezas.values().iterator();
@@ -215,19 +224,25 @@ public class TallerGestor {
 					errores.add(ErrorCrearModificarPartes.ERROR_AL_CREAR_PIEZAS);
 				}
 			}
-			
-			resultadosCrearModificarPartes.put(maquina, new ResultadoCrearModificarPartes(resultadosCrearPiezas, partesConNombreCoincidente, errores.toArray(new ErrorCrearModificarPartes[0])));
+			Map<String, ResultadoCrearPiezas> resultadosCrearPiezasNombradas = new HashMap<>();
+			for(Map.Entry<Parte, ResultadoCrearPiezas> piezaResultado: resultadosCrearPiezas.entrySet()){
+				resultadosCrearPiezasNombradas.put(piezaResultado.getKey().toString(), piezaResultado.getValue());
+			}
+
+			resultadosCrearModificarPartes.put(maquina, new ResultadoCrearModificarPartes(resultadosCrearPiezasNombradas, nombresPartesRepetidas, errores.toArray(new ErrorCrearModificarPartes[0])));
 		}
-		
+
 		return resultadosCrearModificarPartes;
 	}
 
-	/**validarPiezas()
-	 * 
+	/**
+	 * validarPiezas()
+	 *
 	 * valida que las piezas que se están creando o los cambios que se le hicieron a viejas piezas se pueden persistir.
 	 * Las piezas pueden pertenecer a distintas partes.
-	 * 
-	 * @param piezasAGuardarOModificar son las piezas nuevas y/o las piezas viejas que se quieren modificar.
+	 *
+	 * @param piezasAGuardarOModificar
+	 *            son las piezas nuevas y/o las piezas viejas que se quieren modificar.
 	 * @return
 	 */
 	public Map<Parte, ResultadoCrearPiezas> validarPiezas(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
@@ -236,7 +251,10 @@ public class TallerGestor {
 		List<Pieza> piezasAValidar;
 		for(Parte parte: partesDeLasPiezasAValidar){
 			piezasAValidar = new ArrayList<>(parte.getPiezas());
-			
+			piezasAValidar.removeIf(t -> {
+				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
+			});
+
 			Iterator<Pieza> it = piezasAValidar.iterator();
 			Pieza piezaActual;
 			boolean nombreIncompletoEncontrado = false;
@@ -250,7 +268,7 @@ public class TallerGestor {
 			if(nombreIncompletoEncontrado){
 				errores.add(ErrorCrearPiezas.NOMBRE_INCOMPLETO);
 			}
-			
+
 			//las ordeno por nombre
 			Collections.sort(piezasAValidar, new Comparator<Pieza>() {
 				@Override
@@ -258,7 +276,7 @@ public class TallerGestor {
 					return p1.getNombre().compareTo(p2.getNombre());
 				}
 			});
-			
+
 			//busco coincidencias entre los nombres de las piezas ingresadas
 			if(!piezasAValidar.isEmpty()){
 				Iterator<Pieza> it2 = piezasAValidar.iterator();
@@ -276,20 +294,24 @@ public class TallerGestor {
 					errores.add(ErrorCrearPiezas.NOMBRE_INGRESADO_REPETIDO);
 				}
 			}
-			
+
 			//busco coincidencias con los nombres de las piezas de la BD
 			ArrayList<String> nombresDePiezas = new ArrayList<>();
 			for(Pieza pieza: piezasAValidar){
 				nombresDePiezas.add(pieza.getNombre());
 			}
-			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).build());
+			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).sinUnir().build());
+			Set<String> nombresPiezasRepetidas = new HashSet<>();
 			if(!piezasConNombreCoincidente.isEmpty()){
 				errores.add(ErrorCrearPiezas.NOMBRE_YA_EXISTENTE);
+				for(Pieza pieza: piezasConNombreCoincidente){
+					nombresPiezasRepetidas.add(pieza.toString());
+				}
 			}
-			
-			resultadosCrearPiezas.put(parte, new ResultadoCrearPiezas(piezasConNombreCoincidente, errores.toArray(new ErrorCrearPiezas[0])));
+
+			resultadosCrearPiezas.put(parte, new ResultadoCrearPiezas(nombresPiezasRepetidas, errores.toArray(new ErrorCrearPiezas[0])));
 		}
-		
+
 		return resultadosCrearPiezas;
 	}
 
@@ -378,11 +400,13 @@ public class TallerGestor {
 		return new ResultadoModificarPartes(nombresPartesRepetidos, erroresModificarPartes.toArray(new ErrorModificarPartes[0]));
 	}
 
-	/**eliminarPartes()
-	 * 
+	/**
+	 * eliminarPartes()
+	 *
 	 * se encarga de dar baja física o lógica a partes que pueden pertenecer a distintas máquinas
-	 * 
-	 * @param partesAEliminar son las partes que se quieren eliminar
+	 *
+	 * @param partesAEliminar
+	 *            son las partes que se quieren eliminar
 	 * @return
 	 * @throws PersistenciaException
 	 */
@@ -394,7 +418,7 @@ public class TallerGestor {
 			ArrayList<Parte> partesABajaLogica;
 
 			//si la parte tiene tareas asociadas, se le da baja lógica
-			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).conTareas().build());
+			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).sinUnir().conTareas().build());
 
 			//si la parte no tiene tareas asociadas, se le da baja fisica
 			partesABajaFisica.removeAll(partesABajaLogica);
@@ -428,12 +452,14 @@ public class TallerGestor {
 		return resultado;
 	}
 
-	/**validarEliminarPartes
-	 * 
+	/**
+	 * validarEliminarPartes
+	 *
 	 * hace la validación de que las partes se pueden eliminar. Incluye la validación de la eliminación de piezas y
 	 * procesos asociados
-	 * 
-	 * @param partesAEliminar son las partes cuya eliminación se va a validar
+	 *
+	 * @param partesAEliminar
+	 *            son las partes cuya eliminación se va a validar
 	 * @return
 	 */
 	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
@@ -443,7 +469,11 @@ public class TallerGestor {
 		Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas = new HashMap<>();
 		Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos = new HashMap<>();
 		for(Parte parte: partesAEliminar){
-			resultadosEliminarPiezas.put(parte.toString(), this.validarEliminarPiezas(new ArrayList<>(parte.getPiezas())));
+			ArrayList<Pieza> piezasAValidar = new ArrayList<>(parte.getPiezas());
+			piezasAValidar.removeIf(t -> {
+				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
+			});
+			resultadosEliminarPiezas.put(parte.toString(), this.validarEliminarPiezas(piezasAValidar));
 			resultadosEliminarProcesos.put(parte.toString(), gestorProceso.validarEliminarProcesos(new ArrayList<>(parte.getProcesos())));
 		}
 		for(ResultadoEliminarPiezas resultado: resultadosEliminarPiezas.values()){
@@ -468,11 +498,13 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	/**eliminarPiezas()
-	 * 
+	/**
+	 * eliminarPiezas()
+	 *
 	 * se encarga de dar baja física o lógica a piezas que pueden pertenecer a distintas partes
-	 * 
-	 * @param piezasAEliminar son las piezas que se quieren eliminar
+	 *
+	 * @param piezasAEliminar
+	 *            son las piezas que se quieren eliminar
 	 * @return
 	 * @throws PersistenciaException
 	 */
@@ -515,13 +547,15 @@ public class TallerGestor {
 
 		return resultado;
 	}
-	
-	/**validarEliminarPiezas
-	 * 
+
+	/**
+	 * validarEliminarPiezas
+	 *
 	 * hace la validación de que las piezas se pueden eliminar. Incluye la validación de la eliminación de
 	 * procesos asociados
-	 * 
-	 * @param piezasAEliminar son las piezas cuya eliminación se va a validar
+	 *
+	 * @param piezasAEliminar
+	 *            son las piezas cuya eliminación se va a validar
 	 * @return
 	 */
 	private ResultadoEliminarPiezas validarEliminarPiezas(ArrayList<Pieza> piezasAEliminar) {

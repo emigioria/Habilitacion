@@ -40,7 +40,7 @@ public class Maquina {
 	@Column(name = "nombre", length = 100, nullable = false, unique = true)
 	private String nombre;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "maquina", orphanRemoval = false, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "maquina", orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Parte> partes;
 
 	public Maquina() {

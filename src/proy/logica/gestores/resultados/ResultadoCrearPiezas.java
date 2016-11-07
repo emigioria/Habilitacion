@@ -6,24 +6,24 @@
  */
 package proy.logica.gestores.resultados;
 
-import java.util.ArrayList;
-import proy.datos.entidades.Pieza;
+import java.util.Set;
+
 import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 
 public class ResultadoCrearPiezas extends Resultado<ErrorCrearPiezas> {
 
-	ArrayList<Pieza> piezasConNombreYaExistente;
-	
+	private Set<String> nombresYaExistentes;
+
 	public enum ErrorCrearPiezas {
-		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO
+		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO, MATERIAL_NULO
 	}
 
-	public ResultadoCrearPiezas(ArrayList<Pieza> piezasConNombreYaExistente, ErrorCrearPiezas... errores) {
+	public ResultadoCrearPiezas(Set<String> nombresYaExistentes, ErrorCrearPiezas... errores) {
 		super(errores);
-		this.piezasConNombreYaExistente = piezasConNombreYaExistente;
+		this.nombresYaExistentes = nombresYaExistentes;
 	}
-	
-	public ArrayList<Pieza> getPiezasConNombreYaExistente(){
-		return this.piezasConNombreYaExistente;
+
+	public Set<String> getNombresYaExistentes() {
+		return this.nombresYaExistentes;
 	}
 }
