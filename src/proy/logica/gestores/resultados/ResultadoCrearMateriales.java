@@ -13,7 +13,7 @@ import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateri
 
 public class ResultadoCrearMateriales extends Resultado<ErrorCrearMateriales> {
 
-	HashSet<String> nombresYaExistentes;
+	private HashSet<String> nombresYaExistentes;
 
 	public enum ErrorCrearMateriales {
 		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO

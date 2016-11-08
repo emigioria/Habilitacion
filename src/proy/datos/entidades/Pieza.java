@@ -137,9 +137,11 @@ public class Pieza {
 		procesos.size();
 		return procesos;
 	}
-	
+
 	public void darDeBaja() {
-		this.setEstado(new Estado(EstadoStr.BAJA));
+		if(!EstadoStr.BAJA.equals(this.getEstado().getNombre())){
+			this.setEstado(new Estado(EstadoStr.BAJA));
+		}
 	}
 
 	@Override
