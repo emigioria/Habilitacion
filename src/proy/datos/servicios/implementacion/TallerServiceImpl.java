@@ -242,11 +242,20 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void guardarHerramienta(Herramienta herramienta) throws PersistenciaException {
+	public void guardarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
-			session.save(herramienta);
+			Herramienta herramienta;
+			for(int i = 0; i < herramientas.size(); i++){
+				herramienta = herramientas.get(i);
+				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+				session.save(herramienta);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
+			}
 		} catch(Exception e){
 			e.printStackTrace();
 			throw new SaveUpdateException();
@@ -255,11 +264,20 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		Session session = getSessionFactory().getCurrentSession();
+	public void actualizarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
 		try{
-			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
-			session.update(herramienta);
+			Session session = getSessionFactory().getCurrentSession();
+			Herramienta herramienta;
+			for(int i = 0; i < herramientas.size(); i++){
+				herramienta = herramientas.get(i);
+				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+				session.update(herramienta);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -271,10 +289,20 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException {
+	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			session.delete(herramienta);
+			Herramienta herramienta;
+			for(int i = 0; i < herramientas.size(); i++){
+				herramienta = herramientas.get(i);
+				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+				session.delete(herramienta);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
+			}
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

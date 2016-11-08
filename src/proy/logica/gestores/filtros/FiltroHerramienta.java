@@ -22,6 +22,7 @@ public class FiltroHerramienta extends Filtro {
 	private EstadoStr estado;
 	private String nombre;
 	private ArrayList<Proceso> procesos;
+	private ArrayList<String> nombres;
 
 	public static class Builder {
 
@@ -29,6 +30,7 @@ public class FiltroHerramienta extends Filtro {
 		private String nombreEntidad = "h";
 		private String nombre;
 		private ArrayList<Proceso> procesos;
+		private ArrayList<String> nombres;
 
 		public Builder() {
 			super();
@@ -51,6 +53,11 @@ public class FiltroHerramienta extends Filtro {
 			return this;
 		}
 
+		public Builder nombres(ArrayList<String> nombres) {
+			this.nombres = nombres;
+			return this;
+		}
+
 		public FiltroHerramienta build() {
 			return new FiltroHerramienta(this);
 		}
@@ -61,6 +68,7 @@ public class FiltroHerramienta extends Filtro {
 		this.nombre = builder.nombre;
 		this.estado = builder.estado;
 		this.procesos = builder.procesos;
+		this.nombres = builder.nombres;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -78,6 +86,9 @@ public class FiltroHerramienta extends Filtro {
 			return;
 		}
 		if(builder.procesos != null){
+			return;
+		}
+		if(builder.nombres != null){
 			return;
 		}
 		namedQuery = "listarHerramientas";
@@ -103,7 +114,8 @@ public class FiltroHerramienta extends Filtro {
 		String where =
 				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
 						+ ((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""));
+						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
+						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -137,6 +149,9 @@ public class FiltroHerramienta extends Filtro {
 		}
 		if(procesos != null){
 			query.setParameter("prs", procesos);
+		}
+		if(nombres != null){
+			query.setParameterList("nms", nombres);
 		}
 		return query;
 	}

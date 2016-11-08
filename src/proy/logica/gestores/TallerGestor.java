@@ -36,8 +36,8 @@ import proy.logica.gestores.filtros.FiltroMaquina;
 import proy.logica.gestores.filtros.FiltroMaterial;
 import proy.logica.gestores.filtros.FiltroParte;
 import proy.logica.gestores.filtros.FiltroPieza;
-import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
-import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
+import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
+import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
@@ -131,12 +131,12 @@ public class TallerGestor {
 		return new ResultadoModificarMaquina(errores.toArray(new ErrorModificarMaquina[0]));
 	}
 
-	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partesAGuardarOModificar) throws PersistenciaException{
+	public ResultadoCrearModificarPartes validarPartes(Collection<Parte> partesAGuardarOModificar) throws PersistenciaException {
 		Set<ErrorCrearModificarPartes> errores = new HashSet<>();
 		Map<String, ResultadoCrearModificarPiezas> resultadosCrearModificarPiezas = new HashMap<>();
 		Map<Maquina, ArrayList<ErrorCrearModificarPartes>> erroresPorMaquina = new HashMap<>();
 		Map<Maquina, HashSet<String>> nombresYaExistentesPorMaquina = new HashMap<>();
-		
+
 		//divido las partes por máquina. Solo me quedo con sus nombres
 		Map<Maquina, ArrayList<String>> nombresPartesPorMaquina = new HashMap<>();
 		for(Parte parte: partesAGuardarOModificar){
@@ -145,7 +145,7 @@ public class TallerGestor {
 			}
 			nombresPartesPorMaquina.get(parte.getMaquina()).add(parte.getNombre());
 		}
-		
+
 		//Busco si hay nombres incompletos, y me quedo solo con los completos.
 		boolean nombreIncompletoEncontrado = false;
 		@SuppressWarnings("unused")
@@ -171,12 +171,12 @@ public class TallerGestor {
 		if(nombreIncompletoEncontrado){
 			errores.add(ErrorCrearModificarPartes.NOMBRE_INCOMPLETO);
 		}
-		
+
 		//Ordeno los nombres alfabéticamente para que nombres iguales queden uno al lado del otro
 		for(ArrayList<String> nombresPartes: nombresPartesPorMaquina.values()){
 			Collections.sort(nombresPartes);
 		}
-		
+
 		//Veo si hay repeticiones entre los nombres que que el usuario quiere guardar, y las remuevo
 		boolean nombreIngresadoRepetidoEncontrado = false;
 		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
@@ -204,8 +204,7 @@ public class TallerGestor {
 		if(nombreIngresadoRepetidoEncontrado){
 			errores.add(ErrorCrearModificarPartes.NOMBRE_INGRESADO_REPETIDO);
 		}
-		
-		
+
 		//Busco en la BD coincidencias en los nombres
 		boolean nombresYaExistentesEncontrados = false;
 		for(Map.Entry<Maquina, ArrayList<String>> maquinaYPartes: nombresPartesPorMaquina.entrySet()){
@@ -227,7 +226,7 @@ public class TallerGestor {
 		if(nombresYaExistentesEncontrados){
 			errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
 		}
-		
+
 		//Valido la creación o modificación de las piezas de cada parte
 		for(Parte parte: partesAGuardarOModificar){
 			ResultadoCrearModificarPiezas resultado = validarPiezas(parte.getPiezas());
@@ -241,9 +240,7 @@ public class TallerGestor {
 	}
 
 	public ResultadoCrearModificarPiezas validarPiezas(Collection<Pieza> piezas) {
-		
-		
-		
+
 		return new ResultadoCrearModificarPiezas();
 	}
 
@@ -467,29 +464,73 @@ public class TallerGestor {
 		return persistidorTaller.obtenerHerramientas(filtro);
 	}
 
-	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		ResultadoCrearHerramienta resultado = validarCrearHerramienta(herramienta);
+	public ResultadoCrearHerramientas crearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		ResultadoCrearHerramientas resultado = validarCrearHerramientas(herramientas);
 		if(!resultado.hayErrores()){
-			persistidorTaller.guardarHerramienta(herramienta);
+			persistidorTaller.guardarHerramientas(herramientas);
 		}
 		return resultado;
 	}
 
-	public ResultadoCrearHerramienta validarCrearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
-			return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_INCOMPLETO);
-		}
-		else{
-			ArrayList<Herramienta> herramientasRepetidas = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombre(herramienta.getNombre()).build());
-			if(!herramientasRepetidas.isEmpty()){
-				return new ResultadoCrearHerramienta(ErrorCrearHerramienta.NOMBRE_REPETIDO);
+	public ResultadoCrearHerramientas validarCrearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		ArrayList<String> nombresHerramientasRepetidos = new ArrayList<>();
+		ListIterator<Herramienta> itHerramientasAGuardar = null, itHerramientasGuardadas = null;
+		Herramienta herramientaAGuardar = null, herramientaGuardada = null;
+
+		//Creo la lista de errores
+		ArrayList<ErrorCrearHerramientas> erroresHerramientas = new ArrayList<>();
+
+		ArrayList<String> nombresHerramientasABuscarEnLaBD = new ArrayList<>();
+
+		//Reviso que el nombre esté completo
+		boolean nombreIncompletoEncontrado = false;
+		for(Herramienta herramienta: herramientas){
+			if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
+				nombreIncompletoEncontrado = true;
+			}
+			else{
+				//Si el nombre está completo lo busco en la BD
+				nombresHerramientasABuscarEnLaBD.add(herramienta.getNombre());
 			}
 		}
-		return new ResultadoCrearHerramienta();
+		//Si encontré un nombre incompleto, agrego el error
+		if(nombreIncompletoEncontrado){
+			erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_INCOMPLETO);
+		}
+
+		if(!nombresHerramientasABuscarEnLaBD.isEmpty()){
+
+			List<Herramienta> herramientas_coincidentes = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombres(nombresHerramientasABuscarEnLaBD).build());
+			if(!herramientas_coincidentes.isEmpty()){
+				erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_YA_EXISTENTE);
+				for(Herramienta herramienta: herramientas_coincidentes){
+					nombresHerramientasRepetidos.add(herramienta.toString());
+				}
+			}
+
+		}
+
+		boolean nombreIngresadoRepetidoEncontrado = false;
+		itHerramientasAGuardar = herramientas.listIterator();
+
+		while(itHerramientasAGuardar.hasNext() && !nombreIngresadoRepetidoEncontrado){
+			herramientaAGuardar = itHerramientasAGuardar.next();
+			itHerramientasGuardadas = herramientas.listIterator(itHerramientasAGuardar.nextIndex());
+			while(itHerramientasGuardadas.hasNext() && !nombreIngresadoRepetidoEncontrado){
+				herramientaGuardada = itHerramientasGuardadas.next();
+				if(herramientaAGuardar.getNombre() != null && herramientaGuardada.getNombre() != null &&
+						herramientaAGuardar.getNombre().equals(herramientaGuardada.getNombre())){
+					nombreIngresadoRepetidoEncontrado = true;
+					erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_REPETIDO);
+				}
+			}
+		}
+
+		return new ResultadoCrearHerramientas(nombresHerramientasRepetidos, erroresHerramientas.toArray(new ErrorCrearHerramientas[0]));
 	}
 
-	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		persistidorTaller.bajaHerramienta(herramienta);
+	public ResultadoEliminarHerramienta eliminarHerramienta(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		persistidorTaller.bajaHerramientas(herramientas);
 		return new ResultadoEliminarHerramienta();
 	}
 

@@ -43,11 +43,11 @@ public interface TallerService {
 
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException;
 
-	public void guardarHerramienta(Herramienta herramienta) throws PersistenciaException;
+	public void guardarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
-	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException;
+	public void actualizarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
-	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException;
+	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
 	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException;
 

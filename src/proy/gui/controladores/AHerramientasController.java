@@ -29,8 +29,8 @@ import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
 import proy.logica.gestores.filtros.FiltroHerramienta;
 import proy.logica.gestores.filtros.FiltroProceso;
-import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
-import proy.logica.gestores.resultados.ResultadoCrearHerramienta.ErrorCrearHerramienta;
+import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
+import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
@@ -106,39 +106,45 @@ public class AHerramientasController extends ControladorRomano {
 
 	}
 
-	private void nuevasHerramientas() { //TODO hacer para varias herramientas
-		ResultadoCrearHerramienta resultado = null;
-		Boolean hayErrores;
-		String errores = "";
+	private void crearHerramientas() {
+		ResultadoCrearHerramientas resultadoCrearHerramientas;
+		StringBuffer erroresBfr = new StringBuffer();
 
-		if(herramientasAGuardar.size() == 0){
+		if(herramientasAGuardar.isEmpty()){
 			return;
 		}
 
-		for(Herramienta herramienta: herramientasAGuardar){
-			try{
-				resultado = coordinador.crearHerramienta(herramienta);
-			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
-				return;
-			} catch(Exception e){
-				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
-				return;
-			}
+		try{
+			resultadoCrearHerramientas = coordinador.crearHerramientas(herramientasAGuardar);
+		} catch(PersistenciaException e){
+			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			return;
+		} catch(Exception e){
+			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			return;
 		}
 
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
-			for(ErrorCrearHerramienta r: resultado.getErrores()){
+		if(resultadoCrearHerramientas.hayErrores()){
+			for(ErrorCrearHerramientas r: resultadoCrearHerramientas.getErrores()){
 				switch(r) {
 				case NOMBRE_INCOMPLETO:
-					errores += "El nombre no es válido.\n";
+					erroresBfr.append("Hay nombres vacíos.\n");
+					break;
+				case NOMBRE_YA_EXISTENTE:
+					erroresBfr.append("Estas herramientas ya existen en el sistema:\n");
+					for(String nombreHerramienta: resultadoCrearHerramientas.getRepetidos()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(nombreHerramienta);
+						erroresBfr.append(">\n");
+					}
 					break;
 				case NOMBRE_REPETIDO:
-					errores += "Ya existe una herramienta con ese nombre. \n";
+					erroresBfr.append("Se intenta añadir dos herramientas con el mismo nombre.\n");
 					break;
 				}
 			}
+
+			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
 				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
 			}
@@ -153,7 +159,7 @@ public class AHerramientasController extends ControladorRomano {
 	@FXML
 	public void guardar() {
 		eliminarHerramientas();
-		nuevasHerramientas();
+		crearHerramientas();
 	}
 
 	@FXML
@@ -257,7 +263,7 @@ public class AHerramientasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al eliminar materiales", errores, apilador.getStage());
+				new VentanaError("Error al eliminar herramientas", errores, apilador.getStage());
 			}
 		}
 		else{

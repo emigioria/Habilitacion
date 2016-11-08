@@ -38,7 +38,7 @@ import proy.logica.gestores.filtros.FiltroProceso;
 import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
-import proy.logica.gestores.resultados.ResultadoCrearHerramienta;
+import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
@@ -46,7 +46,6 @@ import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
@@ -170,12 +169,8 @@ public class CoordinadorJavaFX {
 		return gestorTaller.listarHerramientas(filtro);
 	}
 
-	public ResultadoCrearHerramienta crearHerramienta(Herramienta herramienta) throws PersistenciaException {
-		return gestorTaller.crearHerramienta(herramienta);
-	}
-
-	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		return gestorTaller.eliminarHerramienta(herramienta);
+	public ResultadoCrearHerramientas crearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+		return gestorTaller.crearHerramientas(herramientas);
 	}
 
 	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
