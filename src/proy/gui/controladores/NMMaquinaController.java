@@ -353,6 +353,7 @@ public class NMMaquinaController extends ControladorRomano {
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
 		tablaPartes.getItems().add(0, nuevaParte);
+		tablaPartes.getSelectionModel().select(null);
 	}
 
 	@FXML
@@ -404,6 +405,7 @@ public class NMMaquinaController extends ControladorRomano {
 		piezasAGuardar.remove(parteAEliminar);
 		piezasAEliminar.remove(parteAEliminar);
 		tablaPartes.getItems().remove(parteAEliminar);
+		tablaPartes.getSelectionModel().select(null);
 	}
 
 	private Boolean eliminarPartes() {
