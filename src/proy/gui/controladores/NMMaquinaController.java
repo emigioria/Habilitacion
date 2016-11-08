@@ -266,8 +266,12 @@ public class NMMaquinaController extends ControladorRomano {
 				public void handle(CellEditEvent<Pieza, Material> t) {
 					if(t.getNewValue() != null){
 						Pieza pieza = t.getRowValue();
-						for(ArrayList<Pieza> piezas: piezasAGuardar.values()){
-							if(piezas.contains(pieza)){
+						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+						if(parteSeleccionada == null){
+							return;
+						}
+						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+							if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
 								pieza.setMaterial(t.getNewValue());
 							}
 						}
