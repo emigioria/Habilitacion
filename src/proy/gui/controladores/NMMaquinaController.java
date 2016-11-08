@@ -324,16 +324,17 @@ public class NMMaquinaController extends ControladorRomano {
 			});
 
 			//Cuando cambia la parte seleccionada, cargamos sus piezas
-			tablaPartes.getSelectionModel().selectedItemProperty().addListener((ovs, viejo, nuevo) -> {
+			tablaPartes.getSelectionModel().selectedIndexProperty().addListener((ovs, viejo, nuevo) -> {
 				Platform.runLater(() -> {
 					tablaPiezas.getItems().clear();
 					try{
-						if(nuevo != null){
-							if(!partesAGuardar.contains(nuevo)){
-								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nuevo).build()));
+						Parte nueva = tablaPartes.getSelectionModel().getSelectedItem();
+						if(nueva != null){
+							if(!partesAGuardar.contains(nueva)){
+								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nueva).build()));
 							}
-							if(piezasAGuardar.get(nuevo) != null && !piezasAGuardar.get(nuevo).isEmpty()){
-								tablaPiezas.getItems().addAll(piezasAGuardar.get(nuevo));
+							if(piezasAGuardar.get(nueva) != null && !piezasAGuardar.get(nueva).isEmpty()){
+								tablaPiezas.getItems().addAll(piezasAGuardar.get(nueva));
 							}
 						}
 					} catch(PersistenciaException e){
@@ -820,6 +821,7 @@ public class NMMaquinaController extends ControladorRomano {
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Estas piezas ya existen en el sistema:\n");
 				for(String pieza: resultadoCrearPiezas.getNombresYaExistentes()){
+					erroresBfr.append(indentacion);
 					erroresBfr.append("\t<");
 					erroresBfr.append(pieza);
 					erroresBfr.append(">\n");
