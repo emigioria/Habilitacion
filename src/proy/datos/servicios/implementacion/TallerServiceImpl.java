@@ -46,8 +46,7 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Maquina> obtenerMaquinas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Maquina> resultado = FiltroHibernate.listar(filtro, session, Maquina.class);
-		return resultado;
+		return filtro.listar(session, Maquina.class);
 	}
 
 	@Override
@@ -108,8 +107,7 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Parte> obtenerPartes(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Parte> resultado = FiltroHibernate.listar(filtro, session, Parte.class);
-		return resultado;
+		return filtro.listar(session, Parte.class);
 	}
 
 	@Override
@@ -178,8 +176,7 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Pieza> obtenerPiezas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Pieza> resultado = FiltroHibernate.listar(filtro, session, Pieza.class);
-		return resultado;
+		return filtro.listar(session, Pieza.class);
 	}
 
 	@Override
@@ -248,8 +245,7 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Herramienta> resultado = FiltroHibernate.listar(filtro, session, Herramienta.class);
-		return resultado;
+		return filtro.listar(session, Herramienta.class);
 	}
 
 	@Override
@@ -328,8 +324,7 @@ public class TallerServiceImpl implements TallerService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Material> resultado = FiltroHibernate.listar(filtro, session, Material.class);
-		return resultado;
+		return filtro.listar(session, Material.class);
 	}
 
 	@Override

@@ -44,8 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Administrador> obtenerAdministradores(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Administrador> resultado = FiltroHibernate.listar(filtro, session, Administrador.class);
-		return resultado;
+		return filtro.listar(session, Administrador.class);
 	}
 
 	@Override
@@ -64,16 +63,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Comentario> obtenerComentarios(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Comentario> resultado = FiltroHibernate.listar(filtro, session, Comentario.class);
-		return resultado;
+		return filtro.listar(session, Comentario.class);
 	}
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Operario> obtenerOperarios(Filtro filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		ArrayList<Operario> resultado = FiltroHibernate.listar(filtro, session, Operario.class);
-		return resultado;
+		return filtro.listar(session, Operario.class);
 	}
 
 	@Override

@@ -21,8 +21,8 @@ public class PilaScene {
 
 	public PilaScene(Stage stagePrincipal) {
 		this.stagePrincipal = stagePrincipal;
-		scenes = new Stack<Scene>();
-		controllers = new Stack<ControladorApilable>();
+		scenes = new Stack<>();
+		controllers = new Stack<>();
 	}
 
 	public void apilarScene(Scene scene, ControladorApilable controller) {
@@ -51,7 +51,7 @@ public class PilaScene {
 		stagePrincipal.show();
 	}
 
-	public boolean isEmpty() {
+	private boolean isEmpty() {
 		return scenes.isEmpty();
 	}
 

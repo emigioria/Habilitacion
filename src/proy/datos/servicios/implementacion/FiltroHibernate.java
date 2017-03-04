@@ -25,18 +25,18 @@ public interface FiltroHibernate {
 
 	public void updateParametros(Session session);
 
-	public static <T> ArrayList<T> listar(FiltroHibernate filtro, Session session, Class<? extends T> clase) throws PersistenciaException {
+	public default <T> ArrayList<T> listar(Session session, Class<? extends T> clase) throws PersistenciaException {
 		ArrayList<T> resultado = new ArrayList<>();
 		try{
 			Query query = null;
-			if(!filtro.getNamedQueryName().isEmpty()){
-				query = session.getNamedQuery(filtro.getNamedQueryName());
+			if(!this.getNamedQueryName().isEmpty()){
+				query = session.getNamedQuery(this.getNamedQueryName());
 			}
 			else{
-				query = session.createQuery(filtro.getConsultaDinamica());
+				query = session.createQuery(this.getConsultaDinamica());
 			}
-			filtro.setParametros(query);
-			filtro.updateParametros(session);
+			this.setParametros(query);
+			this.updateParametros(session);
 			List<?> var = query.list();
 			for(Object o: var){
 				try{

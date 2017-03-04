@@ -24,7 +24,7 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 	private Class<? extends O> claseTabla;
 	private O objeto = null;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //Tapa bug corregido en JDK 9
 	public TableCellTextView(Class<? extends O> claseTabla, StringConverter<? extends T> convertidor) {
 		super();
 		this.claseTabla = claseTabla;

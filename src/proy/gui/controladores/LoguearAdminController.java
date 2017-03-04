@@ -6,18 +6,15 @@
  */
 package proy.gui.controladores;
 
-import java.awt.Frame;
-
-import javax.swing.JPasswordField;
-import javax.swing.SwingUtilities;
-
 import javafx.application.Platform;
-import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import proy.datos.clases.DatosLogin;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.SafePasswordField;
 import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
@@ -30,20 +27,18 @@ public class LoguearAdminController extends ControladorRomano {
 	private TextField nombre;
 
 	@FXML
-	private SwingNode swingContra;
+	private GridPane contenedor;
 
-	private JPasswordField contra;
+	private SafePasswordField contra;
 
 	@FXML
 	private void initialize() {
 		Platform.runLater(() -> {
-			contra = new JPasswordField();
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					swingContra.setContent(contra);
-				}
-			});
+			contra = new SafePasswordField();
+			contenedor.getChildren().add(contra);
+			GridPane.setMargin(contra, new Insets(10.0));
+			GridPane.setColumnIndex(contra, 1);
+			GridPane.setRowIndex(contra, 1);
 		});
 	}
 
@@ -51,7 +46,6 @@ public class LoguearAdminController extends ControladorRomano {
 	public void iniciarSesion() {
 		//TODO borrar para activar login
 		ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
-		matarSwing();
 		if(true){
 			return;
 		}
@@ -100,25 +94,11 @@ public class LoguearAdminController extends ControladorRomano {
 		else{
 			//Operacion exitosa
 			ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
-			matarSwing();
 		}
 	}
 
 	@Override
 	public void actualizar() {
 
-	}
-
-	@Override
-	public void salir() {
-		matarSwing();
-		super.salir();
-	}
-
-	private void matarSwing() {
-		Frame[] frames = Frame.getFrames();
-		for(Frame f: frames){
-			f.dispose();
-		}
 	}
 }
