@@ -10,9 +10,6 @@ import javafx.stage.Window;
 
 /**
  * Representa una ventana que muestra un mensaje de error inesperado
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
  */
 public class VentanaErrorExcepcionInesperada extends VentanaErrorExcepcion {
 

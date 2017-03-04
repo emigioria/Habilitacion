@@ -8,9 +8,6 @@ package proy.excepciones;
 
 /**
  * Representa un error de conexión con la base de datos
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
  */
 public class ConnectionException extends PersistenciaException {
 

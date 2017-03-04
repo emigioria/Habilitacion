@@ -8,9 +8,6 @@ package proy.excepciones;
 
 /**
  * Representa un error pertinente a la persistencia de datos
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
  */
 public abstract class PersistenciaException extends Exception {
 

@@ -8,9 +8,6 @@ package proy.excepciones;
 
 /**
  * Representa un error en la gestión de datos
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
  */
 public abstract class GestionException extends Exception {
 

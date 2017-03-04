@@ -8,9 +8,6 @@ package proy.excepciones;
 
 /**
  * Representa un error en el guardado o modificación de datos sobe la base de datos
- *
- * @author Acosta - Gioria - Moretti - Rebechi
- *
  */
 public class SaveUpdateException extends PersistenciaException {
 
