@@ -33,12 +33,9 @@ import proy.datos.filtros.implementacion.FiltroMaterial;
 import proy.datos.filtros.implementacion.FiltroParte;
 import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.excepciones.PersistenciaException;
-import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
-import proy.gui.componentes.VentanaConfirmacion;
-import proy.gui.componentes.VentanaError;
-import proy.gui.componentes.VentanaInformacion;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
@@ -257,7 +254,7 @@ public class NMMaquinaController extends ControladorRomano {
 			try{
 				columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
 			columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
 
@@ -337,7 +334,7 @@ public class NMMaquinaController extends ControladorRomano {
 							}
 						}
 					} catch(PersistenciaException e){
-						PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+						presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 					}
 				});
 			});
@@ -363,7 +360,7 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 
 		//Se pregunta si quiere dar de baja
-		VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar parte",
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar parte",
 				"¿Está seguro que desea eliminar la parte <" + parteAEliminar + ">?",
 				apilador.getStage());
 
@@ -378,16 +375,16 @@ public class NMMaquinaController extends ControladorRomano {
 				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(parteAEliminar);
 			}
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
-			vc = new VentanaConfirmacion("Confirmar eliminar parte",
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar parte",
 					"La parte <" + parteAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
 					apilador.getStage());
 			if(!vc.acepta()){
@@ -420,10 +417,10 @@ public class NMMaquinaController extends ControladorRomano {
 		try{
 			resultadoEliminarPartes = coordinador.eliminarPartes(partesAEliminar);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -445,14 +442,14 @@ public class NMMaquinaController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al eliminar las partes", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar las partes", errores, apilador.getStage());
 			}
 
 			return true;
 		}
 		else{
 			partesAEliminar.clear();
-			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las partes");
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las partes", apilador.getStage());
 			return false;
 		}
 	}
@@ -536,7 +533,7 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 
 		//Se pregunta si quiere dar de baja
-		VentanaConfirmacion vc = new VentanaConfirmacion("Confirmar eliminar pieza",
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar pieza",
 				"¿Está seguro que desea eliminar la pieza <" + piezaAEliminar + ">?",
 				apilador.getStage());
 
@@ -551,16 +548,16 @@ public class NMMaquinaController extends ControladorRomano {
 				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(piezaAEliminar);
 			}
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
-			vc = new VentanaConfirmacion("Confirmar eliminar pieza",
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar pieza",
 					"La pieza <" + piezaAEliminar + "> corresponde a una parte que tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminar la pieza?",
 					apilador.getStage());
 			if(!vc.acepta()){
@@ -604,10 +601,10 @@ public class NMMaquinaController extends ControladorRomano {
 		try{
 			resultadoEliminarPiezas = coordinador.eliminarPiezas(piezasAEliminarCompilado);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -616,14 +613,14 @@ public class NMMaquinaController extends ControladorRomano {
 			tratarErroresEliminarPiezas(resultadoEliminarPiezas);
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al eliminar las piezas", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar las piezas", errores, apilador.getStage());
 			}
 
 			return true;
 		}
 		else{
 			partesAEliminar.clear();
-			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las piezas");
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las piezas", apilador.getStage());
 			return false;
 		}
 	}
@@ -666,10 +663,10 @@ public class NMMaquinaController extends ControladorRomano {
 		try{
 			resultado = coordinador.crearMaquina(maquina); //TODO no olvidar validar la creacion de partes y piezas (si tiene seteada alguna)
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -688,12 +685,12 @@ public class NMMaquinaController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al crear la máquina", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear la máquina", errores, apilador.getStage());
 			}
 			return true;
 		}
 		else{
-			new VentanaInformacion("Operación exitosa", "Se ha creado la máquina con éxito");
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha creado la máquina con éxito", apilador.getStage());
 			return false;
 		}
 	}
@@ -727,10 +724,10 @@ public class NMMaquinaController extends ControladorRomano {
 		try{
 			resultado = coordinador.modificarMaquina(maquina);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -751,12 +748,12 @@ public class NMMaquinaController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al modificar la máquina", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al modificar la máquina", errores, apilador.getStage());
 			}
 			return true;
 		}
 		else{
-			new VentanaInformacion("Operación exitosa", "Se ha modificado la máquina con éxito");
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha modificado la máquina con éxito", apilador.getStage());
 			return false;
 		}
 	}
@@ -859,7 +856,7 @@ public class NMMaquinaController extends ControladorRomano {
 					tablaPiezas.getItems().clear();
 				}
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
 			apilador.getStage().setTitle(titulo);
 		});

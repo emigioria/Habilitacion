@@ -16,7 +16,7 @@ import proy.comun.ConversorFechas;
 import proy.comun.FormateadorString;
 import proy.gui.ControladorApilable;
 import proy.gui.PilaScene;
-import proy.gui.PresentadorExcepciones;
+import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
 public abstract class ControladorRomano implements ControladorApilable {
@@ -29,7 +29,8 @@ public abstract class ControladorRomano implements ControladorApilable {
 
 	protected FormateadorString formateadorString = new FormateadorString();
 
-	@Override
+	protected PresentadorVentanas presentadorVentanas = new PresentadorVentanas();
+
 	public void setApilador(PilaScene apilador) {
 		this.apilador = apilador;
 	}
@@ -64,7 +65,7 @@ public abstract class ControladorRomano implements ControladorApilable {
 			controlador.setCoordinador(coordinador);
 			return controlador;
 		} catch(IOException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			new PresentadorVentanas().presentarExcepcion(e, apilador.getStage());
 		}
 		return null;
 	}

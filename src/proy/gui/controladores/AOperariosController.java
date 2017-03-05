@@ -20,11 +20,8 @@ import javafx.util.Callback;
 import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.excepciones.PersistenciaException;
-import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
-import proy.gui.componentes.VentanaConfirmacion;
-import proy.gui.componentes.VentanaError;
-import proy.gui.componentes.VentanaInformacion;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
 
@@ -128,16 +125,16 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				coordinador.eliminarOperario(oSelected);
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 			actualizar();
 			String mensaje = "Los datos del operario " + oSelected.getNombre() +
 					" " + oSelected.getApellido() + " han sido eliminados del sistema.";
-			new VentanaInformacion("Operario Guardado", mensaje);
+			presentadorVentanas.presentarInformacion("Operario Guardado", mensaje, apilador.getStage());
 		}
 		else{
 			return;
@@ -158,10 +155,10 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				resultado = coordinador.crearOperario(operario);
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 				return;
 			} catch(Exception e){
-				PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 				return;
 			}
 		}
@@ -185,7 +182,7 @@ public class AOperariosController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				new VentanaError("Error al crear operario", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear operario", errores, apilador.getStage());
 			}
 		}
 		else{
@@ -202,7 +199,7 @@ public class AOperariosController extends ControladorRomano {
 				tablaOperarios.getItems().clear();
 				tablaOperarios.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}
@@ -213,8 +210,8 @@ public class AOperariosController extends ControladorRomano {
 			super.salir();
 		}
 		else{
-			VentanaConfirmacion confirmacion = new VentanaConfirmacion("¿Quiere salir sin guardar?",
-					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.");
+			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.", apilador.getStage());
 			if(confirmacion.acepta()){
 				super.salir();
 			}

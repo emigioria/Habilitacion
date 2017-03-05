@@ -13,9 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import proy.datos.clases.DatosLogin;
 import proy.excepciones.PersistenciaException;
-import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.SafePasswordField;
-import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 
@@ -61,7 +59,7 @@ public class LoguearAdminController extends ControladorRomano {
 		String user = nombre.getText().trim();
 		char[] pass = contra.getPassword();
 		if(user.isEmpty() || pass.length < 1){
-			new VentanaError("No se ha podido iniciar sesión", "Campos vacíos.", apilador.getStage());
+			presentadorVentanas.presentarError("No se ha podido iniciar sesión", "Campos vacíos.", apilador.getStage());
 			return;
 		}
 		datos = new DatosLogin(user, pass);
@@ -70,10 +68,10 @@ public class LoguearAdminController extends ControladorRomano {
 		try{
 			resultado = coordinador.autenticarAdministrador(datos);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
@@ -88,7 +86,7 @@ public class LoguearAdminController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				new VentanaError("No se ha podido iniciar sesión", errores, apilador.getStage());
+				presentadorVentanas.presentarError("No se ha podido iniciar sesión", errores, apilador.getStage());
 			}
 		}
 		else{

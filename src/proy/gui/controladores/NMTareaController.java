@@ -31,8 +31,6 @@ import proy.datos.entidades.Tarea;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
-import proy.gui.PresentadorExcepciones;
-import proy.gui.componentes.VentanaError;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoCrearTarea.ErrorCrearTarea;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
@@ -84,7 +82,7 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 		}
 	}
 
@@ -159,7 +157,7 @@ public class NMTareaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		if(fechaTarea.getValue() == null){
-			new VentanaError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
+			presentadorVentanas.presentarError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
 			return true;
 		}
 
@@ -175,10 +173,10 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			resultado = coordinador.crearTarea(tar);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -194,7 +192,7 @@ public class NMTareaController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				new VentanaError("Error al crear tarea", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear tarea", errores, apilador.getStage());
 			}
 		}
 
@@ -209,7 +207,7 @@ public class NMTareaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		if(fechaTarea.getValue() == null){
-			new VentanaError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
+			presentadorVentanas.presentarError("Error al crear tarea", "La fecha no debe estar vacía", apilador.getStage());
 			return true;
 		}
 
@@ -225,10 +223,10 @@ public class NMTareaController extends ControladorRomano {
 		try{
 			resultado = coordinador.modificarTarea(tar);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return true;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return true;
 		}
 
@@ -243,7 +241,7 @@ public class NMTareaController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				new VentanaError("Error al modificar tarea", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al modificar tarea", errores, apilador.getStage());
 			}
 		}
 

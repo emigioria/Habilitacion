@@ -14,11 +14,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import proy.gui.componentes.IconoAplicacion;
-import proy.gui.componentes.VentanaErrorExcepcionInesperada;
-import proy.gui.componentes.VentanaEsperaBaseDeDatos;
+import proy.gui.componentes.ventanas.PresentadorVentanas;
+import proy.gui.componentes.ventanas.VentanaEsperaBaseDeDatos;
 import proy.gui.controladores.ControladorRomano;
 import proy.gui.controladores.VTareasController;
 import proy.logica.CoordinadorJavaFX;
@@ -27,8 +26,9 @@ public class Main extends Application {
 
 	private PilaScene apilador;
 	private CoordinadorJavaFX coordinador;
-	private Stage stagePrincipal;
+	private Stage primaryStage;
 	private ApplicationContext appContext;
+	private PresentadorVentanas presentador;
 
 	public static void main(String[] args) {
 		//Ocultar logs
@@ -47,8 +47,12 @@ public class Main extends Application {
 		verParametros(getParameters().getRaw());
 
 		//Inicializar parametros
-		stagePrincipal = primaryStage;
+		this.primaryStage = primaryStage;
 		apilador = new PilaScene(primaryStage);
+		presentador = new PresentadorVentanas();
+
+		//Iniciar el stage en el centro de la pantalla
+		primaryStage.centerOnScreen();
 
 		//Setear icono y titulo de aplicacion
 		primaryStage.getIcons().add(new IconoAplicacion());
@@ -71,7 +75,7 @@ public class Main extends Application {
 
 	private void iniciarHibernate() {
 		//Crear ventana de espera
-		VentanaEsperaBaseDeDatos ventanaEspera = new VentanaEsperaBaseDeDatos(stagePrincipal.getOwner());
+		VentanaEsperaBaseDeDatos ventanaEspera = presentador.presentarEsperaBaseDeDatos();
 
 		//Crear tarea para iniciar hibernate y el coordinador de la aplicacion
 		Task<Boolean> task = new Task<Boolean>() {
@@ -92,7 +96,6 @@ public class Main extends Application {
 		//que se cierra al terminar.
 		task.setOnSucceeded(
 				(event) -> {
-					ventanaEspera.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 					ventanaEspera.hide();
 					//Crear primera ventana
 					ControladorRomano.nuevaScene(VTareasController.URL_VISTA, apilador, coordinador);
@@ -109,7 +112,7 @@ public class Main extends Application {
 							SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
 							sessionFact.close();
 						}
-						new VentanaErrorExcepcionInesperada(stagePrincipal);
+						presentador.presentarExcepcionInesperada(new Exception(e), primaryStage);
 						System.exit(1);
 					}
 				});

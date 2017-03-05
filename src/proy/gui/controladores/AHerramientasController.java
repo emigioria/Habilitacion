@@ -23,11 +23,8 @@ import proy.datos.entidades.Proceso;
 import proy.datos.filtros.implementacion.FiltroHerramienta;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
-import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.TableCellTextViewString;
-import proy.gui.componentes.VentanaConfirmacion;
-import proy.gui.componentes.VentanaError;
-import proy.gui.componentes.VentanaInformacion;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
@@ -116,10 +113,10 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			resultadoCrearHerramientas = coordinador.crearHerramientas(herramientasAGuardar);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
@@ -145,7 +142,7 @@ public class AHerramientasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al crear herramienta", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear herramienta", errores, apilador.getStage());
 			}
 		}
 		else{
@@ -174,16 +171,16 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
 		VentanaConfirmacion vc;
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
-			vc = new VentanaConfirmacion("Confirmar eliminar herramienta",
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
 					"Al eliminar la herramienta se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminar la herramienta <" + herramientaAEliminar + ">?", apilador.getStage()); //TODO hacer lindo el cartelito
 			if(!vc.acepta()){
 				return;
@@ -197,16 +194,16 @@ public class AHerramientasController extends ControladorRomano {
 				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(herramientaAEliminar);
 			}
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
-			vc = new VentanaConfirmacion("Confirmar eliminar herramienta",
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
 					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
 					apilador.getStage());
 			if(!vc.acepta()){
@@ -236,10 +233,10 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			resultadoEliminarHerramientas = coordinador.eliminarHerramientas(herramientasAEliminar);
 		} catch(PersistenciaException e){
-			PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			return;
 		} catch(Exception e){
-			PresentadorExcepciones.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
 			return;
 		}
 
@@ -262,12 +259,12 @@ public class AHerramientasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				new VentanaError("Error al eliminar herramientas", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar herramientas", errores, apilador.getStage());
 			}
 		}
 		else{
 			herramientasAEliminar.clear();
-			new VentanaInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.");
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.", apilador.getStage());
 		}
 	}
 
@@ -282,7 +279,7 @@ public class AHerramientasController extends ControladorRomano {
 			try{
 				resultado = coordinador.listarHerramientas(filtro);
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
 			tablaHerramientas.getItems().clear();
 			tablaHerramientas.getItems().addAll(herramientasAGuardar);
@@ -298,7 +295,7 @@ public class AHerramientasController extends ControladorRomano {
 				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
 				tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			} catch(PersistenciaException e){
-				PresentadorExcepciones.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
 		});
 	}
@@ -309,8 +306,8 @@ public class AHerramientasController extends ControladorRomano {
 			super.salir();
 		}
 		else{
-			VentanaConfirmacion confirmacion = new VentanaConfirmacion("¿Quiere salir sin guardar?",
-					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.");
+			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.", apilador.getStage());
 			if(confirmacion.acepta()){
 				super.salir();
 			}
