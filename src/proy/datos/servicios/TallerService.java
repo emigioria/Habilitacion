@@ -13,11 +13,12 @@ import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
+import proy.datos.filtros.Filtro;
 import proy.excepciones.PersistenciaException;
 
 public interface TallerService {
 
-	public ArrayList<Maquina> obtenerMaquinas(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Maquina> obtenerMaquinas(Filtro<Maquina> filtro) throws PersistenciaException;
 
 	public void guardarMaquina(Maquina maquina) throws PersistenciaException;
 
@@ -25,7 +26,7 @@ public interface TallerService {
 
 	public void bajaMaquina(Maquina maquina) throws PersistenciaException;
 
-	public ArrayList<Parte> obtenerPartes(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Parte> obtenerPartes(Filtro<Parte> filtro) throws PersistenciaException;
 
 	public void guardarParte(Parte parte) throws PersistenciaException;
 
@@ -33,7 +34,7 @@ public interface TallerService {
 
 	public void bajaPartes(ArrayList<Parte> partes) throws PersistenciaException;
 
-	public ArrayList<Pieza> obtenerPiezas(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Pieza> obtenerPiezas(Filtro<Pieza> filtro) throws PersistenciaException;
 
 	public void guardarPieza(Pieza pieza) throws PersistenciaException;
 
@@ -41,7 +42,7 @@ public interface TallerService {
 
 	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
 
-	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Herramienta> obtenerHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException;
 
 	public void guardarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
@@ -49,7 +50,7 @@ public interface TallerService {
 
 	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
-	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Material> obtenerMateriales(Filtro<Material> filtro) throws PersistenciaException;
 
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 

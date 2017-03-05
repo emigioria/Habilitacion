@@ -23,19 +23,12 @@ import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.Filtro;
+import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.ProcesoGestor;
 import proy.logica.gestores.TallerGestor;
 import proy.logica.gestores.UsuarioGestor;
-import proy.logica.gestores.filtros.FiltroComentario;
-import proy.logica.gestores.filtros.FiltroHerramienta;
-import proy.logica.gestores.filtros.FiltroMaquina;
-import proy.logica.gestores.filtros.FiltroMaterial;
-import proy.logica.gestores.filtros.FiltroOperario;
-import proy.logica.gestores.filtros.FiltroParte;
-import proy.logica.gestores.filtros.FiltroPieza;
-import proy.logica.gestores.filtros.FiltroProceso;
-import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
@@ -83,11 +76,11 @@ public class CoordinadorJavaFX {
 		return gestorUsuario.crearComentario(comentario);
 	}
 
-	public ArrayList<Comentario> listarComentarios(FiltroComentario filtro) throws PersistenciaException {
+	public ArrayList<Comentario> listarComentarios(Filtro<Comentario> filtro) throws PersistenciaException {
 		return gestorUsuario.listarComentarios(filtro);
 	}
 
-	public ArrayList<Operario> listarOperarios(FiltroOperario filtro) throws PersistenciaException {
+	public ArrayList<Operario> listarOperarios(Filtro<Operario> filtro) throws PersistenciaException {
 		return gestorUsuario.listarOperarios(filtro);
 	}
 
@@ -100,7 +93,7 @@ public class CoordinadorJavaFX {
 		return gestorUsuario.eliminarOperario(operario);
 	}
 
-	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
+	public ArrayList<Maquina> listarMaquinas(Filtro<Maquina> filtro) throws PersistenciaException {
 		return gestorTaller.listarMaquinas(filtro);
 	}
 
@@ -116,7 +109,7 @@ public class CoordinadorJavaFX {
 		return gestorTaller.eliminarMaquina(maquina);
 	}
 
-	public ArrayList<Parte> listarPartes(FiltroParte filtro) throws PersistenciaException {
+	public ArrayList<Parte> listarPartes(Filtro<Parte> filtro) throws PersistenciaException {
 		return gestorTaller.listarPartes(filtro);
 	}
 
@@ -142,7 +135,7 @@ public class CoordinadorJavaFX {
 		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
-	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
+	public ArrayList<Pieza> listarPiezas(Filtro<Pieza> filtro) throws PersistenciaException {
 		return gestorTaller.listarPiezas(filtro);
 	}
 
@@ -165,7 +158,7 @@ public class CoordinadorJavaFX {
 		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
-	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
+	public ArrayList<Herramienta> listarHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
 		return gestorTaller.listarHerramientas(filtro);
 	}
 
@@ -187,7 +180,7 @@ public class CoordinadorJavaFX {
 		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
-	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {
+	public ArrayList<Material> listarMateriales(Filtro<Material> filtro) throws PersistenciaException {
 		return gestorTaller.listarMateriales(filtro);
 	}
 
@@ -199,7 +192,7 @@ public class CoordinadorJavaFX {
 		return gestorTaller.eliminarMateriales(materiales);
 	}
 
-	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {
+	public ArrayList<Proceso> listarProcesos(Filtro<Proceso> filtro) throws PersistenciaException {
 		return gestorProceso.listarProcesos(filtro);
 	}
 
@@ -215,7 +208,7 @@ public class CoordinadorJavaFX {
 		return gestorProceso.eliminarProceso(proceso);
 	}
 
-	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
+	public ArrayList<Tarea> listarTareas(Filtro<Tarea> filtro) throws PersistenciaException {
 		return gestorProceso.listarTareas(filtro);
 	}
 

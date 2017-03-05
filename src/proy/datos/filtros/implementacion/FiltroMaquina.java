@@ -4,33 +4,24 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
-
-import java.util.ArrayList;
+package proy.datos.filtros.implementacion;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Proceso;
-import proy.datos.servicios.Filtro;
+import proy.datos.entidades.Maquina;
+import proy.datos.filtros.Filtro;
 
-public class FiltroHerramienta extends Filtro {
+public class FiltroMaquina extends Filtro<Maquina> {
 
 	private String consulta = "";
 	private String namedQuery = "";
-	private EstadoStr estado;
 	private String nombre;
-	private ArrayList<Proceso> procesos;
-	private ArrayList<String> nombres;
 
 	public static class Builder {
 
-		private EstadoStr estado = EstadoStr.ALTA;
-		private String nombreEntidad = "h";
-		private String nombre;
-		private ArrayList<Proceso> procesos;
-		private ArrayList<String> nombres;
+		private String nombreEntidad = "a";
+		private String nombre = null;
 
 		public Builder() {
 			super();
@@ -46,29 +37,14 @@ public class FiltroHerramienta extends Filtro {
 			return this;
 		}
 
-		public Builder procesos(ArrayList<Proceso> procesos) {
-			if(procesos != null && !procesos.isEmpty()){
-				this.procesos = procesos;
-			}
-			return this;
+		public FiltroMaquina build() {
+			return new FiltroMaquina(this);
 		}
-
-		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
-			return this;
-		}
-
-		public FiltroHerramienta build() {
-			return new FiltroHerramienta(this);
-		}
-
 	}
 
-	private FiltroHerramienta(Builder builder) {
+	private FiltroMaquina(Builder builder) {
+		super(Maquina.class);
 		this.nombre = builder.nombre;
-		this.estado = builder.estado;
-		this.procesos = builder.procesos;
-		this.nombres = builder.nombres;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -79,19 +55,10 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		if(builder.estado != EstadoStr.ALTA){
+		if(nombre != null){
 			return;
 		}
-		if(builder.nombre != null){
-			return;
-		}
-		if(builder.procesos != null){
-			return;
-		}
-		if(builder.nombres != null){
-			return;
-		}
-		namedQuery = "listarHerramientas";
+		namedQuery = "listarMaquinas";
 	}
 
 	private String getSelect(Builder builder) {
@@ -100,22 +67,12 @@ public class FiltroHerramienta extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from;
-		if(procesos != null){
-			from = " FROM Herramienta " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc";
-		}
-		else{
-			from = " FROM Herramienta " + builder.nombreEntidad;
-		}
+		String from = " FROM Maquina " + builder.nombreEntidad;
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
-		String where =
-				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
-						+ ((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+		String where = ((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -141,28 +98,15 @@ public class FiltroHerramienta extends Filtro {
 
 	@Override
 	public Query setParametros(Query query) {
-		if(estado != null){
-			query.setParameter("est", estado);
-		}
 		if(nombre != null){
 			query.setParameter("nom", "%" + nombre + "%");
-		}
-		if(procesos != null){
-			query.setParameter("prs", procesos);
-		}
-		if(nombres != null){
-			query.setParameterList("nms", nombres);
 		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-		if(procesos != null){
-			for(Proceso proceso: procesos){
-				session.update(proceso);
-			}
-		}
+
 	}
 
 	@Override

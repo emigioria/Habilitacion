@@ -30,14 +30,15 @@ import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
+import proy.datos.filtros.Filtro;
+import proy.datos.filtros.implementacion.FiltroHerramienta;
+import proy.datos.filtros.implementacion.FiltroMaquina;
+import proy.datos.filtros.implementacion.FiltroMaterial;
+import proy.datos.filtros.implementacion.FiltroParte;
+import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.datos.servicios.TallerService;
 import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
-import proy.logica.gestores.filtros.FiltroHerramienta;
-import proy.logica.gestores.filtros.FiltroMaquina;
-import proy.logica.gestores.filtros.FiltroMaterial;
-import proy.logica.gestores.filtros.FiltroParte;
-import proy.logica.gestores.filtros.FiltroPieza;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
@@ -74,7 +75,7 @@ public class TallerGestor {
 	@Resource
 	private ProcesoGestor gestorProceso;
 
-	public ArrayList<Maquina> listarMaquinas(FiltroMaquina filtro) throws PersistenciaException {
+	public ArrayList<Maquina> listarMaquinas(Filtro<Maquina> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerMaquinas(filtro);
 	}
 
@@ -322,7 +323,7 @@ public class TallerGestor {
 		return new ResultadoEliminarMaquina();
 	}
 
-	public ArrayList<Parte> listarPartes(FiltroParte filtro) throws PersistenciaException {
+	public ArrayList<Parte> listarPartes(Filtro<Parte> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerPartes(filtro);
 	}
 
@@ -491,7 +492,7 @@ public class TallerGestor {
 		return new ResultadoEliminarPartes(resultadosEliminarPiezas, resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPartes[0]));
 	}
 
-	public ArrayList<Pieza> listarPiezas(FiltroPieza filtro) throws PersistenciaException {
+	public ArrayList<Pieza> listarPiezas(Filtro<Pieza> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerPiezas(filtro);
 	}
 
@@ -576,7 +577,7 @@ public class TallerGestor {
 		return new ResultadoEliminarPiezas(resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPiezas[0]));
 	}
 
-	public ArrayList<Herramienta> listarHerramientas(FiltroHerramienta filtro) throws PersistenciaException {
+	public ArrayList<Herramienta> listarHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerHerramientas(filtro);
 	}
 
@@ -654,7 +655,7 @@ public class TallerGestor {
 		throw new NotYetImplementedException();
 	}
 
-	public ArrayList<Material> listarMateriales(FiltroMaterial filtro) throws PersistenciaException {
+	public ArrayList<Material> listarMateriales(Filtro<Material> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerMateriales(filtro);
 	}
 

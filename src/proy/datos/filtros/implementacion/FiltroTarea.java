@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,9 +18,10 @@ import proy.datos.entidades.Operario;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
-import proy.datos.servicios.Filtro;
+import proy.datos.entidades.Tarea;
+import proy.datos.filtros.Filtro;
 
-public class FiltroTarea extends Filtro {
+public class FiltroTarea extends Filtro<Tarea> {
 
 	private String consulta = "";
 	private String namedQuery = "";
@@ -137,6 +138,7 @@ public class FiltroTarea extends Filtro {
 	}
 
 	private FiltroTarea(Builder builder) {
+		super(Tarea.class);
 		this.noEstado = builder.noEstado;
 		this.estado = builder.estado;
 		this.herramientas = builder.herramientas;

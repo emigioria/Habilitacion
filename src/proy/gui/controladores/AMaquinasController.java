@@ -13,12 +13,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Maquina;
+import proy.datos.filtros.implementacion.FiltroMaquina;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
 import proy.gui.componentes.VentanaConfirmacion;
 import proy.gui.componentes.VentanaError;
 import proy.gui.componentes.VentanaInformacion;
-import proy.logica.gestores.filtros.FiltroMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina.ErrorEliminarMaquina;
 

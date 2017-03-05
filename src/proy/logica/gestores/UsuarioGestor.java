@@ -21,13 +21,13 @@ import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Estado;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.Filtro;
+import proy.datos.filtros.implementacion.FiltroAdministrador;
+import proy.datos.filtros.implementacion.FiltroOperario;
+import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.datos.servicios.ProcesoService;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.PersistenciaException;
-import proy.logica.gestores.filtros.FiltroAdministrador;
-import proy.logica.gestores.filtros.FiltroComentario;
-import proy.logica.gestores.filtros.FiltroOperario;
-import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
@@ -83,11 +83,11 @@ public class UsuarioGestor {
 		return new ResultadoCrearComentario();
 	}
 
-	public ArrayList<Comentario> listarComentarios(FiltroComentario filtro) throws PersistenciaException {
+	public ArrayList<Comentario> listarComentarios(Filtro<Comentario> filtro) throws PersistenciaException {
 		return persistidorUsuario.obtenerComentarios(filtro);
 	}
 
-	public ArrayList<Operario> listarOperarios(FiltroOperario filtro) throws PersistenciaException {
+	public ArrayList<Operario> listarOperarios(Filtro<Operario> filtro) throws PersistenciaException {
 		return persistidorUsuario.obtenerOperarios(filtro);
 	}
 

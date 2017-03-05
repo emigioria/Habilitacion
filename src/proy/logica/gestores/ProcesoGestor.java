@@ -15,10 +15,9 @@ import org.springframework.stereotype.Service;
 
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.Filtro;
 import proy.datos.servicios.ProcesoService;
 import proy.excepciones.PersistenciaException;
-import proy.logica.gestores.filtros.FiltroProceso;
-import proy.logica.gestores.filtros.FiltroTarea;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
@@ -34,7 +33,7 @@ public class ProcesoGestor {
 	@Resource
 	private ProcesoService persistidorProceso;
 
-	public ArrayList<Proceso> listarProcesos(FiltroProceso filtro) throws PersistenciaException {
+	public ArrayList<Proceso> listarProcesos(Filtro<Proceso> filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerProcesos(filtro);
 	}
 
@@ -54,7 +53,7 @@ public class ProcesoGestor {
 		return new ResultadoEliminarProcesos();
 	}
 
-	public ArrayList<Tarea> listarTareas(FiltroTarea filtro) throws PersistenciaException {
+	public ArrayList<Tarea> listarTareas(Filtro<Tarea> filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerTareas(filtro);
 	}
 

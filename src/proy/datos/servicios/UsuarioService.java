@@ -11,17 +11,18 @@ import java.util.ArrayList;
 import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
+import proy.datos.filtros.Filtro;
 import proy.excepciones.PersistenciaException;
 
 public interface UsuarioService {
 
-	public ArrayList<Administrador> obtenerAdministradores(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Administrador> obtenerAdministradores(Filtro<Administrador> filtro) throws PersistenciaException;
 
 	public void guardarComentario(Comentario comentario) throws PersistenciaException;
 
-	public ArrayList<Comentario> obtenerComentarios(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Comentario> obtenerComentarios(Filtro<Comentario> filtro) throws PersistenciaException;
 
-	public ArrayList<Operario> obtenerOperarios(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Operario> obtenerOperarios(Filtro<Operario> filtro) throws PersistenciaException;
 
 	public void guardarOperario(Operario operario) throws PersistenciaException;
 

@@ -10,11 +10,12 @@ import java.util.ArrayList;
 
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.Filtro;
 import proy.excepciones.PersistenciaException;
 
 public interface ProcesoService {
 
-	public ArrayList<Proceso> obtenerProcesos(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Proceso> obtenerProcesos(Filtro<Proceso> filtro) throws PersistenciaException;
 
 	public void guardarProceso(Proceso proceso) throws PersistenciaException;
 
@@ -22,7 +23,7 @@ public interface ProcesoService {
 
 	public void bajaProceso(Proceso proceso) throws PersistenciaException;
 
-	public ArrayList<Tarea> obtenerTareas(Filtro filtro) throws PersistenciaException;
+	public ArrayList<Tarea> obtenerTareas(Filtro<Tarea> filtro) throws PersistenciaException;
 
 	public void guardarTarea(Tarea tarea) throws PersistenciaException;
 

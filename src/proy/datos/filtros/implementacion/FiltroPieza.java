@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 
@@ -12,17 +12,21 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Maquina;
+import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
-import proy.datos.servicios.Filtro;
+import proy.datos.entidades.Pieza;
+import proy.datos.entidades.Proceso;
+import proy.datos.filtros.Filtro;
 
-public class FiltroParte extends Filtro {
+public class FiltroPieza extends Filtro<Pieza> {
 
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
-	private Maquina maquina;
-	private ArrayList<Parte> partes;
+	private ArrayList<Material> materiales;
+	private Parte parte;
+	private ArrayList<Pieza> piezas;
+	private ArrayList<Proceso> procesos;
 	private ArrayList<String> nombres;
 	private Boolean sinUnir = false;
 
@@ -30,9 +34,11 @@ public class FiltroParte extends Filtro {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
-		private Maquina maquina;
-		private ArrayList<Parte> partes;
+		private ArrayList<Material> materiales = null;
+		private Parte parte = null;
+		private ArrayList<Pieza> piezas;
 		private Boolean conTareas;
+		private ArrayList<Proceso> procesos;
 		private ArrayList<String> nombres;
 		private Boolean sinUnir = false;
 
@@ -45,14 +51,28 @@ public class FiltroParte extends Filtro {
 			return this;
 		}
 
-		public Builder maquina(Maquina maquina) {
-			this.maquina = maquina;
+		public Builder materiales(ArrayList<Material> materiales) {
+			if(materiales != null && !materiales.isEmpty()){
+				this.materiales = materiales;
+			}
 			return this;
 		}
 
-		public Builder partes(ArrayList<Parte> partes) {
-			if(partes != null && !partes.isEmpty()){
-				this.partes = partes;
+		public Builder parte(Parte parte) {
+			this.parte = parte;
+			return this;
+		}
+
+		public Builder piezas(ArrayList<Pieza> piezas) {
+			if(piezas != null && !piezas.isEmpty()){
+				this.piezas = piezas;
+			}
+			return this;
+		}
+
+		public Builder procesos(ArrayList<Proceso> procesos) {
+			if(procesos != null && !procesos.isEmpty()){
+				this.procesos = procesos;
 			}
 			return this;
 		}
@@ -72,15 +92,18 @@ public class FiltroParte extends Filtro {
 			return this;
 		}
 
-		public FiltroParte build() {
-			return new FiltroParte(this);
+		public FiltroPieza build() {
+			return new FiltroPieza(this);
 		}
 	}
 
-	private FiltroParte(Builder builder) {
+	private FiltroPieza(Builder builder) {
+		super(Pieza.class);
 		this.estado = builder.estado;
-		this.maquina = builder.maquina;
-		this.partes = builder.partes;
+		this.materiales = builder.materiales;
+		this.parte = builder.parte;
+		this.piezas = builder.piezas;
+		this.procesos = builder.procesos;
 		this.nombres = builder.nombres;
 		this.sinUnir = builder.sinUnir;
 
@@ -93,22 +116,28 @@ public class FiltroParte extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
+		if(builder.materiales != null){
+			return;
+		}
 		if(builder.estado != EstadoStr.ALTA){
 			return;
 		}
-		if(builder.maquina != null){
+		if(builder.parte != null){
 			return;
 		}
-		if(builder.partes != null){
+		if(builder.piezas != null){
 			return;
 		}
 		if(builder.conTareas != null){
 			return;
 		}
+		if(builder.procesos != null){
+			return;
+		}
 		if(builder.nombres != null){
 			return;
 		}
-		namedQuery = "listarPartes";
+		namedQuery = "listarPiezas";
 	}
 
 	private String getSelect(Builder builder) {
@@ -125,10 +154,13 @@ public class FiltroParte extends Filtro {
 	private String getFrom(Builder builder) {
 		String from;
 		if(builder.conTareas != null && builder.conTareas){
-			from = " FROM Parte " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
+			from = " FROM Pieza " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
+		}
+		else if(builder.procesos != null){
+			from = " FROM Pieza " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc";
 		}
 		else{
-			from = " FROM Parte " + builder.nombreEntidad;
+			from = " FROM Pieza " + builder.nombreEntidad;
 		}
 		return from;
 	}
@@ -136,8 +168,10 @@ public class FiltroParte extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in (:pts) AND ") : (""))
+						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in (:mts) AND ") : (""))
+						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
+						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in (:pzs) AND ") : (""))
+						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
 						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
@@ -167,11 +201,17 @@ public class FiltroParte extends Filtro {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
-		if(maquina != null){
-			query.setParameter("maq", maquina);
+		if(materiales != null){
+			query.setParameterList("mts", materiales);
 		}
-		if(partes != null){
-			query.setParameterList("pts", partes);
+		if(parte != null){
+			query.setParameter("par", parte);
+		}
+		if(piezas != null){
+			query.setParameterList("pzs", piezas);
+		}
+		if(procesos != null){
+			query.setParameter("prs", procesos);
 		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);
@@ -184,12 +224,22 @@ public class FiltroParte extends Filtro {
 		if(sinUnir){
 			return;
 		}
-		if(maquina != null){
-			session.update(maquina);
+		if(parte != null){
+			session.update(parte);
 		}
-		if(partes != null){
-			for(Parte parte: partes){
-				session.update(parte);
+		if(piezas != null){
+			for(Pieza pieza: piezas){
+				session.update(pieza);
+			}
+		}
+		if(materiales != null){
+			for(Material material: materiales){
+				session.update(material);
+			}
+		}
+		if(procesos != null){
+			for(Proceso proceso: procesos){
+				session.update(proceso);
 			}
 		}
 	}

@@ -15,7 +15,7 @@ import org.hibernate.Session;
 import proy.excepciones.ConsultaException;
 import proy.excepciones.PersistenciaException;
 
-public interface FiltroHibernate {
+public interface FiltroHibernate<T> {
 
 	public String getConsultaDinamica();
 
@@ -25,7 +25,9 @@ public interface FiltroHibernate {
 
 	public void updateParametros(Session session);
 
-	public default <T> ArrayList<T> listar(Session session, Class<? extends T> clase) throws PersistenciaException {
+	public Class<? extends T> getClase();
+
+	public default ArrayList<T> listar(Session session) throws PersistenciaException {
 		ArrayList<T> resultado = new ArrayList<>();
 		try{
 			Query query = null;
@@ -40,7 +42,7 @@ public interface FiltroHibernate {
 			List<?> var = query.list();
 			for(Object o: var){
 				try{
-					resultado.add(clase.cast(o));
+					resultado.add(getClase().cast(o));
 				} catch(ClassCastException e){
 					//no agrega objetos no casteables
 				}

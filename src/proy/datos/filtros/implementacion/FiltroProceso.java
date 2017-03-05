@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 
@@ -12,35 +12,28 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Material;
+import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
-import proy.datos.servicios.Filtro;
+import proy.datos.filtros.Filtro;
 
-public class FiltroPieza extends Filtro {
+public class FiltroProceso extends Filtro<Proceso> {
 
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado;
-	private ArrayList<Material> materiales;
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
-	private ArrayList<Proceso> procesos;
-	private ArrayList<String> nombres;
-	private Boolean sinUnir = false;
+	private ArrayList<Herramienta> herramientas;
 
 	public static class Builder {
 
 		private String nombreEntidad = "a";
 		private EstadoStr estado = EstadoStr.ALTA;
-		private ArrayList<Material> materiales = null;
-		private Parte parte = null;
+		private Parte parte;
 		private ArrayList<Pieza> piezas;
-		private Boolean conTareas;
-		private ArrayList<Proceso> procesos;
-		private ArrayList<String> nombres;
-		private Boolean sinUnir = false;
+		private ArrayList<Herramienta> herramientas;
 
 		public Builder() {
 			super();
@@ -48,13 +41,6 @@ public class FiltroPieza extends Filtro {
 
 		public Builder nombreEntidad(String nombreEntidad) {
 			this.nombreEntidad = nombreEntidad;
-			return this;
-		}
-
-		public Builder materiales(ArrayList<Material> materiales) {
-			if(materiales != null && !materiales.isEmpty()){
-				this.materiales = materiales;
-			}
 			return this;
 		}
 
@@ -70,41 +56,32 @@ public class FiltroPieza extends Filtro {
 			return this;
 		}
 
-		public Builder procesos(ArrayList<Proceso> procesos) {
-			if(procesos != null && !procesos.isEmpty()){
-				this.procesos = procesos;
+		public Builder herramienta(Herramienta herramienta) {
+			if(herramienta != null){
+				this.herramientas = new ArrayList<>();
+				this.herramientas.add(herramienta);
 			}
 			return this;
 		}
 
-		public Builder conTareas() {
-			this.conTareas = true;
+		public Builder herramientas(ArrayList<Herramienta> herramientas) {
+			if(herramientas != null && !herramientas.isEmpty()){
+				this.herramientas = herramientas;
+			}
 			return this;
 		}
 
-		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
-			return this;
-		}
-
-		public Builder sinUnir() {
-			this.sinUnir = true;
-			return this;
-		}
-
-		public FiltroPieza build() {
-			return new FiltroPieza(this);
+		public FiltroProceso build() {
+			return new FiltroProceso(this);
 		}
 	}
 
-	private FiltroPieza(Builder builder) {
+	private FiltroProceso(Builder builder) {
+		super(Proceso.class);
 		this.estado = builder.estado;
-		this.materiales = builder.materiales;
 		this.parte = builder.parte;
 		this.piezas = builder.piezas;
-		this.procesos = builder.procesos;
-		this.nombres = builder.nombres;
-		this.sinUnir = builder.sinUnir;
+		this.herramientas = builder.herramientas;
 
 		setConsulta(builder);
 		setNamedQuery(builder);
@@ -115,9 +92,6 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		if(builder.materiales != null){
-			return;
-		}
 		if(builder.estado != EstadoStr.ALTA){
 			return;
 		}
@@ -127,22 +101,16 @@ public class FiltroPieza extends Filtro {
 		if(builder.piezas != null){
 			return;
 		}
-		if(builder.conTareas != null){
+		if(builder.herramientas != null){
 			return;
 		}
-		if(builder.procesos != null){
-			return;
-		}
-		if(builder.nombres != null){
-			return;
-		}
-		namedQuery = "listarPiezas";
+		namedQuery = "listarProcesos";
 	}
 
 	private String getSelect(Builder builder) {
 		String select;
-		if(builder.conTareas != null && builder.conTareas){
-			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		if(builder.piezas != null && herramientas != null){
+			select = "SELECT DISTINCT" + builder.nombreEntidad;
 		}
 		else{
 			select = "SELECT " + builder.nombreEntidad;
@@ -152,14 +120,17 @@ public class FiltroPieza extends Filtro {
 
 	private String getFrom(Builder builder) {
 		String from;
-		if(builder.conTareas != null && builder.conTareas){
-			from = " FROM Pieza " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
+		if(builder.piezas != null && herramientas != null){
+			from = " FROM Proceso " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".piezas piez, " + builder.nombreEntidad + ".herramientas herr";
 		}
-		else if(builder.procesos != null){
-			from = " FROM Pieza " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc";
+		if(builder.piezas != null){
+			from = " FROM Proceso " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".piezas piez";
+		}
+		if(herramientas != null){
+			from = " FROM Proceso " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".herramientas herr";
 		}
 		else{
-			from = " FROM Pieza " + builder.nombreEntidad;
+			from = " FROM Proceso " + builder.nombreEntidad;
 		}
 		return from;
 	}
@@ -167,11 +138,9 @@ public class FiltroPieza extends Filtro {
 	private String getWhere(Builder builder) {
 		String where =
 				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.materiales != null) ? (builder.nombreEntidad + ".material in (:mts) AND ") : (""))
 						+ ((builder.parte != null) ? (builder.nombreEntidad + ".parte = :par AND ") : (""))
-						+ ((builder.piezas != null) ? (builder.nombreEntidad + " in (:pzs) AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+						+ ((builder.piezas != null) ? ("piez in (:pzs) AND ") : (""))
+						+ ((builder.herramientas != null) ? ("herr in (:hes) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -191,7 +160,7 @@ public class FiltroPieza extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".descripcion , " + builder.nombreEntidad + ".tipo";
 		return orderBy;
 	}
 
@@ -200,29 +169,20 @@ public class FiltroPieza extends Filtro {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
-		if(materiales != null){
-			query.setParameterList("mts", materiales);
-		}
 		if(parte != null){
 			query.setParameter("par", parte);
 		}
 		if(piezas != null){
 			query.setParameterList("pzs", piezas);
 		}
-		if(procesos != null){
-			query.setParameter("prs", procesos);
-		}
-		if(nombres != null){
-			query.setParameterList("nms", nombres);
+		if(herramientas != null){
+			query.setParameterList("hes", herramientas);
 		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
-		if(sinUnir){
-			return;
-		}
 		if(parte != null){
 			session.update(parte);
 		}
@@ -231,14 +191,9 @@ public class FiltroPieza extends Filtro {
 				session.update(pieza);
 			}
 		}
-		if(materiales != null){
-			for(Material material: materiales){
-				session.update(material);
-			}
-		}
-		if(procesos != null){
-			for(Proceso proceso: procesos){
-				session.update(proceso);
+		if(herramientas != null){
+			for(Herramienta herramienta: herramientas){
+				session.update(herramienta);
 			}
 		}
 	}

@@ -4,15 +4,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
-import proy.datos.servicios.Filtro;
+import proy.datos.entidades.Administrador;
+import proy.datos.filtros.Filtro;
 
-public class FiltroAdministrador extends Filtro {
+public class FiltroAdministrador extends Filtro<Administrador> {
 
 	private String consulta = "";
 	private String namedQuery = "";
@@ -45,6 +46,7 @@ public class FiltroAdministrador extends Filtro {
 	}
 
 	private FiltroAdministrador(Builder builder) {
+		super(Administrador.class);
 		this.dni = builder.dni;
 		this.estado = builder.estado;
 

@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 
@@ -13,9 +13,9 @@ import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Material;
-import proy.datos.servicios.Filtro;
+import proy.datos.filtros.Filtro;
 
-public class FiltroMaterial extends Filtro {
+public class FiltroMaterial extends Filtro<Material> {
 
 	private String consulta = "";
 	private String namedQuery = "";
@@ -63,6 +63,7 @@ public class FiltroMaterial extends Filtro {
 	}
 
 	private FiltroMaterial(Builder builder) {
+		super(Material.class);
 		this.materiales = builder.materiales;
 		this.estado = builder.estado;
 		this.nombres = builder.nombres;

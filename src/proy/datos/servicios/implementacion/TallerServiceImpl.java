@@ -21,7 +21,7 @@ import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
-import proy.datos.servicios.Filtro;
+import proy.datos.filtros.Filtro;
 import proy.datos.servicios.TallerService;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
@@ -44,9 +44,9 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Maquina> obtenerMaquinas(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Maquina> obtenerMaquinas(Filtro<Maquina> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Maquina.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -105,9 +105,9 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Parte> obtenerPartes(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Parte> obtenerPartes(Filtro<Parte> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Parte.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -174,9 +174,9 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Pieza> obtenerPiezas(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Pieza> obtenerPiezas(Filtro<Pieza> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Pieza.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -243,9 +243,9 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Herramienta> obtenerHerramientas(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Herramienta> obtenerHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Herramienta.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -322,9 +322,9 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Material> obtenerMateriales(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Material> obtenerMateriales(Filtro<Material> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Material.class);
+		return filtro.listar(session);
 	}
 
 	@Override

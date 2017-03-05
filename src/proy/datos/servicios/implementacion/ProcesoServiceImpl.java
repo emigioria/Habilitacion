@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
-import proy.datos.servicios.Filtro;
+import proy.datos.filtros.Filtro;
 import proy.datos.servicios.ProcesoService;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
@@ -41,9 +41,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Proceso> obtenerProcesos(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Proceso> obtenerProcesos(Filtro<Proceso> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Proceso.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -101,9 +101,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Tarea> obtenerTareas(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Tarea> obtenerTareas(Filtro<Tarea> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Tarea.class);
+		return filtro.listar(session);
 	}
 
 	@Override

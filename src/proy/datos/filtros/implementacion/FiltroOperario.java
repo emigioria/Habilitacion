@@ -4,21 +4,27 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.logica.gestores.filtros;
+package proy.datos.filtros.implementacion;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import proy.datos.servicios.Filtro;
+import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Operario;
+import proy.datos.filtros.Filtro;
 
-public class FiltroComentario extends Filtro {
+public class FiltroOperario extends Filtro<Operario> {
 
 	private String consulta = "";
 	private String namedQuery = "";
+	private String dni;
+	private EstadoStr estado;
 
 	public static class Builder {
 
-		private String nombreEntidad = "c";
+		private String nombreEntidad = "a";
+		private String dni;
+		private EstadoStr estado = EstadoStr.ALTA;
 
 		public Builder() {
 			super();
@@ -29,12 +35,26 @@ public class FiltroComentario extends Filtro {
 			return this;
 		}
 
-		public FiltroComentario build() {
-			return new FiltroComentario(this);
+		public Builder dni(String dni) {
+			this.dni = dni;
+			return this;
+		}
+
+		public Builder estado(EstadoStr estado) {
+			this.estado = estado;
+			return this;
+		}
+
+		public FiltroOperario build() {
+			return new FiltroOperario(this);
 		}
 	}
 
-	private FiltroComentario(Builder builder) {
+	private FiltroOperario(Builder builder) {
+		super(Operario.class);
+		this.dni = builder.dni;
+		this.estado = builder.estado;
+
 		setConsulta(builder);
 		setNamedQuery(builder);
 	}
@@ -44,7 +64,13 @@ public class FiltroComentario extends Filtro {
 	}
 
 	private void setNamedQuery(Builder builder) {
-		namedQuery = "listarComentarios";
+		if(builder.dni != null){
+			return;
+		}
+		if(builder.estado != null){
+			return;
+		}
+		namedQuery = "listarOperarios";
 	}
 
 	private String getSelect(Builder builder) {
@@ -53,12 +79,19 @@ public class FiltroComentario extends Filtro {
 	}
 
 	private String getFrom(Builder builder) {
-		String from = " FROM Comentario " + builder.nombreEntidad;
+		String from = " FROM Operario " + builder.nombreEntidad;
 		return from;
 	}
 
 	private String getWhere(Builder builder) {
-		String where = "";
+		String where =
+				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
+						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -73,12 +106,18 @@ public class FiltroComentario extends Filtro {
 	}
 
 	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".fechaComentario ";
+		String orderBy = " ORDER BY " + builder.nombreEntidad + ".dni ASC";
 		return orderBy;
 	}
 
 	@Override
 	public Query setParametros(Query query) {
+		if(dni != null){
+			query.setParameter("dni", dni);
+		}
+		if(estado != null){
+			query.setParameter("est", estado);
+		}
 		return query;
 	}
 

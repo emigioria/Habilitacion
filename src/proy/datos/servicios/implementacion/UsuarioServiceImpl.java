@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import proy.datos.entidades.Administrador;
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
-import proy.datos.servicios.Filtro;
+import proy.datos.filtros.Filtro;
 import proy.datos.servicios.UsuarioService;
 import proy.excepciones.DeleteException;
 import proy.excepciones.ObjNotFoundException;
@@ -42,9 +42,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Administrador> obtenerAdministradores(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Administrador> obtenerAdministradores(Filtro<Administrador> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Administrador.class);
+		return filtro.listar(session);
 	}
 
 	@Override
@@ -61,16 +61,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Comentario> obtenerComentarios(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Comentario> obtenerComentarios(Filtro<Comentario> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Comentario.class);
+		return filtro.listar(session);
 	}
 
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
-	public ArrayList<Operario> obtenerOperarios(Filtro filtro) throws PersistenciaException {
+	public ArrayList<Operario> obtenerOperarios(Filtro<Operario> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
-		return filtro.listar(session, Operario.class);
+		return filtro.listar(session);
 	}
 
 	@Override
