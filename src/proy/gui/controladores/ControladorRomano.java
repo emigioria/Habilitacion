@@ -17,7 +17,6 @@ import proy.comun.ConversorFechas;
 import proy.comun.FormateadorString;
 import proy.gui.ControladorApilable;
 import proy.gui.PilaScene;
-import proy.gui.componentes.StyleCSS;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
@@ -63,7 +62,8 @@ public abstract class ControladorRomano implements ControladorApilable {
 
 			//Setear estilo si no tiene
 			if(scenaSiguiente.getStylesheets().isEmpty()){
-				scenaSiguiente.getStylesheets().add(new StyleCSS().getStyle());
+				//TODO descomentar
+				//				scenaSiguiente.getStylesheets().add(new StyleCSS().getStyle());
 			}
 
 			Scene scene = new Scene(scenaSiguiente);
