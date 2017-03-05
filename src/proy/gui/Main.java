@@ -98,7 +98,18 @@ public class Main extends Application {
 				(event) -> {
 					ventanaEspera.hide();
 					//Crear primera ventana
-					ControladorRomano.nuevaScene(VTareasController.URL_VISTA, apilador, coordinador);
+					ControladorRomano pantallaMock = new ControladorRomano() {
+						@Override
+						public void actualizar() {
+						}
+
+						@Override
+						protected void inicializar() {
+						}
+					};
+					pantallaMock.setApilador(apilador);
+					pantallaMock.setCoordinador(coordinador);
+					pantallaMock.nuevaScene(VTareasController.URL_VISTA);
 				});
 
 		//Si falla, informa al usuario del error y cierra la aplicacion

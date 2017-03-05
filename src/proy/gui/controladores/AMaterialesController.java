@@ -48,57 +48,54 @@ public class AMaterialesController extends ControladorRomano {
 	@FXML
 	private ArrayList<Material> materialesAEliminar = new ArrayList<>();
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaMaterial.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+	@Override
+	protected void inicializar() {
+		columnaMaterial.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
-				return new SimpleStringProperty("<Sin nombre>");
-			});
-			columnaMedidas.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getMedidas() != null){
-						return new SimpleStringProperty(param.getValue().getMedidas());
-					}
+			}
+			return new SimpleStringProperty("<Sin nombre>");
+		});
+		columnaMedidas.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getMedidas() != null){
+					return new SimpleStringProperty(param.getValue().getMedidas());
 				}
-				return new SimpleStringProperty("<Sin medidas>");
-			});
-
-			Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
-				return new TableCellTextViewString<Material>(Material.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() != null && newValue != null){
-							this.setEditable(materialesAGuardar.contains(newValue));
-						}
-					}
-				};
-			};
-			columnaMaterial.setCellFactory(call);
-			columnaMedidas.setCellFactory(call);
-
-			columnaMaterial.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-			columnaMedidas.setOnEditCommit((t) -> {
-				t.getRowValue().setMedidas(t.getNewValue().toLowerCase().trim());
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-
-			actualizar();
+			}
+			return new SimpleStringProperty("<Sin medidas>");
 		});
 
+		Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
+			return new TableCellTextViewString<Material>(Material.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() != null && newValue != null){
+						this.setEditable(materialesAGuardar.contains(newValue));
+					}
+				}
+			};
+		};
+		columnaMaterial.setCellFactory(call);
+		columnaMedidas.setCellFactory(call);
+
+		columnaMaterial.setOnEditCommit((t) -> {
+			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+		columnaMedidas.setOnEditCommit((t) -> {
+			t.getRowValue().setMedidas(t.getNewValue().toLowerCase().trim());
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+
+		actualizar();
 	}
 
 	@FXML

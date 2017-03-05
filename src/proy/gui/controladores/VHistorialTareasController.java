@@ -49,43 +49,41 @@ public class VHistorialTareasController extends ControladorRomano {
 	@FXML
 	private TitledPane panelTarea;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaMaterial.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getMaterial().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-
-			panelTarea.setExpanded(true);
-			tablaPiezas.getItems().add(new Pieza("Hola", null, null, null, null, new Material("Chau", null)));
-
-			(new Thread(() -> {
-				try{
-					Thread.sleep(100);
-				} catch(Exception e){
-				}
-				Platform.runLater(() -> {
-					TableRow<?> tableRow = (TableRow<?>) tablaPiezas.lookup("TableRow");
-					tablaPiezas.minHeightProperty().bind(new SimpleIntegerProperty(1).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
-					tablaPiezas.prefHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
-					tablaPiezas.maxHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
-					tablaPiezas.getItems().clear();
-				});
-			})).start();
+	@Override
+	protected void inicializar() {
+		columnaPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
 		});
+		columnaMaterial.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getMaterial().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+
+		panelTarea.setExpanded(true);
+		tablaPiezas.getItems().add(new Pieza("Hola", null, null, null, null, new Material("Chau", null)));
+
+		(new Thread(() -> {
+			try{
+				Thread.sleep(100);
+			} catch(Exception e){
+			}
+			Platform.runLater(() -> {
+				TableRow<?> tableRow = (TableRow<?>) tablaPiezas.lookup("TableRow");
+				tablaPiezas.minHeightProperty().bind(new SimpleIntegerProperty(1).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+				tablaPiezas.prefHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+				tablaPiezas.maxHeightProperty().bind(Bindings.size(tablaPiezas.getItems()).multiply(tableRow.getHeight()).add(((Pane) tablaPiezas.lookup("TableHeaderRow")).getHeight() + 12));
+				tablaPiezas.getItems().clear();
+			});
+		})).start();
 	}
 
 	@Override

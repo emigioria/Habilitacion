@@ -8,6 +8,7 @@ package proy.gui.controladores;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +17,7 @@ import proy.comun.ConversorFechas;
 import proy.comun.FormateadorString;
 import proy.gui.ControladorApilable;
 import proy.gui.PilaScene;
+import proy.gui.componentes.StyleCSS;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
@@ -39,20 +41,30 @@ public abstract class ControladorRomano implements ControladorApilable {
 		this.coordinador = coordinador;
 	}
 
-	public static ControladorRomano nuevaScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
+	public ControladorRomano nuevaScene(String URLVista) {
 		return nuevaCambiarScene(URLVista, apilador, coordinador, false);
 	}
 
-	public static ControladorRomano cambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador) {
+	public ControladorRomano cambiarScene(String URLVista) {
 		return nuevaCambiarScene(URLVista, apilador, coordinador, true);
 	}
 
-	private static ControladorRomano nuevaCambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
+	private ControladorRomano nuevaCambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
 		try{
+			//Crear el cargador de la pantalla
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(ControladorRomano.class.getResource(URLVista));
+
+			//Cargar vista
 			Parent scenaSiguiente = (Parent) loader.load();
+
+			//Cargar controlador
 			ControladorRomano controlador = loader.getController();
+
+			//Setear estilo si no tiene
+			if(scenaSiguiente.getStylesheets().isEmpty()){
+				scenaSiguiente.getStylesheets().add(new StyleCSS().getStyle());
+			}
 
 			Scene scene = new Scene(scenaSiguiente);
 			if(cambiar){
@@ -69,6 +81,15 @@ public abstract class ControladorRomano implements ControladorApilable {
 		}
 		return null;
 	}
+
+	@FXML
+	private void initialize() {
+		Platform.runLater(() -> {
+			inicializar();
+		});
+	}
+
+	protected abstract void inicializar();
 
 	@FXML
 	public void salir() {

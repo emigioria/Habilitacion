@@ -31,7 +31,7 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 public final class Toast {
-	public static void makeText(Window padre, String toastMsg, int toastDelay, int fadeInDelay, int fadeOutDelay, int ajusteHeight) {
+	public Toast(Window padre, String toastMsg, int toastDelay, int fadeInDelay, int fadeOutDelay, int ajusteHeight) {
 		Stage toastStage = new Stage();
 		toastStage.initOwner(padre);
 		toastStage.setResizable(false);

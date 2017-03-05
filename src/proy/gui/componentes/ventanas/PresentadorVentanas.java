@@ -54,10 +54,10 @@ public class PresentadorVentanas {
 	}
 
 	public void presentarToast(String mensaje, Window padre, int ajusteHeight) {
-		int toastMsgTime = 2500; //3.5 seconds
+		int toastMsgTime = 2500; //2.5 seconds
 		int fadeInTime = 700; //0.7 seconds
 		int fadeOutTime = 500; //0.5 seconds
-		Toast.makeText(padre, mensaje, toastMsgTime, fadeInTime, fadeOutTime, ajusteHeight);
+		new Toast(padre, mensaje, toastMsgTime, fadeInTime, fadeOutTime, ajusteHeight);
 	}
 
 	public void presentarToast(String mensaje, Window padre) {

@@ -6,7 +6,6 @@
  */
 package proy.gui.controladores;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -43,63 +42,61 @@ public class AProcesosController extends ControladorRomano {
 	@FXML
 	private TableColumn<Proceso, String> columnaTiempoProceso;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getParte().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaDescripcion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getDescripcion());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaTipo.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getTipo());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaTiempoPreparacion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getTiempoTeoricoPreparacion());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaTiempoProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getTiempoTeoricoProceso());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
+	@Override
+	protected void inicializar() {
+		columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getParte().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaDescripcion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getDescripcion());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaTipo.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getTipo());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaTiempoPreparacion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getTiempoTeoricoPreparacion());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaTiempoProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getTiempoTeoricoProceso());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
 		});
 	}
 
 	@FXML
 	public void nuevoProceso() {
-		NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URL_VISTA, apilador, coordinador);
+		NMProcesoController nuevaPantalla = (NMProcesoController) this.nuevaScene(NMProcesoController.URL_VISTA);
 		nuevaPantalla.formatearNuevoProceso();
 	}
 
@@ -107,7 +104,7 @@ public class AProcesosController extends ControladorRomano {
 	public void modificarProceso() {
 		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
 		if(proceso != null){
-			NMProcesoController nuevaPantalla = (NMProcesoController) ControladorRomano.nuevaScene(NMProcesoController.URL_VISTA, apilador, coordinador);
+			NMProcesoController nuevaPantalla = (NMProcesoController) this.nuevaScene(NMProcesoController.URL_VISTA);
 			nuevaPantalla.formatearModificarProceso(proceso);
 		}
 	}

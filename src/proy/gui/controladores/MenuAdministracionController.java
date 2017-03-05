@@ -14,36 +14,41 @@ public class MenuAdministracionController extends ControladorRomano {
 
 	@FXML
 	public void administrarOperarios() {
-		ControladorRomano.nuevaScene(AOperariosController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(AOperariosController.URL_VISTA);
 	}
 
 	@FXML
 	public void administrarMaquinas() {
-		ControladorRomano.nuevaScene(AMaquinasController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(AMaquinasController.URL_VISTA);
 	}
 
 	@FXML
 	public void administrarProcesos() {
-		ControladorRomano.nuevaScene(AProcesosController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(AProcesosController.URL_VISTA);
 	}
 
 	@FXML
 	public void administrarMateriales() {
-		ControladorRomano.nuevaScene(AMaterialesController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(AMaterialesController.URL_VISTA);
 	}
 
 	@FXML
 	public void administrarHerramientas() {
-		ControladorRomano.nuevaScene(AHerramientasController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(AHerramientasController.URL_VISTA);
 	}
 
 	@FXML
 	public void administrarTareas() {
-		ControladorRomano.nuevaScene(ATareasController.URL_VISTA, apilador, coordinador);
+		this.nuevaScene(ATareasController.URL_VISTA);
 	}
 
 	@Override
 	public void actualizar() {
+
+	}
+
+	@Override
+	protected void inicializar() {
 
 	}
 }

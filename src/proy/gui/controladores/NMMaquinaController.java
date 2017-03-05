@@ -103,245 +103,242 @@ public class NMMaquinaController extends ControladorRomano {
 	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new IdentityHashMap<>(); //Piezas nuevas no persistidas
 	private Map<Parte, ArrayList<Pieza>> piezasAEliminar = new IdentityHashMap<>(); //Piezas persistidas a eliminar
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			tablaPartes.setEditable(true);
+	@Override
+	protected void inicializar() {
+		tablaPartes.setEditable(true);
 
-			//Inicialización de la columna PARTE->NOMBRE
+		//Inicialización de la columna PARTE->NOMBRE
 
-			//Seteamos el Cell Value Factory
-			columnaNombreParte.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+		//Seteamos el Cell Value Factory
+		columnaNombreParte.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
-				return new SimpleStringProperty("<Sin nombre>");
-			});
-			//Seteamos el Cell Factory
-			columnaNombreParte.setCellFactory(col -> {
-				return new TableCellTextViewString<Parte>(Parte.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-					}
-				};
-			});
-			//Al terminar de editar, se guarda el valor
-			columnaNombreParte.setOnEditCommit(t -> {
-				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-
-			//Inicialización de la columna PARTE->CANTIDAD
-
-			//Seteamos el Cell Value Factory
-			columnaCantidadParte.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCantidad() != null){
-						return new SimpleIntegerProperty(param.getValue().getCantidad());
-					}
-				}
-				return new SimpleIntegerProperty(-1);
-			});
-			//Seteamos el Cell Factory
-			columnaCantidadParte.setCellFactory(col -> {
-				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
-
-					@Override
-					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-					}
-				};
-			});
-			//Al terminar de editar, se guarda el valor.
-			columnaCantidadParte.setOnEditCommit(t -> {
-				if(t.getNewValue() != null){
-					t.getRowValue().setCantidad((Integer) t.getNewValue());
-				}
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-
-			//Inicialización de la columna PIEZA->NOMBRE
-
-			//Seteamos el Cell Value Factory
-			columnaNombrePieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
-				}
-				return new SimpleStringProperty("<Sin nombre>");
-			});
-			//Seteamos el Cell Factory
-			columnaNombrePieza.setCellFactory(col -> {
-				return new TableCellTextViewString<Pieza>(Pieza.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() == null || newValue == null){
-							return;
-						}
-						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(parteSeleccionada == null){
-							return;
-						}
-						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
-						}
-					}
-				};
-			});
-			//Al terminar de editar, se guarda el valor
-			columnaNombrePieza.setOnEditCommit(t -> {
-				t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-
-			//Inicialización de la columna PIEZA->CANTIDAD
-
-			//Seteamos el Cell Value Factory
-			columnaCantidadPieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCantidad() != null){
-						return new SimpleIntegerProperty(param.getValue().getCantidad());
-					}
-				}
-				return new SimpleIntegerProperty(-1);
-			});
-			//Seteamos el Cell Factory
-			columnaCantidadPieza.setCellFactory(col -> {
-				return new TableCellTextView<Pieza, Number>(Pieza.class, new IntegerStringConverter()) {
-
-					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() == null || newValue == null){
-							return;
-						}
-						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(parteSeleccionada == null){
-							return;
-						}
-						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
-						}
-					}
-				};
-			});
-			//Al terminar de editar, se guarda el valor.
-			columnaCantidadPieza.setOnEditCommit(t -> {
-				if(t.getNewValue() != null){
-					t.getRowValue().setCantidad((Integer) t.getNewValue());
-				}
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			});
-
-			//Inicialización de la columna PIEZA->MATERIAL
-
-			columnaMaterialPieza.setCellValueFactory(new PropertyValueFactory<Pieza, Material>("material"));
-			try{
-				columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
-			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
 			}
-			columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
+			return new SimpleStringProperty("<Sin nombre>");
+		});
+		//Seteamos el Cell Factory
+		columnaNombreParte.setCellFactory(col -> {
+			return new TableCellTextViewString<Parte>(Parte.class) {
 
 				@Override
-				public void handle(CellEditEvent<Pieza, Material> t) {
-					if(t.getNewValue() != null){
-						Pieza pieza = t.getRowValue();
-						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(parteSeleccionada == null){
-							return;
-						}
-						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-							if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
-								pieza.setMaterial(t.getNewValue());
-							}
-						}
+				public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+
+				}
+			};
+		});
+		//Al terminar de editar, se guarda el valor
+		columnaNombreParte.setOnEditCommit(t -> {
+			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+
+		//Inicialización de la columna PARTE->CANTIDAD
+
+		//Seteamos el Cell Value Factory
+		columnaCantidadParte.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getCantidad() != null){
+					return new SimpleIntegerProperty(param.getValue().getCantidad());
+				}
+			}
+			return new SimpleIntegerProperty(-1);
+		});
+		//Seteamos el Cell Factory
+		columnaCantidadParte.setCellFactory(col -> {
+			return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
+
+				@Override
+				public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+
+				}
+			};
+		});
+		//Al terminar de editar, se guarda el valor.
+		columnaCantidadParte.setOnEditCommit(t -> {
+			if(t.getNewValue() != null){
+				t.getRowValue().setCantidad((Integer) t.getNewValue());
+			}
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+
+		//Inicialización de la columna PIEZA->NOMBRE
+
+		//Seteamos el Cell Value Factory
+		columnaNombrePieza.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
+				}
+			}
+			return new SimpleStringProperty("<Sin nombre>");
+		});
+		//Seteamos el Cell Factory
+		columnaNombrePieza.setCellFactory(col -> {
+			return new TableCellTextViewString<Pieza>(Pieza.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() == null || newValue == null){
+						return;
 					}
-					//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-					t.getTableColumn().setVisible(false);
-					t.getTableColumn().setVisible(true);
-				};
-			});
-
-			//Inicialización de la columna PIEZA->CODIGO_PLANO
-
-			//Seteamos el Cell Value Factory
-			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCodigoPlano() != null){
-						return new SimpleStringProperty(param.getValue().getCodigoPlano());
+					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+					if(parteSeleccionada == null){
+						return;
+					}
+					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
 					}
 				}
-				return new SimpleStringProperty("<Sin nombre>");
-			});
-			//Seteamos el Cell Factory
-			columnaCodigoPlanoPieza.setCellFactory(col -> {
-				return new TableCellTextViewString<Pieza>(Pieza.class) {
+			};
+		});
+		//Al terminar de editar, se guarda el valor
+		columnaNombrePieza.setOnEditCommit(t -> {
+			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
 
-					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() == null || newValue == null){
-							return;
-						}
-						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(parteSeleccionada == null){
-							return;
-						}
-						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-							this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+		//Inicialización de la columna PIEZA->CANTIDAD
+
+		//Seteamos el Cell Value Factory
+		columnaCantidadPieza.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getCantidad() != null){
+					return new SimpleIntegerProperty(param.getValue().getCantidad());
+				}
+			}
+			return new SimpleIntegerProperty(-1);
+		});
+		//Seteamos el Cell Factory
+		columnaCantidadPieza.setCellFactory(col -> {
+			return new TableCellTextView<Pieza, Number>(Pieza.class, new IntegerStringConverter()) {
+
+				@Override
+				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() == null || newValue == null){
+						return;
+					}
+					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+					if(parteSeleccionada == null){
+						return;
+					}
+					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+					}
+				}
+			};
+		});
+		//Al terminar de editar, se guarda el valor.
+		columnaCantidadPieza.setOnEditCommit(t -> {
+			if(t.getNewValue() != null){
+				t.getRowValue().setCantidad((Integer) t.getNewValue());
+			}
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+
+		//Inicialización de la columna PIEZA->MATERIAL
+
+		columnaMaterialPieza.setCellValueFactory(new PropertyValueFactory<Pieza, Material>("material"));
+		try{
+			columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+		}
+		columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
+
+			@Override
+			public void handle(CellEditEvent<Pieza, Material> t) {
+				if(t.getNewValue() != null){
+					Pieza pieza = t.getRowValue();
+					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+					if(parteSeleccionada == null){
+						return;
+					}
+					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+						if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
+							pieza.setMaterial(t.getNewValue());
 						}
 					}
-				};
-			});
-			//Al terminar de editar, se guarda el valor
-			columnaCodigoPlanoPieza.setOnEditCommit(t ->
-
-			{
-				t.getRowValue().setCodigoPlano(t.getNewValue().trim());
+				}
 				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
 				t.getTableColumn().setVisible(false);
 				t.getTableColumn().setVisible(true);
-			});
-
-			//Cuando cambia la parte seleccionada, cargamos sus piezas
-			tablaPartes.getSelectionModel().selectedIndexProperty().addListener((ovs, viejo, nuevo) -> {
-				Platform.runLater(() -> {
-					tablaPiezas.getItems().clear();
-					try{
-						Parte nueva = tablaPartes.getSelectionModel().getSelectedItem();
-						if(nueva != null){
-							if(!partesAGuardar.contains(nueva)){
-								tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nueva).build()));
-							}
-							if(piezasAGuardar.get(nueva) != null && !piezasAGuardar.get(nueva).isEmpty()){
-								tablaPiezas.getItems().addAll(piezasAGuardar.get(nueva));
-							}
-						}
-					} catch(PersistenciaException e){
-						presentadorVentanas.presentarExcepcion(e, apilador.getStage());
-					}
-				});
-			});
-
-			actualizar();
-
+			};
 		});
+
+		//Inicialización de la columna PIEZA->CODIGO_PLANO
+
+		//Seteamos el Cell Value Factory
+		columnaCodigoPlanoPieza.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getCodigoPlano() != null){
+					return new SimpleStringProperty(param.getValue().getCodigoPlano());
+				}
+			}
+			return new SimpleStringProperty("<Sin nombre>");
+		});
+		//Seteamos el Cell Factory
+		columnaCodigoPlanoPieza.setCellFactory(col -> {
+			return new TableCellTextViewString<Pieza>(Pieza.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() == null || newValue == null){
+						return;
+					}
+					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+					if(parteSeleccionada == null){
+						return;
+					}
+					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+					}
+				}
+			};
+		});
+		//Al terminar de editar, se guarda el valor
+		columnaCodigoPlanoPieza.setOnEditCommit(t ->
+
+		{
+			t.getRowValue().setCodigoPlano(t.getNewValue().trim());
+			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+			t.getTableColumn().setVisible(false);
+			t.getTableColumn().setVisible(true);
+		});
+
+		//Cuando cambia la parte seleccionada, cargamos sus piezas
+		tablaPartes.getSelectionModel().selectedIndexProperty().addListener((ovs, viejo, nuevo) -> {
+			Platform.runLater(() -> {
+				tablaPiezas.getItems().clear();
+				try{
+					Parte nueva = tablaPartes.getSelectionModel().getSelectedItem();
+					if(nueva != null){
+						if(!partesAGuardar.contains(nueva)){
+							tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().parte(nueva).build()));
+						}
+						if(piezasAGuardar.get(nueva) != null && !piezasAGuardar.get(nueva).isEmpty()){
+							tablaPiezas.getItems().addAll(piezasAGuardar.get(nueva));
+						}
+					}
+				} catch(PersistenciaException e){
+					presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				}
+			});
+		});
+
+		actualizar();
 	}
 
 	@FXML
@@ -861,4 +858,5 @@ public class NMMaquinaController extends ControladorRomano {
 			apilador.getStage().setTitle(titulo);
 		});
 	}
+
 }

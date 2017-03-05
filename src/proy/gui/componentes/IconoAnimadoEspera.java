@@ -19,6 +19,9 @@ package proy.gui.componentes;
 
 import javafx.scene.image.Image;
 
+/**
+ * Representa el ícono animado de la pantalla de carga inicial
+ */
 public class IconoAnimadoEspera extends Image {
 
 	/**

@@ -6,7 +6,6 @@
  */
 package proy.gui.controladores;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -29,21 +28,19 @@ public class LoguearAdminController extends ControladorRomano {
 
 	private SafePasswordField contra;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			contra = new SafePasswordField();
-			contenedor.getChildren().add(contra);
-			GridPane.setMargin(contra, new Insets(10.0));
-			GridPane.setColumnIndex(contra, 1);
-			GridPane.setRowIndex(contra, 1);
-		});
+	@Override
+	protected void inicializar() {
+		contra = new SafePasswordField();
+		contenedor.getChildren().add(contra);
+		GridPane.setMargin(contra, new Insets(10.0));
+		GridPane.setColumnIndex(contra, 1);
+		GridPane.setRowIndex(contra, 1);
 	}
 
 	@FXML
 	public void iniciarSesion() {
 		//TODO borrar para activar login
-		ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
+		this.cambiarScene(MenuAdministracionController.URL_VISTA);
 		if(true){
 			return;
 		}
@@ -91,7 +88,7 @@ public class LoguearAdminController extends ControladorRomano {
 		}
 		else{
 			//Operacion exitosa
-			ControladorRomano.cambiarScene(MenuAdministracionController.URL_VISTA, apilador, coordinador);
+			this.cambiarScene(MenuAdministracionController.URL_VISTA);
 		}
 	}
 
@@ -99,4 +96,5 @@ public class LoguearAdminController extends ControladorRomano {
 	public void actualizar() {
 
 	}
+
 }

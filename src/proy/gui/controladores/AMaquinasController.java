@@ -32,25 +32,23 @@ public class AMaquinasController extends ControladorRomano {
 	@FXML
 	private TableColumn<Maquina, String> columnaNombre;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaNombre.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+	@Override
+	protected void inicializar() {
+		columnaNombre.setCellValueFactory(param -> {
+			if(param.getValue() != null){
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
-				return new SimpleStringProperty("<Sin nombre>");
-			});
-
-			actualizar();
+			}
+			return new SimpleStringProperty("<Sin nombre>");
 		});
+
+		actualizar();
 	}
 
 	@FXML
 	public void nuevaMaquina() {
-		NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URL_VISTA, apilador, coordinador);
+		NMMaquinaController nuevaPantalla = (NMMaquinaController) this.nuevaScene(NMMaquinaController.URL_VISTA);
 		nuevaPantalla.formatearNuevaMaquina();
 	}
 
@@ -58,7 +56,7 @@ public class AMaquinasController extends ControladorRomano {
 	public void modificarMaquina() {
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
 		if(maquina != null){
-			NMMaquinaController nuevaPantalla = (NMMaquinaController) ControladorRomano.nuevaScene(NMMaquinaController.URL_VISTA, apilador, coordinador);
+			NMMaquinaController nuevaPantalla = (NMMaquinaController) this.nuevaScene(NMMaquinaController.URL_VISTA);
 			nuevaPantalla.formatearModificarMaquina(maquina);
 		}
 	}

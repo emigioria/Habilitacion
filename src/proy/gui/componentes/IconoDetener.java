@@ -9,7 +9,7 @@ package proy.gui.componentes;
 import javafx.scene.image.Image;
 
 /**
- * Representa el ícono de la aplicación
+ * Representa un icono para detener
  */
 public class IconoDetener extends Image {
 

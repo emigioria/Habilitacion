@@ -86,53 +86,51 @@ public class NMTareaController extends ControladorRomano {
 		}
 	}
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().toString());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getParte().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			cantidad.getEditor().setTextFormatter(new TextFormatter<>(
-					new IntegerStringConverter(), 0,
-					c -> {
-						if(c.isContentChange()){
-							Integer numeroIngresado = null;
-							try{
-								numeroIngresado = new Integer(c.getControlNewText());
-							} catch(Exception e){
-								//No ingreso un entero;
-							}
-							if(numeroIngresado == null){
-								return null;
-							}
-						}
-						return c;
-					}));
-			cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
-			fechaTarea.setValue(conversorFechas.getLocalDate(new Date()));
-			actualizar();
+	@Override
+	protected void inicializar() {
+		columnaProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().toString());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
 		});
+		columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getParte().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		cantidad.getEditor().setTextFormatter(new TextFormatter<>(
+				new IntegerStringConverter(), 0,
+				c -> {
+					if(c.isContentChange()){
+						Integer numeroIngresado = null;
+						try{
+							numeroIngresado = new Integer(c.getControlNewText());
+						} catch(Exception e){
+							//No ingreso un entero;
+						}
+						if(numeroIngresado == null){
+							return null;
+						}
+					}
+					return c;
+				}));
+		cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+		fechaTarea.setValue(conversorFechas.getLocalDate(new Date()));
+		actualizar();
 	}
 
 	@FXML

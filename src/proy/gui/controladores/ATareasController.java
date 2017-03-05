@@ -6,7 +6,6 @@
  */
 package proy.gui.controladores;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -50,57 +49,55 @@ public class ATareasController extends ControladorRomano {
 	@FXML
 	private TableColumn<Tarea, String> columnaFecha;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaProceso.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getProceso().toString());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaMaquina.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getProceso().getParte().getMaquina().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaParte.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getProceso().getParte().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaOperario.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getOperario().toString());
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
-			columnaCantidad.setCellValueFactory((CellDataFeatures<Tarea, Number> param) -> {
-				if(param.getValue() != null){
-					return new SimpleIntegerProperty(param.getValue().getCantidadTeorica());
-				}
-				else{
-					return new SimpleIntegerProperty(-1);
-				}
-			});
-			columnaFecha.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(conversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
-				}
-				else{
-					return new SimpleStringProperty("<no name>");
-				}
-			});
+	@Override
+	protected void inicializar() {
+		columnaProceso.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getProceso().toString());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaMaquina.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getProceso().getParte().getMaquina().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaParte.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getProceso().getParte().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaOperario.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getOperario().toString());
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
+		});
+		columnaCantidad.setCellValueFactory((CellDataFeatures<Tarea, Number> param) -> {
+			if(param.getValue() != null){
+				return new SimpleIntegerProperty(param.getValue().getCantidadTeorica());
+			}
+			else{
+				return new SimpleIntegerProperty(-1);
+			}
+		});
+		columnaFecha.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(conversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
+			}
+			else{
+				return new SimpleStringProperty("<no name>");
+			}
 		});
 	}
 
@@ -122,7 +119,7 @@ public class ATareasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaTarea() {
-		NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URL_VISTA, apilador, coordinador);
+		NMTareaController nuevaPantalla = (NMTareaController) this.nuevaScene(NMTareaController.URL_VISTA);
 		nuevaPantalla.formatearNuevaTarea();
 	}
 
@@ -130,7 +127,7 @@ public class ATareasController extends ControladorRomano {
 	public void modificarTarea() {
 		Tarea tarea = tablaTareas.getSelectionModel().getSelectedItem();
 		if(tarea != null){
-			NMTareaController nuevaPantalla = (NMTareaController) ControladorRomano.nuevaScene(NMTareaController.URL_VISTA, apilador, coordinador);
+			NMTareaController nuevaPantalla = (NMTareaController) this.nuevaScene(NMTareaController.URL_VISTA);
 			nuevaPantalla.formatearModificarTarea(tarea);
 		}
 	}

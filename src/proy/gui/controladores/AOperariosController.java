@@ -44,65 +44,63 @@ public class AOperariosController extends ControladorRomano {
 	@FXML
 	private ArrayList<Operario> operariosAGuardar = new ArrayList<>();;
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
-				}
-				else{
-					return new SimpleStringProperty("<Sin Nombre>");
-				}
-			});
-			columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getApellido());
-				}
-				else{
-					return new SimpleStringProperty("<Sin Apellido>");
-				}
-			});
-			columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					return new SimpleStringProperty(param.getValue().getDNI());
-				}
-				else{
-					return new SimpleStringProperty("<Sin DNI>");
-				}
-			});
-
-			Callback<TableColumn<Operario, String>, TableCell<Operario, String>> call = col -> {
-				return new TableCellTextViewString<Operario>(Operario.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() != null && newValue != null){
-							this.setEditable(operariosAGuardar.contains(newValue));
-						}
-					}
-				};
-			};
-			tablaOperarios.setEditable(true);
-
-			columnaNombre.setCellFactory(call);
-			columnaNombre.setOnEditCommit((t) -> {
-				t.getRowValue().setNombre(t.getNewValue().trim());
-			});
-
-			columnaApellido.setCellFactory(call);
-			columnaApellido.setOnEditCommit((t) -> {
-				t.getRowValue().setApellido(t.getNewValue().trim());
-			});
-
-			columnaDNI.setCellFactory(call);
-			columnaDNI.setOnEditCommit((t) -> {
-				t.getRowValue().setDNI(t.getNewValue().trim());
-			});
-
-			actualizar();
+	@Override
+	protected void inicializar() {
+		columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getNombre());
+			}
+			else{
+				return new SimpleStringProperty("<Sin Nombre>");
+			}
 		});
+		columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getApellido());
+			}
+			else{
+				return new SimpleStringProperty("<Sin Apellido>");
+			}
+		});
+		columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+			if(param.getValue() != null){
+				return new SimpleStringProperty(param.getValue().getDNI());
+			}
+			else{
+				return new SimpleStringProperty("<Sin DNI>");
+			}
+		});
+
+		Callback<TableColumn<Operario, String>, TableCell<Operario, String>> call = col -> {
+			return new TableCellTextViewString<Operario>(Operario.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() != null && newValue != null){
+						this.setEditable(operariosAGuardar.contains(newValue));
+					}
+				}
+			};
+		};
+		tablaOperarios.setEditable(true);
+
+		columnaNombre.setCellFactory(call);
+		columnaNombre.setOnEditCommit((t) -> {
+			t.getRowValue().setNombre(t.getNewValue().trim());
+		});
+
+		columnaApellido.setCellFactory(call);
+		columnaApellido.setOnEditCommit((t) -> {
+			t.getRowValue().setApellido(t.getNewValue().trim());
+		});
+
+		columnaDNI.setCellFactory(call);
+		columnaDNI.setOnEditCommit((t) -> {
+			t.getRowValue().setDNI(t.getNewValue().trim());
+		});
+
+		actualizar();
 	}
 
 	@FXML

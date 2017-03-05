@@ -91,4 +91,9 @@ public class NMProcesoController extends ControladorRomano {
 	public void actualizar() {
 
 	}
+
+	@Override
+	protected void inicializar() {
+
+	}
 }

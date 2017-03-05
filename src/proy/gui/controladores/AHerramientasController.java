@@ -49,44 +49,40 @@ public class AHerramientasController extends ControladorRomano {
 
 	private ArrayList<Herramienta> herramientasAEliminar = new ArrayList<>();
 
-	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-
-			columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+	@Override
+	protected void inicializar() {
+		columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
+			if(param.getValue() != null){
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
-				return new SimpleStringProperty("<Sin Nombre>");
-			});
-
-			Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
-				return new TableCellTextViewString<Herramienta>(Herramienta.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Herramienta> observable, Herramienta oldValue, Herramienta newValue) {
-						this.setEditable(false);
-						if(this.getTableRow() != null && newValue != null){
-							this.setEditable(herramientasAGuardar.contains(newValue));
-						}
-					}
-				};
-			};
-			tablaHerramientas.setEditable(true);
-
-			columnaNombre.setCellFactory(call);
-			columnaNombre.setOnEditCommit((t) -> {
-				String nombre = t.getNewValue().toLowerCase().trim();
-				if(!nombre.isEmpty()){
-					t.getRowValue().setNombre(nombre);
-				}
-			});
-
-			actualizar();
+			}
+			return new SimpleStringProperty("<Sin Nombre>");
 		});
 
+		Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
+			return new TableCellTextViewString<Herramienta>(Herramienta.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Herramienta> observable, Herramienta oldValue, Herramienta newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() != null && newValue != null){
+						this.setEditable(herramientasAGuardar.contains(newValue));
+					}
+				}
+			};
+		};
+		tablaHerramientas.setEditable(true);
+
+		columnaNombre.setCellFactory(call);
+		columnaNombre.setOnEditCommit((t) -> {
+			String nombre = t.getNewValue().toLowerCase().trim();
+			if(!nombre.isEmpty()){
+				t.getRowValue().setNombre(nombre);
+			}
+		});
+
+		actualizar();
 	}
 
 	@FXML
