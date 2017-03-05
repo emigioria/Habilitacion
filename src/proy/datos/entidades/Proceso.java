@@ -23,6 +23,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -75,6 +76,9 @@ public class Proceso {
 
 	@ManyToMany(mappedBy = "proceso", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Tarea> tareas;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	public Proceso() {
 		super();
@@ -273,6 +277,6 @@ public class Proceso {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getDescripcion()) + " - " + FormateadorString.primeraMayuscula(this.getTipo());
+		return formater.primeraMayuscula(this.getDescripcion()) + " - " + formater.primeraMayuscula(this.getTipo());
 	}
 }

@@ -17,7 +17,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import proy.comun.FormateadorString;
 import proy.datos.entidades.Material;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
@@ -58,7 +57,7 @@ public class AMaterialesController extends ControladorRomano {
 			columnaMaterial.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");

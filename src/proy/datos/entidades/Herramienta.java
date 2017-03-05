@@ -22,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -50,6 +51,9 @@ public class Herramienta {
 
 	@ManyToMany(mappedBy = "herramientas", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Proceso> procesos;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	public Herramienta() {
 		super();
@@ -154,6 +158,6 @@ public class Herramienta {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getNombre());
+		return formater.primeraMayuscula(this.getNombre());
 	}
 }

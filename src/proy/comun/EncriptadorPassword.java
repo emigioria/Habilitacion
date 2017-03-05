@@ -15,10 +15,13 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Encargada de la encriptación de contraseñas
  */
-public abstract class EncriptadorPassword {
+@Service
+public class EncriptadorPassword {
 
 	private final static Integer ITERATIONS = 10000;
 	private final static Integer KEY_LENGTH = 256;
@@ -33,11 +36,11 @@ public abstract class EncriptadorPassword {
 	 *            sal para ocultar la palabra.
 	 * @return String
 	 */
-	public static String encriptar(char[] palabra, String sal) {
+	public String encriptar(char[] palabra, String sal) {
 		return new String(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes(), ITERATIONS, KEY_LENGTH));
 	}
 
-	private static byte[] hashPassword(final char[] password, final byte[] salt, final int iterations, final int keyLength) {
+	private byte[] hashPassword(final char[] password, final byte[] salt, final int iterations, final int keyLength) {
 		try{
 			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
 			PBEKeySpec spec = new PBEKeySpec(password, salt, iterations, keyLength);
@@ -50,7 +53,7 @@ public abstract class EncriptadorPassword {
 		}
 	}
 
-	public static String generarSal() {
+	public String generarSal() {
 		SecureRandom random = new SecureRandom();
 		byte bytes[] = new byte[20];
 		random.nextBytes(bytes);

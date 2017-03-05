@@ -18,6 +18,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -49,6 +50,9 @@ public abstract class Usuario {
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "usuario_codestado_fk"), nullable = false)
 	private Estado estado;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	public Usuario() {
 		super();
@@ -179,6 +183,6 @@ public abstract class Usuario {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getNombre()) + " " + FormateadorString.primeraMayuscula(this.getApellido());
+		return formater.primeraMayuscula(this.getNombre()) + " " + formater.primeraMayuscula(this.getApellido());
 	}
 }

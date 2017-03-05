@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -37,6 +38,9 @@ public class EstadoTarea {
 	@Enumerated(EnumType.STRING)
 	@Column(name = COLUMNA_NOMBRE, length = 10, nullable = false, unique = true)
 	private EstadoTareaStr nombre;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	private EstadoTarea() {
 		super();
@@ -104,6 +108,6 @@ public class EstadoTarea {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getNombre().toString());
+		return formater.primeraMayuscula(this.getNombre().toString());
 	}
 }

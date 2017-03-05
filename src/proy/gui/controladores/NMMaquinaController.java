@@ -25,7 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
-import proy.comun.FormateadorString;
 import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
@@ -118,7 +117,7 @@ public class NMMaquinaController extends ControladorRomano {
 			columnaNombreParte.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");
@@ -178,7 +177,7 @@ public class NMMaquinaController extends ControladorRomano {
 			columnaNombrePieza.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");

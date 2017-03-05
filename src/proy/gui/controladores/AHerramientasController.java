@@ -18,7 +18,6 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import proy.comun.FormateadorString;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Proceso;
 import proy.excepciones.PersistenciaException;
@@ -60,7 +59,7 @@ public class AHerramientasController extends ControladorRomano {
 			columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin Nombre>");

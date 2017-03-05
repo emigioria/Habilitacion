@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import proy.comun.FormateadorString;
 import proy.datos.entidades.Maquina;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
@@ -42,7 +41,7 @@ public class AMaquinasController extends ControladorRomano {
 			columnaNombre.setCellValueFactory(param -> {
 				if(param.getValue() != null){
 					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(FormateadorString.primeraMayuscula(param.getValue().getNombre()));
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
 				return new SimpleStringProperty("<Sin nombre>");

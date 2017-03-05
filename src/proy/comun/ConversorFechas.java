@@ -14,9 +14,12 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-public abstract class ConversorFechas {
+import org.springframework.stereotype.Service;
 
-	public static LocalDate getLocalDate(Date fecha) {
+@Service
+public class ConversorFechas {
+
+	public LocalDate getLocalDate(Date fecha) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
 		LocalDate localDate = LocalDate.of(cal.get(Calendar.YEAR),
@@ -25,13 +28,13 @@ public abstract class ConversorFechas {
 		return localDate;
 	}
 
-	public static Date getDate(LocalDate fecha) {
+	public Date getDate(LocalDate fecha) {
 		Instant instant = Instant.from(fecha.atStartOfDay(ZoneId.systemDefault()));
 		Date date = Date.from(instant);
 		return date;
 	}
 
-	public static String diaMesYAnioToString(Date fecha) {
+	public String diaMesYAnioToString(Date fecha) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		return formatter.format(fecha);
 	}

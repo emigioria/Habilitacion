@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -45,6 +46,9 @@ public class Material {
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "material_codestado_fk"), nullable = false)
 	private Estado estado;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	public Material() {
 		super();
@@ -161,6 +165,6 @@ public class Material {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getNombre());
+		return formater.primeraMayuscula(this.getNombre());
 	}
 }

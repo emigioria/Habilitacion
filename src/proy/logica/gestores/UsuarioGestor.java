@@ -40,8 +40,12 @@ public class UsuarioGestor {
 
 	@Resource
 	private UsuarioService persistidorUsuario;
+
 	@Resource
 	private ProcesoService persistidorProcesos;
+
+	@Resource
+	private EncriptadorPassword encriptadorPassword;
 
 	public ResultadoAutenticacion autenticarAdministrador(DatosLogin login) throws PersistenciaException {
 		ArrayList<ErrorAutenticacion> errores = new ArrayList<>();
@@ -55,7 +59,7 @@ public class UsuarioGestor {
 			//Si lo encuentra comprueba que la contraseña ingresada coincida con la de la base de datos
 			Administrador admin = administradores.get(0);
 			String sal = admin.getSal();
-			String contraIngresada = EncriptadorPassword.encriptar(login.getContrasenia(), sal);
+			String contraIngresada = encriptadorPassword.encriptar(login.getContrasenia(), sal);
 			if(!contraIngresada.equals(admin.getContrasenia())){
 				//Si no coincide falla
 				errores.add(ErrorAutenticacion.DATOS_INVALIDOS);

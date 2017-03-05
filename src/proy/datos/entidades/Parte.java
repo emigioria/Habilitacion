@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
@@ -60,6 +61,9 @@ public class Parte {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "parte", orphanRemoval = true, fetch = FetchType.LAZY)
 	private Set<Proceso> procesos;
+
+	@Transient
+	private FormateadorString formater = new FormateadorString();
 
 	public Parte() {
 		super();
@@ -198,6 +202,6 @@ public class Parte {
 
 	@Override
 	public String toString() {
-		return FormateadorString.primeraMayuscula(this.getNombre());
+		return formater.primeraMayuscula(this.getNombre());
 	}
 }

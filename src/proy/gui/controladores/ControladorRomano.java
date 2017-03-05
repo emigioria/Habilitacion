@@ -12,9 +12,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import proy.comun.ConversorFechas;
+import proy.comun.FormateadorString;
 import proy.gui.ControladorApilable;
-import proy.gui.PresentadorExcepciones;
 import proy.gui.PilaScene;
+import proy.gui.PresentadorExcepciones;
 import proy.logica.CoordinadorJavaFX;
 
 public abstract class ControladorRomano implements ControladorApilable {
@@ -22,6 +24,10 @@ public abstract class ControladorRomano implements ControladorApilable {
 	protected PilaScene apilador;
 
 	protected CoordinadorJavaFX coordinador;
+
+	protected ConversorFechas conversorFechas = new ConversorFechas();
+
+	protected FormateadorString formateadorString = new FormateadorString();
 
 	@Override
 	public void setApilador(PilaScene apilador) {

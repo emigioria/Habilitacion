@@ -23,7 +23,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.converter.IntegerStringConverter;
-import proy.comun.ConversorFechas;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.EstadoTarea;
 import proy.datos.entidades.Operario;
@@ -133,7 +132,7 @@ public class NMTareaController extends ControladorRomano {
 						return c;
 					}));
 			cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
-			fechaTarea.setValue(ConversorFechas.getLocalDate(new Date()));
+			fechaTarea.setValue(conversorFechas.getLocalDate(new Date()));
 			actualizar();
 		});
 	}
@@ -167,7 +166,7 @@ public class NMTareaController extends ControladorRomano {
 		tar = new Tarea();
 		tar.setCantidadTeorica(cantidad.getValue());
 		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
-		tar.setFechaPlanificada(ConversorFechas.getDate(fechaTarea.getValue()));
+		tar.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
 		tar.setObservaciones(observaciones.getText().trim());
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
@@ -217,7 +216,7 @@ public class NMTareaController extends ControladorRomano {
 		tar = this.tarea;
 		tar.setCantidadTeorica(cantidad.getValue());
 		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
-		tar.setFechaPlanificada(ConversorFechas.getDate(fechaTarea.getValue()));
+		tar.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
 		tar.setObservaciones(observaciones.getText());
 		tar.setOperario(cbOperario.getValue());
 		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
@@ -265,7 +264,7 @@ public class NMTareaController extends ControladorRomano {
 		tablaProcesos.getSelectionModel().select(tarea.getProceso());
 		cantidad.getValueFactory().setValue(tarea.getCantidadTeorica());
 		cbOperario.getSelectionModel().select(tarea.getOperario());
-		fechaTarea.setValue(ConversorFechas.getLocalDate(tarea.getFechaPlanificada()));
+		fechaTarea.setValue(conversorFechas.getLocalDate(tarea.getFechaPlanificada()));
 		observaciones.setText(tarea.getObservaciones());
 	}
 

@@ -14,7 +14,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import proy.comun.ConversorFechas;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
 import proy.gui.PresentadorExcepciones;
@@ -98,7 +97,7 @@ public class ATareasController extends ControladorRomano {
 			});
 			columnaFecha.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
 				if(param.getValue() != null){
-					return new SimpleStringProperty(ConversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
+					return new SimpleStringProperty(conversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
 				}
 				else{
 					return new SimpleStringProperty("<no name>");
