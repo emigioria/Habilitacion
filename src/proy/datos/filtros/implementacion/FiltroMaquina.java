@@ -41,7 +41,7 @@ public class FiltroMaquina extends Filtro<Maquina> {
 		public FiltroMaquina build() {
 			filtro.setConsulta();
 			filtro.setNamedQuery();
-			return new FiltroMaquina();
+			return filtro;
 		}
 	}
 
