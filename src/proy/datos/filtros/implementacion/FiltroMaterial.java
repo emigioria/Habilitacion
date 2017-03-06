@@ -17,109 +17,104 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroMaterial extends Filtro<Material> {
 
+	private String nombreEntidad = "a";
+	private Boolean conPiezas;
 	private String consulta = "";
 	private String namedQuery = "";
-	private EstadoStr estado;
+	private EstadoStr estado = EstadoStr.ALTA;
 	private ArrayList<Material> materiales;
 	private ArrayList<String> nombres;
 
 	public static class Builder {
 
-		private String nombreEntidad = "a";
-		private ArrayList<Material> materiales;
-		private Boolean conPiezas;
-		private EstadoStr estado = EstadoStr.ALTA;
-		private ArrayList<String> nombres;
+		private FiltroMaterial filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroMaterial();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder materiales(ArrayList<Material> materiales) {
 			if(materiales != null && !materiales.isEmpty()){
-				this.materiales = materiales;
+				filtro.materiales = materiales;
 			}
 			return this;
 		}
 
 		public Builder conPiezas() {
-			this.conPiezas = true;
+			filtro.conPiezas = true;
 			return this;
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
+			filtro.nombres = nombres;
 			return this;
 		}
 
 		public FiltroMaterial build() {
-			return new FiltroMaterial(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 	}
 
-	private FiltroMaterial(Builder builder) {
+	private FiltroMaterial() {
 		super(Material.class);
-		this.materiales = builder.materiales;
-		this.estado = builder.estado;
-		this.nombres = builder.nombres;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
-		if(builder.materiales != null){
+	private void setNamedQuery() {
+		if(this.materiales != null){
 			return;
 		}
-		if(builder.estado != EstadoStr.ALTA){
+		if(this.estado != EstadoStr.ALTA){
 			return;
 		}
-		if(builder.conPiezas != null){
+		if(this.conPiezas != null){
 			return;
 		}
-		if(builder.nombres != null){
+		if(this.nombres != null){
 			return;
 		}
 		namedQuery = "listarMateriales";
 	}
 
-	private String getSelect(Builder builder) {
+	private String getSelect() {
 		String select;
-		if(builder.conPiezas != null && builder.conPiezas){
-			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		if(this.conPiezas != null && this.conPiezas){
+			select = "SELECT DISTINCT " + this.nombreEntidad;
 		}
 		else{
-			select = "SELECT " + builder.nombreEntidad;
+			select = "SELECT " + this.nombreEntidad;
 		}
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
+	private String getFrom() {
 		String from;
-		if(builder.conPiezas != null && builder.conPiezas){
-			from = " FROM Material " + builder.nombreEntidad + ", Pieza piez ";
+		if(this.conPiezas != null && this.conPiezas){
+			from = " FROM Material " + this.nombreEntidad + ", Pieza piez ";
 		}
 		else{
-			from = " FROM Material " + builder.nombreEntidad;
+			from = " FROM Material " + this.nombreEntidad;
 		}
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.materiales != null) ? (builder.nombreEntidad + " in (:mts) AND ") : (""))
-						+ ((builder.conPiezas != null) ? ((builder.conPiezas) ? (builder.nombreEntidad + " = piez.material AND ") : ("")) : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((this.materiales != null) ? (this.nombreEntidad + " in (:mts) AND ") : (""))
+						+ ((this.conPiezas != null) ? ((this.conPiezas) ? (this.nombreEntidad + " = piez.material AND ") : ("")) : (""))
+						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -128,18 +123,18 @@ public class FiltroMaterial extends Filtro<Material> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 

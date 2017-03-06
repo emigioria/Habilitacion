@@ -18,9 +18,11 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroParte extends Filtro<Parte> {
 
+	private String nombreEntidad = "a";
+	private Boolean conTareas;
 	private String consulta = "";
 	private String namedQuery = "";
-	private EstadoStr estado;
+	private EstadoStr estado = EstadoStr.ALTA;
 	private Maquina maquina;
 	private ArrayList<Parte> partes;
 	private ArrayList<String> nombres;
@@ -28,118 +30,107 @@ public class FiltroParte extends Filtro<Parte> {
 
 	public static class Builder {
 
-		private String nombreEntidad = "a";
-		private EstadoStr estado = EstadoStr.ALTA;
-		private Maquina maquina;
-		private ArrayList<Parte> partes;
-		private Boolean conTareas;
-		private ArrayList<String> nombres;
-		private Boolean sinUnir = false;
+		private FiltroParte filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroParte();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder maquina(Maquina maquina) {
-			this.maquina = maquina;
+			filtro.maquina = maquina;
 			return this;
 		}
 
 		public Builder partes(ArrayList<Parte> partes) {
 			if(partes != null && !partes.isEmpty()){
-				this.partes = partes;
+				filtro.partes = partes;
 			}
 			return this;
 		}
 
 		public Builder conTareas() {
-			this.conTareas = true;
+			filtro.conTareas = true;
 			return this;
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
+			filtro.nombres = nombres;
 			return this;
 		}
 
 		public Builder sinUnir() {
-			this.sinUnir = true;
+			filtro.sinUnir = true;
 			return this;
 		}
 
 		public FiltroParte build() {
-			return new FiltroParte(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 	}
 
-	private FiltroParte(Builder builder) {
+	private FiltroParte() {
 		super(Parte.class);
-		this.estado = builder.estado;
-		this.maquina = builder.maquina;
-		this.partes = builder.partes;
-		this.nombres = builder.nombres;
-		this.sinUnir = builder.sinUnir;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
-		if(builder.estado != EstadoStr.ALTA){
+	private void setNamedQuery() {
+		if(this.estado != EstadoStr.ALTA){
 			return;
 		}
-		if(builder.maquina != null){
+		if(this.maquina != null){
 			return;
 		}
-		if(builder.partes != null){
+		if(this.partes != null){
 			return;
 		}
-		if(builder.conTareas != null){
+		if(this.conTareas != null){
 			return;
 		}
-		if(builder.nombres != null){
+		if(this.nombres != null){
 			return;
 		}
 		namedQuery = "listarPartes";
 	}
 
-	private String getSelect(Builder builder) {
+	private String getSelect() {
 		String select;
-		if(builder.conTareas != null && builder.conTareas){
-			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		if(this.conTareas != null && this.conTareas){
+			select = "SELECT DISTINCT " + this.nombreEntidad;
 		}
 		else{
-			select = "SELECT " + builder.nombreEntidad;
+			select = "SELECT " + this.nombreEntidad;
 		}
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
+	private String getFrom() {
 		String from;
-		if(builder.conTareas != null && builder.conTareas){
-			from = " FROM Parte " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc inner join proc.tareas tar";
+		if(this.conTareas != null && this.conTareas){
+			from = " FROM Parte " + this.nombreEntidad + " inner join " + this.nombreEntidad + ".procesos proc inner join proc.tareas tar";
 		}
 		else{
-			from = " FROM Parte " + builder.nombreEntidad;
+			from = " FROM Parte " + this.nombreEntidad;
 		}
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where =
-				((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.maquina != null) ? (builder.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((builder.partes != null) ? (builder.nombreEntidad + " in (:pts) AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((this.maquina != null) ? (this.nombreEntidad + ".maquina = :maq AND ") : (""))
+						+ ((this.partes != null) ? (this.nombreEntidad + " in (:pts) AND ") : (""))
+						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -148,18 +139,18 @@ public class FiltroParte extends Filtro<Parte> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 

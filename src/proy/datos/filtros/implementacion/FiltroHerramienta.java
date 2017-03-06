@@ -18,106 +18,99 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroHerramienta extends Filtro<Herramienta> {
 
+	private String nombreEntidad = "h";
 	private String consulta = "";
 	private String namedQuery = "";
-	private EstadoStr estado;
+	private EstadoStr estado = EstadoStr.ALTA;
 	private String nombre;
 	private ArrayList<Proceso> procesos;
 	private ArrayList<String> nombres;
 
 	public static class Builder {
 
-		private EstadoStr estado = EstadoStr.ALTA;
-		private String nombreEntidad = "h";
-		private String nombre;
-		private ArrayList<Proceso> procesos;
-		private ArrayList<String> nombres;
+		private FiltroHerramienta filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroHerramienta();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder nombre(String nombre) {
-			this.nombre = nombre;
+			filtro.nombre = nombre;
 			return this;
 		}
 
 		public Builder procesos(ArrayList<Proceso> procesos) {
 			if(procesos != null && !procesos.isEmpty()){
-				this.procesos = procesos;
+				filtro.procesos = procesos;
 			}
 			return this;
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			this.nombres = nombres;
+			filtro.nombres = nombres;
 			return this;
 		}
 
 		public FiltroHerramienta build() {
-			return new FiltroHerramienta(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 
 	}
 
-	private FiltroHerramienta(Builder builder) {
+	private FiltroHerramienta() {
 		super(Herramienta.class);
-		this.nombre = builder.nombre;
-		this.estado = builder.estado;
-		this.procesos = builder.procesos;
-		this.nombres = builder.nombres;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
-		if(builder.estado != EstadoStr.ALTA){
+	private void setNamedQuery() {
+		if(this.estado != EstadoStr.ALTA){
 			return;
 		}
-		if(builder.nombre != null){
+		if(this.nombre != null){
 			return;
 		}
-		if(builder.procesos != null){
+		if(this.procesos != null){
 			return;
 		}
-		if(builder.nombres != null){
+		if(this.nombres != null){
 			return;
 		}
 		namedQuery = "listarHerramientas";
 	}
 
-	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+	private String getSelect() {
+		String select = "SELECT " + this.nombreEntidad;
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
+	private String getFrom() {
 		String from;
 		if(procesos != null){
-			from = " FROM Herramienta " + builder.nombreEntidad + " inner join " + builder.nombreEntidad + ".procesos proc";
+			from = " FROM Herramienta " + this.nombreEntidad + " inner join " + this.nombreEntidad + ".procesos proc";
 		}
 		else{
-			from = " FROM Herramienta " + builder.nombreEntidad;
+			from = " FROM Herramienta " + this.nombreEntidad;
 		}
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where =
-				((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
-						+ ((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""))
-						+ ((builder.procesos != null) ? ("proc in (:prs) AND ") : (""))
-						+ ((builder.nombres != null) ? (builder.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+				((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+						+ ((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+						+ ((this.procesos != null) ? ("proc in (:prs) AND ") : (""))
+						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -126,18 +119,18 @@ public class FiltroHerramienta extends Filtro<Herramienta> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 

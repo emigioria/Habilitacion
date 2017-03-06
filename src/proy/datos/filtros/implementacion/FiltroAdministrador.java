@@ -15,73 +15,70 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroAdministrador extends Filtro<Administrador> {
 
+	private String nombreEntidad = "a";
 	private String consulta = "";
 	private String namedQuery = "";
 	private String dni;
-	private EstadoStr estado;
+	private EstadoStr estado = EstadoStr.ALTA;
 
 	public static class Builder {
 
-		private String nombreEntidad = "a";
-		private String dni;
-		private EstadoStr estado = EstadoStr.ALTA;
+		private FiltroAdministrador filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroAdministrador();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder dni(String dni) {
-			this.dni = dni;
+			filtro.dni = dni;
 			return this;
 		}
 
 		public FiltroAdministrador build() {
-			return new FiltroAdministrador(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 	}
 
-	private FiltroAdministrador(Builder builder) {
+	private FiltroAdministrador() {
 		super(Administrador.class);
-		this.dni = builder.dni;
-		this.estado = builder.estado;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
-		if(builder.dni != null){
+	private void setNamedQuery() {
+		if(this.dni != null){
 			return;
 		}
-		if(builder.estado != EstadoStr.ALTA){
+		if(this.estado != EstadoStr.ALTA){
 			return;
 		}
 		namedQuery = "listarAdministradores";
 	}
 
-	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+	private String getSelect() {
+		String select = "SELECT " + this.nombreEntidad;
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
-		String from = " FROM Administrador " + builder.nombreEntidad;
+	private String getFrom() {
+		String from = " FROM Administrador " + this.nombreEntidad;
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where =
-				((builder.dni != null) ? (builder.nombreEntidad + ".dni = :dni AND ") : ("")) +
-						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((this.dni != null) ? (this.nombreEntidad + ".dni = :dni AND ") : ("")) +
+						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -90,18 +87,18 @@ public class FiltroAdministrador extends Filtro<Administrador> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".dni ASC";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".dni ASC";
 		return orderBy;
 	}
 

@@ -14,68 +14,70 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroComentario extends Filtro<Comentario> {
 
+	private String nombreEntidad = "c";
 	private String consulta = "";
 	private String namedQuery = "";
 
 	public static class Builder {
 
-		private String nombreEntidad = "c";
+		private FiltroComentario filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroComentario();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public FiltroComentario build() {
-			return new FiltroComentario(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 	}
 
-	private FiltroComentario(Builder builder) {
+	private FiltroComentario() {
 		super(Comentario.class);
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
+	private void setNamedQuery() {
 		namedQuery = "listarComentarios";
 	}
 
-	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+	private String getSelect() {
+		String select = "SELECT " + this.nombreEntidad;
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
-		String from = " FROM Comentario " + builder.nombreEntidad;
+	private String getFrom() {
+		String from = " FROM Comentario " + this.nombreEntidad;
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where = "";
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".fechaComentario ";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaComentario ";
 		return orderBy;
 	}
 

@@ -14,65 +14,64 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroMaquina extends Filtro<Maquina> {
 
+	private String nombreEntidad = "a";
 	private String consulta = "";
 	private String namedQuery = "";
 	private String nombre;
 
 	public static class Builder {
 
-		private String nombreEntidad = "a";
-		private String nombre = null;
+		private FiltroMaquina filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroMaquina();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder nombre(String nombre) {
-			this.nombre = nombre;
+			filtro.nombre = nombre;
 			return this;
 		}
 
 		public FiltroMaquina build() {
-			return new FiltroMaquina(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return new FiltroMaquina();
 		}
 	}
 
-	private FiltroMaquina(Builder builder) {
+	private FiltroMaquina() {
 		super(Maquina.class);
-		this.nombre = builder.nombre;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
+	private void setNamedQuery() {
 		if(nombre != null){
 			return;
 		}
 		namedQuery = "listarMaquinas";
 	}
 
-	private String getSelect(Builder builder) {
-		String select = "SELECT " + builder.nombreEntidad;
+	private String getSelect() {
+		String select = "SELECT " + this.nombreEntidad;
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
-		String from = " FROM Maquina " + builder.nombreEntidad;
+	private String getFrom() {
+		String from = " FROM Maquina " + this.nombreEntidad;
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
-		String where = ((builder.nombre != null) ? (builder.nombreEntidad + ".nombre LIKE :nom AND ") : (""));
+	private String getWhere() {
+		String where = ((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -81,18 +80,18 @@ public class FiltroMaquina extends Filtro<Maquina> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".nombre ";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".nombre ";
 		return orderBy;
 	}
 

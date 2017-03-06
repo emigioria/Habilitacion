@@ -23,6 +23,7 @@ import proy.datos.filtros.Filtro;
 
 public class FiltroTarea extends Filtro<Tarea> {
 
+	private String nombreEntidad = "a";
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoTareaStr noEstado;
@@ -37,196 +38,178 @@ public class FiltroTarea extends Filtro<Tarea> {
 
 	public static class Builder {
 
-		private String nombreEntidad = "a";
-		private EstadoTareaStr noEstado;
-		private EstadoTareaStr estado;
-		private ArrayList<Herramienta> herramientas;
-		private Operario operario;
-		private Date fechaPlanificadaInicio;
-		private Date fechaPlanificadaFin;
-		private ArrayList<Parte> partes;
-		private ArrayList<Pieza> piezas;
-		private Proceso proceso;
+		private FiltroTarea filtro;
 
 		public Builder() {
 			super();
+			filtro = new FiltroTarea();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
-			this.nombreEntidad = nombreEntidad;
+			filtro.nombreEntidad = nombreEntidad;
 			return this;
 		}
 
 		public Builder herramienta(Herramienta herramienta) {
 			if(herramienta != null){
-				this.herramientas = new ArrayList<>();
-				this.herramientas.add(herramienta);
+				filtro.herramientas = new ArrayList<>();
+				filtro.herramientas.add(herramienta);
 			}
 			return this;
 		}
 
 		public Builder herramientas(ArrayList<Herramienta> herramientas) {
 			if(herramientas != null && !herramientas.isEmpty()){
-				this.herramientas = herramientas;
+				filtro.herramientas = herramientas;
 			}
 			return this;
 		}
 
 		public Builder noEstado(EstadoTareaStr noEstado) {
-			this.noEstado = noEstado;
+			filtro.noEstado = noEstado;
 			return this;
 		}
 
 		public Builder estado(EstadoTareaStr estado) {
-			this.estado = estado;
+			filtro.estado = estado;
 			return this;
 		}
 
 		public Builder operario(Operario operario) {
-			this.operario = operario;
+			filtro.operario = operario;
 			return this;
 		}
 
 		public Builder fechaPlanificadaInicio(Date fechaPlanificadaInicio) {
-			this.fechaPlanificadaInicio = fechaPlanificadaInicio;
+			filtro.fechaPlanificadaInicio = fechaPlanificadaInicio;
 			return this;
 		}
 
 		public Builder fechaPlanificadaFin(Date fechaPlanificadaFin) {
-			this.fechaPlanificadaFin = fechaPlanificadaFin;
+			filtro.fechaPlanificadaFin = fechaPlanificadaFin;
 			return this;
 		}
 
 		public Builder parte(Parte parte) {
 			if(parte != null){
-				this.partes = new ArrayList<>();
-				this.partes.add(parte);
+				filtro.partes = new ArrayList<>();
+				filtro.partes.add(parte);
 			}
 			return this;
 		}
 
 		public Builder partes(ArrayList<Parte> partes) {
 			if(partes != null && !partes.isEmpty()){
-				this.partes = partes;
+				filtro.partes = partes;
 			}
 			return this;
 		}
 
 		public Builder pieza(Pieza pieza) {
 			if(pieza != null){
-				this.piezas = new ArrayList<>();
-				this.piezas.add(pieza);
+				filtro.piezas = new ArrayList<>();
+				filtro.piezas.add(pieza);
 			}
 			return this;
 		}
 
 		public Builder piezas(ArrayList<Pieza> piezas) {
 			if(piezas != null && !piezas.isEmpty()){
-				this.piezas = piezas;
+				filtro.piezas = piezas;
 			}
 			return this;
 		}
 
 		public Builder proceso(Proceso proceso) {
-			this.proceso = proceso;
+			filtro.proceso = proceso;
 			return this;
 		}
 
 		public FiltroTarea build() {
-			return new FiltroTarea(this);
+			filtro.setConsulta();
+			filtro.setNamedQuery();
+			return filtro;
 		}
 	}
 
-	private FiltroTarea(Builder builder) {
+	private FiltroTarea() {
 		super(Tarea.class);
-		this.noEstado = builder.noEstado;
-		this.estado = builder.estado;
-		this.herramientas = builder.herramientas;
-		this.operario = builder.operario;
-		this.fechaPlanificadaInicio = builder.fechaPlanificadaInicio;
-		this.fechaPlanificadaFin = builder.fechaPlanificadaFin;
-		this.partes = builder.partes;
-		this.piezas = builder.piezas;
-		this.proceso = builder.proceso;
-
-		setConsulta(builder);
-		setNamedQuery(builder);
 	}
 
-	private void setConsulta(Builder builder) {
-		consulta = this.getSelect(builder) + this.getFrom(builder) + this.getWhere(builder) + this.getGroupBy(builder) + this.getHaving(builder) + this.getOrderBy(builder);
+	private void setConsulta() {
+		consulta = this.getSelect() + this.getFrom() + this.getWhere() + this.getGroupBy() + this.getHaving() + this.getOrderBy();
 	}
 
-	private void setNamedQuery(Builder builder) {
-		if(builder.noEstado != null){
+	private void setNamedQuery() {
+		if(this.noEstado != null){
 			return;
 		}
-		if(builder.estado != null){
+		if(this.estado != null){
 			return;
 		}
-		if(builder.herramientas != null){
+		if(this.herramientas != null){
 			return;
 		}
-		if(builder.operario != null){
+		if(this.operario != null){
 			return;
 		}
-		if(builder.fechaPlanificadaInicio != null){
+		if(this.fechaPlanificadaInicio != null){
 			return;
 		}
-		if(builder.fechaPlanificadaFin != null){
+		if(this.fechaPlanificadaFin != null){
 			return;
 		}
-		if(builder.partes != null){
+		if(this.partes != null){
 			return;
 		}
-		if(builder.piezas != null){
+		if(this.piezas != null){
 			return;
 		}
-		if(builder.proceso != null){
+		if(this.proceso != null){
 			return;
 		}
 		namedQuery = "listarTareas";
 	}
 
-	private String getSelect(Builder builder) {
+	private String getSelect() {
 		String select;
-		if(builder.herramientas != null || builder.partes != null || builder.piezas != null){
-			select = "SELECT DISTINCT " + builder.nombreEntidad;
+		if(this.herramientas != null || this.partes != null || this.piezas != null){
+			select = "SELECT DISTINCT " + this.nombreEntidad;
 		}
 		else{
-			select = "SELECT " + builder.nombreEntidad;
+			select = "SELECT " + this.nombreEntidad;
 		}
 		return select;
 	}
 
-	private String getFrom(Builder builder) {
+	private String getFrom() {
 		String from;
-		if(builder.herramientas != null && builder.piezas != null){
-			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.herramientas herr, Pieza pies";
+		if(this.herramientas != null && this.piezas != null){
+			from = " FROM Tarea " + this.nombreEntidad + " left join " + this.nombreEntidad + ".proceso proc left join proc.herramientas herr, Pieza pies";
 		}
-		else if(builder.herramientas != null){
-			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.herramientas herr";
+		else if(this.herramientas != null){
+			from = " FROM Tarea " + this.nombreEntidad + " left join " + this.nombreEntidad + ".proceso proc left join proc.herramientas herr";
 		}
-		else if(builder.piezas != null){
-			from = " FROM Tarea " + builder.nombreEntidad + " left join " + builder.nombreEntidad + ".proceso proc left join proc.piezas pies";
+		else if(this.piezas != null){
+			from = " FROM Tarea " + this.nombreEntidad + " left join " + this.nombreEntidad + ".proceso proc left join proc.piezas pies";
 		}
 		else{
-			from = " FROM Tarea " + builder.nombreEntidad;
+			from = " FROM Tarea " + this.nombreEntidad;
 		}
 		return from;
 	}
 
-	private String getWhere(Builder builder) {
+	private String getWhere() {
 		String where =
-				((builder.noEstado != null) ? (builder.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
-						((builder.estado != null) ? (builder.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
-						((builder.herramientas != null) ? ("herr in (:hes) AND ") : ("")) +
-						((builder.operario != null) ? (builder.nombreEntidad + ".operario = :op AND ") : ("")) +
-						((builder.fechaPlanificadaInicio != null) ? (builder.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
-						((builder.fechaPlanificadaFin != null) ? (builder.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : ("")) +
-						((builder.partes != null) ? ("proc.parte in (:prs) AND ") : ("")) +
-						((builder.piezas != null) ? ("pies in (:pis) AND ") : ("")) +
-						((builder.proceso != null) ? (builder.nombreEntidad + ".proceso = :pro AND ") : (""));
+				((this.noEstado != null) ? (this.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
+						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
+						((this.herramientas != null) ? ("herr in (:hes) AND ") : ("")) +
+						((this.operario != null) ? (this.nombreEntidad + ".operario = :op AND ") : ("")) +
+						((this.fechaPlanificadaInicio != null) ? (this.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
+						((this.fechaPlanificadaFin != null) ? (this.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : ("")) +
+						((this.partes != null) ? ("proc.parte in (:prs) AND ") : ("")) +
+						((this.piezas != null) ? ("pies in (:pis) AND ") : ("")) +
+						((this.proceso != null) ? (this.nombreEntidad + ".proceso = :pro AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -235,18 +218,18 @@ public class FiltroTarea extends Filtro<Tarea> {
 		return where;
 	}
 
-	private String getGroupBy(Builder builder) {
+	private String getGroupBy() {
 		String groupBy = "";
 		return groupBy;
 	}
 
-	private String getHaving(Builder builder) {
+	private String getHaving() {
 		String having = "";
 		return having;
 	}
 
-	private String getOrderBy(Builder builder) {
-		String orderBy = " ORDER BY " + builder.nombreEntidad + ".fechaPlanificada ASC";
+	private String getOrderBy() {
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaPlanificada ASC";
 		return orderBy;
 	}
 
