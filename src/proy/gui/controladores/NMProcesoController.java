@@ -16,6 +16,7 @@ import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
+import proy.gui.ControladorRomano;
 
 public class NMProcesoController extends ControladorRomano {
 

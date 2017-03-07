@@ -4,55 +4,38 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.gui.controladores;
+package proy.gui;
 
 import java.io.IOException;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import proy.comun.ConversorFechas;
-import proy.comun.FormateadorString;
-import proy.gui.ControladorApilable;
-import proy.gui.PilaScene;
+import javafx.stage.Stage;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
-public abstract class ControladorRomano implements ControladorApilable {
+public abstract class ControladorRomano extends ControladorJavaFX implements ControladorApilable {
 
 	protected PilaScene apilador;
 
-	protected CoordinadorJavaFX coordinador;
-
-	protected ConversorFechas conversorFechas = new ConversorFechas();
-
-	protected FormateadorString formateadorString = new FormateadorString();
-
-	protected PresentadorVentanas presentadorVentanas = new PresentadorVentanas();
-
-	public void setApilador(PilaScene apilador) {
+	private void setApilador(PilaScene apilador) {
 		this.apilador = apilador;
 	}
 
-	public void setCoordinador(CoordinadorJavaFX coordinador) {
-		this.coordinador = coordinador;
-	}
-
-	public ControladorRomano nuevaScene(String URLVista) {
+	protected ControladorRomano nuevaScene(String URLVista) {
 		return nuevaCambiarScene(URLVista, apilador, coordinador, false);
 	}
 
-	public ControladorRomano cambiarScene(String URLVista) {
+	protected ControladorRomano cambiarScene(String URLVista) {
 		return nuevaCambiarScene(URLVista, apilador, coordinador, true);
 	}
 
 	private ControladorRomano nuevaCambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
 		try{
 			//Crear el cargador de la pantalla
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(ControladorRomano.class.getResource(URLVista));
+			FXMLLoader loader = new FXMLLoader(ControladorRomano.class.getResource(URLVista));
 
 			//Cargar vista
 			Parent scenaSiguiente = (Parent) loader.load();
@@ -73,28 +56,37 @@ public abstract class ControladorRomano implements ControladorApilable {
 			else{
 				apilador.apilarScene(scene, controlador);
 			}
+			controlador.setStage(stage);
 			controlador.setApilador(apilador);
 			controlador.setCoordinador(coordinador);
 			return controlador;
 		} catch(IOException e){
-			new PresentadorVentanas().presentarExcepcion(e, apilador.getStage());
+			new PresentadorVentanas().presentarExcepcionInesperada(e, stage);
 			return null;
 		}
 	}
 
 	@FXML
-	private void initialize() {
-		Platform.runLater(() -> {
-			inicializar();
-		});
-	}
-
-	protected abstract void inicializar();
-
-	@FXML
-	public void salir() {
+	protected void salir() {
 		//Stage stage = apilador.getStage();
 		//stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
 		apilador.desapilarScene();
+	}
+
+	public static ControladorRomano crearYMostrarPrimeraVentana(CoordinadorJavaFX coordinador, Stage primaryStage, String URL_Vista) {
+		PilaScene apilador = new PilaScene(primaryStage);
+		ControladorRomano pantallaMock = new ControladorRomano() {
+			@Override
+			public void actualizar() {
+			}
+
+			@Override
+			public void inicializar() {
+			}
+		};
+		pantallaMock.setApilador(apilador);
+		pantallaMock.setCoordinador(coordinador);
+		pantallaMock.setStage(primaryStage);
+		return pantallaMock.nuevaScene(URL_Vista);
 	}
 }

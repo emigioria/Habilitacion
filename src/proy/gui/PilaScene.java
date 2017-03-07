@@ -54,8 +54,4 @@ public class PilaScene {
 	private boolean isEmpty() {
 		return scenes.isEmpty();
 	}
-
-	public Stage getStage() {
-		return stagePrincipal;
-	}
 }

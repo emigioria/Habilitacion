@@ -23,6 +23,7 @@ import proy.datos.entidades.Proceso;
 import proy.datos.filtros.implementacion.FiltroHerramienta;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
@@ -87,7 +88,6 @@ public class AHerramientasController extends ControladorRomano {
 
 	@FXML
 	public void nuevaHerramienta() {
-
 		if(!tablaHerramientas.isEditable()){
 			tablaHerramientas.setEditable(true);
 		}
@@ -109,10 +109,10 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			resultadoCrearHerramientas = coordinador.crearHerramientas(herramientasAGuardar);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -138,7 +138,7 @@ public class AHerramientasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear herramienta", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear herramienta", errores, stage);
 			}
 		}
 		else{
@@ -162,22 +162,25 @@ public class AHerramientasController extends ControladorRomano {
 			return;
 		}
 
-		//Se pregunta si quiere dar de baja
+		//Se buscan procesos asociados
 		ArrayList<Proceso> procesosAsociados = new ArrayList<>();
 		try{
-			procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
+			if(herramientaAEliminar.getId() != null){
+				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
+			}
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
+		//Se pregunta si quiere dar de baja
 		VentanaConfirmacion vc;
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
-					"Al eliminar la herramienta se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminar la herramienta <" + herramientaAEliminar + ">?", apilador.getStage()); //TODO hacer lindo el cartelito
+					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminar la herramienta?", stage);
 			if(!vc.acepta()){
 				return;
 			}
@@ -190,10 +193,10 @@ public class AHerramientasController extends ControladorRomano {
 				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(herramientaAEliminar);
 			}
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -201,7 +204,7 @@ public class AHerramientasController extends ControladorRomano {
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
 					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
-					apilador.getStage());
+					stage);
 			if(!vc.acepta()){
 				return;
 			}
@@ -229,10 +232,10 @@ public class AHerramientasController extends ControladorRomano {
 		try{
 			resultadoEliminarHerramientas = coordinador.eliminarHerramientas(herramientasAEliminar);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -255,12 +258,12 @@ public class AHerramientasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar herramientas", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar herramientas", errores, stage);
 			}
 		}
 		else{
 			herramientasAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.", apilador.getStage());
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.", stage);
 		}
 	}
 
@@ -275,7 +278,7 @@ public class AHerramientasController extends ControladorRomano {
 			try{
 				resultado = coordinador.listarHerramientas(filtro);
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 			tablaHerramientas.getItems().clear();
 			tablaHerramientas.getItems().addAll(herramientasAGuardar);
@@ -291,7 +294,7 @@ public class AHerramientasController extends ControladorRomano {
 				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
 				tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
 	}
@@ -303,7 +306,7 @@ public class AHerramientasController extends ControladorRomano {
 		}
 		else{
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
-					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.", apilador.getStage());
+					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.", stage);
 			if(confirmacion.acepta()){
 				super.salir();
 			}

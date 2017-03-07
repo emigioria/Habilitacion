@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import proy.datos.entidades.Maquina;
 import proy.datos.filtros.implementacion.FiltroMaquina;
 import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina.ErrorEliminarMaquina;
@@ -74,21 +75,21 @@ public class AMaquinasController extends ControladorRomano {
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
 				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus componentes de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
-				apilador.getStage());
+				stage);
 		if(!vc.acepta()){
 			return;
 		}
 		vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
 				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus procesos y tareas de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
-				apilador.getStage());
+				stage);
 		if(!vc.acepta()){
 			return;
 		}
 		vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
 				"Se eliminará la máquina <" + maquina.getNombre() + "> y no se podrá recuperar.\n" +
 						"¿Está seguro de que desea continuar?",
-				apilador.getStage());
+				stage);
 		if(!vc.acepta()){
 			return;
 		}
@@ -97,10 +98,10 @@ public class AMaquinasController extends ControladorRomano {
 		try{
 			resultado = coordinador.eliminarMaquina(maquina);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -114,12 +115,12 @@ public class AMaquinasController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar la máquina", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar la máquina", errores, stage);
 			}
 		}
 		else{
 			tablaMaquinas.getItems().remove(maquina);
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito", apilador.getStage());
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado la máquina con éxito", stage);
 		}
 	}
 
@@ -130,7 +131,7 @@ public class AMaquinasController extends ControladorRomano {
 				tablaMaquinas.getItems().clear();
 				tablaMaquinas.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
 	}

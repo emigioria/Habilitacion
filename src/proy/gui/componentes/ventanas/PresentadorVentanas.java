@@ -17,11 +17,10 @@
  */
 package proy.gui.componentes.ventanas;
 
-import java.io.IOException;
-
-import javafx.scene.Parent;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import proy.gui.componentes.Toast;
+import proy.logica.CoordinadorJavaFX;
 
 public class PresentadorVentanas {
 
@@ -37,31 +36,27 @@ public class PresentadorVentanas {
 		return new VentanaInformacion(titulo, mensaje, padre);
 	}
 
-	public VentanaErrorExcepcion presentarExcepcion(Exception e, Window w) {
+	public VentanaErrorExcepcion presentarExcepcion(Exception e, Window padre) {
 		e.printStackTrace();
-		return new VentanaErrorExcepcion(e.getMessage(), w);
+		return new VentanaErrorExcepcion(e.getMessage(), padre);
 	}
 
-	public VentanaErrorExcepcionInesperada presentarExcepcionInesperada(Exception e, Window w) {
+	public VentanaErrorExcepcionInesperada presentarExcepcionInesperada(Exception e, Window padre) {
 		System.err.println("Excepción inesperada!!");
 		e.printStackTrace();
-		return new VentanaErrorExcepcionInesperada(w);
+		return new VentanaErrorExcepcionInesperada(padre);
 	}
 
-	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos(Window w) {
-		return new VentanaEsperaBaseDeDatos(w);
+	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos(Window padre) {
+		return new VentanaEsperaBaseDeDatos(padre);
 	}
 
 	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos() {
 		return new VentanaEsperaBaseDeDatos();
 	}
 
-	public VentanaPersonalizada presentarVentanaPersonalizada(String URLVista, String titulo, Window w) throws IOException {
-		return new VentanaPersonalizada(URLVista, titulo, w);
-	}
-
-	public VentanaPersonalizada presentarVentanaPersonalizada(Parent vista, String titulo, Window w) {
-		return new VentanaPersonalizada(vista, titulo, w);
+	public <T> VentanaPersonalizada<T> presentarVentanaPersonalizada(String URLVista, CoordinadorJavaFX coordinador, Stage padre) {
+		return new VentanaPersonalizada<>(URLVista, coordinador, padre);
 	}
 
 	public void presentarToast(String mensaje, Window padre, int ajusteHeight) {

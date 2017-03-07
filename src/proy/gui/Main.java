@@ -18,13 +18,11 @@ import javafx.stage.Stage;
 import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.gui.componentes.ventanas.VentanaEsperaBaseDeDatos;
-import proy.gui.controladores.ControladorRomano;
 import proy.gui.controladores.VTareasController;
 import proy.logica.CoordinadorJavaFX;
 
 public class Main extends Application {
 
-	private PilaScene apilador;
 	private CoordinadorJavaFX coordinador;
 	private Stage primaryStage;
 	private ApplicationContext appContext;
@@ -48,7 +46,6 @@ public class Main extends Application {
 
 		//Inicializar parametros
 		this.primaryStage = primaryStage;
-		apilador = new PilaScene(primaryStage);
 		presentador = new PresentadorVentanas();
 
 		//Iniciar el stage en el centro de la pantalla
@@ -96,20 +93,8 @@ public class Main extends Application {
 		//que se cierra al terminar.
 		task.setOnSucceeded(
 				(event) -> {
-					ventanaEspera.hide();
-					//Crear primera ventana
-					ControladorRomano pantallaMock = new ControladorRomano() {
-						@Override
-						public void actualizar() {
-						}
-
-						@Override
-						protected void inicializar() {
-						}
-					};
-					pantallaMock.setApilador(apilador);
-					pantallaMock.setCoordinador(coordinador);
-					pantallaMock.nuevaScene(VTareasController.URL_VISTA);
+					ventanaEspera.close();
+					ControladorRomano.crearYMostrarPrimeraVentana(coordinador, primaryStage, VTareasController.URL_VISTA);
 				});
 
 		//Si falla, informa al usuario del error y cierra la aplicacion

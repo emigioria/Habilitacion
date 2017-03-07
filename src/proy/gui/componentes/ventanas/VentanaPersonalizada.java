@@ -24,43 +24,46 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
+import proy.gui.ControladorDialogo;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.StyleCSS;
-import proy.gui.controladores.ControladorRomano;
+import proy.logica.CoordinadorJavaFX;
 
-public class VentanaPersonalizada extends Stage {
+public class VentanaPersonalizada<T> extends Stage {
 
-	public VentanaPersonalizada(String URLVista, String titulo, Window padre) throws IOException {
-		//Crear el cargador de la pantalla
-		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(ControladorRomano.class.getResource(URLVista));
+	private ControladorDialogo controlador;
 
-		//Cargar vista
-		Parent scenaSiguiente = (Parent) loader.load();
+	public VentanaPersonalizada(String URLVista, CoordinadorJavaFX coordinador, Stage padre) {
+		try{
+			//Crear el cargador de la pantalla
+			FXMLLoader loader = new FXMLLoader(ControladorRomano.class.getResource(URLVista));
 
-		//Setear estilo si no tiene
-		if(scenaSiguiente.getStylesheets().isEmpty()){
-			scenaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
+			//Cargar vista
+			Parent vista = (Parent) loader.load();
+
+			//Cargar controlador
+			controlador = loader.getController();
+
+			//Setear estilo si no tiene
+			if(vista.getStylesheets().isEmpty()){
+				vista.getStylesheets().add(new StyleCSS().getDefaultStyle());
+			}
+
+			//Crear pantalla
+			this.initStyle(StageStyle.DECORATED);
+			if(padre != null){
+				this.initOwner(padre);
+			}
+			this.getIcons().addAll(padre.getIcons());
+
+			controlador.setStage(this);
+			controlador.setCoordinador(coordinador);
+
+			Scene scene = new Scene(vista);
+			this.setScene(scene);
+			this.showAndWait();
+		} catch(IOException e){
+			new PresentadorVentanas().presentarExcepcionInesperada(e, padre);
 		}
-
-		crearPantalla(scenaSiguiente, titulo, padre);
-	}
-
-	private void crearPantalla(Parent vista, String titulo, Window padre) {
-		//Crear panel base
-		this.initStyle(StageStyle.UNDECORATED);
-		if(padre != null){
-			this.initOwner(padre);
-		}
-
-		//Setear titulo de espera
-		this.setTitle("Esperando");
-
-		Scene scene = new Scene(vista);
-		this.setScene(scene);
-	}
-
-	public VentanaPersonalizada(Parent vista, String titulo, Window padre) {
-		crearPantalla(vista, titulo, padre);
 	}
 }

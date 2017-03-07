@@ -13,6 +13,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Proceso;
+import proy.gui.ControladorRomano;
 
 public class AProcesosController extends ControladorRomano {
 

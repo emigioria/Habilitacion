@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import proy.datos.entidades.Material;
 import proy.datos.filtros.implementacion.FiltroMaterial;
 import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
@@ -128,10 +129,10 @@ public class AMaterialesController extends ControladorRomano {
 		try{
 			resultadoCrearMateriales = coordinador.crearMateriales(materialesAGuardar);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -157,12 +158,12 @@ public class AMaterialesController extends ControladorRomano {
 			}
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear materiales", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear materiales", errores, stage);
 			}
 		}
 		else{
 			materialesAGuardar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente los materiales", apilador.getStage());
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente los materiales", stage);
 		}
 	}
 
@@ -194,10 +195,10 @@ public class AMaterialesController extends ControladorRomano {
 		try{
 			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -220,12 +221,12 @@ public class AMaterialesController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar materiales", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al eliminar materiales", errores, stage);
 			}
 		}
 		else{
 			materialesAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente los materiales", apilador.getStage());
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente los materiales", stage);
 		}
 	}
 
@@ -236,7 +237,7 @@ public class AMaterialesController extends ControladorRomano {
 				tablaMateriales.getItems().clear();
 				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
 	}

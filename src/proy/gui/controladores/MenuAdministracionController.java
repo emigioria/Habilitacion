@@ -7,6 +7,7 @@
 package proy.gui.controladores;
 
 import javafx.fxml.FXML;
+import proy.gui.ControladorRomano;
 
 public class MenuAdministracionController extends ControladorRomano {
 

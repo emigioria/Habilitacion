@@ -15,6 +15,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Tarea;
 import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorRomano;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea;
 
@@ -109,7 +110,7 @@ public class ATareasController extends ControladorRomano {
 		 * try{
 		 * result = coordinador.listarHerramientas(filtro);
 		 * } catch(PersistenciaException e){
-		 * ManejadorExcepciones.presentarExcepcion(e, apilador.getStage());
+		 * ManejadorExcepciones.presentarExcepcion(e, stage);
 		 * }
 		 * tablaHerramientas.getItems().clear();
 		 * tablaHerramientas.getItems().addAll(result);
@@ -149,10 +150,10 @@ public class ATareasController extends ControladorRomano {
 		try{
 			resultado = coordinador.eliminarTarea(tarea);
 		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
 		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 			return;
 		}
 
@@ -167,7 +168,7 @@ public class ATareasController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("No se ha podido eliminar la tarea", errores, apilador.getStage());
+				presentadorVentanas.presentarError("No se ha podido eliminar la tarea", errores, stage);
 			}
 		}
 		else{

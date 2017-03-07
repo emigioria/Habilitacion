@@ -20,6 +20,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Pane;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Pieza;
+import proy.gui.ControladorRomano;
 
 public class VHistorialTareasController extends ControladorRomano {
 

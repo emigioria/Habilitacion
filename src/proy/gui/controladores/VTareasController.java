@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.IconoDetener;
 import proy.gui.componentes.IconoPlay;
 

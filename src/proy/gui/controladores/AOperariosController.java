@@ -20,6 +20,7 @@ import javafx.util.Callback;
 import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
@@ -123,16 +124,16 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				coordinador.eliminarOperario(oSelected);
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 				return;
 			} catch(Exception e){
-				presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcionInesperada(e, stage);
 				return;
 			}
 			actualizar();
 			String mensaje = "Los datos del operario " + oSelected.getNombre() +
 					" " + oSelected.getApellido() + " han sido eliminados del sistema.";
-			presentadorVentanas.presentarInformacion("Operario Guardado", mensaje, apilador.getStage());
+			presentadorVentanas.presentarInformacion("Operario Guardado", mensaje, stage);
 		}
 		else{
 			return;
@@ -153,10 +154,10 @@ public class AOperariosController extends ControladorRomano {
 			try{
 				resultado = coordinador.crearOperario(operario);
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 				return;
 			} catch(Exception e){
-				presentadorVentanas.presentarExcepcionInesperada(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcionInesperada(e, stage);
 				return;
 			}
 		}
@@ -180,7 +181,7 @@ public class AOperariosController extends ControladorRomano {
 				}
 			}
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear operario", errores, apilador.getStage());
+				presentadorVentanas.presentarError("Error al crear operario", errores, stage);
 			}
 		}
 		else{
@@ -197,7 +198,7 @@ public class AOperariosController extends ControladorRomano {
 				tablaOperarios.getItems().clear();
 				tablaOperarios.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
 			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, apilador.getStage());
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
 	}
@@ -209,7 +210,7 @@ public class AOperariosController extends ControladorRomano {
 		}
 		else{
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
-					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.", apilador.getStage());
+					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.", stage);
 			if(confirmacion.acepta()){
 				super.salir();
 			}
