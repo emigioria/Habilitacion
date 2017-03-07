@@ -38,9 +38,14 @@ public class VentanaEsperaBaseDeDatos extends Stage {
 	protected VentanaEsperaBaseDeDatos(Window padre) {
 		//Crear panel base
 		this.initStyle(StageStyle.UNDECORATED);
+		if(padre != null){
+			this.initOwner(padre);
+		}
 		VBox panel = new VBox();
 		panel.setAlignment(Pos.CENTER);
-		panel.getStylesheets().add(new StyleCSS().getStyle());
+
+		//Setear estilo
+		panel.getStylesheets().add(new StyleCSS().getDefaultStyle());
 
 		//Setear imagen de espera
 		ImageView imagen = new ImageView(new IconoAnimadoEspera());

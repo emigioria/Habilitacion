@@ -25,12 +25,12 @@ public abstract class CustomAlert extends Alert {
 
 	public CustomAlert(AlertType alertType, String contentText, ButtonType[] buttons) {
 		super(alertType, contentText, buttons);
-		this.getDialogPane().getStylesheets().add(new StyleCSS().getStyle());
+		this.getDialogPane().getStylesheets().add(new StyleCSS().getDefaultStyle());
 	}
 
 	public CustomAlert(AlertType alertType) {
 		super(alertType);
-		this.getDialogPane().getStylesheets().add(new StyleCSS().getStyle());
+		this.getDialogPane().getStylesheets().add(new StyleCSS().getDefaultStyle());
 	}
 
 }

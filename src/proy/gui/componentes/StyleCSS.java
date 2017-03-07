@@ -18,14 +18,14 @@
 package proy.gui.componentes;
 
 /**
- * Representa el CSS usado por defecto
+ * Representa los CSS de estilos usados
  */
 public class StyleCSS {
 
 	/**
-	 * Devuelve el stylo por defecto
+	 * Devuelve el estilo por defecto
 	 */
-	public String getStyle() {
+	public String getDefaultStyle() {
 		return getClass().getResource("/proy/gui/estilos/style.css").toExternalForm();
 	}
 }
