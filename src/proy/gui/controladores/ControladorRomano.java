@@ -63,7 +63,7 @@ public abstract class ControladorRomano implements ControladorApilable {
 			//Setear estilo si no tiene
 			if(scenaSiguiente.getStylesheets().isEmpty()){
 				//TODO descomentar
-				//				scenaSiguiente.getStylesheets().add(new StyleCSS().getStyle());
+				//				scenaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
 			}
 
 			Scene scene = new Scene(scenaSiguiente);
@@ -78,8 +78,8 @@ public abstract class ControladorRomano implements ControladorApilable {
 			return controlador;
 		} catch(IOException e){
 			new PresentadorVentanas().presentarExcepcion(e, apilador.getStage());
+			return null;
 		}
-		return null;
 	}
 
 	@FXML

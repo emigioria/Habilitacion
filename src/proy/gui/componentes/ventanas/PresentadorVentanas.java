@@ -17,6 +17,9 @@
  */
 package proy.gui.componentes.ventanas;
 
+import java.io.IOException;
+
+import javafx.scene.Parent;
 import javafx.stage.Window;
 import proy.gui.componentes.Toast;
 
@@ -51,6 +54,14 @@ public class PresentadorVentanas {
 
 	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos() {
 		return new VentanaEsperaBaseDeDatos();
+	}
+
+	public VentanaPersonalizada presentarVentanaPersonalizada(String URLVista, String titulo, Window w) throws IOException {
+		return new VentanaPersonalizada(URLVista, titulo, w);
+	}
+
+	public VentanaPersonalizada presentarVentanaPersonalizada(Parent vista, String titulo, Window w) {
+		return new VentanaPersonalizada(vista, titulo, w);
 	}
 
 	public void presentarToast(String mensaje, Window padre, int ajusteHeight) {
