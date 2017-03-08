@@ -70,6 +70,6 @@ public class VTareasController extends ControladorRomano {
 
 	@FXML
 	private void enviarComentario() {
-		presentadorVentanas.presentarVentanaPersonalizada(NComentarioController.URL_VISTA, coordinador, stage);
+		presentadorVentanas.presentarVentanaPersonalizada(NComentarioController.URL_VISTA, coordinador, stage).showAndWait();
 	}
 }

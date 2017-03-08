@@ -61,7 +61,6 @@ public class VentanaPersonalizada<T> extends Stage {
 
 			Scene scene = new Scene(vista);
 			this.setScene(scene);
-			this.showAndWait();
 		} catch(IOException e){
 			new PresentadorVentanas().presentarExcepcionInesperada(e, padre);
 		}
