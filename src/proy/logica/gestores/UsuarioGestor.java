@@ -31,6 +31,7 @@ import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 import proy.logica.gestores.resultados.ResultadoCrearComentario;
+import proy.logica.gestores.resultados.ResultadoCrearComentario.ErrorCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario;
 import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
@@ -80,7 +81,14 @@ public class UsuarioGestor {
 	}
 
 	private ResultadoCrearComentario validarCrearComentario(Comentario comentario) {
-		return new ResultadoCrearComentario();
+		ArrayList<ErrorCrearComentario> errores = new ArrayList<>();
+		if(comentario.getOperario() == null){
+			errores.add(ErrorCrearComentario.SIN_OPERARIO);
+		}
+		if(comentario.getTexto() == null || comentario.getTexto().isEmpty()){
+			errores.add(ErrorCrearComentario.TEXTO_VACIO);
+		}
+		return new ResultadoCrearComentario(errores.toArray(new ErrorCrearComentario[0]));
 	}
 
 	public ArrayList<Comentario> listarComentarios(Filtro<Comentario> filtro) throws PersistenciaException {

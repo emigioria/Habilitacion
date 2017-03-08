@@ -35,12 +35,12 @@
       <TextArea fx:id="taComentarioStr" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Ingrese aquí su comentario..." GridPane.columnSpan="2" GridPane.rowIndex="1" />
       <HBox alignment="CENTER_RIGHT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
          <children>
-            <Button mnemonicParsing="false" onAction="#guardar" text="Guardar">
+            <Button fx:id="guardar" disable="true" mnemonicParsing="false" onAction="#guardar" text="Guardar">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#salir" text="Cancelar">
+            <Button cancelButton="true" mnemonicParsing="false" onAction="#salir" text="Cancelar">
                <HBox.margin>
                   <Insets />
                </HBox.margin>

@@ -27,7 +27,7 @@ public class NHerramientaController extends ControladorDialogo {
 	}
 
 	@Override
-	public void inicializar() {
+	protected void inicializar() {
 		stage.setTitle("Nueva herramienta");
 	}
 

@@ -59,12 +59,17 @@ public class VTareasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void loguearse() {
+	private void loguearse() {
 		this.nuevaScene(LoguearAdminController.URL_VISTA);
 	}
 
 	@Override
 	public void actualizar() {
 
+	}
+
+	@FXML
+	private void enviarComentario() {
+		presentadorVentanas.presentarVentanaPersonalizada(NComentarioController.URL_VISTA, coordinador, stage);
 	}
 }
