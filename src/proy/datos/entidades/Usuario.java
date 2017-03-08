@@ -183,6 +183,6 @@ public abstract class Usuario {
 
 	@Override
 	public String toString() {
-		return formater.primeraMayuscula(this.getNombre()) + " " + formater.primeraMayuscula(this.getApellido());
+		return formater.nombrePropio(this.getNombre() + this.getApellido());
 	}
 }
