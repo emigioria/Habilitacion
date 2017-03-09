@@ -18,10 +18,11 @@ import proy.datos.filtros.Filtro;
 public class FiltroMaterial extends Filtro<Material> {
 
 	private String nombreEntidad = "a";
-	private Boolean conPiezas;
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
+	private Boolean conPiezas;
+	private String nombre;
 	private ArrayList<Material> materiales;
 	private ArrayList<String> nombres;
 
@@ -36,6 +37,11 @@ public class FiltroMaterial extends Filtro<Material> {
 
 		public Builder nombreEntidad(String nombreEntidad) {
 			filtro.nombreEntidad = nombreEntidad;
+			return this;
+		}
+
+		public Builder nombre(String nombre) {
+			filtro.nombre = nombre;
 			return this;
 		}
 
@@ -81,6 +87,9 @@ public class FiltroMaterial extends Filtro<Material> {
 		if(this.conPiezas != null){
 			return;
 		}
+		if(this.nombre != null){
+			return;
+		}
 		if(this.nombres != null){
 			return;
 		}
@@ -111,7 +120,8 @@ public class FiltroMaterial extends Filtro<Material> {
 
 	private String getWhere() {
 		String where =
-				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
+				((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+						+ ((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.materiales != null) ? (this.nombreEntidad + " in (:mts) AND ") : (""))
 						+ ((this.conPiezas != null) ? ((this.conPiezas) ? (this.nombreEntidad + " = piez.material AND ") : ("")) : (""))
 						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
@@ -145,6 +155,9 @@ public class FiltroMaterial extends Filtro<Material> {
 		}
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(nombre != null){
+			query.setParameter("nom", "%" + nombre + "%");
 		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);

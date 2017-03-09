@@ -12,20 +12,19 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import proy.datos.entidades.Material;
 import proy.datos.filtros.implementacion.FiltroMaterial;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarMaterial.ErrorEliminarMaterial;
 
 public class AMaterialesController extends ControladorRomano {
 
@@ -43,11 +42,7 @@ public class AMaterialesController extends ControladorRomano {
 	@FXML
 	private TableColumn<Material, String> columnaMedidas;
 
-	@FXML
 	private ArrayList<Material> materialesAGuardar = new ArrayList<>();
-
-	@FXML
-	private ArrayList<Material> materialesAEliminar = new ArrayList<>();
 
 	@Override
 	protected void inicializar() {
@@ -57,7 +52,7 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
 			}
-			return new SimpleStringProperty("<Sin nombre>");
+			return new SimpleStringProperty("");
 		});
 		columnaMedidas.setCellValueFactory(param -> {
 			if(param.getValue() != null){
@@ -65,10 +60,10 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getMedidas());
 				}
 			}
-			return new SimpleStringProperty("<Sin medidas>");
+			return new SimpleStringProperty("");
 		});
 
-		Callback<TableColumn<Material, String>, TableCell<Material, String>> call = col -> {
+		columnaMaterial.setCellFactory(col -> {
 			return new TableCellTextViewString<Material>(Material.class) {
 
 				@Override
@@ -78,35 +73,36 @@ public class AMaterialesController extends ControladorRomano {
 						this.setEditable(materialesAGuardar.contains(newValue));
 					}
 				}
-			};
-		};
-		columnaMaterial.setCellFactory(call);
-		columnaMedidas.setCellFactory(call);
 
-		columnaMaterial.setOnEditCommit((t) -> {
-			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
+				@Override
+				public void onEdit(Material object, String newValue) {
+					object.setNombre(newValue.toLowerCase().trim());
+				}
+			};
 		});
-		columnaMedidas.setOnEditCommit((t) -> {
-			t.getRowValue().setMedidas(t.getNewValue().toLowerCase().trim());
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
+		columnaMedidas.setCellFactory(col -> {
+			return new TableCellTextViewString<Material>(Material.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
+					this.setEditable(false);
+					if(this.getTableRow() != null && newValue != null){
+						this.setEditable(materialesAGuardar.contains(newValue));
+					}
+				}
+
+				@Override
+				public void onEdit(Material object, String newValue) {
+					object.setMedidas(newValue.trim());
+				}
+			};
 		});
 
 		actualizar();
 	}
 
 	@FXML
-	public void guardar() {
-		eliminarMateriales();
-		crearMateriales();
-	}
-
-	@FXML
-	public void nuevoMaterial() {
+	private void nuevoMaterial() {
 		if(!tablaMateriales.isEditable()){
 			tablaMateriales.setEditable(true);
 		}
@@ -114,6 +110,11 @@ public class AMaterialesController extends ControladorRomano {
 		Material nuevoMaterial = new Material();
 		materialesAGuardar.add(nuevoMaterial);
 		tablaMateriales.getItems().add(0, nuevoMaterial);
+	}
+
+	@FXML
+	private void guardar() {
+		crearMateriales();
 	}
 
 	private void crearMateriales() {
@@ -164,36 +165,40 @@ public class AMaterialesController extends ControladorRomano {
 		else{
 			materialesAGuardar.clear();
 			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente los materiales", stage);
+			actualizar();
 		}
 	}
 
 	@FXML
-	public void eliminarMaterial() {
+	private void eliminarMaterial() {
+		ResultadoEliminarMaterial resultadoEliminarMaterial;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
 		Material materialAEliminar = tablaMateriales.getSelectionModel().getSelectedItem();
 		if(materialAEliminar == null){
 			return;
 		}
+
+		//Si no fue guardada previamente se elimina sin ir al gestor
 		if(materialesAGuardar.contains(materialAEliminar)){
 			materialesAGuardar.remove(materialAEliminar);
+			tablaMateriales.getItems().remove(materialAEliminar);
+			return;
 		}
-		else{
-			materialesAEliminar.add(materialAEliminar);
-		}
-		tablaMateriales.getItems().remove(materialAEliminar);
-	}
 
-	private void eliminarMateriales() {
-		ResultadoEliminarMateriales resultadoEliminarMateriales;
-		StringBuffer erroresBfr = new StringBuffer();
-
-		//Toma de datos de la vista
-		if(materialesAEliminar.isEmpty()){
+		//Se le pide al usuario que confirme la eliminación de la máquina
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
+				"Se eliminará el material <" + materialAEliminar.getNombre() + "> de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				stage);
+		if(!vc.acepta()){
 			return;
 		}
 
 		//Inicio transacciones al gestor
 		try{
-			resultadoEliminarMateriales = coordinador.eliminarMateriales(materialesAEliminar);
+			resultadoEliminarMaterial = coordinador.eliminarMaterial(materialAEliminar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -203,17 +208,15 @@ public class AMaterialesController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		if(resultadoEliminarMateriales.hayErrores()){
-			for(ErrorEliminarMateriales e: resultadoEliminarMateriales.getErrores()){
+		if(resultadoEliminarMaterial.hayErrores()){
+			for(ErrorEliminarMaterial e: resultadoEliminarMaterial.getErrores()){
 				switch(e) {
 				case PIEZAS_ACTIVAS_ASOCIADAS:
-					for(String material: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().keySet()){
-						erroresBfr.append("El material <" + material + "> no se puede eliminar porque está siendo utilizado en las siguientes piezas:\n");
-						for(String pieza: resultadoEliminarMateriales.getPiezasAsociadasPorMaterial().get(material)){
-							erroresBfr.append("\t<");
-							erroresBfr.append(pieza);
-							erroresBfr.append(">\n");
-						}
+					erroresBfr.append("El material no se puede eliminar porque está siendo utilizado en las siguientes piezas:\n");
+					for(String pieza: resultadoEliminarMaterial.getPiezasAsociadasPorMaterial()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(pieza);
+						erroresBfr.append(">\n");
 					}
 					break;
 				}
@@ -225,20 +228,52 @@ public class AMaterialesController extends ControladorRomano {
 			}
 		}
 		else{
-			materialesAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente los materiales", stage);
+			tablaMateriales.getItems().remove(materialAEliminar);
+			presentadorVentanas.presentarToast("Se ha eliminado correctamente el material", stage);
+		}
+	}
+
+	@FXML
+	private void buscar() {
+		String nombreBuscado = nombreMaterial.getText().trim().toLowerCase();
+		if(nombreBuscado.isEmpty()){
+			actualizar();
+		}
+		else{
+			tablaMateriales.getItems().clear();
+			tablaMateriales.getItems().addAll(materialesAGuardar);
+			try{
+				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().nombre(nombreBuscado).build()));
+			} catch(PersistenciaException e){
+				presentadorVentanas.presentarExcepcion(e, stage);
+			}
 		}
 	}
 
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			tablaMateriales.getItems().clear();
+			tablaMateriales.getItems().addAll(materialesAGuardar);
 			try{
-				tablaMateriales.getItems().clear();
 				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
+	}
+
+	@Override
+	protected void salir() {
+		if(materialesAGuardar.isEmpty()){
+			super.salir();
+		}
+		else{
+			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+					"Hay materiales nuevos sin guardar, si sale ahora se perderán los cambios.", stage);
+			if(confirmacion.acepta()){
+				super.salir();
+			}
+		}
 	}
 }

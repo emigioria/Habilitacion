@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
@@ -37,22 +38,12 @@ import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextView;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
+import proy.gui.controladores.errores.TratamientoDeErroresCrearMaquina;
+import proy.gui.controladores.errores.TratamientoDeErroresModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
-import proy.logica.gestores.resultados.ResultadoEliminarProcesos.ErrorEliminarProcesos;
-import proy.logica.gestores.resultados.ResultadoEliminarTareas;
-import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
-import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
 public class NMMaquinaController extends ControladorRomano {
 
@@ -104,220 +95,198 @@ public class NMMaquinaController extends ControladorRomano {
 	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new IdentityHashMap<>(); //Piezas nuevas no persistidas
 	private Map<Parte, ArrayList<Pieza>> piezasAEliminar = new IdentityHashMap<>(); //Piezas persistidas a eliminar
 
+	//Traducen los resultados a string
+	private TratamientoDeErroresCrearMaquina tratamientoDeErroresCrearMaquina = new TratamientoDeErroresCrearMaquina();
+
+	private TratamientoDeErroresModificarMaquina tratamientoDeErroresModificarMaquina = new TratamientoDeErroresModificarMaquina();
+
 	@Override
 	protected void inicializar() {
 		tablaPartes.setEditable(true);
 
 		//Inicialización de la columna PARTE->NOMBRE
-
-		//Seteamos el Cell Value Factory
-		columnaNombreParte.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
+		{
+			//Seteamos el Cell Value Factory
+			columnaNombreParte.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
-			}
-			return new SimpleStringProperty("<Sin nombre>");
-		});
-		//Seteamos el Cell Factory
-		columnaNombreParte.setCellFactory(col -> {
-			return new TableCellTextViewString<Parte>(Parte.class) {
+				return new SimpleStringProperty("<Sin nombre>");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaNombreParte.setCellFactory(col -> {
+				return new TableCellTextViewString<Parte>(Parte.class) {
 
-				@Override
-				public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
+					@Override
+					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
 
-				}
-			};
-		});
-		//Al terminar de editar, se guarda el valor
-		columnaNombreParte.setOnEditCommit(t -> {
-			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
-		});
+					}
+
+					//Al terminar de editar, se guarda el valor
+					@Override
+					public void onEdit(Parte object, String newValue) {
+						object.setNombre(newValue.toLowerCase().trim());
+					}
+				};
+			});
+		}
 
 		//Inicialización de la columna PARTE->CANTIDAD
-
-		//Seteamos el Cell Value Factory
-		columnaCantidadParte.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getCantidad() != null){
-					return new SimpleIntegerProperty(param.getValue().getCantidad());
-				}
-			}
-			return new SimpleIntegerProperty(-1);
-		});
-		//Seteamos el Cell Factory
-		columnaCantidadParte.setCellFactory(col -> {
-			return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
-
-				@Override
-				public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-				}
-			};
-		});
-		//Al terminar de editar, se guarda el valor.
-		columnaCantidadParte.setOnEditCommit(t -> {
-			if(t.getNewValue() != null){
-				t.getRowValue().setCantidad((Integer) t.getNewValue());
-			}
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
-		});
-
-		//Inicialización de la columna PIEZA->NOMBRE
-
-		//Seteamos el Cell Value Factory
-		columnaNombrePieza.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-				}
-			}
-			return new SimpleStringProperty("<Sin nombre>");
-		});
-		//Seteamos el Cell Factory
-		columnaNombrePieza.setCellFactory(col -> {
-			return new TableCellTextViewString<Pieza>(Pieza.class) {
-
-				@Override
-				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() == null || newValue == null){
-						return;
-					}
-					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-					if(parteSeleccionada == null){
-						return;
-					}
-					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+		{
+			//Seteamos el Cell Value Factory
+			columnaCantidadParte.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getCantidad() != null){
+						return new SimpleIntegerProperty(param.getValue().getCantidad());
 					}
 				}
-			};
-		});
-		//Al terminar de editar, se guarda el valor
-		columnaNombrePieza.setOnEditCommit(t -> {
-			t.getRowValue().setNombre(t.getNewValue().toLowerCase().trim());
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
-		});
+				return new SimpleIntegerProperty(0);
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaCantidadParte.setCellFactory(col -> {
+				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
 
-		//Inicialización de la columna PIEZA->CANTIDAD
+					@Override
+					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
 
-		//Seteamos el Cell Value Factory
-		columnaCantidadPieza.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getCantidad() != null){
-					return new SimpleIntegerProperty(param.getValue().getCantidad());
-				}
-			}
-			return new SimpleIntegerProperty(-1);
-		});
-		//Seteamos el Cell Factory
-		columnaCantidadPieza.setCellFactory(col -> {
-			return new TableCellTextView<Pieza, Number>(Pieza.class, new IntegerStringConverter()) {
-
-				@Override
-				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() == null || newValue == null){
-						return;
 					}
-					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-					if(parteSeleccionada == null){
-						return;
-					}
-					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
-					}
-				}
-			};
-		});
-		//Al terminar de editar, se guarda el valor.
-		columnaCantidadPieza.setOnEditCommit(t -> {
-			if(t.getNewValue() != null){
-				t.getRowValue().setCantidad((Integer) t.getNewValue());
-			}
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
-		});
 
-		//Inicialización de la columna PIEZA->MATERIAL
-
-		columnaMaterialPieza.setCellValueFactory(new PropertyValueFactory<Pieza, Material>("material"));
-		try{
-			columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
-		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, stage);
-		}
-		columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
-
-			@Override
-			public void handle(CellEditEvent<Pieza, Material> t) {
-				if(t.getNewValue() != null){
-					Pieza pieza = t.getRowValue();
-					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-					if(parteSeleccionada == null){
-						return;
-					}
-					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-						if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
-							pieza.setMaterial(t.getNewValue());
+					//Al terminar de editar, se guarda el valor.
+					@Override
+					public void onEdit(Parte object, Number newValue) {
+						if(newValue != null){
+							object.setCantidad((Integer) newValue);
 						}
 					}
-				}
-				//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-				t.getTableColumn().setVisible(false);
-				t.getTableColumn().setVisible(true);
-			};
-		});
+				};
+			});
+		}
 
-		//Inicialización de la columna PIEZA->CODIGO_PLANO
-
-		//Seteamos el Cell Value Factory
-		columnaCodigoPlanoPieza.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getCodigoPlano() != null){
-					return new SimpleStringProperty(param.getValue().getCodigoPlano());
+		//Inicialización de la columna PIEZA->NOMBRE
+		{
+			//Seteamos el Cell Value Factory
+			columnaNombrePieza.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
+					}
 				}
+				return new SimpleStringProperty("<Sin nombre>");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaNombrePieza.setCellFactory(col -> {
+				return new TableCellTextViewString<Pieza>(Pieza.class) {
+
+					@Override
+					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+						esEditablePieza(this, newValue);
+					}
+
+					//Al terminar de editar, se guarda el valor
+					@Override
+					public void onEdit(Pieza object, String newValue) {
+						object.setNombre(newValue.toLowerCase().trim());
+					}
+				};
+			});
+		}
+
+		//Inicialización de la columna PIEZA->CANTIDAD
+		{
+			//Seteamos el Cell Value Factory
+			columnaCantidadPieza.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getCantidad() != null){
+						return new SimpleIntegerProperty(param.getValue().getCantidad());
+					}
+				}
+				return new SimpleIntegerProperty(0);
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaCantidadPieza.setCellFactory(col -> {
+				return new TableCellTextView<Pieza, Number>(Pieza.class, new IntegerStringConverter()) {
+
+					@Override
+					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+						esEditablePieza(this, newValue);
+					}
+
+					//Al terminar de editar, se guarda el valor.
+					@Override
+					public void onEdit(Pieza object, Number newValue) {
+						if(newValue != null){
+							object.setCantidad((Integer) newValue);
+						}
+					}
+				};
+			});
+		}
+
+		//Inicialización de la columna PIEZA->MATERIAL
+		{
+			//Seteamos el Cell Value Factory
+			columnaMaterialPieza.setCellValueFactory(new PropertyValueFactory<Pieza, Material>("material"));
+
+			//Seteamos el Cell Factory para permitir edición
+			try{
+				columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
+			} catch(PersistenciaException e){
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
-			return new SimpleStringProperty("<Sin nombre>");
-		});
-		//Seteamos el Cell Factory
-		columnaCodigoPlanoPieza.setCellFactory(col -> {
-			return new TableCellTextViewString<Pieza>(Pieza.class) {
+			//Al terminar de editar, se guarda el valor.
+			columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
 
 				@Override
-				public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() == null || newValue == null){
-						return;
+				public void handle(CellEditEvent<Pieza, Material> t) {
+					if(t.getNewValue() != null){
+						Pieza pieza = t.getRowValue();
+						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+						if(parteSeleccionada == null){
+							return;
+						}
+						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+							if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
+								pieza.setMaterial(t.getNewValue());
+							}
+						}
 					}
-					Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-					if(parteSeleccionada == null){
-						return;
-					}
-					if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-						this.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+					//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+					t.getTableColumn().setVisible(false);
+					t.getTableColumn().setVisible(true);
+				};
+			});
+		}
+
+		//Inicialización de la columna PIEZA->CODIGO_PLANO
+		{
+			//Seteamos el Cell Value Factory
+			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
+				if(param.getValue() != null){
+					if(param.getValue().getCodigoPlano() != null){
+						return new SimpleStringProperty(param.getValue().getCodigoPlano());
 					}
 				}
-			};
-		});
-		//Al terminar de editar, se guarda el valor
-		columnaCodigoPlanoPieza.setOnEditCommit(t ->
+				return new SimpleStringProperty("<Sin nombre>");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaCodigoPlanoPieza.setCellFactory(col -> {
+				return new TableCellTextViewString<Pieza>(Pieza.class) {
 
-		{
-			t.getRowValue().setCodigoPlano(t.getNewValue().trim());
-			//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-			t.getTableColumn().setVisible(false);
-			t.getTableColumn().setVisible(true);
-		});
+					@Override
+					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
+						esEditablePieza(this, newValue);
+					}
+
+					//Al terminar de editar, se guarda el valor
+					@Override
+					public void onEdit(Pieza object, String newValue) {
+						object.setCodigoPlano(newValue.trim());
+					}
+				};
+			});
+		}
 
 		//Cuando cambia la parte seleccionada, cargamos sus piezas
 		tablaPartes.getSelectionModel().selectedIndexProperty().addListener((ovs, viejo, nuevo) -> {
@@ -342,8 +311,22 @@ public class NMMaquinaController extends ControladorRomano {
 		actualizar();
 	}
 
+	private void esEditablePieza(TableCell<?, ?> tableCellTextViewString, Pieza newValue) {
+		tableCellTextViewString.setEditable(false);
+		if(tableCellTextViewString.getTableRow() == null || newValue == null){
+			return;
+		}
+		Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+		if(parteSeleccionada == null){
+			return;
+		}
+		if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+			tableCellTextViewString.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+		}
+	}
+
 	@FXML
-	public void nuevaParte() {
+	private void nuevaParte() {
 		Parte nuevaParte = new Parte();
 		partesAGuardar.add(nuevaParte);
 		tablaPartes.getItems().add(0, nuevaParte);
@@ -351,7 +334,24 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarParte() {
+	private void nuevaPieza() {
+		Parte parteDePiezaAGuardar = tablaPartes.getSelectionModel().getSelectedItem();
+		if(parteDePiezaAGuardar == null){
+			return;
+		}
+		Pieza nuevaPieza = new Pieza();
+		if(piezasAGuardar.get(parteDePiezaAGuardar) == null || piezasAGuardar.get(parteDePiezaAGuardar).isEmpty()){
+			piezasAGuardar.put(parteDePiezaAGuardar, new ArrayList<>());
+		}
+		piezasAGuardar.get(parteDePiezaAGuardar).add(nuevaPieza);
+		tablaPiezas.getItems().add(0, nuevaPieza);
+		if(!tablaPiezas.isEditable()){
+			tablaPiezas.setEditable(true);
+		}
+	}
+
+	@FXML
+	private void eliminarParte() {
 		Parte parteAEliminar = tablaPartes.getSelectionModel().getSelectedItem();
 		if(parteAEliminar == null){
 			return;
@@ -402,128 +402,8 @@ public class NMMaquinaController extends ControladorRomano {
 		tablaPartes.getSelectionModel().select(null);
 	}
 
-	private Boolean eliminarPartes() {
-		ResultadoEliminarPartes resultadoEliminarPartes;
-		StringBuffer erroresBfr = new StringBuffer();
-
-		//Tomar datos de la vista
-		if(partesAEliminar.isEmpty()){
-			return false;
-		}
-
-		//Inicio transacciones al gestor
-		try{
-			resultadoEliminarPartes = coordinador.eliminarPartes(partesAEliminar);
-		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, stage);
-			return true;
-		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, stage);
-			return true;
-		}
-
-		//Tratamiento de errores
-		if(resultadoEliminarPartes.hayErrores()){
-			for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
-				switch(ep) {
-				case ERROR_AL_ELIMINAR_TAREAS:
-					erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas()));
-					break;
-				case ERROR_AL_ELIMINAR_PIEZAS:
-					erroresBfr.append(tratarErroresEliminarPiezas(resultadoEliminarPartes.getResultadosEliminarPiezas()));
-					break;
-				case ERROR_AL_ELIMINAR_PROCESOS:
-					erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPartes.getResultadosEliminarProcesos()));
-					break;
-				}
-			}
-
-			String errores = erroresBfr.toString();
-			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar las partes", errores, stage);
-			}
-
-			return true;
-		}
-		else{
-			partesAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las partes", stage);
-			return false;
-		}
-	}
-
-	private String tratarErroresEliminarProcesos(Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos) {
-		String errores = "";
-		for(String proceso: resultadosEliminarProcesos.keySet()){
-			ResultadoEliminarProcesos resultado = resultadosEliminarProcesos.get(proceso);
-			if(resultado.hayErrores()){
-				for(ErrorEliminarProcesos ep: resultado.getErrores()){
-					switch(ep) {
-					//Todavia no hay errores en eliminar procesos
-					}
-				}
-			}
-		}
-		return errores;
-	}
-
-	private String tratarErroresEliminarPiezas(Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas) {
-		StringBuffer erroresBfr = new StringBuffer();
-		for(String pieza: resultadosEliminarPiezas.keySet()){
-			ResultadoEliminarPiezas resultado = resultadosEliminarPiezas.get(pieza);
-			if(resultado.hayErrores()){
-				erroresBfr.append(tratarErroresEliminarPiezas(resultado));
-			}
-		}
-
-		return erroresBfr.toString();
-	}
-
-	private String tratarErroresEliminarPiezas(ResultadoEliminarPiezas resultadoEliminarPiezas) {
-		StringBuffer erroresBfr = new StringBuffer();
-		for(ErrorEliminarPiezas ep: resultadoEliminarPiezas.getErrores()){
-			switch(ep) {
-			case ERROR_AL_ELIMINAR_TAREAS:
-				erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas()));
-				break;
-			case ERROR_AL_ELIMINAR_PROCESOS:
-				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPiezas.getResultadosEliminarProcesos()));
-			}
-		}
-		return erroresBfr.toString();
-	}
-
-	private String tratarErroresEliminarTarea(ResultadoEliminarTareas resultadoTareas) {
-		String errores = "";
-		if(resultadoTareas.hayErrores()){
-			for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
-				switch(ep) {
-				//Todavia no hay errores en eliminar tarea
-				}
-			}
-		}
-		return errores;
-	}
-
 	@FXML
-	public void nuevaPieza() {
-		Parte parteDePiezaAGuardar = tablaPartes.getSelectionModel().getSelectedItem();
-		if(parteDePiezaAGuardar == null){
-			return;
-		}
-		Pieza nuevaPieza = new Pieza();
-		if(piezasAGuardar.get(parteDePiezaAGuardar) == null || piezasAGuardar.get(parteDePiezaAGuardar).isEmpty()){
-			piezasAGuardar.put(parteDePiezaAGuardar, new ArrayList<>());
-		}
-		piezasAGuardar.get(parteDePiezaAGuardar).add(nuevaPieza);
-		tablaPiezas.getItems().add(0, nuevaPieza);
-		if(!tablaPiezas.isEditable()){
-			tablaPiezas.setEditable(true);
-		}
-	}
-
-	@FXML
-	public void eliminarPieza() {
+	private void eliminarPieza() {
 		Parte parteDePiezaAEliminar = tablaPartes.getSelectionModel().getSelectedItem();
 		Pieza piezaAEliminar = tablaPiezas.getSelectionModel().getSelectedItem();
 		if(parteDePiezaAEliminar == null || piezaAEliminar == null){
@@ -582,49 +462,8 @@ public class NMMaquinaController extends ControladorRomano {
 		tablaPiezas.getItems().remove(piezaAEliminar);
 	}
 
-	private Boolean eliminarPiezas() {
-		ResultadoEliminarPiezas resultadoEliminarPiezas;
-		StringBuffer erroresBfr = new StringBuffer();
-		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
-
-		//comprueba si hay piezas que eliminar y las agrega a una misma lista
-		for(ArrayList<Pieza> piezas: piezasAEliminar.values()){
-			piezasAEliminarCompilado.addAll(piezas);
-		}
-		if(piezasAEliminarCompilado.isEmpty()){
-			return false;
-		}
-
-		//Inicio transacciones al gestor
-		try{
-			resultadoEliminarPiezas = coordinador.eliminarPiezas(piezasAEliminarCompilado);
-		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, stage);
-			return true;
-		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, stage);
-			return true;
-		}
-
-		//Tratamiento de errores
-		if(resultadoEliminarPiezas.hayErrores()){
-			tratarErroresEliminarPiezas(resultadoEliminarPiezas);
-			String errores = erroresBfr.toString();
-			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar las piezas", errores, stage);
-			}
-
-			return true;
-		}
-		else{
-			partesAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las piezas", stage);
-			return false;
-		}
-	}
-
 	@FXML
-	public void guardar() {
+	private void guardar() {
 		Boolean hayErrores = null;
 		if(maquina == null){
 			hayErrores = crearMaquina();
@@ -639,7 +478,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	private Boolean crearMaquina() {
 		ResultadoCrearMaquina resultado;
-		StringBuffer erroresBfr = new StringBuffer();
 		Maquina maquina = new Maquina();
 
 		//Toma de datos de la vista
@@ -659,7 +497,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Inicio transacciones al gestor
 		try{
-			resultado = coordinador.crearMaquina(maquina); //TODO no olvidar validar la creacion de partes y piezas (si tiene seteada alguna)
+			resultado = coordinador.crearMaquina(maquina);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return true;
@@ -670,18 +508,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultado.hayErrores()){
-			for(ErrorCrearMaquina e: resultado.getErrores()){
-				switch(e) {
-				case NOMBRE_INCOMPLETO:
-					erroresBfr.append("El nombre de la máquina está vacío.\n");
-					break;
-				case NOMBRE_REPETIDO:
-					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
-					break;
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratamientoDeErroresCrearMaquina.tratarErroresCrearMaquina(resultado);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al crear la máquina", errores, stage);
 			}
@@ -694,9 +521,7 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	private Boolean modificarMaquina() {
-
-		ResultadoModificarMaquina resultado;
-		StringBuffer erroresBfr = new StringBuffer();
+		ResultadoModificarMaquina resultadoModificarMaquina;
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
@@ -720,7 +545,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Inicio transacciones al gestor
 		try{
-			resultado = coordinador.modificarMaquina(maquina);
+			resultadoModificarMaquina = coordinador.modificarMaquina(maquina);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return true;
@@ -730,21 +555,8 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		if(resultado.hayErrores()){
-			for(ErrorModificarMaquina e: resultado.getErrores()){
-				switch(e) {
-				case NOMBRE_INCOMPLETO:
-					erroresBfr.append("El nombre de la máquina está vacío.\n");
-					break;
-				case NOMBRE_REPETIDO:
-					erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
-					break;
-				case ERROR_AL_CREAR_O_MODIFICAR_PARTES:
-					erroresBfr.append(tratarErroresCrearModificarPartes(resultado.getResultadoCrearModificarPartes(), 1));
-				}
-			}
-
-			String errores = erroresBfr.toString();
+		if(resultadoModificarMaquina.hayErrores()){
+			String errores = tratamientoDeErroresModificarMaquina.tratarErroresModificarMaquina(resultadoModificarMaquina);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la máquina", errores, stage);
 			}
@@ -754,79 +566,6 @@ public class NMMaquinaController extends ControladorRomano {
 			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha modificado la máquina con éxito", stage);
 			return false;
 		}
-	}
-
-	private String tratarErroresCrearModificarPartes(ResultadoCrearModificarPartes resultadoCrearModificarPartes, int nivelIndentacion) {
-		StringBuffer erroresBfr = new StringBuffer();
-		StringBuffer indentacion = new StringBuffer();
-		for(int i = 0; i < nivelIndentacion; i++){
-			indentacion.append('\t');
-		}
-
-		for(ErrorCrearModificarPartes e: resultadoCrearModificarPartes.getErrores()){
-			switch(e) {
-			case NOMBRE_INCOMPLETO:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay partes con nombre vacío.\n");
-				break;
-			case NOMBRE_INGRESADO_REPETIDO:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay partes nuevas o modificadas con el mismo nombre.\n");
-				break;
-			case NOMBRE_YA_EXISTENTE:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Estas partes ya existen en el sistema:\n");
-				for(String parte: resultadoCrearModificarPartes.getNombresYaExistentes()){
-					erroresBfr.append("\t<");
-					erroresBfr.append(parte);
-					erroresBfr.append(">\n");
-				}
-				break;
-			case ERROR_AL_CREAR_PIEZAS:
-				for(Map.Entry<String, ResultadoCrearPiezas> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
-					erroresBfr.append(indentacion);
-					erroresBfr.append("Errores en la creación de las piezas para la parte <");
-					erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
-					erroresBfr.append(">:\n");
-					erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
-				}
-			}
-		}
-
-		return erroresBfr.toString();
-	}
-
-	private String tratarErroresCrearPiezas(ResultadoCrearPiezas resultadoCrearPiezas, int nivelIndentacion) {
-		StringBuffer erroresBfr = new StringBuffer();
-		StringBuffer indentacion = new StringBuffer();
-		for(int i = 0; i < nivelIndentacion; i++){
-			indentacion.append('\t');
-		}
-
-		for(ErrorCrearPiezas e: resultadoCrearPiezas.getErrores()){
-			switch(e) {
-			case NOMBRE_INCOMPLETO:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay piezas con nombre vacío.\n");
-				break;
-			case NOMBRE_INGRESADO_REPETIDO:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay piezas nuevas con el mismo nombre.\n");
-				break;
-			case NOMBRE_YA_EXISTENTE:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Estas piezas ya existen en el sistema:\n");
-				for(String pieza: resultadoCrearPiezas.getNombresYaExistentes()){
-					erroresBfr.append(indentacion);
-					erroresBfr.append("\t<");
-					erroresBfr.append(pieza);
-					erroresBfr.append(">\n");
-				}
-				break;
-			}
-		}
-
-		return erroresBfr.toString();
 	}
 
 	public void formatearNuevaMaquina() {
@@ -840,6 +579,80 @@ public class NMMaquinaController extends ControladorRomano {
 		this.maquina = maquina;
 		nombreMaquina.setText(maquina.getNombre());
 		actualizar();
+	}
+
+	private Boolean eliminarPartes() {
+		ResultadoEliminarPartes resultadoEliminarPartes;
+
+		//Tomar datos de la vista
+		if(partesAEliminar.isEmpty()){
+			return false;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarPartes = coordinador.eliminarPartes(partesAEliminar);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return true;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return true;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarPartes.hayErrores()){
+			String errores = tratamientoDeErroresModificarMaquina.tratarErroresEliminarPartes(resultadoEliminarPartes);
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al eliminar las partes", errores, stage);
+			}
+
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las partes", stage);
+			return false;
+		}
+	}
+
+	private Boolean eliminarPiezas() {
+		ResultadoEliminarPiezas resultadoEliminarPiezas;
+		ArrayList<Pieza> piezasAEliminarCompilado = new ArrayList<>();
+
+		//comprueba si hay piezas que eliminar y las agrega a una misma lista
+		for(ArrayList<Pieza> piezas: piezasAEliminar.values()){
+			piezasAEliminarCompilado.addAll(piezas);
+		}
+		if(piezasAEliminarCompilado.isEmpty()){
+			return false;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarPiezas = coordinador.eliminarPiezas(piezasAEliminarCompilado);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return true;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return true;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarPiezas.hayErrores()){
+			String errores = tratamientoDeErroresModificarMaquina.tratarErroresEliminarPiezas(resultadoEliminarPiezas);
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al eliminar las piezas", errores, stage);
+			}
+
+			return true;
+		}
+		else{
+			partesAEliminar.clear();
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las piezas", stage);
+			return false;
+		}
 	}
 
 	@Override

@@ -13,17 +13,23 @@ import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 public class ResultadoCrearPiezas extends Resultado<ErrorCrearPiezas> {
 
 	private Set<String> nombresYaExistentes;
+	private Set<String> nombresRepetidos;
 
 	public enum ErrorCrearPiezas {
-		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO, MATERIAL_NULO
+		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO, CANTIDAD_INCOMPLETA, MATERIAL_INCOMPLETO
 	}
 
-	public ResultadoCrearPiezas(Set<String> nombresYaExistentes, ErrorCrearPiezas... errores) {
+	public ResultadoCrearPiezas(Set<String> nombresYaExistentes, Set<String> nombresRepetidos, ErrorCrearPiezas... errores) {
 		super(errores);
 		this.nombresYaExistentes = nombresYaExistentes;
+		this.nombresRepetidos = nombresRepetidos;
 	}
 
 	public Set<String> getNombresYaExistentes() {
 		return this.nombresYaExistentes;
+	}
+
+	public Set<String> getNombresRepetidos() {
+		return nombresRepetidos;
 	}
 }

@@ -16,7 +16,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
-import javafx.util.Callback;
 import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.excepciones.PersistenciaException;
@@ -72,36 +71,61 @@ public class AOperariosController extends ControladorRomano {
 			}
 		});
 
-		Callback<TableColumn<Operario, String>, TableCell<Operario, String>> call = col -> {
+		tablaOperarios.setEditable(true);
+
+		columnaNombre.setCellFactory(col -> {
 			return new TableCellTextViewString<Operario>(Operario.class) {
 
 				@Override
 				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() != null && newValue != null){
-						this.setEditable(operariosAGuardar.contains(newValue));
-					}
+					esEditable(this, newValue);
+				}
+
+				@Override
+				public void onEdit(Operario object, String newValue) {
+					object.setNombre(newValue.trim());
 				}
 			};
-		};
-		tablaOperarios.setEditable(true);
-
-		columnaNombre.setCellFactory(call);
-		columnaNombre.setOnEditCommit((t) -> {
-			t.getRowValue().setNombre(t.getNewValue().trim());
 		});
 
-		columnaApellido.setCellFactory(call);
-		columnaApellido.setOnEditCommit((t) -> {
-			t.getRowValue().setApellido(t.getNewValue().trim());
+		columnaApellido.setCellFactory(col -> {
+			return new TableCellTextViewString<Operario>(Operario.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+					esEditable(this, newValue);
+				}
+
+				@Override
+				public void onEdit(Operario object, String newValue) {
+					object.setApellido(newValue.trim());
+				}
+			};
 		});
 
-		columnaDNI.setCellFactory(call);
-		columnaDNI.setOnEditCommit((t) -> {
-			t.getRowValue().setDNI(t.getNewValue().trim());
+		columnaDNI.setCellFactory(col -> {
+			return new TableCellTextViewString<Operario>(Operario.class) {
+
+				@Override
+				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+					esEditable(this, newValue);
+				}
+
+				@Override
+				public void onEdit(Operario object, String newValue) {
+					object.setDNI(newValue.trim());
+				}
+			};
 		});
 
 		actualizar();
+	}
+
+	private void esEditable(TableCell<?, ?> tableCell, Operario newValue) {
+		tableCell.setEditable(false);
+		if(tableCell.getTableRow() != null && newValue != null){
+			tableCell.setEditable(operariosAGuardar.contains(newValue));
+		}
 	}
 
 	@FXML

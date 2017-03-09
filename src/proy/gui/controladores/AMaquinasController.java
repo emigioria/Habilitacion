@@ -38,7 +38,7 @@ public class AMaquinasController extends ControladorRomano {
 		columnaNombre.setCellValueFactory(param -> {
 			if(param.getValue() != null){
 				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
+					return new SimpleStringProperty(param.getValue().toString());
 				}
 			}
 			return new SimpleStringProperty("<Sin nombre>");

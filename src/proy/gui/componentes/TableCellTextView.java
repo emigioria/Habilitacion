@@ -9,12 +9,9 @@ package proy.gui.componentes;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements ChangeListener<O> {
@@ -49,6 +46,12 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 			setText(null);
 			textField.setText(getString());
 			setGraphic(textField);
+
+			textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+				if(!newValue){
+					guardarCambios();
+				}
+			});
 		}
 	}
 
@@ -81,22 +84,28 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		textField = new TextField();
 	}
 
+	private void guardarCambios() {
+		try{
+			onEditCommit(objeto, convertidor.fromString(textField.getText()));
+		} catch(Exception e){
+			onEditCommit(objeto, null);
+		}
+		cancelEdit();
+	}
+
 	protected void setTextFieldProperties() {
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
-		textField.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent t) {
-				if(t.getCode() == KeyCode.ENTER){
-					try{
-						commitEdit(convertidor.fromString(textField.getText()));
-					} catch(Exception e){
-						commitEdit(null);
-					}
-					cancelEdit();
-				}
-				else if(t.getCode() == KeyCode.ESCAPE){
-					cancelEdit();
-				}
+		textField.setOnKeyReleased((t) -> {
+			switch(t.getCode()) {
+			case ENTER:
+				guardarCambios();
+				break;
+
+			case ESCAPE:
+				cancelEdit();
+				break;
+			default:
+				break;
 			}
 		});
 	}
@@ -113,4 +122,18 @@ public abstract class TableCellTextView<O, T> extends TableCell<O, T> implements
 		}
 		return getItem() == null ? "" : getItem().toString();
 	}
+
+	private void onEditCommit(O object, T newValue) {
+		commitEdit(newValue);
+
+		if(newValue != null){
+			onEdit(object, newValue);
+		}
+
+		//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
+		getTableColumn().setVisible(false);
+		getTableColumn().setVisible(true);
+	}
+
+	public abstract void onEdit(O object, T newValue);
 }

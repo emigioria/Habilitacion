@@ -26,6 +26,7 @@ import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
 import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.excepciones.PersistenciaException;
+import proy.logica.gestores.MaterialGestor;
 import proy.logica.gestores.ProcesoGestor;
 import proy.logica.gestores.TallerGestor;
 import proy.logica.gestores.UsuarioGestor;
@@ -42,7 +43,7 @@ import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
+import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
@@ -64,6 +65,9 @@ public class CoordinadorJavaFX {
 
 	@Resource
 	private TallerGestor gestorTaller;
+
+	@Resource
+	private MaterialGestor gestorMaterial;
 
 	@Resource
 	private ProcesoGestor gestorProceso;
@@ -159,11 +163,11 @@ public class CoordinadorJavaFX {
 	}
 
 	public ArrayList<Herramienta> listarHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
-		return gestorTaller.listarHerramientas(filtro);
+		return gestorMaterial.listarHerramientas(filtro);
 	}
 
 	public ResultadoCrearHerramientas crearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
-		return gestorTaller.crearHerramientas(herramientas);
+		return gestorMaterial.crearHerramientas(herramientas);
 	}
 
 	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
@@ -172,7 +176,7 @@ public class CoordinadorJavaFX {
 			return new ResultadoEliminarHerramientas(resultadoEliminarTareas, null, ErrorEliminarHerramientas.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
-		return gestorTaller.eliminarHerramientas(herramientas);
+		return gestorMaterial.eliminarHerramientas(herramientas);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {
@@ -181,15 +185,15 @@ public class CoordinadorJavaFX {
 	}
 
 	public ArrayList<Material> listarMateriales(Filtro<Material> filtro) throws PersistenciaException {
-		return gestorTaller.listarMateriales(filtro);
+		return gestorMaterial.listarMateriales(filtro);
 	}
 
 	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		return gestorTaller.crearMateriales(materiales);
+		return gestorMaterial.crearMateriales(materiales);
 	}
 
-	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		return gestorTaller.eliminarMateriales(materiales);
+	public ResultadoEliminarMaterial eliminarMaterial(Material material) throws PersistenciaException {
+		return gestorMaterial.eliminarMaterial(material);
 	}
 
 	public ArrayList<Proceso> listarProcesos(Filtro<Proceso> filtro) throws PersistenciaException {

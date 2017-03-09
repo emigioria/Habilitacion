@@ -8,8 +8,6 @@ package proy.logica.gestores;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,38 +22,29 @@ import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import proy.datos.clases.EstadoStr;
-import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
-import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
 import proy.datos.filtros.Filtro;
-import proy.datos.filtros.implementacion.FiltroHerramienta;
 import proy.datos.filtros.implementacion.FiltroMaquina;
-import proy.datos.filtros.implementacion.FiltroMaterial;
 import proy.datos.filtros.implementacion.FiltroParte;
 import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.datos.servicios.TallerService;
-import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
-import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
-import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
-import proy.logica.gestores.resultados.ResultadoCrearMateriales;
-import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
+import proy.logica.gestores.resultados.ResultadoCrearPartesMaquinaNueva;
+import proy.logica.gestores.resultados.ResultadoCrearPartesMaquinaNueva.ErrorCrearPartesMaquinaNueva;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasMaquinaNueva;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasMaquinaNueva.ErrorCrearPiezasMaquinaNueva;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales;
-import proy.logica.gestores.resultados.ResultadoEliminarMateriales.ErrorEliminarMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
@@ -89,7 +78,7 @@ public class TallerGestor {
 		return resultado;
 	}
 
-	public ResultadoCrearMaquina validarCrearMaquina(Maquina maquina) throws PersistenciaException {
+	private ResultadoCrearMaquina validarCrearMaquina(Maquina maquina) throws PersistenciaException {
 		ArrayList<ErrorCrearMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
 			errores.add(ErrorCrearMaquina.NOMBRE_INCOMPLETO);
@@ -101,7 +90,143 @@ public class TallerGestor {
 			}
 		}
 
-		return new ResultadoCrearMaquina(errores.toArray(new ErrorCrearMaquina[0]));
+		//Valido la creación de las partes de la máquina
+		ResultadoCrearPartesMaquinaNueva resultadosCrearPartes = validarPartesNuevas(maquina);
+		if(resultadosCrearPartes.hayErrores()){
+			errores.add(ErrorCrearMaquina.ERROR_AL_CREAR_PARTES);
+		}
+
+		return new ResultadoCrearMaquina(resultadosCrearPartes, errores.toArray(new ErrorCrearMaquina[0]));
+	}
+
+	/**
+	 * Valida que las partes que se están creando se pueden persistir.
+	 * Incluye la validación de la creación de las piezas pertenecientes a esas partes
+	 * Las partes pertenecen a una máquina nueva.
+	 *
+	 * @param maquinaDeLasPartesAValidar
+	 *            maquina con las partes nuevas que se quieren validar.
+	 * @return
+	 */
+	private ResultadoCrearPartesMaquinaNueva validarPartesNuevas(Maquina maquinaDeLasPartesAValidar) {
+		Map<String, ResultadoCrearPiezasMaquinaNueva> resultadosCrearPiezas;
+		Set<ErrorCrearPartesMaquinaNueva> errores = new HashSet<>();
+		List<Parte> partesAValidar = new ArrayList<>();
+
+		//Busco partes sin cantidad
+		for(Parte parteActual: maquinaDeLasPartesAValidar.getPartes()){
+			if(parteActual.getCantidad() == null || parteActual.getCantidad() < 1){
+				errores.add(ErrorCrearPartesMaquinaNueva.CANTIDAD_INCOMPLETA);
+			}
+		}
+
+		//Saco las partes que no tienen nombre
+		for(Parte parteActual: maquinaDeLasPartesAValidar.getPartes()){
+			if(parteActual.getNombre() == null || parteActual.getNombre().isEmpty()){
+				errores.add(ErrorCrearPartesMaquinaNueva.NOMBRE_INCOMPLETO);
+			}
+			else{
+				partesAValidar.add(parteActual);
+			}
+		}
+
+		//al resto las ordeno por nombre
+		partesAValidar.sort((p1, p2) -> {
+			return p1.getNombre().compareTo(p2.getNombre());
+		});
+
+		//busco coincidencias entre los nombres de las partes ingresadas
+		Set<String> nombresRepetidos = new HashSet<>();
+		if(!partesAValidar.isEmpty()){
+			Iterator<Parte> it1 = partesAValidar.iterator();
+			Parte anterior = it1.next();
+			Parte actual;
+			while(it1.hasNext()){
+				actual = it1.next();
+				if(actual.getNombre().equals(anterior.getNombre())){
+					errores.add(ErrorCrearPartesMaquinaNueva.NOMBRE_INGRESADO_REPETIDO);
+					nombresRepetidos.add(actual.getNombre());
+				}
+				anterior = actual;
+			}
+		}
+
+		//Valido la creación de las piezas de cada parte
+		resultadosCrearPiezas = validarPiezasNuevas(maquinaDeLasPartesAValidar.getPartes());
+		for(ResultadoCrearPiezasMaquinaNueva res: resultadosCrearPiezas.values()){
+			if(res.hayErrores()){
+				errores.add(ErrorCrearPartesMaquinaNueva.ERROR_AL_CREAR_PIEZAS);
+			}
+		}
+
+		return new ResultadoCrearPartesMaquinaNueva(resultadosCrearPiezas, nombresRepetidos, errores.toArray(new ErrorCrearPartesMaquinaNueva[0]));
+	}
+
+	/**
+	 * Valida que las piezas que se están creando se pueden persistir.
+	 * Las piezas pueden pertenecer a distintas partes.
+	 * Las piezas pertenecen a una máquina nueva.
+	 *
+	 * @param partesDeLasPiezasAValidar
+	 *            son las piezas nuevas que se quieren validar.
+	 * @return
+	 */
+	private Map<String, ResultadoCrearPiezasMaquinaNueva> validarPiezasNuevas(Collection<Parte> partesDeLasPiezasAValidar) {
+		Map<String, ResultadoCrearPiezasMaquinaNueva> resultadosCrearPiezas = new HashMap<>();
+		Set<ErrorCrearPiezasMaquinaNueva> errores = new HashSet<>();
+		List<Pieza> piezasAValidar;
+		for(Parte parte: partesDeLasPiezasAValidar){
+			piezasAValidar = new ArrayList<>();
+
+			//Busco piezas sin cantidad
+			for(Pieza piezaActual: parte.getPiezas()){
+				if(piezaActual.getCantidad() == null || piezaActual.getCantidad() < 1){
+					errores.add(ErrorCrearPiezasMaquinaNueva.CANTIDAD_INCOMPLETA);
+				}
+			}
+
+			//Busco piezas sin material
+			for(Pieza piezaActual: parte.getPiezas()){
+				if(piezaActual.getCantidad() == null || piezaActual.getCantidad() < 1){
+					errores.add(ErrorCrearPiezasMaquinaNueva.MATERIAL_INCOMPLETO);
+				}
+			}
+
+			//Saco las piezas que no tienen nombre
+			for(Pieza piezaActual: parte.getPiezas()){
+				if(piezaActual.getNombre() == null || piezaActual.getNombre().isEmpty()){
+					errores.add(ErrorCrearPiezasMaquinaNueva.NOMBRE_INCOMPLETO);
+				}
+				else{
+					piezasAValidar.add(piezaActual);
+				}
+			}
+
+			//al resto las ordeno por nombre
+			piezasAValidar.sort((p1, p2) -> {
+				return p1.getNombre().compareTo(p2.getNombre());
+			});
+
+			//busco coincidencias entre los nombres de las partes ingresadas
+			Set<String> nombresRepetidos = new HashSet<>();
+			if(!piezasAValidar.isEmpty()){
+				Iterator<Pieza> it1 = piezasAValidar.iterator();
+				Pieza anterior = it1.next();
+				Pieza actual;
+				while(it1.hasNext()){
+					actual = it1.next();
+					if(actual.getNombre().equals(anterior.getNombre())){
+						errores.add(ErrorCrearPiezasMaquinaNueva.NOMBRE_INGRESADO_REPETIDO);
+						nombresRepetidos.add(actual.getNombre());
+					}
+					anterior = actual;
+				}
+			}
+
+			resultadosCrearPiezas.put(parte.toString(), new ResultadoCrearPiezasMaquinaNueva(nombresRepetidos, errores.toArray(new ErrorCrearPiezasMaquinaNueva[0])));
+		}
+
+		return resultadosCrearPiezas;
 	}
 
 	public ResultadoModificarMaquina modificarMaquina(Maquina maquina) throws PersistenciaException {
@@ -114,7 +239,7 @@ public class TallerGestor {
 		return resultado;
 	}
 
-	public ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
+	private ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
 		ResultadoCrearModificarPartes resultadoCrearModificarPartes;
 		ArrayList<ErrorModificarMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
@@ -140,9 +265,7 @@ public class TallerGestor {
 	}
 
 	/**
-	 * validarPartes()
-	 *
-	 * valida que las partes que se están creando o los cambios que se le hicieron a viejas partes se pueden persistir.
+	 * Valida que las partes que se están creando o los cambios que se le hicieron a viejas partes se pueden persistir.
 	 * Las partes pueden pertenecer a distintas máquinas.
 	 * Incluye la validación de la creación o modificación de las piezas pertenecientes a esas partes
 	 *
@@ -153,7 +276,7 @@ public class TallerGestor {
 	 */
 	public Map<Maquina, ResultadoCrearModificarPartes> validarPartes(Collection<Maquina> maquinasDeLasPartesAValidar) throws PersistenciaException {
 		Map<Maquina, ResultadoCrearModificarPartes> resultadosCrearModificarPartes = new HashMap<>();
-		Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas;
+		Map<String, ResultadoCrearPiezas> resultadosCrearPiezas;
 		ArrayList<ErrorCrearModificarPartes> errores = new ArrayList<>();
 		List<Parte> partesAValidar;
 		for(Maquina maquina: maquinasDeLasPartesAValidar){
@@ -176,11 +299,8 @@ public class TallerGestor {
 			}
 
 			//las ordeno por nombre
-			Collections.sort(partesAValidar, new Comparator<Parte>() {
-				@Override
-				public int compare(Parte p1, Parte p2) {
-					return p1.getNombre().compareTo(p2.getNombre());
-				}
+			partesAValidar.sort((p1, p2) -> {
+				return p1.getNombre().compareTo(p2.getNombre());
 			});
 
 			//busco coincidencias entre los nombres de las piezas ingresadas
@@ -225,12 +345,8 @@ public class TallerGestor {
 					errores.add(ErrorCrearModificarPartes.ERROR_AL_CREAR_PIEZAS);
 				}
 			}
-			Map<String, ResultadoCrearPiezas> resultadosCrearPiezasNombradas = new HashMap<>();
-			for(Map.Entry<Parte, ResultadoCrearPiezas> piezaResultado: resultadosCrearPiezas.entrySet()){
-				resultadosCrearPiezasNombradas.put(piezaResultado.getKey().toString(), piezaResultado.getValue());
-			}
 
-			resultadosCrearModificarPartes.put(maquina, new ResultadoCrearModificarPartes(resultadosCrearPiezasNombradas, nombresPartesRepetidas, errores.toArray(new ErrorCrearModificarPartes[0])));
+			resultadosCrearModificarPartes.put(maquina, new ResultadoCrearModificarPartes(resultadosCrearPiezas, nombresPartesRepetidas, errores.toArray(new ErrorCrearModificarPartes[0])));
 
 		}
 
@@ -238,25 +354,26 @@ public class TallerGestor {
 	}
 
 	/**
-	 * validarPiezas()
-	 *
-	 * valida que las piezas que se están creando o los cambios que se le hicieron a viejas piezas se pueden persistir.
+	 * Valida que las piezas que se están creando se pueden persistir.
 	 * Las piezas pueden pertenecer a distintas partes.
+	 * Las piezas pueden contener piezas ya guardadas previamente
 	 *
-	 * @param piezasAGuardarOModificar
-	 *            son las piezas nuevas y/o las piezas viejas que se quieren modificar.
+	 * @param partesDeLasPiezasAValidar
+	 *            son las piezas nuevas y viejas que se quieren validar.
 	 * @return
 	 */
-	public Map<Parte, ResultadoCrearPiezas> validarPiezas(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
-		Map<Parte, ResultadoCrearPiezas> resultadosCrearPiezas = new HashMap<>();
+	public Map<String, ResultadoCrearPiezas> validarPiezas(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
+		Map<String, ResultadoCrearPiezas> resultadosCrearPiezas = new HashMap<>();
 		ArrayList<ErrorCrearPiezas> errores = new ArrayList<>();
 		List<Pieza> piezasAValidar;
 		for(Parte parte: partesDeLasPiezasAValidar){
+			//Quito las piezas dadas de baja
 			piezasAValidar = new ArrayList<>(parte.getPiezas());
 			piezasAValidar.removeIf(t -> {
 				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
 			});
 
+			//Saco las partes que no tienen nombre
 			Iterator<Pieza> it = piezasAValidar.iterator();
 			Pieza piezaActual;
 			boolean nombreIncompletoEncontrado = false;
@@ -272,14 +389,18 @@ public class TallerGestor {
 			}
 
 			//las ordeno por nombre
-			Collections.sort(piezasAValidar, new Comparator<Pieza>() {
-				@Override
-				public int compare(Pieza p1, Pieza p2) {
-					return p1.getNombre().compareTo(p2.getNombre());
-				}
+			piezasAValidar.sort((p1, p2) -> {
+				return p1.getNombre().compareTo(p2.getNombre());
+			});
+
+			//Quito las piezas guardadas previamente
+			piezasAValidar = new ArrayList<>(parte.getPiezas());
+			piezasAValidar.removeIf(t -> {
+				return t.getId() != null;
 			});
 
 			//busco coincidencias entre los nombres de las piezas ingresadas
+			Set<String> nombresRepetidos = new HashSet<>();
 			if(!piezasAValidar.isEmpty()){
 				Iterator<Pieza> it2 = piezasAValidar.iterator();
 				Pieza anterior = it2.next();
@@ -289,8 +410,10 @@ public class TallerGestor {
 					actual = it2.next();
 					if(actual.getNombre().equals(anterior.getNombre())){
 						nombreIngresadoRepetidoEncontrado = true;
+						nombresRepetidos.add(actual.getNombre());
 						it2.remove();
 					}
+					anterior = actual;
 				}
 				if(nombreIngresadoRepetidoEncontrado){
 					errores.add(ErrorCrearPiezas.NOMBRE_INGRESADO_REPETIDO);
@@ -303,15 +426,15 @@ public class TallerGestor {
 				nombresDePiezas.add(pieza.getNombre());
 			}
 			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).sinUnir().build());
-			Set<String> nombresPiezasRepetidas = new HashSet<>();
+			Set<String> nombresYaExistentes = new HashSet<>();
 			if(!piezasConNombreCoincidente.isEmpty()){
 				errores.add(ErrorCrearPiezas.NOMBRE_YA_EXISTENTE);
 				for(Pieza pieza: piezasConNombreCoincidente){
-					nombresPiezasRepetidas.add(pieza.toString());
+					nombresYaExistentes.add(pieza.toString());
 				}
 			}
 
-			resultadosCrearPiezas.put(parte, new ResultadoCrearPiezas(nombresPiezasRepetidas, errores.toArray(new ErrorCrearPiezas[0])));
+			resultadosCrearPiezas.put(parte.toString(), new ResultadoCrearPiezas(nombresYaExistentes, nombresRepetidos, errores.toArray(new ErrorCrearPiezas[0])));
 		}
 
 		return resultadosCrearPiezas;
@@ -319,7 +442,6 @@ public class TallerGestor {
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
 		persistidorTaller.bajaMaquina(maquina);
-
 		return new ResultadoEliminarMaquina();
 	}
 
@@ -575,217 +697,5 @@ public class TallerGestor {
 		}
 
 		return new ResultadoEliminarPiezas(resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPiezas[0]));
-	}
-
-	public ArrayList<Herramienta> listarHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
-		return persistidorTaller.obtenerHerramientas(filtro);
-	}
-
-	public ResultadoCrearHerramientas crearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
-		ResultadoCrearHerramientas resultado = validarCrearHerramientas(herramientas);
-		if(!resultado.hayErrores()){
-			persistidorTaller.guardarHerramientas(herramientas);
-		}
-		return resultado;
-	}
-
-	public ResultadoCrearHerramientas validarCrearHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
-		ArrayList<String> nombresHerramientasRepetidos = new ArrayList<>();
-		ListIterator<Herramienta> itHerramientasAGuardar = null, itHerramientasGuardadas = null;
-		Herramienta herramientaAGuardar = null, herramientaGuardada = null;
-
-		//Creo la lista de errores
-		ArrayList<ErrorCrearHerramientas> erroresHerramientas = new ArrayList<>();
-
-		ArrayList<String> nombresHerramientasABuscarEnLaBD = new ArrayList<>();
-
-		//Reviso que el nombre esté completo
-		boolean nombreIncompletoEncontrado = false;
-		for(Herramienta herramienta: herramientas){
-			if(herramienta.getNombre() == null || herramienta.getNombre().isEmpty()){
-				nombreIncompletoEncontrado = true;
-			}
-			else{
-				//Si el nombre está completo lo busco en la BD
-				nombresHerramientasABuscarEnLaBD.add(herramienta.getNombre());
-			}
-		}
-		//Si encontré un nombre incompleto, agrego el error
-		if(nombreIncompletoEncontrado){
-			erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_INCOMPLETO);
-		}
-
-		if(!nombresHerramientasABuscarEnLaBD.isEmpty()){
-
-			List<Herramienta> herramientas_coincidentes = persistidorTaller.obtenerHerramientas(new FiltroHerramienta.Builder().nombres(nombresHerramientasABuscarEnLaBD).build());
-			if(!herramientas_coincidentes.isEmpty()){
-				erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_YA_EXISTENTE);
-				for(Herramienta herramienta: herramientas_coincidentes){
-					nombresHerramientasRepetidos.add(herramienta.toString());
-				}
-			}
-
-		}
-
-		boolean nombreIngresadoRepetidoEncontrado = false;
-		itHerramientasAGuardar = herramientas.listIterator();
-
-		while(itHerramientasAGuardar.hasNext() && !nombreIngresadoRepetidoEncontrado){
-			herramientaAGuardar = itHerramientasAGuardar.next();
-			itHerramientasGuardadas = herramientas.listIterator(itHerramientasAGuardar.nextIndex());
-			while(itHerramientasGuardadas.hasNext() && !nombreIngresadoRepetidoEncontrado){
-				herramientaGuardada = itHerramientasGuardadas.next();
-				if(herramientaAGuardar.getNombre() != null && herramientaGuardada.getNombre() != null &&
-						herramientaAGuardar.getNombre().equals(herramientaGuardada.getNombre())){
-					nombreIngresadoRepetidoEncontrado = true;
-					erroresHerramientas.add(ErrorCrearHerramientas.NOMBRE_REPETIDO);
-				}
-			}
-		}
-
-		return new ResultadoCrearHerramientas(nombresHerramientasRepetidos, erroresHerramientas.toArray(new ErrorCrearHerramientas[0]));
-	}
-
-	public ResultadoEliminarHerramienta eliminarHerramienta(ArrayList<Herramienta> herramientas) throws PersistenciaException {
-		persistidorTaller.bajaHerramientas(herramientas);
-		return new ResultadoEliminarHerramienta();
-	}
-
-	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
-		throw new NotYetImplementedException();
-	}
-
-	public ArrayList<Material> listarMateriales(Filtro<Material> filtro) throws PersistenciaException {
-		return persistidorTaller.obtenerMateriales(filtro);
-	}
-
-	public ResultadoCrearMateriales crearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ResultadoCrearMateriales resultado = validarCrearMateriales(materiales);
-
-		if(!resultado.hayErrores()){
-			persistidorTaller.guardarMateriales(materiales);
-		}
-		return resultado;
-	}
-
-	private ResultadoCrearMateriales validarCrearMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ArrayList<String> nombresMaterialesRepetidos = new ArrayList<>();
-		ListIterator<Material> itMaterialesAGuardar = null, itMaterialesGuardados = null;
-		Material materialAGuardar = null, materialGuardado = null;
-
-		//Creo la lista de errores
-		ArrayList<ErrorCrearMateriales> erroresMateriales = new ArrayList<>();
-
-		//Creo una lista de los nombres de materiales voy a buscar en la BD
-		ArrayList<String> nombresMaterialesABuscarEnLaBD = new ArrayList<>();
-
-		//Reviso que el nombre esté completo
-		boolean nombreIncompletoEncontrado = false;
-		for(Material material: materiales){
-			if(material.getNombre() == null || material.getNombre().isEmpty()){
-				nombreIncompletoEncontrado = true;
-			}
-			else{
-				//Si el nombre está completo lo busco en la BD
-				nombresMaterialesABuscarEnLaBD.add(material.getNombre());
-			}
-		}
-		//Si encontré un nombre incompleto, agrego el error
-		if(nombreIncompletoEncontrado){
-			erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INCOMPLETO);
-		}
-
-		//Si hay materiales a buscar
-		if(!nombresMaterialesABuscarEnLaBD.isEmpty()){
-
-			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMaterialesABuscarEnLaBD).build());
-			if(!materiales_coincidentes.isEmpty()){
-				erroresMateriales.add(ErrorCrearMateriales.NOMBRE_YA_EXISTENTE);
-				for(Material material: materiales_coincidentes){
-					nombresMaterialesRepetidos.add(material.toString());
-				}
-			}
-		}
-
-		//veo si hay nombres que se repiten entre los nuevos materiales
-		boolean nombreIngresadoRepetidoEncontrado = false;
-		itMaterialesAGuardar = materiales.listIterator();
-
-		while(itMaterialesAGuardar.hasNext() && !nombreIngresadoRepetidoEncontrado){
-			materialAGuardar = itMaterialesAGuardar.next();
-			itMaterialesGuardados = materiales.listIterator(itMaterialesAGuardar.nextIndex());
-			while(itMaterialesGuardados.hasNext() && !nombreIngresadoRepetidoEncontrado){
-				materialGuardado = itMaterialesGuardados.next();
-				if(materialAGuardar.getNombre() != null && materialGuardado.getNombre() != null &&
-						materialAGuardar.getNombre().equals(materialGuardado.getNombre())){
-					nombreIngresadoRepetidoEncontrado = true;
-					erroresMateriales.add(ErrorCrearMateriales.NOMBRE_INGRESADO_REPETIDO);
-				}
-			}
-		}
-
-		return new ResultadoCrearMateriales(nombresMaterialesRepetidos, erroresMateriales.toArray(new ErrorCrearMateriales[0]));
-	}
-
-	public ResultadoEliminarMateriales eliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		ResultadoEliminarMateriales resultado = validarEliminarMateriales(materiales);
-
-		if(!resultado.hayErrores()){
-			ArrayList<Material> materialesABajaLogica;
-			ArrayList<Material> materialesABajaFisica = new ArrayList<>(materiales);
-
-			//si el material tiene piezas asociadas, se le da baja lógica
-			materialesABajaLogica = persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materiales).conPiezas().build());
-
-			//si el material no tiene piezas asociadas, se le da baja fisica
-			materialesABajaFisica.removeAll(materialesABajaLogica);
-
-			if(!materialesABajaFisica.isEmpty()){
-				try{
-					persistidorTaller.bajaMateriales(materialesABajaFisica);
-				} catch(ObjNotFoundException e){ //TODO probar y ver si esto anda para extenderlo en todas las bajas
-					persistidorTaller.bajaMateriales(persistidorTaller.obtenerMateriales(new FiltroMaterial.Builder().materiales(materialesABajaFisica).build()));
-				}
-			}
-
-			if(!materialesABajaLogica.isEmpty()){
-				for(Material material: materialesABajaLogica){
-					material.darDeBaja();
-				}
-				persistidorTaller.actualizarMateriales(materialesABajaLogica);
-			}
-
-		}
-
-		return resultado;
-	}
-
-	private ResultadoEliminarMateriales validarEliminarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
-		//Creo la lista de errores
-		ArrayList<ErrorEliminarMateriales> erroresMateriales = new ArrayList<>();
-
-		//Busco las piezas activas asociadas a los materiales
-		ArrayList<Pieza> piezasAsociadas = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().materiales(materiales).build());
-
-		//Separo las piezas por material
-		Map<String, List<String>> piezasAsociadasPorMaterial = new HashMap<>();
-
-		if(!piezasAsociadas.isEmpty()){
-			for(Material material: materiales){
-				ArrayList<String> piezasDelMaterial = new ArrayList<>();
-				piezasAsociadasPorMaterial.put(material.toString(), piezasDelMaterial);
-
-				for(Pieza pieza: piezasAsociadas){
-					if(material.equals(pieza.getMaterial())){
-						piezasDelMaterial.add(pieza.toString());
-					}
-				}
-			}
-
-			erroresMateriales.add(ErrorEliminarMateriales.PIEZAS_ACTIVAS_ASOCIADAS);
-		}
-
-		return new ResultadoEliminarMateriales(piezasAsociadasPorMaterial, erroresMateriales.toArray(new ErrorEliminarMateriales[0]));
 	}
 }

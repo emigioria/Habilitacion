@@ -11,10 +11,21 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 public class ResultadoCrearMaquina extends Resultado<ErrorCrearMaquina> {
 
 	public enum ErrorCrearMaquina {
-		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO
+		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO, ERROR_AL_CREAR_PARTES
 	}
+
+	private ResultadoCrearPartesMaquinaNueva resultadosCrearPartes;
 
 	public ResultadoCrearMaquina(ErrorCrearMaquina... errores) {
 		super(errores);
+	}
+
+	public ResultadoCrearMaquina(ResultadoCrearPartesMaquinaNueva resultadosCrearPartes, ErrorCrearMaquina... errores) {
+		super(errores);
+		this.resultadosCrearPartes = resultadosCrearPartes;
+	}
+
+	public ResultadoCrearPartesMaquinaNueva getResultadosCrearPartes() {
+		return resultadosCrearPartes;
 	}
 }

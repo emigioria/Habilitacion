@@ -71,17 +71,19 @@ public class AHerramientasController extends ControladorRomano {
 						this.setEditable(herramientasAGuardar.contains(newValue));
 					}
 				}
+
+				@Override
+				public void onEdit(Herramienta object, String newValue) {
+					String nombre = newValue.toLowerCase().trim();
+					if(!nombre.isEmpty()){
+						object.setNombre(nombre);
+					}
+				}
 			};
 		};
 		tablaHerramientas.setEditable(true);
 
 		columnaNombre.setCellFactory(call);
-		columnaNombre.setOnEditCommit((t) -> {
-			String nombre = t.getNewValue().toLowerCase().trim();
-			if(!nombre.isEmpty()){
-				t.getRowValue().setNombre(nombre);
-			}
-		});
 
 		actualizar();
 	}
@@ -268,31 +270,28 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	public void buscar() {
-		String nombreBuscado = nombreHerramienta.getText().trim();
+		String nombreBuscado = nombreHerramienta.getText().trim().toLowerCase();
 		if(nombreBuscado.isEmpty()){
 			actualizar();
 		}
 		else{
-			FiltroHerramienta filtro = new FiltroHerramienta.Builder().nombre(nombreBuscado.toLowerCase()).build();
-			ArrayList<Herramienta> resultado = null;
+			tablaHerramientas.getItems().clear();
+			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			try{
-				resultado = coordinador.listarHerramientas(filtro);
+				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().nombre(nombreBuscado).build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}
-			tablaHerramientas.getItems().clear();
-			tablaHerramientas.getItems().addAll(herramientasAGuardar);
-			tablaHerramientas.getItems().addAll(resultado);
 		}
 	}
 
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			tablaHerramientas.getItems().clear();
+			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			try{
-				tablaHerramientas.getItems().clear();
 				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
-				tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}

@@ -8,9 +8,7 @@ package proy.datos.servicios;
 
 import java.util.ArrayList;
 
-import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Maquina;
-import proy.datos.entidades.Material;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.filtros.Filtro;
@@ -41,21 +39,4 @@ public interface TallerService {
 	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
 
 	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
-
-	public ArrayList<Herramienta> obtenerHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException;
-
-	public void guardarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
-
-	public void actualizarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
-
-	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
-
-	public ArrayList<Material> obtenerMateriales(Filtro<Material> filtro) throws PersistenciaException;
-
-	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
-
-	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
-
-	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException;
-
 }
