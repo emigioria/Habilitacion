@@ -242,7 +242,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 			query.setParameter("est", estado);
 		}
 		if(herramientas != null){
-			query.setParameter("hes", herramientas);
+			query.setParameterList("hes", herramientas);
 		}
 		if(operario != null){
 			query.setParameter("op", operario);
@@ -254,10 +254,10 @@ public class FiltroTarea extends Filtro<Tarea> {
 			query.setParameter("fpf", fechaPlanificadaFin);
 		}
 		if(partes != null){
-			query.setParameter("pas", partes);
+			query.setParameterList("pas", partes);
 		}
 		if(piezas != null){
-			query.setParameter("pis", piezas);
+			query.setParameterList("pis", piezas);
 		}
 		if(proceso != null){
 			query.setParameter("pro", proceso);

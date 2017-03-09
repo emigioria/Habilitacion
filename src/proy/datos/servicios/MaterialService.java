@@ -19,16 +19,16 @@ public interface MaterialService {
 
 	public void guardarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
 
-	public void actualizarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
+	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException;
 
-	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException;
+	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException;
 
 	public ArrayList<Material> obtenerMateriales(Filtro<Material> filtro) throws PersistenciaException;
 
 	public void guardarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
 
-	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException;
+	public void actualizarMaterial(Material material) throws PersistenciaException;
 
-	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException;
+	public void bajaMaterial(Material material) throws PersistenciaException;
 
 }

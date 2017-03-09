@@ -45,6 +45,14 @@ public class FiltroMaterial extends Filtro<Material> {
 			return this;
 		}
 
+		public Builder material(Material material) {
+			if(material != null){
+				filtro.materiales = new ArrayList<>();
+				filtro.materiales.add(material);
+			}
+			return this;
+		}
+
 		public Builder materiales(ArrayList<Material> materiales) {
 			if(materiales != null && !materiales.isEmpty()){
 				filtro.materiales = materiales;
@@ -108,12 +116,9 @@ public class FiltroMaterial extends Filtro<Material> {
 	}
 
 	private String getFrom() {
-		String from;
+		String from = " FROM Material " + this.nombreEntidad;
 		if(this.conPiezas != null && this.conPiezas){
-			from = " FROM Material " + this.nombreEntidad + ", Pieza piez ";
-		}
-		else{
-			from = " FROM Material " + this.nombreEntidad;
+			from += ", Pieza piez ";
 		}
 		return from;
 	}

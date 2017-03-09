@@ -40,8 +40,8 @@ import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
@@ -148,7 +148,6 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
-
 		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).piezas(piezasAEliminar).build()));
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarPiezas(resultadoEliminarTareas, null, ErrorEliminarPiezas.ERROR_AL_ELIMINAR_TAREAS);
@@ -170,13 +169,17 @@ public class CoordinadorJavaFX {
 		return gestorMaterial.crearHerramientas(herramientas);
 	}
 
-	public ResultadoEliminarHerramientas eliminarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
+		//Se eliminan las tareas de la herramienta
+		ArrayList<Herramienta> herramientas = new ArrayList<>();
+		herramientas.add(herramienta);
 		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramientas(herramientas).build()));
 		if(resultadoEliminarTareas.hayErrores()){
-			return new ResultadoEliminarHerramientas(resultadoEliminarTareas, null, ErrorEliminarHerramientas.ERROR_AL_ELIMINAR_TAREAS);
+			return new ResultadoEliminarHerramienta(resultadoEliminarTareas, ErrorEliminarHerramienta.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
-		return gestorMaterial.eliminarHerramientas(herramientas);
+		//Se continúa con la eliminación de la herramienta
+		return gestorMaterial.eliminarHerramienta(herramienta);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Herramienta herramienta) throws PersistenciaException {

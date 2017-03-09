@@ -12,12 +12,10 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.util.Callback;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Proceso;
 import proy.datos.filtros.implementacion.FiltroHerramienta;
@@ -28,8 +26,8 @@ import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramientas;
-import proy.logica.gestores.resultados.ResultadoEliminarHerramientas.ErrorEliminarHerramientas;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 
@@ -48,8 +46,6 @@ public class AHerramientasController extends ControladorRomano {
 
 	private ArrayList<Herramienta> herramientasAGuardar = new ArrayList<>();
 
-	private ArrayList<Herramienta> herramientasAEliminar = new ArrayList<>();
-
 	@Override
 	protected void inicializar() {
 		columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
@@ -58,10 +54,12 @@ public class AHerramientasController extends ControladorRomano {
 					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
 			}
-			return new SimpleStringProperty("<Sin Nombre>");
+			return new SimpleStringProperty("");
 		});
 
-		Callback<TableColumn<Herramienta, String>, TableCell<Herramienta, String>> call = col -> {
+		tablaHerramientas.setEditable(true);
+
+		columnaNombre.setCellFactory(col -> {
 			return new TableCellTextViewString<Herramienta>(Herramienta.class) {
 
 				@Override
@@ -80,16 +78,13 @@ public class AHerramientasController extends ControladorRomano {
 					}
 				}
 			};
-		};
-		tablaHerramientas.setEditable(true);
-
-		columnaNombre.setCellFactory(call);
+		});
 
 		actualizar();
 	}
 
 	@FXML
-	public void nuevaHerramienta() {
+	private void nuevaHerramienta() {
 		if(!tablaHerramientas.isEditable()){
 			tablaHerramientas.setEditable(true);
 		}
@@ -100,14 +95,22 @@ public class AHerramientasController extends ControladorRomano {
 
 	}
 
+	@FXML
+	private void guardar() {
+		crearHerramientas();
+		actualizar();
+	}
+
 	private void crearHerramientas() {
 		ResultadoCrearHerramientas resultadoCrearHerramientas;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		//Toma de datos de la vista
 		if(herramientasAGuardar.isEmpty()){
 			return;
 		}
 
+		//Inicio transacciones al gestor
 		try{
 			resultadoCrearHerramientas = coordinador.crearHerramientas(herramientasAGuardar);
 		} catch(PersistenciaException e){
@@ -118,6 +121,7 @@ public class AHerramientasController extends ControladorRomano {
 			return;
 		}
 
+		//Tratamiento de errores
 		if(resultadoCrearHerramientas.hayErrores()){
 			for(ErrorCrearHerramientas r: resultadoCrearHerramientas.getErrores()){
 				switch(r) {
@@ -132,12 +136,11 @@ public class AHerramientasController extends ControladorRomano {
 						erroresBfr.append(">\n");
 					}
 					break;
-				case NOMBRE_REPETIDO:
+				case NOMBRE_INGRESADO_REPETIDO:
 					erroresBfr.append("Se intenta añadir dos herramientas con el mismo nombre.\n");
 					break;
 				}
 			}
-
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al crear herramienta", errores, stage);
@@ -146,21 +149,26 @@ public class AHerramientasController extends ControladorRomano {
 		else{
 			tablaHerramientas.setEditable(false);
 			herramientasAGuardar.clear();
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente las herramientas", stage);
 		}
 
 	}
 
 	@FXML
-	public void guardar() {
-		eliminarHerramientas();
-		crearHerramientas();
-	}
+	private void eliminarHerramienta() {
+		ResultadoEliminarHerramienta resultadoEliminarHerramienta;
+		StringBuffer erroresBfr = new StringBuffer();
 
-	@FXML
-	public void eliminarHerramienta() {
+		//Toma de datos de la vista
 		Herramienta herramientaAEliminar = tablaHerramientas.getSelectionModel().getSelectedItem();
-
 		if(herramientaAEliminar == null){
+			return;
+		}
+
+		//Si no fue guardada previamente se elimina sin ir al gestor
+		if(herramientasAGuardar.contains(herramientaAEliminar)){
+			herramientasAGuardar.remove(herramientaAEliminar);
+			tablaHerramientas.getItems().remove(herramientaAEliminar);
 			return;
 		}
 
@@ -182,7 +190,16 @@ public class AHerramientasController extends ControladorRomano {
 		VentanaConfirmacion vc;
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
-					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminar la herramienta?", stage);
+					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminarla?", stage);
+			if(!vc.acepta()){
+				return;
+			}
+		}
+		else{
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
+					"Se eliminará la herramienta <" + herramientaAEliminar + "> de forma permanente.\n" +
+							"¿Está seguro de que desea continuar?",
+					stage);
 			if(!vc.acepta()){
 				return;
 			}
@@ -205,34 +222,18 @@ public class AHerramientasController extends ControladorRomano {
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
-					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
+					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas.\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
 					stage);
 			if(!vc.acepta()){
 				return;
 			}
 		}
 
-		if(herramientasAGuardar.contains(herramientaAEliminar)){
-			herramientasAGuardar.remove(herramientaAEliminar);
-		}
-		else{
-			herramientasAEliminar.add(herramientaAEliminar);
-		}
 		tablaHerramientas.getItems().remove(herramientaAEliminar);
-	}
-
-	private void eliminarHerramientas() {
-		ResultadoEliminarHerramientas resultadoEliminarHerramientas;
-		StringBuffer erroresBfr = new StringBuffer();
-
-		//Toma de datos de la vista
-		if(herramientasAEliminar.isEmpty()){
-			return;
-		}
 
 		//Inicio transacciones al gestor
 		try{
-			resultadoEliminarHerramientas = coordinador.eliminarHerramientas(herramientasAEliminar);
+			resultadoEliminarHerramienta = coordinador.eliminarHerramienta(herramientaAEliminar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -242,11 +243,11 @@ public class AHerramientasController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		if(resultadoEliminarHerramientas.hayErrores()){
-			for(ErrorEliminarHerramientas e: resultadoEliminarHerramientas.getErrores()){
+		if(resultadoEliminarHerramienta.hayErrores()){
+			for(ErrorEliminarHerramienta e: resultadoEliminarHerramienta.getErrores()){
 				switch(e) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					ResultadoEliminarTareas resultadoTareas = resultadoEliminarHerramientas.getResultadoTareas();
+					ResultadoEliminarTareas resultadoTareas = resultadoEliminarHerramienta.getResultadoTareas();
 					if(resultadoTareas.hayErrores()){
 						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
 							switch(ep) {
@@ -264,8 +265,8 @@ public class AHerramientasController extends ControladorRomano {
 			}
 		}
 		else{
-			herramientasAEliminar.clear();
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han eliminado correctamente las herramientas.", stage);
+			tablaHerramientas.getItems().remove(herramientaAEliminar);
+			presentadorVentanas.presentarToast("Se ha eliminado correctamente la herramienta.", stage);
 		}
 	}
 
@@ -299,7 +300,7 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	@Override
-	public void salir() {
+	protected void salir() {
 		if(herramientasAGuardar.isEmpty()){
 			super.salir();
 		}

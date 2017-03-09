@@ -115,6 +115,7 @@ public class AMaterialesController extends ControladorRomano {
 	@FXML
 	private void guardar() {
 		crearMateriales();
+		actualizar();
 	}
 
 	private void crearMateriales() {
@@ -163,9 +164,9 @@ public class AMaterialesController extends ControladorRomano {
 			}
 		}
 		else{
+			tablaMateriales.setEditable(false);
 			materialesAGuardar.clear();
 			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente los materiales", stage);
-			actualizar();
 		}
 	}
 
@@ -189,7 +190,7 @@ public class AMaterialesController extends ControladorRomano {
 
 		//Se le pide al usuario que confirme la eliminación de la máquina
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
-				"Se eliminará el material <" + materialAEliminar.getNombre() + "> de forma permanente.\n" +
+				"Se eliminará el material <" + materialAEliminar + "> de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){

@@ -64,20 +64,11 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			Herramienta herramienta;
-			for(int i = 0; i < herramientas.size(); i++){
-				herramienta = herramientas.get(i);
-				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
-				session.update(herramienta);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+			session.update(herramienta);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -89,20 +80,11 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaHerramientas(ArrayList<Herramienta> herramientas) throws PersistenciaException {
+	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			Herramienta herramienta;
-			for(int i = 0; i < herramientas.size(); i++){
-				herramienta = herramientas.get(i);
-				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
-				session.delete(herramienta);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+			session.delete(herramienta);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");
@@ -143,20 +125,11 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+	public void actualizarMaterial(Material material) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			Material material;
-			for(int i = 0; i < materiales.size(); i++){
-				material = materiales.get(i);
-				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
-				session.update(material);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+			session.update(material);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -168,19 +141,10 @@ public class MaterialServiceImpl implements MaterialService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaMateriales(ArrayList<Material> materiales) throws PersistenciaException {
+	public void bajaMaterial(Material material) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			Material material;
-			for(int i = 0; i < materiales.size(); i++){
-				material = materiales.get(i);
-				session.delete(material);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			session.delete(material);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

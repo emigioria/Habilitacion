@@ -10,11 +10,22 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorElimina
 
 public class ResultadoEliminarHerramienta extends Resultado<ErrorEliminarHerramienta> {
 
-	public enum ErrorEliminarHerramienta {
+	ResultadoEliminarTareas resultadoTareas;
 
+	public enum ErrorEliminarHerramienta {
+		ERROR_AL_ELIMINAR_TAREAS
 	}
 
 	public ResultadoEliminarHerramienta(ErrorEliminarHerramienta... errores) {
 		super(errores);
+	}
+
+	public ResultadoEliminarHerramienta(ResultadoEliminarTareas resultadoTareas, ErrorEliminarHerramienta... errores) {
+		super(errores);
+		this.resultadoTareas = resultadoTareas;
+	}
+
+	public ResultadoEliminarTareas getResultadoTareas() {
+		return resultadoTareas;
 	}
 }

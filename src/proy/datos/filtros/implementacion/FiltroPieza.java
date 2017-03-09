@@ -92,6 +92,14 @@ public class FiltroPieza extends Filtro<Pieza> {
 			filtro.setNamedQuery();
 			return filtro;
 		}
+
+		public Builder material(Material material) {
+			if(material != null){
+				filtro.materiales = new ArrayList<>();
+				filtro.materiales.add(material);
+			}
+			return this;
+		}
 	}
 
 	private FiltroPieza() {

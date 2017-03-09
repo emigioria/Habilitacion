@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<GridPane hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AMaterialesController">
+<GridPane hgap="20.0" prefWidth="600.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AMaterialesController">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" />
       <ColumnConstraints hgrow="NEVER" />
@@ -39,16 +39,16 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="6.0" prefWidth="473.0" spacing="5.0" GridPane.rowIndex="1">
+      <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" spacing="10.0" GridPane.rowIndex="1">
          <children>
-            <Label text="Nombre:">
+            <Label text="Filtros:">
                <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreMaterial">
+            <TextField fx:id="nombreMaterial" promptText="Nombre">
                <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
             </TextField>
          </children>
@@ -64,17 +64,17 @@
       </TableView>
       <VBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button fx:id="botonNuevo" minWidth="75.0" mnemonicParsing="false" onAction="#nuevoMaterial" prefWidth="75.0" text="Nueva">
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevoMaterial" prefWidth="75.0" text="Nueva">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button fx:id="botonEliminar" minWidth="75.0" mnemonicParsing="false" onAction="#eliminarMaterial" prefWidth="75.0" text="Eliminar">
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarMaterial" prefWidth="75.0" text="Eliminar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button fx:id="botonGuardar" minWidth="75.0" mnemonicParsing="false" onAction="#guardar" prefWidth="75.0" text="Guardar">
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#guardar" prefWidth="75.0" text="Guardar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

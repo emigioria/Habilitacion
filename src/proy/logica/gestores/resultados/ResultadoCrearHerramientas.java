@@ -16,7 +16,7 @@ public class ResultadoCrearHerramientas extends Resultado<ErrorCrearHerramientas
 	HashSet<String> nombresYaExistentes;
 
 	public enum ErrorCrearHerramientas {
-		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO, NOMBRE_YA_EXISTENTE
+		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO
 	}
 
 	public ResultadoCrearHerramientas(Collection<String> nombresYaExistentes, ErrorCrearHerramientas... errores) {

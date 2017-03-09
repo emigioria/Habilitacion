@@ -92,6 +92,7 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoEliminarTareas validarEliminarTareas(ArrayList<Tarea> tareas) {
+		//No hay validaciones hasta el momento
 		return new ResultadoEliminarTareas();
 	}
 
