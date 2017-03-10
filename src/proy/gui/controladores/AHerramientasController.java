@@ -300,16 +300,17 @@ public class AHerramientasController extends ControladorRomano {
 	}
 
 	@Override
-	protected void salir() {
+	public Boolean sePuedeSalir() {
 		if(herramientasAGuardar.isEmpty()){
-			super.salir();
+			return true;
 		}
 		else{
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
 					"Hay herramientas nuevas sin guardar, si sale ahora se perderán los cambios.", stage);
 			if(confirmacion.acepta()){
-				super.salir();
+				return true;
 			}
 		}
+		return false;
 	}
 }

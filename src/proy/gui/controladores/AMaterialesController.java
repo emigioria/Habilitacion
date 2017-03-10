@@ -265,9 +265,9 @@ public class AMaterialesController extends ControladorRomano {
 	}
 
 	@Override
-	protected void salir() {
+	public Boolean sePuedeSalir() {
 		if(materialesAGuardar.isEmpty()){
-			super.salir();
+			return true;
 		}
 		else{
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
@@ -276,5 +276,6 @@ public class AMaterialesController extends ControladorRomano {
 				super.salir();
 			}
 		}
+		return false;
 	}
 }

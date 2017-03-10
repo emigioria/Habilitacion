@@ -27,6 +27,7 @@ public class Main extends Application {
 	private Stage primaryStage;
 	private ApplicationContext appContext;
 	private PresentadorVentanas presentador;
+	private PilaScene apilador;
 
 	public static void main(String[] args) {
 		//Ocultar logs
@@ -57,14 +58,13 @@ public class Main extends Application {
 
 		//Setear acción de cierre
 		primaryStage.setOnCloseRequest((e) -> {
-			//	apilador.desapilarScene();
-			//	if(!apilador.isEmpty()){
-			//	e.consume();
-			//	}
-			//else{
-			SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
-			sessionFact.close();
-			//}
+			if(!apilador.sePuedeSalir()){
+				e.consume();
+			}
+			else{
+				SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
+				sessionFact.close();
+			}
 		});
 
 		iniciarHibernate();
@@ -94,7 +94,7 @@ public class Main extends Application {
 		task.setOnSucceeded(
 				(event) -> {
 					ventanaEspera.close();
-					ControladorRomano.crearYMostrarPrimeraVentana(coordinador, primaryStage, VTareasController.URL_VISTA);
+					apilador = ControladorRomano.crearYMostrarPrimeraVentana(coordinador, primaryStage, VTareasController.URL_VISTA);
 				});
 
 		//Si falla, informa al usuario del error y cierra la aplicacion

@@ -66,14 +66,20 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		}
 	}
 
+	@Override
 	@FXML
 	protected void salir() {
-		//Stage stage = apilador.getStage();
-		//stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
-		apilador.desapilarScene();
+		if(sePuedeSalir()){
+			apilador.desapilarScene();
+		}
 	}
 
-	public static ControladorRomano crearYMostrarPrimeraVentana(CoordinadorJavaFX coordinador, Stage primaryStage, String URL_Vista) {
+	@Override
+	public Boolean sePuedeSalir() {
+		return true;
+	}
+
+	public static PilaScene crearYMostrarPrimeraVentana(CoordinadorJavaFX coordinador, Stage primaryStage, String URL_Vista) {
 		PilaScene apilador = new PilaScene(primaryStage);
 		ControladorRomano pantallaMock = new ControladorRomano() {
 			@Override
@@ -87,6 +93,7 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		pantallaMock.setApilador(apilador);
 		pantallaMock.setCoordinador(coordinador);
 		pantallaMock.setStage(primaryStage);
-		return pantallaMock.nuevaScene(URL_Vista);
+		pantallaMock.nuevaScene(URL_Vista);
+		return apilador;
 	}
 }

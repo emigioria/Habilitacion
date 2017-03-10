@@ -464,14 +464,14 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private void guardar() {
-		Boolean hayErrores = null;
+		Boolean hayErrores = true;
 		if(maquina == null){
 			hayErrores = crearMaquina();
 		}
 		else{
 			hayErrores = modificarMaquina();
 		}
-		if(hayErrores != null && !hayErrores){
+		if(!hayErrores){
 			salir();
 		}
 	}

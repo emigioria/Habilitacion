@@ -51,6 +51,10 @@ public class PilaScene {
 		stagePrincipal.show();
 	}
 
+	public Boolean sePuedeSalir() {
+		return controllers.peek().sePuedeSalir();
+	}
+
 	private boolean isEmpty() {
 		return scenes.isEmpty();
 	}

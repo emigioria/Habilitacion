@@ -43,4 +43,7 @@ public abstract class ControladorJavaFX {
 
 	protected abstract void inicializar();
 
+	@FXML
+	protected abstract void salir();
+
 }

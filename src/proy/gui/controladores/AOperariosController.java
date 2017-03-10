@@ -41,7 +41,6 @@ public class AOperariosController extends ControladorRomano {
 	@FXML
 	private TableColumn<Operario, String> columnaDNI;
 
-	@FXML
 	private ArrayList<Operario> operariosAGuardar = new ArrayList<>();;
 
 	@Override
@@ -130,7 +129,6 @@ public class AOperariosController extends ControladorRomano {
 
 	@FXML
 	public void nuevoOperario() {
-
 		if(!tablaOperarios.isEditable()){
 			tablaOperarios.setEditable(true);
 		}
@@ -228,16 +226,17 @@ public class AOperariosController extends ControladorRomano {
 	}
 
 	@Override
-	public void salir() {
+	public Boolean sePuedeSalir() {
 		if(operariosAGuardar.isEmpty()){
-			super.salir();
+			return true;
 		}
 		else{
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
 					"Hay operarios nuevos sin guardar, si sale ahora se perderán los cambios.", stage);
 			if(confirmacion.acepta()){
-				super.salir();
+				return true;
 			}
 		}
+		return false;
 	}
 }
