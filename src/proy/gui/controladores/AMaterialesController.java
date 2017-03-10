@@ -52,7 +52,7 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
 			}
-			return new SimpleStringProperty("");
+			return new SimpleStringProperty("<Sin nombre>");
 		});
 		columnaMedidas.setCellValueFactory(param -> {
 			if(param.getValue() != null){
@@ -60,7 +60,7 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getMedidas());
 				}
 			}
-			return new SimpleStringProperty("");
+			return new SimpleStringProperty("<Sin medidas>");
 		});
 
 		columnaMaterial.setCellFactory(col -> {
@@ -273,7 +273,7 @@ public class AMaterialesController extends ControladorRomano {
 			VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
 					"Hay materiales nuevos sin guardar, si sale ahora se perderán los cambios.", stage);
 			if(confirmacion.acepta()){
-				super.salir();
+				return true;
 			}
 		}
 		return false;
