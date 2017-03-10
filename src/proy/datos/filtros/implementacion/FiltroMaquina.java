@@ -34,7 +34,9 @@ public class FiltroMaquina extends Filtro<Maquina> {
 		}
 
 		public Builder nombre(String nombre) {
-			filtro.nombre = nombre;
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombre = nombre;
+			}
 			return this;
 		}
 

@@ -6,6 +6,8 @@
  */
 package proy.datos.filtros.implementacion;
 
+import java.util.ArrayList;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -18,8 +20,11 @@ public class FiltroOperario extends Filtro<Operario> {
 	private String nombreEntidad = "a";
 	private String consulta = "";
 	private String namedQuery = "";
+	private String nombre;
+	private String apellido;
 	private String dni;
 	private EstadoStr estado = EstadoStr.ALTA;
+	public ArrayList<String> dnis;
 
 	public static class Builder {
 
@@ -35,8 +40,31 @@ public class FiltroOperario extends Filtro<Operario> {
 			return this;
 		}
 
+		public Builder nombre(String nombre) {
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombre = nombre;
+			}
+			return this;
+		}
+
+		public Builder apellido(String apellido) {
+			if(apellido != null && !apellido.isEmpty()){
+				filtro.apellido = apellido;
+			}
+			return this;
+		}
+
 		public Builder dni(String dni) {
-			filtro.dni = dni;
+			if(dni != null && !dni.isEmpty()){
+				filtro.dni = dni;
+			}
+			return this;
+		}
+
+		public Builder dnis(ArrayList<String> dnis) {
+			if(dnis != null && !dnis.isEmpty()){
+				filtro.dnis = dnis;
+			}
 			return this;
 		}
 
@@ -61,7 +89,16 @@ public class FiltroOperario extends Filtro<Operario> {
 	}
 
 	private void setNamedQuery() {
+		if(this.nombre != null){
+			return;
+		}
+		if(this.apellido != null){
+			return;
+		}
 		if(this.dni != null){
+			return;
+		}
+		if(this.dnis != null){
 			return;
 		}
 		if(this.estado != null){
@@ -82,8 +119,11 @@ public class FiltroOperario extends Filtro<Operario> {
 
 	private String getWhere() {
 		String where =
-				((this.dni != null) ? (this.nombreEntidad + ".dni = :dni AND ") : ("")) +
-						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""));
+				((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : ("")) +
+						((this.apellido != null) ? (this.nombreEntidad + ".apellido LIKE :ape AND ") : ("")) +
+						((this.dni != null) ? (this.nombreEntidad + ".dni LIKE :dni AND ") : ("")) +
+						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
+						((this.dnis != null) ? (this.nombreEntidad + ".dni in (:dns) AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -109,11 +149,20 @@ public class FiltroOperario extends Filtro<Operario> {
 
 	@Override
 	public Query setParametros(Query query) {
-		if(dni != null){
-			query.setParameter("dni", dni);
-		}
 		if(estado != null){
 			query.setParameter("est", estado);
+		}
+		if(nombre != null){
+			query.setParameter("nom", "%" + nombre + "%");
+		}
+		if(apellido != null){
+			query.setParameter("ape", "%" + apellido + "%");
+		}
+		if(dni != null){
+			query.setParameter("dni", "%" + dni + "%");
+		}
+		if(dnis != null){
+			query.setParameterList("dns", dnis);
 		}
 		return query;
 	}

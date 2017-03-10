@@ -102,6 +102,10 @@ public abstract class Usuario {
 		this.estado = estado;
 	}
 
+	public void darDeBaja() {
+		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -183,6 +187,6 @@ public abstract class Usuario {
 
 	@Override
 	public String toString() {
-		return formater.nombrePropio(this.getNombre() + this.getApellido());
+		return formater.nombrePropio(this.getNombre() + " " + this.getApellido());
 	}
 }

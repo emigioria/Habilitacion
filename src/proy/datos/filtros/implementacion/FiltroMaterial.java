@@ -23,6 +23,7 @@ public class FiltroMaterial extends Filtro<Material> {
 	private EstadoStr estado = EstadoStr.ALTA;
 	private Boolean conPiezas;
 	private String nombre;
+	private String medidas;
 	private ArrayList<Material> materiales;
 	private ArrayList<String> nombres;
 
@@ -41,7 +42,16 @@ public class FiltroMaterial extends Filtro<Material> {
 		}
 
 		public Builder nombre(String nombre) {
-			filtro.nombre = nombre;
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombre = nombre;
+			}
+			return this;
+		}
+
+		public Builder medida(String medidas) {
+			if(medidas != null && !medidas.isEmpty()){
+				filtro.medidas = medidas;
+			}
 			return this;
 		}
 
@@ -66,7 +76,9 @@ public class FiltroMaterial extends Filtro<Material> {
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			filtro.nombres = nombres;
+			if(nombres != null && !nombres.isEmpty()){
+				filtro.nombres = nombres;
+			}
 			return this;
 		}
 
@@ -98,6 +110,9 @@ public class FiltroMaterial extends Filtro<Material> {
 		if(this.nombre != null){
 			return;
 		}
+		if(this.medidas != null){
+			return;
+		}
 		if(this.nombres != null){
 			return;
 		}
@@ -126,6 +141,7 @@ public class FiltroMaterial extends Filtro<Material> {
 	private String getWhere() {
 		String where =
 				((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+						+ ((this.medidas != null) ? (this.nombreEntidad + ".medidas LIKE :med AND ") : (""))
 						+ ((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.materiales != null) ? (this.nombreEntidad + " in (:mts) AND ") : (""))
 						+ ((this.conPiezas != null) ? ((this.conPiezas) ? (this.nombreEntidad + " = piez.material AND ") : ("")) : (""))
@@ -163,6 +179,9 @@ public class FiltroMaterial extends Filtro<Material> {
 		}
 		if(nombre != null){
 			query.setParameter("nom", "%" + nombre + "%");
+		}
+		if(medidas != null){
+			query.setParameter("med", "%" + medidas + "%");
 		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);

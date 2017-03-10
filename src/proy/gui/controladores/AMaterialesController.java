@@ -34,6 +34,9 @@ public class AMaterialesController extends ControladorRomano {
 	private TextField nombreMaterial;
 
 	@FXML
+	private TextField medidaMaterial;
+
+	@FXML
 	private TableView<Material> tablaMateriales;
 
 	@FXML
@@ -160,7 +163,7 @@ public class AMaterialesController extends ControladorRomano {
 			}
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear materiales", errores, stage);
+				presentadorVentanas.presentarError("Error al crear material", errores, stage);
 			}
 		}
 		else{
@@ -188,8 +191,8 @@ public class AMaterialesController extends ControladorRomano {
 			return;
 		}
 
-		//Se le pide al usuario que confirme la eliminación de la máquina
-		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
+		//Se le pide al usuario que confirme la eliminación del material
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar material",
 				"Se eliminará el material <" + materialAEliminar + "> de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
@@ -225,7 +228,7 @@ public class AMaterialesController extends ControladorRomano {
 
 			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al eliminar materiales", errores, stage);
+				presentadorVentanas.presentarError("Error al eliminar material", errores, stage);
 			}
 		}
 		else{
@@ -237,17 +240,13 @@ public class AMaterialesController extends ControladorRomano {
 	@FXML
 	private void buscar() {
 		String nombreBuscado = nombreMaterial.getText().trim().toLowerCase();
-		if(nombreBuscado.isEmpty()){
-			actualizar();
-		}
-		else{
-			tablaMateriales.getItems().clear();
-			tablaMateriales.getItems().addAll(materialesAGuardar);
-			try{
-				tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().nombre(nombreBuscado).build()));
-			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, stage);
-			}
+		String medidaBuscada = medidaMaterial.getText().trim();
+		tablaMateriales.getItems().clear();
+		tablaMateriales.getItems().addAll(materialesAGuardar);
+		try{
+			tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().nombre(nombreBuscado).medida(medidaBuscada).build()));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
 		}
 	}
 

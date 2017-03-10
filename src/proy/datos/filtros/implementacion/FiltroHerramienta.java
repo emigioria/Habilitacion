@@ -41,7 +41,9 @@ public class FiltroHerramienta extends Filtro<Herramienta> {
 		}
 
 		public Builder nombre(String nombre) {
-			filtro.nombre = nombre;
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombre = nombre;
+			}
 			return this;
 		}
 
@@ -53,7 +55,9 @@ public class FiltroHerramienta extends Filtro<Herramienta> {
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			filtro.nombres = nombres;
+			if(nombres != null && !nombres.isEmpty()){
+				filtro.nombres = nombres;
+			}
 			return this;
 		}
 

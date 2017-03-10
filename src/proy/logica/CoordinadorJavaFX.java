@@ -35,7 +35,7 @@ import proy.logica.gestores.resultados.ResultadoCrearComentario;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
-import proy.logica.gestores.resultados.ResultadoCrearOperario;
+import proy.logica.gestores.resultados.ResultadoCrearOperarios;
 import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
@@ -45,6 +45,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorElimina
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
+import proy.logica.gestores.resultados.ResultadoEliminarOperario.ErrorEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
 import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
@@ -88,12 +89,18 @@ public class CoordinadorJavaFX {
 		return gestorUsuario.listarOperarios(filtro);
 	}
 
-	public ResultadoCrearOperario crearOperario(Operario operario) throws PersistenciaException {
-		return gestorUsuario.crearOperario(operario);
+	public ResultadoCrearOperarios crearOperarios(ArrayList<Operario> operarios) throws PersistenciaException {
+		return gestorUsuario.crearOperarios(operarios);
 	}
 
 	public ResultadoEliminarOperario eliminarOperario(Operario operario) throws PersistenciaException {
-		//TODO agregar eliminar tareas no finalizadas
+		//Se eliminan las tareas del operario
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).operario(operario).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarOperario(resultadoEliminarTareas, ErrorEliminarOperario.ERROR_AL_ELIMINAR_TAREAS);
+		}
+
+		//Se continúa con la eliminación del operario
 		return gestorUsuario.eliminarOperario(operario);
 	}
 
@@ -171,9 +178,7 @@ public class CoordinadorJavaFX {
 
 	public ResultadoEliminarHerramienta eliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		//Se eliminan las tareas de la herramienta
-		ArrayList<Herramienta> herramientas = new ArrayList<>();
-		herramientas.add(herramienta);
-		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramientas(herramientas).build()));
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).herramienta(herramienta).build()));
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarHerramienta(resultadoEliminarTareas, ErrorEliminarHerramienta.ERROR_AL_ELIMINAR_TAREAS);
 		}

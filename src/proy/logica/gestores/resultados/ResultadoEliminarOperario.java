@@ -11,10 +11,21 @@ import proy.logica.gestores.resultados.ResultadoEliminarOperario.ErrorEliminarOp
 public class ResultadoEliminarOperario extends Resultado<ErrorEliminarOperario> {
 
 	public enum ErrorEliminarOperario {
-
+		ERROR_AL_ELIMINAR_TAREAS
 	}
+
+	private ResultadoEliminarTareas resultadoEliminarTareas;
 
 	public ResultadoEliminarOperario(ErrorEliminarOperario... errores) {
 		super(errores);
+	}
+
+	public ResultadoEliminarOperario(ResultadoEliminarTareas resultadoEliminarTareas, ErrorEliminarOperario... errores) {
+		super(errores);
+		this.resultadoEliminarTareas = resultadoEliminarTareas;
+	}
+
+	public ResultadoEliminarTareas getResultadoEliminarTareas() {
+		return resultadoEliminarTareas;
 	}
 }

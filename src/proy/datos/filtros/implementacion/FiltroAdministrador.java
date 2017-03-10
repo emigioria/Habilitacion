@@ -36,7 +36,9 @@ public class FiltroAdministrador extends Filtro<Administrador> {
 		}
 
 		public Builder dni(String dni) {
-			filtro.dni = dni;
+			if(dni != null && !dni.isEmpty()){
+				filtro.dni = dni;
+			}
 			return this;
 		}
 

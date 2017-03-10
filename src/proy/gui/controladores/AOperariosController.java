@@ -16,18 +16,32 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
 import proy.gui.componentes.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
-import proy.logica.gestores.resultados.ResultadoCrearOperario;
-import proy.logica.gestores.resultados.ResultadoCrearOperario.ErrorCrearOperario;
+import proy.logica.gestores.resultados.ResultadoCrearOperarios;
+import proy.logica.gestores.resultados.ResultadoCrearOperarios.ErrorCrearOperarios;
+import proy.logica.gestores.resultados.ResultadoEliminarOperario;
+import proy.logica.gestores.resultados.ResultadoEliminarOperario.ErrorEliminarOperario;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 
 public class AOperariosController extends ControladorRomano {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/AOperarios.fxml";
+
+	@FXML
+	private TextField nombreOperario;
+
+	@FXML
+	private TextField apellidoOperario;
+
+	@FXML
+	private TextField dniOperario;
 
 	@FXML
 	private TableView<Operario> tablaOperarios;
@@ -45,77 +59,91 @@ public class AOperariosController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(param.getValue().getNombre());
-				}
-			}
-			return new SimpleStringProperty("");
-		});
-		columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-			if(param.getValue() != null){
-				if(param.getValue().getApellido() != null){
-					return new SimpleStringProperty(param.getValue().getApellido());
-				}
-			}
-			return new SimpleStringProperty("");
-		});
-		columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-			if(param.getValue() != null){
-				if(param.getValue().getDNI() != null){
-					return new SimpleStringProperty(param.getValue().getDNI());
-				}
-			}
-			return new SimpleStringProperty("");
-		});
-
 		tablaOperarios.setEditable(true);
 
-		columnaNombre.setCellFactory(col -> {
-			return new TableCellTextViewString<Operario>(Operario.class) {
-
-				@Override
-				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-					esEditable(this, newValue);
+		//Inicialización de la columna Nombre
+		{
+			//Seteamos el Cell Value Factory
+			columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+				if(param.getValue() != null){
+					if(param.getValue().getNombre() != null){
+						return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getNombre()));
+					}
 				}
+				return new SimpleStringProperty("");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaNombre.setCellFactory(col -> {
+				return new TableCellTextViewString<Operario>(Operario.class) {
 
-				@Override
-				public void onEdit(Operario object, String newValue) {
-					object.setNombre(newValue.trim());
+					@Override
+					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+						esEditable(this, newValue);
+					}
+
+					@Override
+					public void onEdit(Operario object, String newValue) {
+						object.setNombre(newValue.trim());
+					}
+				};
+			});
+		}
+
+		//Inicialización de la columna Apellido
+		{
+			//Seteamos el Cell Value Factory
+			columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+				if(param.getValue() != null){
+					if(param.getValue().getApellido() != null){
+						return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getApellido()));
+					}
 				}
-			};
-		});
+				return new SimpleStringProperty("");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaApellido.setCellFactory(col -> {
+				return new TableCellTextViewString<Operario>(Operario.class) {
 
-		columnaApellido.setCellFactory(col -> {
-			return new TableCellTextViewString<Operario>(Operario.class) {
+					@Override
+					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+						esEditable(this, newValue);
+					}
 
-				@Override
-				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-					esEditable(this, newValue);
+					@Override
+					public void onEdit(Operario object, String newValue) {
+						object.setApellido(newValue.trim());
+					}
+				};
+			});
+		}
+
+		//Inicialización de la columna DNI
+		{
+			//Seteamos el Cell Value Factory
+			columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
+				if(param.getValue() != null){
+					if(param.getValue().getDNI() != null){
+						return new SimpleStringProperty(param.getValue().getDNI());
+					}
 				}
+				return new SimpleStringProperty("");
+			});
+			//Seteamos el Cell Factory para permitir edición
+			columnaDNI.setCellFactory(col -> {
+				return new TableCellTextViewString<Operario>(Operario.class) {
 
-				@Override
-				public void onEdit(Operario object, String newValue) {
-					object.setApellido(newValue.trim());
-				}
-			};
-		});
+					@Override
+					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
+						esEditable(this, newValue);
+					}
 
-		columnaDNI.setCellFactory(col -> {
-			return new TableCellTextViewString<Operario>(Operario.class) {
-
-				@Override
-				public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-					esEditable(this, newValue);
-				}
-
-				@Override
-				public void onEdit(Operario object, String newValue) {
-					object.setDNI(newValue.trim());
-				}
-			};
-		});
+					@Override
+					public void onEdit(Operario object, String newValue) {
+						object.setDNI(newValue.trim());
+					}
+				};
+			});
+		}
 
 		actualizar();
 	}
@@ -138,86 +166,155 @@ public class AOperariosController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarOperario() {
-		Operario oSelected = tablaOperarios.getSelectionModel().getSelectedItem();
-
-		if(oSelected != null){
-
-			try{
-				coordinador.eliminarOperario(oSelected);
-			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, stage);
-				return;
-			} catch(Exception e){
-				presentadorVentanas.presentarExcepcionInesperada(e, stage);
-				return;
-			}
-			actualizar();
-			String mensaje = "Los datos del operario " + oSelected.getNombre() +
-					" " + oSelected.getApellido() + " han sido eliminados del sistema.";
-			presentadorVentanas.presentarInformacion("Operario Guardado", mensaje, stage);
-		}
-		else{
-			return;
-		}
+	private void guardar() {
+		crearOperarios();
+		actualizar();
 	}
 
-	@FXML
-	public void guardarOperario() {
-		ResultadoCrearOperario resultado = null;
-		Boolean hayErrores;
-		String errores = "";
+	private void crearOperarios() {
+		ResultadoCrearOperarios resultadoCrearOperarios;
+		StringBuffer erroresBfr = new StringBuffer();
 
-		if(operariosAGuardar.size() == 0){
+		//Toma de datos de la vista
+		if(operariosAGuardar.isEmpty()){
 			return;
 		}
 
-		for(Operario operario: operariosAGuardar){
-			try{
-				resultado = coordinador.crearOperario(operario);
-			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, stage);
-				return;
-			} catch(Exception e){
-				presentadorVentanas.presentarExcepcionInesperada(e, stage);
-				return;
-			}
+		//Inicio transacciones al gestor
+		try{
+			resultadoCrearOperarios = coordinador.crearOperarios(operariosAGuardar);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
 		}
 
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
-			for(ErrorCrearOperario r: resultado.getErrores()){
-				switch(r) {
+		//Tratamiento de errores
+		if(resultadoCrearOperarios.hayErrores()){
+			for(ErrorCrearOperarios e: resultadoCrearOperarios.getErrores()){
+				switch(e) {
 				case NOMBRE_INCOMPLETO:
-					errores += "El nombre no es válido.\n";
+					erroresBfr.append("Hay nombres vacíos.\n");
 					break;
 				case APELLIDO_INCOMPLETO:
-					errores += "El apellido no es válido \n";
+					erroresBfr.append("Hay apellidos vacíos.\n");
 					break;
 				case DNI_INCOMPLETO:
-					errores += "El DNI no es válido \n";
+					erroresBfr.append("Hay DNIs vacíos.\n");
 					break;
-				case DNI_REPETIDO:
-					errores += "Ya existe un operario con ese DNI \n";
+				case DNI_YA_EXISTENTE:
+					erroresBfr.append("Estos DNIs ya existen en el sistema:\n");
+					for(String dniRepetido: resultadoCrearOperarios.getDNIRepetidos()){
+						erroresBfr.append("\t<");
+						erroresBfr.append(dniRepetido);
+						erroresBfr.append(">\n");
+					}
+					break;
+				case DNI_INGRESADO_REPETIDO:
+					erroresBfr.append("Se intenta añadir dos operarios con el mismo DNI.\n");
 					break;
 				}
 			}
+			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear operario", errores, stage);
+				presentadorVentanas.presentarError("Error al crear operarios", errores, stage);
 			}
 		}
 		else{
 			tablaOperarios.setEditable(false);
 			operariosAGuardar.clear();
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se han guardado correctamente los operarios", stage);
+		}
+	}
+
+	@FXML
+	private void eliminarOperario() {
+		ResultadoEliminarOperario resultadoEliminarOperario;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		Operario operarioAEliminar = tablaOperarios.getSelectionModel().getSelectedItem();
+		if(operarioAEliminar == null){
+			return;
 		}
 
+		//Si no fue guardada previamente se elimina sin ir al gestor
+		if(operariosAGuardar.contains(operarioAEliminar)){
+			operariosAGuardar.remove(operarioAEliminar);
+			tablaOperarios.getItems().remove(operarioAEliminar);
+			return;
+		}
+
+		//Se le pide al usuario que confirme la eliminación de la máquina
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar operario",
+				"Se eliminará el operario <" + operarioAEliminar + "> de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				stage);
+		if(!vc.acepta()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoEliminarOperario = coordinador.eliminarOperario(operarioAEliminar);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoEliminarOperario.hayErrores()){
+			for(ErrorEliminarOperario e: resultadoEliminarOperario.getErrores()){
+				switch(e) {
+				case ERROR_AL_ELIMINAR_TAREAS:
+					ResultadoEliminarTareas resultadoTareas = resultadoEliminarOperario.getResultadoEliminarTareas();
+					if(resultadoTareas.hayErrores()){
+						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+							switch(ep) {
+							//Todavia no hay errores en eliminar tarea
+							}
+						}
+					}
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al eliminar operario", errores, stage);
+			}
+		}
+		else{
+			tablaOperarios.getItems().remove(operarioAEliminar);
+			presentadorVentanas.presentarToast("Se ha eliminado correctamente el operario", stage);
+		}
+	}
+
+	@FXML
+	private void buscar() {
+		String nombreBuscado = nombreOperario.getText().trim().toLowerCase();
+		String apellidoBuscado = apellidoOperario.getText().trim().toLowerCase();
+		String dniBuscado = dniOperario.getText().trim().toLowerCase();
+		tablaOperarios.getItems().clear();
+		tablaOperarios.getItems().addAll(operariosAGuardar);
+		try{
+			tablaOperarios.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().nombre(nombreBuscado).apellido(apellidoBuscado).dni(dniBuscado).build()));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		}
 	}
 
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			tablaOperarios.getItems().clear();
+			tablaOperarios.getItems().addAll(operariosAGuardar);
 			try{
-				tablaOperarios.getItems().clear();
 				tablaOperarios.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);

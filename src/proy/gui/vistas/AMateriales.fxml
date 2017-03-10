@@ -50,7 +50,7 @@
       </TableView>
       <VBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevoMaterial" prefWidth="75.0" text="Nueva">
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevoMaterial" prefWidth="75.0" text="Nuevo">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

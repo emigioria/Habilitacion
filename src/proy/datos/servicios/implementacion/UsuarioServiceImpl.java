@@ -75,11 +75,20 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void guardarOperario(Operario operario) throws PersistenciaException {
+	public void guardarOperarios(ArrayList<Operario> operarios) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
-			session.save(operario);
+			Operario operario;
+			for(int i = 0; i < operarios.size(); i++){
+				operario = operarios.get(i);
+				operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
+				session.save(operario);
+				if(i % 20 == 0){
+					//flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
+			}
 		} catch(Exception e){
 			e.printStackTrace();
 			throw new SaveUpdateException();

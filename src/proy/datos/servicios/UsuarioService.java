@@ -24,7 +24,7 @@ public interface UsuarioService {
 
 	public ArrayList<Operario> obtenerOperarios(Filtro<Operario> filtro) throws PersistenciaException;
 
-	public void guardarOperario(Operario operario) throws PersistenciaException;
+	public void guardarOperarios(ArrayList<Operario> operarios) throws PersistenciaException;
 
 	public void actualizarOperario(Operario operario) throws PersistenciaException;
 

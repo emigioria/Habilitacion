@@ -60,7 +60,9 @@ public class FiltroParte extends Filtro<Parte> {
 		}
 
 		public Builder nombres(ArrayList<String> nombres) {
-			filtro.nombres = nombres;
+			if(nombres != null && !nombres.isEmpty()){
+				filtro.nombres = nombres;
+			}
 			return this;
 		}
 
