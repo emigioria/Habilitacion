@@ -52,7 +52,7 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 				}
 			}
-			return new SimpleStringProperty("<Sin nombre>");
+			return new SimpleStringProperty("");
 		});
 		columnaMedidas.setCellValueFactory(param -> {
 			if(param.getValue() != null){
@@ -60,7 +60,7 @@ public class AMaterialesController extends ControladorRomano {
 					return new SimpleStringProperty(param.getValue().getMedidas());
 				}
 			}
-			return new SimpleStringProperty("<Sin medidas>");
+			return new SimpleStringProperty("");
 		});
 
 		columnaMaterial.setCellFactory(col -> {

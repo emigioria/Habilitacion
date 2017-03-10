@@ -47,27 +47,27 @@ public class AOperariosController extends ControladorRomano {
 	protected void inicializar() {
 		columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
 			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getNombre());
+				if(param.getValue().getNombre() != null){
+					return new SimpleStringProperty(param.getValue().getNombre());
+				}
 			}
-			else{
-				return new SimpleStringProperty("<Sin Nombre>");
-			}
+			return new SimpleStringProperty("");
 		});
 		columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
 			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getApellido());
+				if(param.getValue().getApellido() != null){
+					return new SimpleStringProperty(param.getValue().getApellido());
+				}
 			}
-			else{
-				return new SimpleStringProperty("<Sin Apellido>");
-			}
+			return new SimpleStringProperty("");
 		});
 		columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
 			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getDNI());
+				if(param.getValue().getDNI() != null){
+					return new SimpleStringProperty(param.getValue().getDNI());
+				}
 			}
-			else{
-				return new SimpleStringProperty("<Sin DNI>");
-			}
+			return new SimpleStringProperty("");
 		});
 
 		tablaOperarios.setEditable(true);
