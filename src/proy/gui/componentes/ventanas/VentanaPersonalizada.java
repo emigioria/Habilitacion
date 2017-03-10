@@ -11,6 +11,7 @@ import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import proy.gui.ControladorDialogo;
@@ -18,7 +19,7 @@ import proy.gui.ControladorRomano;
 import proy.gui.componentes.StyleCSS;
 import proy.logica.CoordinadorJavaFX;
 
-public class VentanaPersonalizada<T> extends Stage {
+public class VentanaPersonalizada extends Stage {
 
 	private ControladorDialogo controlador;
 
@@ -39,6 +40,7 @@ public class VentanaPersonalizada<T> extends Stage {
 			}
 
 			//Crear pantalla
+			this.initModality(Modality.APPLICATION_MODAL);
 			this.initStyle(StageStyle.DECORATED);
 			if(padre != null){
 				this.initOwner(padre);
@@ -53,5 +55,9 @@ public class VentanaPersonalizada<T> extends Stage {
 		} catch(IOException e){
 			new PresentadorVentanas().presentarExcepcionInesperada(e, padre);
 		}
+	}
+
+	public ControladorDialogo getControlador() {
+		return controlador;
 	}
 }

@@ -6,6 +6,12 @@
  */
 package proy.gui;
 
+import javafx.fxml.FXML;
+
 public abstract class ControladorDialogo extends ControladorJavaFX {
 
+	@FXML
+	protected void salir() {
+		stage.hide();
+	}
 }

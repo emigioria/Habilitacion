@@ -81,11 +81,6 @@ public class NComentarioController extends ControladorDialogo {
 		}
 	}
 
-	@FXML
-	private void salir() {
-		stage.hide();
-	}
-
 	@Override
 	protected void inicializar() {
 		stage.setTitle("Nuevo comentario");

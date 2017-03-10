@@ -12,12 +12,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import proy.datos.clases.DatosLogin;
 import proy.excepciones.PersistenciaException;
-import proy.gui.ControladorRomano;
+import proy.gui.ControladorDialogo;
 import proy.gui.componentes.SafePasswordField;
 import proy.logica.gestores.resultados.ResultadoAutenticacion;
 import proy.logica.gestores.resultados.ResultadoAutenticacion.ErrorAutenticacion;
 
-public class LoguearAdminController extends ControladorRomano {
+public class LoguearAdminController extends ControladorDialogo {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/LoguearAdmin.fxml";
 
@@ -29,8 +29,11 @@ public class LoguearAdminController extends ControladorRomano {
 
 	private SafePasswordField contra;
 
+	private Boolean loginExitoso = false;
+
 	@Override
 	protected void inicializar() {
+		stage.setTitle("Loguearse como administrador");
 		contra = new SafePasswordField();
 		contenedor.getChildren().add(contra);
 		GridPane.setMargin(contra, new Insets(10.0));
@@ -41,7 +44,8 @@ public class LoguearAdminController extends ControladorRomano {
 	@FXML
 	public void iniciarSesion() {
 		//TODO borrar para activar login
-		this.cambiarScene(MenuAdministracionController.URL_VISTA);
+		loginExitoso = true;
+		salir();
 		if(true){
 			return;
 		}
@@ -89,13 +93,13 @@ public class LoguearAdminController extends ControladorRomano {
 		}
 		else{
 			//Operacion exitosa
-			this.cambiarScene(MenuAdministracionController.URL_VISTA);
+			loginExitoso = true;
+			salir();
 		}
 	}
 
-	@Override
-	public void actualizar() {
-
+	public Boolean fueExitosoLogin() {
+		return loginExitoso;
 	}
 
 }

@@ -44,8 +44,8 @@ public class PresentadorVentanas {
 		return new VentanaEsperaBaseDeDatos();
 	}
 
-	public <T> VentanaPersonalizada<T> presentarVentanaPersonalizada(String URLVista, CoordinadorJavaFX coordinador, Stage padre) {
-		return new VentanaPersonalizada<>(URLVista, coordinador, padre);
+	public VentanaPersonalizada presentarVentanaPersonalizada(String URLVista, CoordinadorJavaFX coordinador, Stage padre) {
+		return new VentanaPersonalizada(URLVista, coordinador, padre);
 	}
 
 	public void presentarToast(String mensaje, Window padre, int ajusteHeight) {

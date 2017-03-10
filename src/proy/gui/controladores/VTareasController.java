@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import proy.gui.ControladorRomano;
 import proy.gui.componentes.IconoDetener;
 import proy.gui.componentes.IconoPlay;
+import proy.gui.componentes.ventanas.VentanaPersonalizada;
 
 public class VTareasController extends ControladorRomano {
 
@@ -60,7 +61,12 @@ public class VTareasController extends ControladorRomano {
 
 	@FXML
 	private void loguearse() {
-		this.nuevaScene(LoguearAdminController.URL_VISTA);
+		VentanaPersonalizada ventanaLogin = presentadorVentanas.presentarVentanaPersonalizada(LoguearAdminController.URL_VISTA, coordinador, stage);
+		ventanaLogin.showAndWait();
+		LoguearAdminController pantallaLogin = (LoguearAdminController) ventanaLogin.getControlador();
+		if(pantallaLogin.fueExitosoLogin()){
+			this.nuevaScene(MenuAdministracionController.URL_VISTA);
+		}
 	}
 
 	@Override
