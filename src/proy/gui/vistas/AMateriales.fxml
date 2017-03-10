@@ -81,6 +81,7 @@
                   <Insets />
                </HBox.margin>
             </TextField>
+            <TextField fx:id="medidaMaterial" promptText="Medidas" />
          </children>
       </HBox>
    </children>
