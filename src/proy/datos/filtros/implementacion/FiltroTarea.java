@@ -193,6 +193,9 @@ public class FiltroTarea extends Filtro<Tarea> {
 		else if(this.piezas != null){
 			from = " FROM Tarea " + this.nombreEntidad + " left join " + this.nombreEntidad + ".proceso proc left join proc.piezas pies";
 		}
+		else if(this.partes != null){
+			from = " FROM Tarea " + this.nombreEntidad + " left join " + this.nombreEntidad + ".proceso proc";
+		}
 		else{
 			from = " FROM Tarea " + this.nombreEntidad;
 		}
@@ -254,7 +257,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 			query.setParameter("fpf", fechaPlanificadaFin);
 		}
 		if(partes != null){
-			query.setParameterList("pas", partes);
+			query.setParameterList("prs", partes);
 		}
 		if(piezas != null){
 			query.setParameterList("pis", piezas);

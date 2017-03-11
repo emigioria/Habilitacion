@@ -191,18 +191,16 @@ public class AHerramientasController extends ControladorRomano {
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
 					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: " + procesosAsociados + "\n¿Está seguro que desea eliminarla?", stage);
-			if(!vc.acepta()){
-				return;
-			}
 		}
 		else{
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
 					"Se eliminará la herramienta <" + herramientaAEliminar + "> de forma permanente.\n" +
 							"¿Está seguro de que desea continuar?",
 					stage);
-			if(!vc.acepta()){
-				return;
-			}
+		}
+
+		if(!vc.acepta()){
+			return;
 		}
 
 		//Si acepta dar de baja se verifica que la herramienta a eliminar no tiene tareas no terminadas asociadas

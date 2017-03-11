@@ -124,10 +124,10 @@ public class FiltroProceso extends Filtro<Proceso> {
 		if(this.piezas != null && herramientas != null){
 			from = " FROM Proceso " + this.nombreEntidad + " left join " + this.nombreEntidad + ".piezas piez, " + this.nombreEntidad + ".herramientas herr";
 		}
-		if(this.piezas != null){
+		else if(this.piezas != null){
 			from = " FROM Proceso " + this.nombreEntidad + " inner join " + this.nombreEntidad + ".piezas piez";
 		}
-		if(herramientas != null){
+		else if(herramientas != null){
 			from = " FROM Proceso " + this.nombreEntidad + " inner join " + this.nombreEntidad + ".herramientas herr";
 		}
 		else{

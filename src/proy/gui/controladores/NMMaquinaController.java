@@ -351,7 +351,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private void eliminarParte() {
-		//TODO ver si hay que sacar la parte de la máquina
+		//TODO ver si hay que sacar la parte de la máquina. Hay que sacarla.
 		ResultadoEliminarParte resultadoEliminarParte;
 
 		//Toma de datos de la vista
@@ -386,18 +386,12 @@ public class NMMaquinaController extends ControladorRomano {
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa parte, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar parte",
 					"Al eliminar la parte <" + parteAEliminar + "> se eliminarán los siguientes procesos: " + procesosAsociados + "\n¿Está seguro que desea eliminarla?", stage);
-			if(!vc.acepta()){
-				return;
-			}
 		}
 		else{
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar parte",
 					"Se eliminará la parte <" + parteAEliminar + "> de forma permanente.\n" +
 							"¿Está seguro de que desea continuar?",
 					stage);
-			if(!vc.acepta()){
-				return;
-			}
 		}
 
 		if(!vc.acepta()){
@@ -455,7 +449,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private void eliminarPieza() {
-		//TODO ver si hay que sacar la pieza de la parte
+		//TODO ver si hay que sacar la pieza de la parte. Hay que sacarla.
 		ResultadoEliminarPieza resultadoEliminarPieza;
 
 		//Toma de datos de la vista
@@ -466,7 +460,7 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 
 		//Si no fue guardada previamente se elimina sin ir al gestor
-		if(piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
+		if(piezasAGuardar.get(parteDePiezaAEliminar) != null && piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
 			piezasAGuardar.get(parteDePiezaAEliminar).remove(piezaAEliminar);
 			if(piezasAGuardar.get(parteDePiezaAEliminar).isEmpty()){
 				piezasAGuardar.remove(parteDePiezaAEliminar);
@@ -492,18 +486,12 @@ public class NMMaquinaController extends ControladorRomano {
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa pieza, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar pieza",
 					"Al eliminar la pieza <" + piezaAEliminar + "> se eliminarán los siguientes procesos: " + procesosAsociados + "\n¿Está seguro que desea eliminarla?", stage);
-			if(!vc.acepta()){
-				return;
-			}
 		}
 		else{
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar pieza",
 					"Se eliminará la pieza <" + piezaAEliminar + "> de forma permanente.\n" +
 							"¿Está seguro de que desea continuar?",
 					stage);
-			if(!vc.acepta()){
-				return;
-			}
 		}
 
 		if(!vc.acepta()){
