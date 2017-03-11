@@ -46,10 +46,10 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario;
 import proy.logica.gestores.resultados.ResultadoEliminarOperario.ErrorEliminarOperario;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
@@ -132,13 +132,13 @@ public class CoordinadorJavaFX {
 		return gestorTaller.modificarPartes(partes);
 	}
 
-	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partes) throws PersistenciaException {
-		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).partes(partes).build()));
+	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).parte(parte).build()));
 		if(resultadoEliminarTareas.hayErrores()){
-			return new ResultadoEliminarPartes(resultadoEliminarTareas, ErrorEliminarPartes.ERROR_AL_ELIMINAR_TAREAS);
+			return new ResultadoEliminarParte(resultadoEliminarTareas, ErrorEliminarParte.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
-		return gestorTaller.eliminarPartes(partes);
+		return gestorTaller.eliminarParte(parte);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Parte parte) throws PersistenciaException {
@@ -154,13 +154,13 @@ public class CoordinadorJavaFX {
 		return gestorTaller.crearPieza(pieza);
 	}
 
-	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
-		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).piezas(piezasAEliminar).build()));
+	public ResultadoEliminarPieza eliminarPieza(Pieza piezaAEliminar) throws PersistenciaException {
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).pieza(piezaAEliminar).build()));
 		if(resultadoEliminarTareas.hayErrores()){
-			return new ResultadoEliminarPiezas(resultadoEliminarTareas, null, ErrorEliminarPiezas.ERROR_AL_ELIMINAR_TAREAS);
+			return new ResultadoEliminarPieza(resultadoEliminarTareas, ErrorEliminarPieza.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
-		return gestorTaller.eliminarPiezas(piezasAEliminar);
+		return gestorTaller.eliminarPieza(piezaAEliminar);
 	}
 
 	public Boolean tieneTareasNoTerminadasAsociadas(Pieza pieza) throws PersistenciaException {

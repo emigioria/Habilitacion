@@ -148,19 +148,26 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaPartes(ArrayList<Parte> partes) throws PersistenciaException {
+	public void actualizarParte(Parte parte) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		try{
+			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+			session.update(parte);
+		} catch(EntityNotFoundException e){
+			e.printStackTrace();
+			throw new ObjNotFoundException("modificar");
+		} catch(Exception e){
+			e.printStackTrace();
+			throw new SaveUpdateException();
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = PersistenciaException.class)
+	public void bajaParte(Parte parte) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			Parte parte;
-			for(int i = 0; i < partes.size(); i++){
-				parte = partes.get(i);
-				session.delete(parte);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			session.delete(parte);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");
@@ -192,20 +199,11 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
+	public void actualizarPieza(Pieza pieza) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			Pieza pieza;
-			for(int i = 0; i < piezas.size(); i++){
-				pieza = piezas.get(i);
-				pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
-				session.update(pieza);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+			session.update(pieza);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("modificar");
@@ -217,19 +215,10 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException {
+	public void bajaPieza(Pieza pieza) throws PersistenciaException {
 		try{
-			Pieza pieza;
-			for(int i = 0; i < piezas.size(); i++){
-				pieza = piezas.get(i);
-				Session session = getSessionFactory().getCurrentSession();
-				session.delete(pieza);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
+			Session session = getSessionFactory().getCurrentSession();
+			session.delete(pieza);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
 			throw new ObjNotFoundException("eliminar");

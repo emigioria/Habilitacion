@@ -26,11 +26,15 @@ import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
+import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
 import proy.datos.filtros.implementacion.FiltroMaquina;
 import proy.datos.filtros.implementacion.FiltroParte;
 import proy.datos.filtros.implementacion.FiltroPieza;
+import proy.datos.filtros.implementacion.FiltroTarea;
+import proy.datos.servicios.ProcesoService;
 import proy.datos.servicios.TallerService;
+import proy.excepciones.ObjNotFoundException;
 import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
@@ -45,10 +49,11 @@ import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearPiezasMaquinaNueva;
 import proy.logica.gestores.resultados.ResultadoCrearPiezasMaquinaNueva.ErrorCrearPiezasMaquinaNueva;
 import proy.logica.gestores.resultados.ResultadoEliminarMaquina;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezasDeParte;
 import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
@@ -63,6 +68,9 @@ public class TallerGestor {
 
 	@Resource
 	private ProcesoGestor gestorProceso;
+
+	@Resource
+	private ProcesoService persistidorProceso;
 
 	public ArrayList<Maquina> listarMaquinas(Filtro<Maquina> filtro) throws PersistenciaException {
 		return persistidorTaller.obtenerMaquinas(filtro);
@@ -532,51 +540,43 @@ public class TallerGestor {
 	}
 
 	/**
-	 * eliminarPartes()
+	 * Se encarga de dar baja física o lógica a una parte
 	 *
-	 * se encarga de dar baja física o lógica a partes que pueden pertenecer a distintas máquinas
-	 *
-	 * @param partesAEliminar
-	 *            son las partes que se quieren eliminar
-	 * @return
+	 * @param parte
+	 *            es la parte que se quiere eliminar
+	 * @return el resultado de la operación
 	 * @throws PersistenciaException
 	 */
-	public ResultadoEliminarPartes eliminarPartes(ArrayList<Parte> partesAEliminar) throws PersistenciaException {
-		ResultadoEliminarPartes resultado = validarEliminarPartes(partesAEliminar);
+	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
+		ResultadoEliminarParte resultado = validarEliminarParte(parte);
 
 		if(!resultado.hayErrores()){
-			ArrayList<Parte> partesABajaFisica = new ArrayList<>(partesAEliminar);
-			ArrayList<Parte> partesABajaLogica;
-
 			//si la parte tiene tareas asociadas, se le da baja lógica
-			partesABajaLogica = persistidorTaller.obtenerPartes(new FiltroParte.Builder().partes(partesAEliminar).sinUnir().conTareas().build());
+			ArrayList<Tarea> tareasDeLaParte = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().parte(parte).build());
 
-			//si la parte no tiene tareas asociadas, se le da baja fisica
-			partesABajaFisica.removeAll(partesABajaLogica);
-
-			if(!partesABajaFisica.isEmpty()){
-				persistidorTaller.bajaPartes(partesABajaFisica);
-			}
-
-			if(!partesABajaLogica.isEmpty()){
-
-				for(Parte parte: partesABajaLogica){
-
-					//dar de baja logica piezas
-					for(Pieza pieza: parte.getPiezas()){
-						pieza.darDeBaja();
-					}
-
-					//dar de baja logica procesos
-					for(Proceso proceso: parte.getProcesos()){
-						proceso.darDeBaja();
-					}
-
-					//dar de baja logica parte
-					parte.darDeBaja();
+			if(tareasDeLaParte.isEmpty()){
+				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
+				//dar de baja logica piezas
+				for(Pieza pieza: parte.getPiezas()){
+					pieza.darDeBaja();
 				}
 
-				persistidorTaller.actualizarPartes(partesABajaLogica); //Al actualizar la parte se guardan los cambios de las piezas y los procesos por el tipo de cascada
+				//dar de baja logica procesos
+				for(Proceso proceso: parte.getProcesos()){
+					proceso.darDeBaja();
+				}
+
+				//dar de baja logica parte
+				parte.darDeBaja();
+				persistidorTaller.actualizarParte(parte);
+			}
+			else{
+				//sino de baja física junto a sus procesos y piezas
+				try{
+					persistidorTaller.bajaParte(parte);
+				} catch(ObjNotFoundException e){
+					//Si no se encontró ya fue eliminado previamente.
+				}
 			}
 		}
 
@@ -584,41 +584,42 @@ public class TallerGestor {
 	}
 
 	/**
-	 * validarEliminarPartes
-	 *
-	 * hace la validación de que las partes se pueden eliminar. Incluye la validación de la eliminación de piezas y
-	 * procesos asociados
+	 * Valida que la parte se pueda eliminar. Incluye la validación de la eliminación de piezas y procesos asociados
 	 *
 	 * @param partesAEliminar
 	 *            son las partes cuya eliminación se va a validar
 	 * @return
 	 */
-	private ResultadoEliminarPartes validarEliminarPartes(ArrayList<Parte> partesAEliminar) {
-		Set<ErrorEliminarPartes> errores = new HashSet<>();
+	private ResultadoEliminarParte validarEliminarParte(Parte parteAEliminar) {
+		Set<ErrorEliminarParte> errores = new HashSet<>();
 
-		//Verifico si se pueden borrar las piezas y procesos asociados
-		Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas = new HashMap<>();
-		Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos = new HashMap<>();
-		for(Parte parte: partesAEliminar){
-			ArrayList<Pieza> piezasAValidar = new ArrayList<>(parte.getPiezas());
-			piezasAValidar.removeIf(t -> {
-				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
-			});
-			resultadosEliminarPiezas.put(parte.toString(), this.validarEliminarPiezas(piezasAValidar));
-			resultadosEliminarProcesos.put(parte.toString(), gestorProceso.validarEliminarProcesos(new ArrayList<>(parte.getProcesos())));
-		}
-		for(ResultadoEliminarPiezas resultado: resultadosEliminarPiezas.values()){
-			if(resultado.hayErrores()){
-				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PIEZAS);
-			}
-		}
-		for(ResultadoEliminarProcesos resultado: resultadosEliminarProcesos.values()){
-			if(resultado.hayErrores()){
-				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PROCESOS);
-			}
+		//Verifico si se pueden borrar las piezas y procesos asociados de las piezas que están dadas de alta
+		ResultadoEliminarPiezasDeParte resultadoEliminarPiezas = this.validarEliminarPiezasDeParte(parteAEliminar);
+		if(resultadoEliminarPiezas.hayErrores()){
+			errores.add(ErrorEliminarParte.ERROR_AL_ELIMINAR_PIEZAS);
 		}
 
-		return new ResultadoEliminarPartes(resultadosEliminarPiezas, resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPartes[0]));
+		ArrayList<Proceso> procesosAEliminar = new ArrayList<>(parteAEliminar.getProcesos());
+		procesosAEliminar.removeIf(t -> EstadoStr.BAJA.equals(t.getEstado().getNombre()));
+		ResultadoEliminarProcesos resultadoEliminarProcesos = gestorProceso.validarEliminarProcesos(procesosAEliminar);
+		if(resultadoEliminarProcesos.hayErrores()){
+			errores.add(ErrorEliminarParte.ERROR_AL_ELIMINAR_PROCESOS);
+		}
+
+		return new ResultadoEliminarParte(resultadoEliminarPiezas, resultadoEliminarProcesos, errores.toArray(new ErrorEliminarParte[0]));
+	}
+
+	/**
+	 * Valida que las piezas de una parte a eliminar se pueden eliminar.
+	 * No incluye la validación de la eliminación de procesos asociados a las piezas ya que son los mismos que los de la parte a eliminar.
+	 *
+	 * @param parteDeLasPiezasAEliminar
+	 *            parte de las piezas cuya eliminación se va a validar
+	 * @return resultado de la validación
+	 */
+	private ResultadoEliminarPiezasDeParte validarEliminarPiezasDeParte(Parte parteDeLasPiezasAEliminar) {
+		//No hay errores al eliminar piezas de una parte
+		return new ResultadoEliminarPiezasDeParte();
 	}
 
 	public ArrayList<Pieza> listarPiezas(Filtro<Pieza> filtro) throws PersistenciaException {
@@ -630,49 +631,38 @@ public class TallerGestor {
 	}
 
 	/**
-	 * eliminarPiezas()
+	 * Se encarga de dar baja física o lógica una pieza
 	 *
-	 * se encarga de dar baja física o lógica a piezas que pueden pertenecer a distintas partes
-	 *
-	 * @param piezasAEliminar
-	 *            son las piezas que se quieren eliminar
+	 * @param piezaAEliminar
+	 *            es la pieza que se quiere eliminar
 	 * @return
 	 * @throws PersistenciaException
 	 */
-	public ResultadoEliminarPiezas eliminarPiezas(ArrayList<Pieza> piezasAEliminar) throws PersistenciaException {
-		ResultadoEliminarPiezas resultado = validarEliminarPiezas(piezasAEliminar);
-
-		ArrayList<Pieza> piezasABajaLogica;
-		ArrayList<Pieza> piezasABajaFisica;
+	public ResultadoEliminarPieza eliminarPieza(Pieza pieza) throws PersistenciaException {
+		ResultadoEliminarPieza resultado = validarEliminarPieza(pieza);
 
 		if(!resultado.hayErrores()){
-			piezasABajaFisica = new ArrayList<>(piezasAEliminar);
-
 			//si la parte tiene tareas asociadas, se le da baja lógica
-			piezasABajaLogica = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().piezas(piezasAEliminar).conTareas().build());
+			ArrayList<Tarea> tareasDeLaPieza = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().pieza(pieza).build());
 
-			//si la parte no tiene tareas asociadas, se le da baja fisica
-			piezasABajaFisica.removeAll(piezasABajaLogica);
-
-			if(!piezasABajaFisica.isEmpty()){
-				for(Pieza pieza: piezasABajaFisica){
-					pieza.getParte().getPiezas().remove(pieza);
+			if(tareasDeLaPieza.isEmpty()){
+				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
+				//dar de baja logica procesos
+				for(Proceso proceso: pieza.getProcesos()){
+					proceso.darDeBaja();
 				}
-				persistidorTaller.bajaPiezas(piezasABajaFisica);
+
+				//dar de baja logica pieza
+				pieza.darDeBaja();
+				persistidorTaller.actualizarPieza(pieza);
 			}
-
-			if(!piezasABajaLogica.isEmpty()){
-				for(Pieza pieza: piezasABajaLogica){
-					//dar de baja logica procesos
-					for(Proceso proceso: pieza.getProcesos()){
-						proceso.darDeBaja();
-					}
-
-					//dar de baja logica pieza
-					pieza.darDeBaja();
+			else{
+				//sino de baja física junto a sus procesos y piezas
+				try{
+					persistidorTaller.bajaPieza(pieza);
+				} catch(ObjNotFoundException e){
+					//Si no se encontró ya fue eliminado previamente.
 				}
-
-				persistidorTaller.actualizarPiezas(piezasABajaLogica);
 			}
 		}
 
@@ -680,29 +670,24 @@ public class TallerGestor {
 	}
 
 	/**
-	 * validarEliminarPiezas
+	 * Valida que la piezas se puede eliminar.
+	 * Incluye la validación de la eliminación de procesos asociados
 	 *
-	 * hace la validación de que las piezas se pueden eliminar. Incluye la validación de la eliminación de
-	 * procesos asociados
-	 *
-	 * @param piezasAEliminar
+	 * @param piezaAEliminar
 	 *            son las piezas cuya eliminación se va a validar
-	 * @return
+	 * @return resultado de la validación
 	 */
-	private ResultadoEliminarPiezas validarEliminarPiezas(ArrayList<Pieza> piezasAEliminar) {
-		Set<ErrorEliminarPartes> errores = new HashSet<>();
+	private ResultadoEliminarPieza validarEliminarPieza(Pieza piezaAEliminar) {
+		Set<ErrorEliminarPieza> errores = new HashSet<>();
 
-		//Verifico si se pueden borrar las piezas y procesos asociados
-		Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos = new HashMap<>();
-		for(Pieza pieza: piezasAEliminar){
-			resultadosEliminarProcesos.put(pieza.toString(), gestorProceso.validarEliminarProcesos(new ArrayList<>(pieza.getProcesos())));
-		}
-		for(ResultadoEliminarProcesos resultado: resultadosEliminarProcesos.values()){
-			if(resultado.hayErrores()){
-				errores.add(ErrorEliminarPartes.ERROR_AL_ELIMINAR_PROCESOS);
-			}
+		//Verifico si se pueden los procesos asociados
+		ArrayList<Proceso> procesosAEliminar = new ArrayList<>(piezaAEliminar.getProcesos());
+		procesosAEliminar.removeIf(t -> EstadoStr.BAJA.equals(t.getEstado().getNombre()));
+		ResultadoEliminarProcesos resultadoEliminarProcesos = gestorProceso.validarEliminarProcesos(procesosAEliminar);
+		if(resultadoEliminarProcesos.hayErrores()){
+			errores.add(ErrorEliminarPieza.ERROR_AL_ELIMINAR_PROCESOS);
 		}
 
-		return new ResultadoEliminarPiezas(resultadosEliminarProcesos, errores.toArray(new ErrorEliminarPiezas[0]));
+		return new ResultadoEliminarPieza(resultadoEliminarProcesos, errores.toArray(new ErrorEliminarPieza[0]));
 	}
 }

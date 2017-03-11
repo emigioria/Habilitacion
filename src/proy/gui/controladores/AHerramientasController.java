@@ -28,6 +28,8 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos.ErrorEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 
@@ -175,9 +177,7 @@ public class AHerramientasController extends ControladorRomano {
 		//Se buscan procesos asociados
 		ArrayList<Proceso> procesosAsociados = new ArrayList<>();
 		try{
-			if(herramientaAEliminar.getId() != null){
-				procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
-			}
+			procesosAsociados = coordinador.listarProcesos(new FiltroProceso.Builder().herramienta(herramientaAEliminar).build());
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -190,7 +190,7 @@ public class AHerramientasController extends ControladorRomano {
 		VentanaConfirmacion vc;
 		if(!procesosAsociados.isEmpty()){ //hay procesos usando esa herramienta, los elimino?
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
-					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: <" + procesosAsociados + ">\n¿Está seguro que desea eliminarla?", stage);
+					"Al eliminar la herramienta <" + herramientaAEliminar + "> se eliminarán los siguientes procesos: " + procesosAsociados + "\n¿Está seguro que desea eliminarla?", stage);
 			if(!vc.acepta()){
 				return;
 			}
@@ -208,9 +208,7 @@ public class AHerramientasController extends ControladorRomano {
 		//Si acepta dar de baja se verifica que la herramienta a eliminar no tiene tareas no terminadas asociadas
 		Boolean tieneTareasNoTerminadasAsociadas = false;
 		try{
-			if(!herramientasAGuardar.contains(herramientaAEliminar)){
-				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(herramientaAEliminar);
-			}
+			tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(herramientaAEliminar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -229,8 +227,6 @@ public class AHerramientasController extends ControladorRomano {
 			}
 		}
 
-		tablaHerramientas.getItems().remove(herramientaAEliminar);
-
 		//Inicio transacciones al gestor
 		try{
 			resultadoEliminarHerramienta = coordinador.eliminarHerramienta(herramientaAEliminar);
@@ -247,9 +243,19 @@ public class AHerramientasController extends ControladorRomano {
 			for(ErrorEliminarHerramienta e: resultadoEliminarHerramienta.getErrores()){
 				switch(e) {
 				case ERROR_AL_ELIMINAR_TAREAS:
-					ResultadoEliminarTareas resultadoTareas = resultadoEliminarHerramienta.getResultadoTareas();
+					ResultadoEliminarTareas resultadoTareas = resultadoEliminarHerramienta.getResultadoEliminarTareas();
 					if(resultadoTareas.hayErrores()){
 						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+							switch(ep) {
+							//Todavia no hay errores en eliminar tarea
+							}
+						}
+					}
+					break;
+				case ERROR_AL_ELIMINAR_PROCESOS:
+					ResultadoEliminarProcesos resultadoProcesos = resultadoEliminarHerramienta.getResultadoEliminarProcesos();
+					if(resultadoProcesos.hayErrores()){
+						for(ErrorEliminarProcesos ep: resultadoProcesos.getErrores()){
 							switch(ep) {
 							//Todavia no hay errores en eliminar tarea
 							}

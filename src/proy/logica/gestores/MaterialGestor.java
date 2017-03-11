@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
+import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Herramienta;
 import proy.datos.entidades.Material;
 import proy.datos.entidades.Pieza;
@@ -36,8 +37,10 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerr
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorEliminarHerramienta;
 import proy.logica.gestores.resultados.ResultadoEliminarMaterial;
 import proy.logica.gestores.resultados.ResultadoEliminarMaterial.ErrorEliminarMaterial;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 
 @Service
 public class MaterialGestor {
@@ -50,6 +53,9 @@ public class MaterialGestor {
 
 	@Resource
 	private ProcesoService persistidorProceso;
+
+	@Resource
+	private ProcesoGestor gestorProceso;
 
 	public ArrayList<Herramienta> listarHerramientas(Filtro<Herramienta> filtro) throws PersistenciaException {
 		return persistidorMaterial.obtenerHerramientas(filtro);
@@ -150,8 +156,17 @@ public class MaterialGestor {
 	}
 
 	private ResultadoEliminarHerramienta validarEliminarHerramienta(Herramienta herramienta) throws PersistenciaException {
-		//No hay validaciones hasta el momento
-		return new ResultadoEliminarHerramienta();
+		Set<ErrorEliminarHerramienta> errores = new HashSet<>();
+
+		//Verifico si se pueden los procesos asociados
+		ArrayList<Proceso> procesosAEliminar = new ArrayList<>(herramienta.getProcesos());
+		procesosAEliminar.removeIf(t -> EstadoStr.BAJA.equals(t.getEstado().getNombre()));
+		ResultadoEliminarProcesos resultadoEliminarProcesos = gestorProceso.validarEliminarProcesos(procesosAEliminar);
+		if(resultadoEliminarProcesos.hayErrores()){
+			errores.add(ErrorEliminarHerramienta.ERROR_AL_ELIMINAR_PROCESOS);
+		}
+
+		return new ResultadoEliminarHerramienta(resultadoEliminarProcesos, errores.toArray(new ErrorEliminarHerramienta[0]));
 	}
 
 	public ArrayList<Material> listarMateriales(Filtro<Material> filtro) throws PersistenciaException {

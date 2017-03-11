@@ -24,7 +24,6 @@ public class FiltroParte extends Filtro<Parte> {
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
 	private Maquina maquina;
-	private ArrayList<Parte> partes;
 	private ArrayList<String> nombres;
 	private Boolean sinUnir = false;
 
@@ -44,13 +43,6 @@ public class FiltroParte extends Filtro<Parte> {
 
 		public Builder maquina(Maquina maquina) {
 			filtro.maquina = maquina;
-			return this;
-		}
-
-		public Builder partes(ArrayList<Parte> partes) {
-			if(partes != null && !partes.isEmpty()){
-				filtro.partes = partes;
-			}
 			return this;
 		}
 
@@ -93,9 +85,6 @@ public class FiltroParte extends Filtro<Parte> {
 		if(this.maquina != null){
 			return;
 		}
-		if(this.partes != null){
-			return;
-		}
 		if(this.conTareas != null){
 			return;
 		}
@@ -131,7 +120,6 @@ public class FiltroParte extends Filtro<Parte> {
 		String where =
 				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.maquina != null) ? (this.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((this.partes != null) ? (this.nombreEntidad + " in (:pts) AND ") : (""))
 						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
 
 		if(!where.isEmpty()){
@@ -164,9 +152,6 @@ public class FiltroParte extends Filtro<Parte> {
 		if(maquina != null){
 			query.setParameter("maq", maquina);
 		}
-		if(partes != null){
-			query.setParameterList("pts", partes);
-		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);
 		}
@@ -180,11 +165,6 @@ public class FiltroParte extends Filtro<Parte> {
 		}
 		if(maquina != null){
 			session.update(maquina);
-		}
-		if(partes != null){
-			for(Parte parte: partes){
-				session.update(parte);
-			}
 		}
 	}
 

@@ -30,13 +30,15 @@ public interface TallerService {
 
 	public void actualizarPartes(ArrayList<Parte> partes) throws PersistenciaException;
 
-	public void bajaPartes(ArrayList<Parte> partes) throws PersistenciaException;
+	public void actualizarParte(Parte parte) throws PersistenciaException;
+
+	public void bajaParte(Parte parte) throws PersistenciaException;
 
 	public ArrayList<Pieza> obtenerPiezas(Filtro<Pieza> filtro) throws PersistenciaException;
 
 	public void guardarPieza(Pieza pieza) throws PersistenciaException;
 
-	public void actualizarPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
+	public void actualizarPieza(Pieza pieza) throws PersistenciaException;
 
-	public void bajaPiezas(ArrayList<Pieza> piezas) throws PersistenciaException;
+	public void bajaPieza(Pieza pieza) throws PersistenciaException;
 }

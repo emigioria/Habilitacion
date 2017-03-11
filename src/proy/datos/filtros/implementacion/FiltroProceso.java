@@ -47,6 +47,14 @@ public class FiltroProceso extends Filtro<Proceso> {
 			return this;
 		}
 
+		public Builder pieza(Pieza pieza) {
+			if(pieza != null){
+				filtro.piezas = new ArrayList<>();
+				filtro.piezas.add(pieza);
+			}
+			return this;
+		}
+
 		public Builder piezas(ArrayList<Pieza> piezas) {
 			if(piezas != null && !piezas.isEmpty()){
 				filtro.piezas = piezas;

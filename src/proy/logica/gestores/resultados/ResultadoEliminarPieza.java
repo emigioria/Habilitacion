@@ -6,29 +6,29 @@
  */
 package proy.logica.gestores.resultados;
 
-import proy.logica.gestores.resultados.ResultadoEliminarHerramienta.ErrorEliminarHerramienta;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
 
-public class ResultadoEliminarHerramienta extends Resultado<ErrorEliminarHerramienta> {
+public class ResultadoEliminarPieza extends Resultado<ErrorEliminarPieza> {
 
 	private ResultadoEliminarTareas resultadoEliminarTareas;
 	private ResultadoEliminarProcesos resultadoEliminarProcesos;
 
-	public enum ErrorEliminarHerramienta {
+	public enum ErrorEliminarPieza {
 		ERROR_AL_ELIMINAR_TAREAS, ERROR_AL_ELIMINAR_PROCESOS
 	}
 
-	public ResultadoEliminarHerramienta(ErrorEliminarHerramienta... errores) {
+	public ResultadoEliminarPieza(ErrorEliminarPieza... errores) {
 		super(errores);
 	}
 
-	public ResultadoEliminarHerramienta(ResultadoEliminarTareas resultadoEliminarTareas, ErrorEliminarHerramienta... errores) {
-		super(errores);
-		this.resultadoEliminarTareas = resultadoEliminarTareas;
-	}
-
-	public ResultadoEliminarHerramienta(ResultadoEliminarProcesos resultadoEliminarProcesos, ErrorEliminarHerramienta... errores) {
+	public ResultadoEliminarPieza(ResultadoEliminarProcesos resultadoEliminarProcesos, ErrorEliminarPieza... errores) {
 		super(errores);
 		this.resultadoEliminarProcesos = resultadoEliminarProcesos;
+	}
+
+	public ResultadoEliminarPieza(ResultadoEliminarTareas resultadoEliminarTareas, ErrorEliminarPieza... errores) {
+		super(errores);
+		this.resultadoEliminarTareas = resultadoEliminarTareas;
 	}
 
 	public ResultadoEliminarTareas getResultadoEliminarTareas() {

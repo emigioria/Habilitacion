@@ -12,10 +12,12 @@ import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPartes.ErrorEliminarPartes;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas;
-import proy.logica.gestores.resultados.ResultadoEliminarPiezas.ErrorEliminarPiezas;
+import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezasDeParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezasDeParte.ErrorEliminarPiezasDeParte;
 import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarProcesos.ErrorEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
@@ -137,24 +139,24 @@ public class TratamientoDeErroresModificarMaquina {
 	}
 
 	/**
-	 * Traduce un ResultadoEliminarPartes a un String entendible por el usuario
+	 * Traduce un ResultadoEliminarParte a un String entendible por el usuario
 	 *
 	 * @param resultadoEliminarPiezas
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresEliminarPartes(ResultadoEliminarPartes resultadoEliminarPartes) {
+	public String tratarErroresEliminarParte(ResultadoEliminarParte resultadoEliminarParte) {
 		StringBuffer erroresBfr = new StringBuffer();
-		for(ErrorEliminarPartes ep: resultadoEliminarPartes.getErrores()){
+		for(ErrorEliminarParte ep: resultadoEliminarParte.getErrores()){
 			switch(ep) {
 			case ERROR_AL_ELIMINAR_TAREAS:
-				erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPartes.getResultadoTareas()));
+				erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarParte.getResultadoTareas()));
 				break;
 			case ERROR_AL_ELIMINAR_PIEZAS:
-				erroresBfr.append(tratarErroresEliminarPiezas(resultadoEliminarPartes.getResultadosEliminarPiezas()));
+				erroresBfr.append(tratarErroresEliminarPiezasDeParte(resultadoEliminarParte.getResultadosEliminarPiezasDeParte()));
 				break;
 			case ERROR_AL_ELIMINAR_PROCESOS:
-				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPartes.getResultadosEliminarProcesos()));
+				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarParte.getResultadosEliminarProcesos()));
 				break;
 			}
 		}
@@ -173,27 +175,25 @@ public class TratamientoDeErroresModificarMaquina {
 		return errores;
 	}
 
-	private String tratarErroresEliminarPiezas(Map<String, ResultadoEliminarPiezas> resultadosEliminarPiezas) {
+	private String tratarErroresEliminarPiezasDeParte(ResultadoEliminarPiezasDeParte resultadoEliminarPiezasDeParte) {
 		StringBuffer erroresBfr = new StringBuffer();
-		for(String pieza: resultadosEliminarPiezas.keySet()){
-			ResultadoEliminarPiezas resultado = resultadosEliminarPiezas.get(pieza);
-			if(resultado.hayErrores()){
-				erroresBfr.append(tratarErroresEliminarPiezas(resultado));
+		if(resultadoEliminarPiezasDeParte.hayErrores()){
+			for(ErrorEliminarPiezasDeParte ep: resultadoEliminarPiezasDeParte.getErrores()){
+				switch(ep) {
+				//No hay errores todavía
+				}
 			}
 		}
 
 		return erroresBfr.toString();
 	}
 
-	private String tratarErroresEliminarProcesos(Map<String, ResultadoEliminarProcesos> resultadosEliminarProcesos) {
+	private String tratarErroresEliminarProcesos(ResultadoEliminarProcesos resultadoEliminarProcesos) {
 		String errores = "";
-		for(String proceso: resultadosEliminarProcesos.keySet()){
-			ResultadoEliminarProcesos resultado = resultadosEliminarProcesos.get(proceso);
-			if(resultado.hayErrores()){
-				for(ErrorEliminarProcesos ep: resultado.getErrores()){
-					switch(ep) {
-					//Todavia no hay errores en eliminar procesos
-					}
+		if(resultadoEliminarProcesos.hayErrores()){
+			for(ErrorEliminarProcesos ep: resultadoEliminarProcesos.getErrores()){
+				switch(ep) {
+				//Todavia no hay errores en eliminar procesos
 				}
 			}
 		}
@@ -207,15 +207,15 @@ public class TratamientoDeErroresModificarMaquina {
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresEliminarPiezas(ResultadoEliminarPiezas resultadoEliminarPiezas) {
+	public String tratarErroresEliminarPieza(ResultadoEliminarPieza resultadoEliminarPieza) {
 		StringBuffer erroresBfr = new StringBuffer();
-		for(ErrorEliminarPiezas ep: resultadoEliminarPiezas.getErrores()){
+		for(ErrorEliminarPieza ep: resultadoEliminarPieza.getErrores()){
 			switch(ep) {
 			case ERROR_AL_ELIMINAR_TAREAS:
-				erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPiezas.getResultadoTareas()));
+				erroresBfr.append(tratarErroresEliminarTarea(resultadoEliminarPieza.getResultadoEliminarTareas()));
 				break;
 			case ERROR_AL_ELIMINAR_PROCESOS:
-				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPiezas.getResultadosEliminarProcesos()));
+				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPieza.getResultadoEliminarProcesos()));
 			}
 		}
 		return erroresBfr.toString();
