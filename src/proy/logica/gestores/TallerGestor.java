@@ -441,7 +441,14 @@ public class TallerGestor {
 	}
 
 	public ResultadoEliminarMaquina eliminarMaquina(Maquina maquina) throws PersistenciaException {
-		persistidorTaller.bajaMaquina(maquina);
+		ResultadoEliminarMaquina resultadoEliminarMaquina = validarEliminarMaquina(maquina);
+		if(!resultadoEliminarMaquina.hayErrores()){
+			persistidorTaller.bajaMaquina(maquina);
+		}
+		return resultadoEliminarMaquina;
+	}
+
+	public ResultadoEliminarMaquina validarEliminarMaquina(Maquina maquina) throws PersistenciaException {
 		return new ResultadoEliminarMaquina();
 	}
 
