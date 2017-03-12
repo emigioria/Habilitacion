@@ -45,7 +45,7 @@ public class Pieza {
 	@Column(name = "nombre", length = 100, nullable = false)
 	private String nombre;
 
-	@Column(name = "codigo_plano", length = 100, nullable = false)
+	@Column(name = "codigo_plano", length = 100)
 	private String codigoPlano;
 
 	@Column(name = "cantidad", nullable = false)

@@ -10,9 +10,7 @@ import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
@@ -21,7 +19,7 @@ import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
-import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.tablecell.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearOperarios;
 import proy.logica.gestores.resultados.ResultadoCrearOperarios.ErrorCrearOperarios;
@@ -74,16 +72,27 @@ public class AOperariosController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombre.setCellFactory(col -> {
-				return new TableCellTextViewString<Operario>(Operario.class) {
+				return new TableCellTextViewString<Operario>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-						esEditable(this, newValue);
+					protected Boolean esEditable(Operario newValue) {
+						return operariosAGuardar.contains(newValue);
 					}
 
 					@Override
 					public void onEdit(Operario object, String newValue) {
 						object.setNombre(newValue.trim());
+					}
+
+					@Override
+					protected String getEstilo(String item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.isEmpty()){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -102,16 +111,27 @@ public class AOperariosController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaApellido.setCellFactory(col -> {
-				return new TableCellTextViewString<Operario>(Operario.class) {
+				return new TableCellTextViewString<Operario>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-						esEditable(this, newValue);
+					protected Boolean esEditable(Operario newValue) {
+						return operariosAGuardar.contains(newValue);
 					}
 
 					@Override
 					public void onEdit(Operario object, String newValue) {
 						object.setApellido(newValue.trim());
+					}
+
+					@Override
+					protected String getEstilo(String item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.isEmpty()){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -130,29 +150,33 @@ public class AOperariosController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaDNI.setCellFactory(col -> {
-				return new TableCellTextViewString<Operario>(Operario.class) {
+				return new TableCellTextViewString<Operario>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Operario> observable, Operario oldValue, Operario newValue) {
-						esEditable(this, newValue);
+					protected Boolean esEditable(Operario newValue) {
+						return operariosAGuardar.contains(newValue);
 					}
 
 					@Override
 					public void onEdit(Operario object, String newValue) {
 						object.setDNI(newValue.trim());
 					}
+
+					@Override
+					protected String getEstilo(String item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.isEmpty()){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
+					}
 				};
 			});
 		}
 
 		actualizar();
-	}
-
-	private void esEditable(TableCell<?, ?> tableCell, Operario newValue) {
-		tableCell.setEditable(false);
-		if(tableCell.getTableRow() != null && newValue != null){
-			tableCell.setEditable(operariosAGuardar.contains(newValue));
-		}
 	}
 
 	@FXML

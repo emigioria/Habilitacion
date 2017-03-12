@@ -134,7 +134,7 @@ public class MaterialGestor {
 			//si la herramienta tiene tareas asociadas, se le da baja lógica
 			ArrayList<Tarea> tareasDeLaHerramienta = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().herramienta(herramienta).build());
 
-			if(tareasDeLaHerramienta.isEmpty()){
+			if(!tareasDeLaHerramienta.isEmpty()){
 				//si el material tiene tareas asociadas, se le da de baja lógica junto a sus procesos
 				herramienta.darDeBaja();
 				for(Proceso p: herramienta.getProcesos()){

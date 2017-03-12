@@ -79,11 +79,13 @@ public class TratamientoDeErroresModificarMaquina {
 				break;
 			case ERROR_AL_CREAR_PIEZAS:
 				for(Map.Entry<String, ResultadoCrearPiezas> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
-					erroresBfr.append(indentacion);
-					erroresBfr.append("Errores en la creación de las piezas para la parte <");
-					erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
-					erroresBfr.append(">:\n");
-					erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
+					if(ParteYResultadoCrearPiezas.getValue().hayErrores()){
+						erroresBfr.append(indentacion);
+						erroresBfr.append("Errores en la creación de las piezas para la parte <");
+						erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
+						erroresBfr.append(">:\n");
+						erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
+					}
 				}
 			}
 		}

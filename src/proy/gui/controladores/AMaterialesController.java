@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -19,7 +18,7 @@ import proy.datos.entidades.Material;
 import proy.datos.filtros.implementacion.FiltroMaterial;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
-import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.tablecell.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales;
 import proy.logica.gestores.resultados.ResultadoCrearMateriales.ErrorCrearMateriales;
@@ -67,31 +66,36 @@ public class AMaterialesController extends ControladorRomano {
 		});
 
 		columnaMaterial.setCellFactory(col -> {
-			return new TableCellTextViewString<Material>(Material.class) {
+			return new TableCellTextViewString<Material>() {
 
 				@Override
-				public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() != null && newValue != null){
-						this.setEditable(materialesAGuardar.contains(newValue));
-					}
+				protected Boolean esEditable(Material newValue) {
+					return materialesAGuardar.contains(newValue);
 				}
 
 				@Override
 				public void onEdit(Material object, String newValue) {
 					object.setNombre(newValue.toLowerCase().trim());
 				}
+
+				@Override
+				protected String getEstilo(String item, boolean empty) {
+					if(!empty){
+						//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+						if(item == null || item.isEmpty()){
+							return "-fx-background-color: red";
+						}
+					}
+					return super.getEstilo(item, empty);
+				}
 			};
 		});
 		columnaMedidas.setCellFactory(col -> {
-			return new TableCellTextViewString<Material>(Material.class) {
+			return new TableCellTextViewString<Material>() {
 
 				@Override
-				public void changed(ObservableValue<? extends Material> observable, Material oldValue, Material newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() != null && newValue != null){
-						this.setEditable(materialesAGuardar.contains(newValue));
-					}
+				protected Boolean esEditable(Material newValue) {
+					return materialesAGuardar.contains(newValue);
 				}
 
 				@Override

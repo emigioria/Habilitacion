@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -22,7 +21,7 @@ import proy.datos.filtros.implementacion.FiltroHerramienta;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
-import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.tablecell.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas;
 import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerramientas;
@@ -62,14 +61,11 @@ public class AHerramientasController extends ControladorRomano {
 		tablaHerramientas.setEditable(true);
 
 		columnaNombre.setCellFactory(col -> {
-			return new TableCellTextViewString<Herramienta>(Herramienta.class) {
+			return new TableCellTextViewString<Herramienta>() {
 
 				@Override
-				public void changed(ObservableValue<? extends Herramienta> observable, Herramienta oldValue, Herramienta newValue) {
-					this.setEditable(false);
-					if(this.getTableRow() != null && newValue != null){
-						this.setEditable(herramientasAGuardar.contains(newValue));
-					}
+				protected Boolean esEditable(Herramienta newValue) {
+					return herramientasAGuardar.contains(newValue);
 				}
 
 				@Override
@@ -78,6 +74,17 @@ public class AHerramientasController extends ControladorRomano {
 					if(!nombre.isEmpty()){
 						object.setNombre(nombre);
 					}
+				}
+
+				@Override
+				protected String getEstilo(String item, boolean empty) {
+					if(!empty){
+						//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+						if(item == null || item.isEmpty()){
+							return "-fx-background-color: red";
+						}
+					}
+					return super.getEstilo(item, empty);
 				}
 			};
 		});

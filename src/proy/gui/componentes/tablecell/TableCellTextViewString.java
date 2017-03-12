@@ -4,14 +4,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.gui.componentes;
+package proy.gui.componentes.tablecell;
 
 import javafx.util.StringConverter;
 
 public abstract class TableCellTextViewString<O> extends TableCellTextView<O, String> {
 
-	public TableCellTextViewString(Class<? extends O> claseTabla) {
-		super(claseTabla, new StringConverter<String>() {
+	public TableCellTextViewString() {
+		super(new StringConverter<String>() {
 
 			@Override
 			public String fromString(String string) {

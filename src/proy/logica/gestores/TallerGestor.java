@@ -18,7 +18,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import proy.datos.clases.EstadoStr;
@@ -40,10 +39,8 @@ import proy.logica.gestores.resultados.ResultadoCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
 import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearParte;
 import proy.logica.gestores.resultados.ResultadoCrearPartesMaquinaNueva;
 import proy.logica.gestores.resultados.ResultadoCrearPartesMaquinaNueva.ErrorCrearPartesMaquinaNueva;
-import proy.logica.gestores.resultados.ResultadoCrearPieza;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
 import proy.logica.gestores.resultados.ResultadoCrearPiezasMaquinaNueva;
@@ -181,10 +178,10 @@ public class TallerGestor {
 	 */
 	private Map<String, ResultadoCrearPiezasMaquinaNueva> validarPiezasNuevas(Collection<Parte> partesDeLasPiezasAValidar) {
 		Map<String, ResultadoCrearPiezasMaquinaNueva> resultadosCrearPiezas = new HashMap<>();
-		Set<ErrorCrearPiezasMaquinaNueva> errores = new HashSet<>();
-		List<Pieza> piezasAValidar;
+
 		for(Parte parte: partesDeLasPiezasAValidar){
-			piezasAValidar = new ArrayList<>();
+			Set<ErrorCrearPiezasMaquinaNueva> errores = new HashSet<>();
+			List<Pieza> piezasAValidar = new ArrayList<>();
 
 			//Busco piezas sin cantidad
 			for(Pieza piezaActual: parte.getPiezas()){
@@ -195,7 +192,7 @@ public class TallerGestor {
 
 			//Busco piezas sin material
 			for(Pieza piezaActual: parte.getPiezas()){
-				if(piezaActual.getCantidad() == null || piezaActual.getCantidad() < 1){
+				if(piezaActual.getMaterial() == null){
 					errores.add(ErrorCrearPiezasMaquinaNueva.MATERIAL_INCOMPLETO);
 				}
 			}
@@ -464,10 +461,6 @@ public class TallerGestor {
 		return persistidorTaller.obtenerPartes(filtro);
 	}
 
-	public ResultadoCrearParte crearParte(Parte parte) throws PersistenciaException {
-		throw new NotYetImplementedException();
-	}
-
 	public ResultadoModificarPartes modificarPartes(ArrayList<Parte> partes) throws PersistenciaException {
 		ResultadoModificarPartes resultado = validarModificarPartes(partes);
 		if(!resultado.hayErrores()){
@@ -554,7 +547,7 @@ public class TallerGestor {
 			//si la parte tiene tareas asociadas, se le da baja lógica
 			ArrayList<Tarea> tareasDeLaParte = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().parte(parte).build());
 
-			if(tareasDeLaParte.isEmpty()){
+			if(!tareasDeLaParte.isEmpty()){
 				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
 				//dar de baja logica piezas
 				for(Pieza pieza: parte.getPiezas()){
@@ -573,7 +566,9 @@ public class TallerGestor {
 			else{
 				//sino de baja física junto a sus procesos y piezas
 				try{
+					Maquina maquinaDeLaParte = parte.getMaquina(); //Al ir al persistidor se va a cambiar por una que tiene la información de la base de datos
 					persistidorTaller.bajaParte(parte);
+					maquinaDeLaParte.getPartes().remove(parte); //Si todo salió bien, quito la pieza de la parte
 				} catch(ObjNotFoundException e){
 					//Si no se encontró ya fue eliminado previamente.
 				}
@@ -626,10 +621,6 @@ public class TallerGestor {
 		return persistidorTaller.obtenerPiezas(filtro);
 	}
 
-	public ResultadoCrearPieza crearPieza(Pieza pieza) throws PersistenciaException {
-		throw new NotYetImplementedException();
-	}
-
 	/**
 	 * Se encarga de dar baja física o lógica una pieza
 	 *
@@ -645,7 +636,7 @@ public class TallerGestor {
 			//si la parte tiene tareas asociadas, se le da baja lógica
 			ArrayList<Tarea> tareasDeLaPieza = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().pieza(pieza).build());
 
-			if(tareasDeLaPieza.isEmpty()){
+			if(!tareasDeLaPieza.isEmpty()){
 				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
 				//dar de baja logica procesos
 				for(Proceso proceso: pieza.getProcesos()){
@@ -659,7 +650,9 @@ public class TallerGestor {
 			else{
 				//sino de baja física junto a sus procesos y piezas
 				try{
+					Parte parteDeLaPieza = pieza.getParte(); //Al ir al persistidor se va a cambiar por una que tiene la información de la base de datos
 					persistidorTaller.bajaPieza(pieza);
+					parteDeLaPieza.getPiezas().remove(pieza); //Si todo salió bien, quito la pieza de la parte
 				} catch(ObjNotFoundException e){
 					//Si no se encontró ya fue eliminado previamente.
 				}

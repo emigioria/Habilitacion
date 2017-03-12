@@ -7,23 +7,18 @@
 package proy.gui.controladores;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.converter.IntegerStringConverter;
 import proy.datos.entidades.Maquina;
@@ -37,8 +32,9 @@ import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
-import proy.gui.componentes.TableCellTextView;
-import proy.gui.componentes.TableCellTextViewString;
+import proy.gui.componentes.tablecell.TableCellComboBox;
+import proy.gui.componentes.tablecell.TableCellTextView;
+import proy.gui.componentes.tablecell.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.gui.controladores.errores.TratamientoDeErroresCrearMaquina;
 import proy.gui.controladores.errores.TratamientoDeErroresModificarMaquina;
@@ -112,21 +108,27 @@ public class NMMaquinaController extends ControladorRomano {
 						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
-				return new SimpleStringProperty("<Sin nombre>");
+				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombreParte.setCellFactory(col -> {
-				return new TableCellTextViewString<Parte>(Parte.class) {
-
-					@Override
-					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-					}
+				return new TableCellTextViewString<Parte>() {
 
 					//Al terminar de editar, se guarda el valor
 					@Override
 					public void onEdit(Parte object, String newValue) {
 						object.setNombre(newValue.toLowerCase().trim());
+					}
+
+					@Override
+					protected String getEstilo(String item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.isEmpty()){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -145,12 +147,7 @@ public class NMMaquinaController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCantidadParte.setCellFactory(col -> {
-				return new TableCellTextView<Parte, Number>(Parte.class, new IntegerStringConverter()) {
-
-					@Override
-					public void changed(ObservableValue<? extends Parte> observable, Parte oldValue, Parte newValue) {
-
-					}
+				return new TableCellTextView<Parte, Number>(new IntegerStringConverter()) {
 
 					//Al terminar de editar, se guarda el valor.
 					@Override
@@ -158,6 +155,17 @@ public class NMMaquinaController extends ControladorRomano {
 						if(newValue != null){
 							object.setCantidad((Integer) newValue);
 						}
+					}
+
+					@Override
+					protected String getEstilo(Number item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.intValue() < 1){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -172,21 +180,32 @@ public class NMMaquinaController extends ControladorRomano {
 						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
 					}
 				}
-				return new SimpleStringProperty("<Sin nombre>");
+				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombrePieza.setCellFactory(col -> {
-				return new TableCellTextViewString<Pieza>(Pieza.class) {
+				return new TableCellTextViewString<Pieza>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						esEditablePieza(this, newValue);
+					protected Boolean esEditable(Pieza newValue) {
+						return esEditablePieza(newValue);
 					}
 
 					//Al terminar de editar, se guarda el valor
 					@Override
 					public void onEdit(Pieza object, String newValue) {
 						object.setNombre(newValue.toLowerCase().trim());
+					}
+
+					@Override
+					protected String getEstilo(String item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.isEmpty()){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -205,11 +224,11 @@ public class NMMaquinaController extends ControladorRomano {
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCantidadPieza.setCellFactory(col -> {
-				return new TableCellTextView<Pieza, Number>(Pieza.class, new IntegerStringConverter()) {
+				return new TableCellTextView<Pieza, Number>(new IntegerStringConverter()) {
 
 					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						esEditablePieza(this, newValue);
+					protected Boolean esEditable(Pieza newValue) {
+						return esEditablePieza(newValue);
 					}
 
 					//Al terminar de editar, se guarda el valor.
@@ -218,6 +237,17 @@ public class NMMaquinaController extends ControladorRomano {
 						if(newValue != null){
 							object.setCantidad((Integer) newValue);
 						}
+					}
+
+					@Override
+					protected String getEstilo(Number item, boolean empty) {
+						if(!empty){
+							//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+							if(item == null || item.intValue() < 1){
+								return "-fx-background-color: red";
+							}
+						}
+						return super.getEstilo(item, empty);
 					}
 				};
 			});
@@ -230,32 +260,38 @@ public class NMMaquinaController extends ControladorRomano {
 
 			//Seteamos el Cell Factory para permitir edición
 			try{
-				columnaMaterialPieza.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(coordinador.listarMateriales(new FiltroMaterial.Builder().build()))));
+				Collection<Material> materiales = coordinador.listarMateriales(new FiltroMaterial.Builder().build());
+				columnaMaterialPieza.setCellFactory(col -> {
+					return new TableCellComboBox<Pieza, Material>(materiales) {
+
+						@Override
+						protected Boolean esEditable(Pieza newValue) {
+							return esEditablePieza(newValue);
+						}
+
+						//Al terminar de editar, se guarda el valor.
+						@Override
+						public void onEdit(Pieza object, Material newValue) {
+							if(newValue != null){
+								object.setMaterial(newValue);
+							}
+						}
+
+						@Override
+						protected String getEstilo(Material item, boolean empty) {
+							if(!empty){
+								//Si la fila no es de relleno la pinto de rojo cuando está incorrecta
+								if(item == null){
+									return "-fx-background-color: red";
+								}
+							}
+							return super.getEstilo(item, empty);
+						}
+					};
+				});
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}
-			//Al terminar de editar, se guarda el valor.
-			columnaMaterialPieza.setOnEditCommit(new EventHandler<CellEditEvent<Pieza, Material>>() {
-
-				@Override
-				public void handle(CellEditEvent<Pieza, Material> t) {
-					if(t.getNewValue() != null){
-						Pieza pieza = t.getRowValue();
-						Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
-						if(parteSeleccionada == null){
-							return;
-						}
-						if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-							if(piezasAGuardar.get(parteSeleccionada).contains(pieza)){
-								pieza.setMaterial(t.getNewValue());
-							}
-						}
-					}
-					//Truco para que se llame a Cell.updateItem() para que formatee el valor ingresado.
-					t.getTableColumn().setVisible(false);
-					t.getTableColumn().setVisible(true);
-				};
-			});
 		}
 
 		//Inicialización de la columna PIEZA->CODIGO_PLANO
@@ -267,15 +303,15 @@ public class NMMaquinaController extends ControladorRomano {
 						return new SimpleStringProperty(param.getValue().getCodigoPlano());
 					}
 				}
-				return new SimpleStringProperty("<Sin nombre>");
+				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCodigoPlanoPieza.setCellFactory(col -> {
-				return new TableCellTextViewString<Pieza>(Pieza.class) {
+				return new TableCellTextViewString<Pieza>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Pieza> observable, Pieza oldValue, Pieza newValue) {
-						esEditablePieza(this, newValue);
+					protected Boolean esEditable(Pieza newValue) {
+						return esEditablePieza(newValue);
 					}
 
 					//Al terminar de editar, se guarda el valor
@@ -308,20 +344,18 @@ public class NMMaquinaController extends ControladorRomano {
 		});
 
 		actualizar();
+
 	}
 
-	private void esEditablePieza(TableCell<?, ?> tableCellTextViewString, Pieza newValue) {
-		tableCellTextViewString.setEditable(false);
-		if(tableCellTextViewString.getTableRow() == null || newValue == null){
-			return;
-		}
+	private Boolean esEditablePieza(Pieza newValue) {
 		Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
 		if(parteSeleccionada == null){
-			return;
+			return false;
 		}
 		if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
-			tableCellTextViewString.setEditable(piezasAGuardar.get(parteSeleccionada).contains(newValue));
+			return (piezasAGuardar.get(parteSeleccionada).contains(newValue));
 		}
+		return false;
 	}
 
 	@FXML
@@ -351,7 +385,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private void eliminarParte() {
-		//TODO ver si hay que sacar la parte de la máquina. Hay que sacarla.
 		ResultadoEliminarParte resultadoEliminarParte;
 
 		//Toma de datos de la vista
@@ -449,7 +482,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private void eliminarPieza() {
-		//TODO ver si hay que sacar la pieza de la parte. Hay que sacarla.
 		ResultadoEliminarPieza resultadoEliminarPieza;
 
 		//Toma de datos de la vista
@@ -501,9 +533,7 @@ public class NMMaquinaController extends ControladorRomano {
 		//Si acepta dar de baja se verifica que la pieza a eliminar no tiene tareas no terminadas asociadas
 		Boolean tieneTareasNoTerminadasAsociadas = false;
 		try{
-			if(piezasAGuardar.get(parteDePiezaAEliminar) == null || !piezasAGuardar.get(parteDePiezaAEliminar).contains(piezaAEliminar)){
-				tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(piezaAEliminar);
-			}
+			tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(piezaAEliminar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -654,7 +684,7 @@ public class NMMaquinaController extends ControladorRomano {
 		titulo = "Modificar máquina";
 		lbNMMaquina.setText(titulo);
 		this.maquina = maquina;
-		nombreMaquina.setText(maquina.getNombre());
+		nombreMaquina.setText(formateadorString.primeraMayuscula(maquina.getNombre()));
 		actualizar();
 	}
 
