@@ -25,7 +25,6 @@ public class FiltroParte extends Filtro<Parte> {
 	private EstadoStr estado = EstadoStr.ALTA;
 	private Maquina maquina;
 	private ArrayList<String> nombres;
-	private Boolean sinUnir = false;
 
 	public static class Builder {
 
@@ -55,11 +54,6 @@ public class FiltroParte extends Filtro<Parte> {
 			if(nombres != null && !nombres.isEmpty()){
 				filtro.nombres = nombres;
 			}
-			return this;
-		}
-
-		public Builder sinUnir() {
-			filtro.sinUnir = true;
 			return this;
 		}
 
@@ -160,9 +154,6 @@ public class FiltroParte extends Filtro<Parte> {
 
 	@Override
 	public void updateParametros(Session session) {
-		if(sinUnir){
-			return;
-		}
 		if(maquina != null){
 			session.update(maquina);
 		}

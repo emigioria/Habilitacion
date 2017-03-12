@@ -331,7 +331,7 @@ public class TallerGestor {
 			for(Parte parte: partesAValidar){
 				nombresDePartes.add(parte.getNombre());
 			}
-			ArrayList<Parte> partesConNombreCoincidente = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(nombresDePartes).maquina(maquina).sinUnir().build());
+			ArrayList<Parte> partesConNombreCoincidente = persistidorTaller.obtenerPartes(new FiltroParte.Builder().nombres(nombresDePartes).maquina(maquina).build());
 			Set<String> nombresPartesRepetidas = new HashSet<>();
 			if(!partesConNombreCoincidente.isEmpty()){
 				errores.add(ErrorCrearModificarPartes.NOMBRE_YA_EXISTENTE);
@@ -430,7 +430,7 @@ public class TallerGestor {
 			for(Pieza pieza: piezasAValidar){
 				nombresDePiezas.add(pieza.getNombre());
 			}
-			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).sinUnir().build());
+			ArrayList<Pieza> piezasConNombreCoincidente = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresDePiezas).parte(parte).build());
 			Set<String> nombresYaExistentes = new HashSet<>();
 			if(!piezasConNombreCoincidente.isEmpty()){
 				errores.add(ErrorCrearPiezas.NOMBRE_YA_EXISTENTE);

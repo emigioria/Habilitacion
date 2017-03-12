@@ -685,7 +685,6 @@ public class NMMaquinaController extends ControladorRomano {
 		lbNMMaquina.setText(titulo);
 		this.maquina = maquina;
 		nombreMaquina.setText(formateadorString.primeraMayuscula(maquina.getNombre()));
-		actualizar();
 	}
 
 	@Override
