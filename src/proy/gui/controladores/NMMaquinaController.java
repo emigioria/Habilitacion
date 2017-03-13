@@ -361,6 +361,9 @@ public class NMMaquinaController extends ControladorRomano {
 	@FXML
 	private void nuevaParte() {
 		Parte nuevaParte = new Parte();
+		if(maquina != null){
+			nuevaParte.setMaquina(maquina);
+		}
 		partesAGuardar.add(nuevaParte);
 		tablaPartes.getItems().add(0, nuevaParte);
 		tablaPartes.getSelectionModel().select(null);
@@ -373,6 +376,7 @@ public class NMMaquinaController extends ControladorRomano {
 			return;
 		}
 		Pieza nuevaPieza = new Pieza();
+		nuevaPieza.setParte(parteDePiezaAGuardar);
 		if(piezasAGuardar.get(parteDePiezaAGuardar) == null || piezasAGuardar.get(parteDePiezaAGuardar).isEmpty()){
 			piezasAGuardar.put(parteDePiezaAGuardar, new ArrayList<>());
 		}
@@ -639,7 +643,10 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
+
 		maquina.getPartes().addAll(partesAGuardar);
+		maquina.getPartes().removeAll(tablaPartes.getItems()); //Quito las viejas sin cambios
+		maquina.getPartes().addAll(tablaPartes.getItems()); //Agrego las nuevas con cambios
 		for(Parte parte: maquina.getPartes()){
 			if(piezasAGuardar.get(parte) != null && !piezasAGuardar.get(parte).isEmpty()){
 				parte.getPiezas().addAll(piezasAGuardar.get(parte));

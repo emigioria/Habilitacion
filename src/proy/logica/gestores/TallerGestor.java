@@ -27,7 +27,6 @@ import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
 import proy.datos.filtros.implementacion.FiltroMaquina;
-import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.datos.servicios.ProcesoService;
 import proy.datos.servicios.TallerService;
@@ -241,7 +240,6 @@ public class TallerGestor {
 	}
 
 	private ResultadoModificarMaquina validarModificarMaquina(Maquina maquina) throws PersistenciaException {
-		ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes;
 		ArrayList<ErrorModificarMaquina> errores = new ArrayList<>();
 		if(maquina.getNombre() == null || maquina.getNombre().isEmpty()){
 			errores.add(ErrorModificarMaquina.NOMBRE_INCOMPLETO);
@@ -255,7 +253,7 @@ public class TallerGestor {
 		}
 
 		//Valido la creacion o modificación de las partes de la maquina
-		resultadoCrearModificarPartes = validarCrearModificarPartesAlModificarMaquina(maquina);
+		ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes = validarCrearModificarPartesAlModificarMaquina(maquina);
 		if(resultadoCrearModificarPartes.hayErrores()){
 			errores.add(ErrorModificarMaquina.ERROR_AL_CREAR_O_MODIFICAR_PARTES);
 		}
@@ -320,7 +318,7 @@ public class TallerGestor {
 		});
 
 		//luego busco coincidencias entre los nombres de las partes ingresadas
-		ArrayList<String> nombresPartesRepetidasBD = new ArrayList<>();
+		Set<String> nombresPartesRepetidasBD = new HashSet<>();
 		if(!partesAValidar.isEmpty()){
 			Iterator<Parte> it1 = partesAValidar.iterator();
 			Parte anterior = it1.next();
@@ -366,10 +364,10 @@ public class TallerGestor {
 		for(Parte parte: partesDeLasPiezasAValidar){
 			Set<ErrorCrearPiezasAlModificarMaquina> errores = new HashSet<>();
 
-			//Quito las piezas dadas de baja y las piezas guardadas previamente
+			//Quito las piezas dadas de baja
 			List<Pieza> piezasNuevas = new ArrayList<>(parte.getPiezas());
 			piezasNuevas.removeIf(t -> {
-				return EstadoStr.BAJA.equals(t.getEstado().getNombre()) || t.getId() != null;
+				return EstadoStr.BAJA.equals(t.getEstado().getNombre());
 			});
 
 			//Busco piezas sin cantidad
@@ -388,7 +386,6 @@ public class TallerGestor {
 
 			//Valido los nombres de las piezas
 			List<Pieza> piezasAValidarNombre = new ArrayList<>();
-			ArrayList<String> nombresPiezasABuscarEnLaBD = new ArrayList<>();
 			//Reviso que el nombre esté completo
 			for(Pieza piezaActual: piezasNuevas){
 				if(piezaActual.getNombre() == null || piezaActual.getNombre().isEmpty()){
@@ -397,45 +394,48 @@ public class TallerGestor {
 				}
 				else{
 					//Si el nombre está completo lo busco en la BD
-					nombresPiezasABuscarEnLaBD.add(piezaActual.getNombre());
 					piezasAValidarNombre.add(piezaActual);
 				}
 			}
 
-			//Si hay piezas a buscar
-			Set<String> nombresPiezasRepetidosBD = new HashSet<>();
-			if(!nombresPiezasABuscarEnLaBD.isEmpty()){
-				//busco en la BD piezas cuyo nombre coincida con el de alguno de los nuevos materiales
-				List<Pieza> piezasCoincidentes = persistidorTaller.obtenerPiezas(new FiltroPieza.Builder().nombres(nombresPiezasABuscarEnLaBD).parte(parte).build());
-				if(!piezasCoincidentes.isEmpty()){
-					errores.add(ErrorCrearPiezasAlModificarMaquina.NOMBRE_YA_EXISTENTE);
-					for(Pieza pieza: piezasCoincidentes){
-						nombresPiezasRepetidosBD.add(pieza.toString());
+			//veo si hay nombres que se repiten entre las nuevas piezas con nombres
+			//primero las ordeno por nombre
+			piezasAValidarNombre.sort((p1, p2) -> {
+				int comparacion = p1.getNombre().compareTo(p2.getNombre());
+				if(comparacion == 0){
+					//Pongo las partes previamente persistidas en un extremo para simplificar el saber si ya existe
+					if(p1.getId() != null){
+						return 1;
+					}
+					if(p2.getId() != null){
+						return -1;
 					}
 				}
-			}
-
-			//veo si hay nombres que se repiten entre las nuevas piezas con nombres
-			//primero al resto las ordeno por nombre
-			piezasAValidarNombre.sort((p1, p2) -> {
-				return p1.getNombre().compareTo(p2.getNombre());
+				return comparacion;
 			});
 
 			//luego busco coincidencias entre los nombres de las piezas ingresadas
+			Set<String> nombresPiezasRepetidasBD = new HashSet<>();
 			if(!piezasAValidarNombre.isEmpty()){
-				Iterator<Pieza> it2 = piezasAValidarNombre.iterator();
-				Pieza anterior = it2.next();
+				Iterator<Pieza> it1 = piezasAValidarNombre.iterator();
+				Pieza anterior = it1.next();
 				Pieza actual;
-				while(it2.hasNext()){
-					actual = it2.next();
+				while(it1.hasNext()){
+					actual = it1.next();
 					if(actual.getNombre().equals(anterior.getNombre())){
-						errores.add(ErrorCrearPiezasAlModificarMaquina.NOMBRE_INGRESADO_REPETIDO);
+						if(actual.getId() != null || anterior.getId() != null){
+							errores.add(ErrorCrearPiezasAlModificarMaquina.NOMBRE_YA_EXISTENTE);
+							nombresPiezasRepetidasBD.add(actual.getNombre());
+						}
+						else{
+							errores.add(ErrorCrearPiezasAlModificarMaquina.NOMBRE_INGRESADO_REPETIDO);
+						}
 					}
 					anterior = actual;
 				}
 			}
 
-			resultadosCrearPiezas.put(parte.toString(), new ResultadoCrearPiezasAlModificarMaquina(nombresPiezasRepetidosBD, errores.toArray(new ErrorCrearPiezasAlModificarMaquina[0])));
+			resultadosCrearPiezas.put(parte.toString(), new ResultadoCrearPiezasAlModificarMaquina(nombresPiezasRepetidasBD, errores.toArray(new ErrorCrearPiezasAlModificarMaquina[0])));
 		}
 
 		return resultadosCrearPiezas;
