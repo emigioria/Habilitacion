@@ -23,7 +23,7 @@ public interface FiltroHibernate<T> {
 
 	public Query setParametros(Query query);
 
-	public void updateParametros(Session session); //TODO Rever en todos si no se guardan cambios al hacerlo
+	public void updateParametros(Session session);
 
 	public Class<? extends T> getClase();
 

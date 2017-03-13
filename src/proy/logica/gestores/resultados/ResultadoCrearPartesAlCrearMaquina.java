@@ -9,22 +9,22 @@ package proy.logica.gestores.resultados;
 import java.util.Map;
 import java.util.Set;
 
-import proy.logica.gestores.resultados.ResultadoCrearPartesMaquinaNueva.ErrorCrearPartesMaquinaNueva;
+import proy.logica.gestores.resultados.ResultadoCrearPartesAlCrearMaquina.ErrorCrearPartesAlCrearMaquina;
 
-public class ResultadoCrearPartesMaquinaNueva extends Resultado<ErrorCrearPartesMaquinaNueva> {
+public class ResultadoCrearPartesAlCrearMaquina extends Resultado<ErrorCrearPartesAlCrearMaquina> {
 
-	private Map<String, ResultadoCrearPiezasMaquinaNueva> resultadosCrearPiezas;
+	private Map<String, ResultadoCrearPiezasAlCrearMaquina> resultadosCrearPiezas;
 	private Set<String> nombresRepetidos;
 
-	public enum ErrorCrearPartesMaquinaNueva {
+	public enum ErrorCrearPartesAlCrearMaquina {
 		NOMBRE_INCOMPLETO, NOMBRE_INGRESADO_REPETIDO, CANTIDAD_INCOMPLETA, ERROR_AL_CREAR_PIEZAS
 	}
 
-	public ResultadoCrearPartesMaquinaNueva(ErrorCrearPartesMaquinaNueva... errores) {
+	public ResultadoCrearPartesAlCrearMaquina(ErrorCrearPartesAlCrearMaquina... errores) {
 		super(errores);
 	}
 
-	public ResultadoCrearPartesMaquinaNueva(Map<String, ResultadoCrearPiezasMaquinaNueva> resultadosCrearPiezas, Set<String> nombresRepetidos, ErrorCrearPartesMaquinaNueva... errores) {
+	public ResultadoCrearPartesAlCrearMaquina(Map<String, ResultadoCrearPiezasAlCrearMaquina> resultadosCrearPiezas, Set<String> nombresRepetidos, ErrorCrearPartesAlCrearMaquina... errores) {
 		super(errores);
 		this.nombresRepetidos = nombresRepetidos;
 		this.resultadosCrearPiezas = resultadosCrearPiezas;
@@ -34,7 +34,7 @@ public class ResultadoCrearPartesMaquinaNueva extends Resultado<ErrorCrearPartes
 		return nombresRepetidos;
 	}
 
-	public Map<String, ResultadoCrearPiezasMaquinaNueva> getResultadosCrearPiezas() {
+	public Map<String, ResultadoCrearPiezasAlCrearMaquina> getResultadosCrearPiezas() {
 		return resultadosCrearPiezas;
 	}
 }

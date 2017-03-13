@@ -8,10 +8,10 @@ package proy.gui.controladores.errores;
 
 import java.util.Map;
 
-import proy.logica.gestores.resultados.ResultadoCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearModificarPartes.ErrorCrearModificarPartes;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas;
-import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartesAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartesAlModificarMaquina.ErrorCrearModificarPartesAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlModificarMaquina.ErrorCrearPiezasAlModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
@@ -51,18 +51,22 @@ public class TratamientoDeErroresModificarMaquina {
 		return erroresBfr.toString();
 	}
 
-	private String tratarErroresCrearModificarPartes(ResultadoCrearModificarPartes resultadoCrearModificarPartes, int nivelIndentacion) {
+	private String tratarErroresCrearModificarPartes(ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes, int nivelIndentacion) {
 		StringBuffer erroresBfr = new StringBuffer();
 		StringBuffer indentacion = new StringBuffer();
 		for(int i = 0; i < nivelIndentacion; i++){
 			indentacion.append('\t');
 		}
 
-		for(ErrorCrearModificarPartes e: resultadoCrearModificarPartes.getErrores()){
+		for(ErrorCrearModificarPartesAlModificarMaquina e: resultadoCrearModificarPartes.getErrores()){
 			switch(e) {
 			case NOMBRE_INCOMPLETO:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Hay partes con nombre vacío.\n");
+				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes sin cantidad o con una cantidad menor a 1.\n");
 				break;
 			case NOMBRE_INGRESADO_REPETIDO:
 				erroresBfr.append(indentacion);
@@ -78,7 +82,7 @@ public class TratamientoDeErroresModificarMaquina {
 				}
 				break;
 			case ERROR_AL_CREAR_PIEZAS:
-				for(Map.Entry<String, ResultadoCrearPiezas> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
+				for(Map.Entry<String, ResultadoCrearPiezasAlModificarMaquina> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
 					if(ParteYResultadoCrearPiezas.getValue().hayErrores()){
 						erroresBfr.append(indentacion);
 						erroresBfr.append("Errores en la creación de las piezas para la parte <");
@@ -87,34 +91,37 @@ public class TratamientoDeErroresModificarMaquina {
 						erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
 					}
 				}
+				break;
 			}
 		}
 
 		return erroresBfr.toString();
 	}
 
-	private String tratarErroresCrearPiezas(ResultadoCrearPiezas resultadoCrearPiezas, int nivelIndentacion) {
+	private String tratarErroresCrearPiezas(ResultadoCrearPiezasAlModificarMaquina resultadoCrearPiezas, int nivelIndentacion) {
 		StringBuffer erroresBfr = new StringBuffer();
 		StringBuffer indentacion = new StringBuffer();
 		for(int i = 0; i < nivelIndentacion; i++){
 			indentacion.append('\t');
 		}
 
-		for(ErrorCrearPiezas e: resultadoCrearPiezas.getErrores()){
+		for(ErrorCrearPiezasAlModificarMaquina e: resultadoCrearPiezas.getErrores()){
 			switch(e) {
 			case NOMBRE_INCOMPLETO:
 				erroresBfr.append(indentacion);
 				erroresBfr.append("Hay piezas con nombre vacío.\n");
 				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin cantidad o con una cantidad menor a 1.\n");
+				break;
+			case MATERIAL_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin material.\n");
+				break;
 			case NOMBRE_INGRESADO_REPETIDO:
 				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay piezas nuevas con el mismo nombre:\n");
-				for(String pieza: resultadoCrearPiezas.getNombresRepetidos()){
-					erroresBfr.append(indentacion);
-					erroresBfr.append("\t<");
-					erroresBfr.append(pieza);
-					erroresBfr.append(">\n");
-				}
+				erroresBfr.append("Hay piezas nuevas con el mismo nombre.\n");
 				break;
 			case NOMBRE_YA_EXISTENTE:
 				erroresBfr.append(indentacion);
@@ -125,14 +132,6 @@ public class TratamientoDeErroresModificarMaquina {
 					erroresBfr.append(pieza);
 					erroresBfr.append(">\n");
 				}
-				break;
-			case CANTIDAD_INCOMPLETA:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay piezas sin cantidad o con una cantidad menor a 1.\n");
-				break;
-			case MATERIAL_INCOMPLETO:
-				erroresBfr.append(indentacion);
-				erroresBfr.append("Hay piezas sin material.\n");
 				break;
 			}
 		}

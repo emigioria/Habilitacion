@@ -91,7 +91,7 @@ public class MaterialGestor {
 		}
 
 		//Si hay materiales a buscar
-		ArrayList<String> nombresHerramientasRepetidosBD = new ArrayList<>();
+		Set<String> nombresHerramientasRepetidosBD = new HashSet<>();
 		if(!nombresHerramientasABuscarEnLaBD.isEmpty()){
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
 			List<Herramienta> herramientas_coincidentes = persistidorMaterial.obtenerHerramientas(new FiltroHerramienta.Builder().nombres(nombresHerramientasABuscarEnLaBD).build());
@@ -204,13 +204,13 @@ public class MaterialGestor {
 		}
 
 		//Si hay materiales a buscar
-		ArrayList<String> nombresMaterialesRepetidosBD = new ArrayList<>();
+		Set<String> nombresMaterialesRepetidosBD = new HashSet<>();
 		if(!nombresMaterialesABuscarEnLaBD.isEmpty()){
 			//busco en la BD materiales cuyo nombre coincida con el de alguno de los nuevos materiales
-			List<Material> materiales_coincidentes = persistidorMaterial.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMaterialesABuscarEnLaBD).build());
-			if(!materiales_coincidentes.isEmpty()){
+			List<Material> materialesCoincidentes = persistidorMaterial.obtenerMateriales(new FiltroMaterial.Builder().nombres(nombresMaterialesABuscarEnLaBD).build());
+			if(!materialesCoincidentes.isEmpty()){
 				erroresMateriales.add(ErrorCrearMateriales.NOMBRE_YA_EXISTENTE);
-				for(Material material: materiales_coincidentes){
+				for(Material material: materialesCoincidentes){
 					nombresMaterialesRepetidosBD.add(material.toString());
 				}
 			}

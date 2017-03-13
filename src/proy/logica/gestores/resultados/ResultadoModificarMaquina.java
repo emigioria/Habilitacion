@@ -10,18 +10,18 @@ import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarM
 
 public class ResultadoModificarMaquina extends Resultado<ErrorModificarMaquina> {
 
-	private ResultadoCrearModificarPartes resultadoCrearModificarPartes;
+	private ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes;
 	
 	public enum ErrorModificarMaquina {
 		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO, ERROR_AL_CREAR_O_MODIFICAR_PARTES
 	}
 
-	public ResultadoModificarMaquina(ResultadoCrearModificarPartes resultadoCrearModificarPartes, ErrorModificarMaquina... errores) {
+	public ResultadoModificarMaquina(ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes, ErrorModificarMaquina... errores) {
 		super(errores);
 		this.resultadoCrearModificarPartes = resultadoCrearModificarPartes;
 	}
 	
-	public ResultadoCrearModificarPartes getResultadoCrearModificarPartes(){
+	public ResultadoCrearModificarPartesAlModificarMaquina getResultadoCrearModificarPartes(){
 		return resultadoCrearModificarPartes;
 	}
 }

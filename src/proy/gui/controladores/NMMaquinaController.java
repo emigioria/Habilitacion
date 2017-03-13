@@ -639,11 +639,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		maquina.setNombre(nombreMaquina.getText().toLowerCase().trim());
-
 		maquina.getPartes().addAll(partesAGuardar);
-		maquina.getPartes().removeAll(tablaPartes.getItems());
-		maquina.getPartes().addAll(tablaPartes.getItems());
-
 		for(Parte parte: maquina.getPartes()){
 			if(piezasAGuardar.get(parte) != null && !piezasAGuardar.get(parte).isEmpty()){
 				parte.getPiezas().addAll(piezasAGuardar.get(parte));

@@ -14,18 +14,18 @@ public class ResultadoCrearMaquina extends Resultado<ErrorCrearMaquina> {
 		NOMBRE_INCOMPLETO, NOMBRE_REPETIDO, ERROR_AL_CREAR_PARTES
 	}
 
-	private ResultadoCrearPartesMaquinaNueva resultadosCrearPartes;
+	private ResultadoCrearPartesAlCrearMaquina resultadosCrearPartes;
 
 	public ResultadoCrearMaquina(ErrorCrearMaquina... errores) {
 		super(errores);
 	}
 
-	public ResultadoCrearMaquina(ResultadoCrearPartesMaquinaNueva resultadosCrearPartes, ErrorCrearMaquina... errores) {
+	public ResultadoCrearMaquina(ResultadoCrearPartesAlCrearMaquina resultadosCrearPartes, ErrorCrearMaquina... errores) {
 		super(errores);
 		this.resultadosCrearPartes = resultadosCrearPartes;
 	}
 
-	public ResultadoCrearPartesMaquinaNueva getResultadosCrearPartes() {
+	public ResultadoCrearPartesAlCrearMaquina getResultadosCrearPartes() {
 		return resultadosCrearPartes;
 	}
 }

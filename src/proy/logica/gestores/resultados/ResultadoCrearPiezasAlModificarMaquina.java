@@ -8,28 +8,22 @@ package proy.logica.gestores.resultados;
 
 import java.util.Set;
 
-import proy.logica.gestores.resultados.ResultadoCrearPiezas.ErrorCrearPiezas;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlModificarMaquina.ErrorCrearPiezasAlModificarMaquina;
 
-public class ResultadoCrearPiezas extends Resultado<ErrorCrearPiezas> {
+public class ResultadoCrearPiezasAlModificarMaquina extends Resultado<ErrorCrearPiezasAlModificarMaquina> {
 
 	private Set<String> nombresYaExistentes;
-	private Set<String> nombresRepetidos;
 
-	public enum ErrorCrearPiezas {
+	public enum ErrorCrearPiezasAlModificarMaquina {
 		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO, CANTIDAD_INCOMPLETA, MATERIAL_INCOMPLETO
 	}
 
-	public ResultadoCrearPiezas(Set<String> nombresYaExistentes, Set<String> nombresRepetidos, ErrorCrearPiezas... errores) {
+	public ResultadoCrearPiezasAlModificarMaquina(Set<String> nombresYaExistentes, ErrorCrearPiezasAlModificarMaquina... errores) {
 		super(errores);
 		this.nombresYaExistentes = nombresYaExistentes;
-		this.nombresRepetidos = nombresRepetidos;
 	}
 
 	public Set<String> getNombresYaExistentes() {
 		return this.nombresYaExistentes;
-	}
-
-	public Set<String> getNombresRepetidos() {
-		return nombresRepetidos;
 	}
 }
