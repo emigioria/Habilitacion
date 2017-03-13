@@ -124,11 +124,22 @@ public class AMaquinasController extends ControladorRomano {
 		}
 	}
 
+	public void buscar() {
+		String nombreBuscado = nombreMaquina.getText().trim().toLowerCase();
+		tablaMaquinas.getItems().clear();
+		try{
+			tablaMaquinas.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().nombre(nombreBuscado).build()));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		}
+	}
+
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			stage.setTitle("Lista de máquinas");
+			tablaMaquinas.getItems().clear();
 			try{
-				tablaMaquinas.getItems().clear();
 				tablaMaquinas.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);

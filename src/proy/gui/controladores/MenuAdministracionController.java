@@ -45,11 +45,11 @@ public class MenuAdministracionController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
-
+		stage.setTitle("Panel de administración");
 	}
 
 	@Override
 	protected void inicializar() {
-
+		actualizar();
 	}
 }

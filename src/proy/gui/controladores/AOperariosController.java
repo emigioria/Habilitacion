@@ -336,6 +336,8 @@ public class AOperariosController extends ControladorRomano {
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			stage.setTitle("Lista de operarios");
+
 			tablaOperarios.getItems().clear();
 			tablaOperarios.getItems().addAll(operariosAGuardar);
 			try{

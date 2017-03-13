@@ -7,7 +7,6 @@
 package proy.gui.controladores;
 
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import proy.datos.clases.DatosLogin;
@@ -34,9 +33,9 @@ public class LoguearAdminController extends ControladorDialogo {
 	@Override
 	protected void inicializar() {
 		stage.setTitle("Loguearse como administrador");
+
 		contra = new SafePasswordField();
 		contenedor.getChildren().add(contra);
-		GridPane.setMargin(contra, new Insets(10.0));
 		GridPane.setColumnIndex(contra, 1);
 		GridPane.setRowIndex(contra, 1);
 	}

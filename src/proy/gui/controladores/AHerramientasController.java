@@ -283,23 +283,19 @@ public class AHerramientasController extends ControladorRomano {
 
 	public void buscar() {
 		String nombreBuscado = nombreHerramienta.getText().trim().toLowerCase();
-		if(nombreBuscado.isEmpty()){
-			actualizar();
-		}
-		else{
-			tablaHerramientas.getItems().clear();
-			tablaHerramientas.getItems().addAll(herramientasAGuardar);
-			try{
-				tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().nombre(nombreBuscado).build()));
-			} catch(PersistenciaException e){
-				presentadorVentanas.presentarExcepcion(e, stage);
-			}
+		tablaHerramientas.getItems().clear();
+		tablaHerramientas.getItems().addAll(herramientasAGuardar);
+		try{
+			tablaHerramientas.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().nombreContiene(nombreBuscado).build()));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
 		}
 	}
 
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			stage.setTitle("Lista de herramientas");
 			tablaHerramientas.getItems().clear();
 			tablaHerramientas.getItems().addAll(herramientasAGuardar);
 			try{

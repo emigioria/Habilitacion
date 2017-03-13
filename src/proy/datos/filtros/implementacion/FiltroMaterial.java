@@ -22,7 +22,7 @@ public class FiltroMaterial extends Filtro<Material> {
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
 	private Boolean conPiezas;
-	private String nombre;
+	private String nombreContiene;
 	private String medidas;
 	private ArrayList<Material> materiales;
 	private ArrayList<String> nombres;
@@ -41,9 +41,9 @@ public class FiltroMaterial extends Filtro<Material> {
 			return this;
 		}
 
-		public Builder nombre(String nombre) {
-			if(nombre != null && !nombre.isEmpty()){
-				filtro.nombre = nombre;
+		public Builder nombreContiene(String nombreContiene) {
+			if(nombreContiene != null && !nombreContiene.isEmpty()){
+				filtro.nombreContiene = nombreContiene;
 			}
 			return this;
 		}
@@ -107,7 +107,7 @@ public class FiltroMaterial extends Filtro<Material> {
 		if(this.conPiezas != null){
 			return;
 		}
-		if(this.nombre != null){
+		if(this.nombreContiene != null){
 			return;
 		}
 		if(this.medidas != null){
@@ -140,7 +140,7 @@ public class FiltroMaterial extends Filtro<Material> {
 
 	private String getWhere() {
 		String where =
-				((this.nombre != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+				((this.nombreContiene != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
 						+ ((this.medidas != null) ? (this.nombreEntidad + ".medidas LIKE :med AND ") : (""))
 						+ ((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.materiales != null) ? (this.nombreEntidad + " in (:mts) AND ") : (""))
@@ -177,8 +177,8 @@ public class FiltroMaterial extends Filtro<Material> {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
-		if(nombre != null){
-			query.setParameter("nom", "%" + nombre + "%");
+		if(nombreContiene != null){
+			query.setParameter("nom", "%" + nombreContiene + "%");
 		}
 		if(medidas != null){
 			query.setParameter("med", "%" + medidas + "%");

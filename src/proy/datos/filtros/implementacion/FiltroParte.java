@@ -19,12 +19,13 @@ import proy.datos.filtros.Filtro;
 public class FiltroParte extends Filtro<Parte> {
 
 	private String nombreEntidad = "a";
-	private Boolean conTareas;
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
+	private Boolean conTareas;
 	private Maquina maquina;
 	private ArrayList<String> nombres;
+	private String nombreContiene;
 
 	public static class Builder {
 
@@ -47,6 +48,21 @@ public class FiltroParte extends Filtro<Parte> {
 
 		public Builder conTareas() {
 			filtro.conTareas = true;
+			return this;
+		}
+
+		public Builder nombreContiene(String nombreContiene) {
+			if(nombreContiene != null && !nombreContiene.isEmpty()){
+				filtro.nombreContiene = nombreContiene;
+			}
+			return this;
+		}
+
+		public Builder nombre(String nombre) {
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombres = new ArrayList<>();
+				filtro.nombres.add(nombre);
+			}
 			return this;
 		}
 
@@ -85,6 +101,9 @@ public class FiltroParte extends Filtro<Parte> {
 		if(this.nombres != null){
 			return;
 		}
+		if(this.nombreContiene != null){
+			return;
+		}
 		namedQuery = "listarPartes";
 	}
 
@@ -114,7 +133,8 @@ public class FiltroParte extends Filtro<Parte> {
 		String where =
 				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.maquina != null) ? (this.nombreEntidad + ".maquina = :maq AND ") : (""))
-						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""))
+						+ ((this.nombreContiene != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -145,6 +165,9 @@ public class FiltroParte extends Filtro<Parte> {
 		}
 		if(maquina != null){
 			query.setParameter("maq", maquina);
+		}
+		if(nombreContiene != null){
+			query.setParameter("nom", "%" + nombreContiene + "%");
 		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);

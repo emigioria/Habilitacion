@@ -15,7 +15,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -59,6 +59,19 @@ public class NMMaquinaController extends ControladorRomano {
 	private TextField nombrePieza;
 
 	@FXML
+	private ComboBox<Material> materialPieza;
+
+	private Material nullMaterial = new Material() {
+		@Override
+		public String toString() {
+			return "Material";
+		}
+	};
+
+	@FXML
+	private TextField codigoPlanoPieza;
+
+	@FXML
 	private TableView<Parte> tablaPartes;
 
 	@FXML
@@ -81,9 +94,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private TableColumn<Pieza, String> columnaCodigoPlanoPieza;
-
-	@FXML
-	private Label lbNMMaquina;
 
 	private Maquina maquina;
 
@@ -680,31 +690,80 @@ public class NMMaquinaController extends ControladorRomano {
 
 	public void formatearNuevaMaquina() {
 		titulo = "Nueva máquina";
-		lbNMMaquina.setText(titulo);
 	}
 
 	public void formatearModificarMaquina(Maquina maquina) {
 		titulo = "Modificar máquina";
-		lbNMMaquina.setText(titulo);
 		this.maquina = maquina;
 		nombreMaquina.setText(formateadorString.primeraMayuscula(maquina.getNombre()));
+	}
+
+	public void buscarPartes() {
+		String nombreBuscado = nombreParte.getText().trim().toLowerCase();
+		tablaPartes.getItems().clear();
+		tablaPiezas.getItems().clear();
+		tablaPartes.getItems().addAll(partesAGuardar);
+		try{
+			if(maquina != null){
+				tablaPartes.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(maquina).nombreContiene(nombreBuscado).build()));
+			}
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		}
+	}
+
+	public void buscarPiezas() {
+		Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
+		if(parteSeleccionada == null){
+			return;
+		}
+
+		String nombreBuscado = nombrePieza.getText().trim().toLowerCase();
+		Material materialBuscado = materialPieza.getSelectionModel().getSelectedItem();
+		if(materialBuscado == nullMaterial){
+			materialBuscado = null;
+		}
+		String codigoPlanoBuscado = codigoPlanoPieza.getText().trim().toLowerCase();
+
+		tablaPiezas.getItems().clear();
+		if(piezasAGuardar.get(parteSeleccionada) != null && !piezasAGuardar.get(parteSeleccionada).isEmpty()){
+			tablaPiezas.getItems().addAll(piezasAGuardar.get(parteSeleccionada));
+		}
+		try{
+			if(!partesAGuardar.contains(parteSeleccionada)){
+				tablaPiezas.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder()
+						.parte(parteSeleccionada)
+						.nombreContiene(nombreBuscado)
+						.material(materialBuscado)
+						.codigoPlano(codigoPlanoBuscado)
+						.build()));
+			}
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		}
 	}
 
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			stage.setTitle(titulo);
+
 			tablaPartes.getItems().clear();
 			tablaPiezas.getItems().clear();
 			tablaPartes.getItems().addAll(partesAGuardar);
+
+			materialPieza.getItems().clear();
+			materialPieza.getItems().add(nullMaterial);
+
 			try{
 				if(maquina != null){
 					tablaPartes.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(maquina).build()));
 				}
+
+				materialPieza.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}
-
-			stage.setTitle(titulo);
 		});
 	}
 }

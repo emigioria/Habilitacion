@@ -248,7 +248,7 @@ public class AMaterialesController extends ControladorRomano {
 		tablaMateriales.getItems().clear();
 		tablaMateriales.getItems().addAll(materialesAGuardar);
 		try{
-			tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().nombre(nombreBuscado).medida(medidaBuscada).build()));
+			tablaMateriales.getItems().addAll(coordinador.listarMateriales(new FiltroMaterial.Builder().nombreContiene(nombreBuscado).medida(medidaBuscada).build()));
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 		}
@@ -257,6 +257,8 @@ public class AMaterialesController extends ControladorRomano {
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
+			stage.setTitle("Lista de materiales");
+
 			tablaMateriales.getItems().clear();
 			tablaMateriales.getItems().addAll(materialesAGuardar);
 			try{

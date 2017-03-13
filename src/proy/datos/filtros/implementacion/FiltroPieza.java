@@ -30,6 +30,8 @@ public class FiltroPieza extends Filtro<Pieza> {
 	private ArrayList<Pieza> piezas;
 	private ArrayList<Proceso> procesos;
 	private ArrayList<String> nombres;
+	public String nombreContiene;
+	public String codigoPlano;
 
 	public static class Builder {
 
@@ -84,8 +86,32 @@ public class FiltroPieza extends Filtro<Pieza> {
 			return this;
 		}
 
+		public Builder nombreContiene(String nombreContiene) {
+			if(nombreContiene != null && !nombreContiene.isEmpty()){
+				filtro.nombreContiene = nombreContiene;
+			}
+			return this;
+		}
+
+		public Builder nombre(String nombre) {
+			if(nombre != null && !nombre.isEmpty()){
+				filtro.nombres = new ArrayList<>();
+				filtro.nombres.add(nombre);
+			}
+			return this;
+		}
+
 		public Builder nombres(ArrayList<String> nombres) {
-			filtro.nombres = nombres;
+			if(nombres != null && !nombres.isEmpty()){
+				filtro.nombres = nombres;
+			}
+			return this;
+		}
+
+		public Builder codigoPlano(String codigoPlano) {
+			if(codigoPlano != null && !codigoPlano.isEmpty()){
+				filtro.codigoPlano = codigoPlano;
+			}
 			return this;
 		}
 
@@ -126,6 +152,12 @@ public class FiltroPieza extends Filtro<Pieza> {
 		if(this.nombres != null){
 			return;
 		}
+		if(this.nombreContiene != null){
+			return;
+		}
+		if(this.codigoPlano != null){
+			return;
+		}
 		namedQuery = "listarPiezas";
 	}
 
@@ -161,7 +193,9 @@ public class FiltroPieza extends Filtro<Pieza> {
 						+ ((this.parte != null) ? (this.nombreEntidad + ".parte = :par AND ") : (""))
 						+ ((this.piezas != null) ? (this.nombreEntidad + " in (:pzs) AND ") : (""))
 						+ ((this.procesos != null) ? ("proc in (:prs) AND ") : (""))
-						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""));
+						+ ((this.nombres != null) ? (this.nombreEntidad + ".nombre in (:nms) AND ") : (""))
+						+ ((this.nombreContiene != null) ? (this.nombreEntidad + ".nombre LIKE :nom AND ") : (""))
+						+ ((this.codigoPlano != null) ? (this.nombreEntidad + ".codigoPlano LIKE :cdp AND ") : (""));
 
 		if(!where.isEmpty()){
 			where = " WHERE " + where;
@@ -204,6 +238,12 @@ public class FiltroPieza extends Filtro<Pieza> {
 		}
 		if(nombres != null){
 			query.setParameterList("nms", nombres);
+		}
+		if(nombreContiene != null){
+			query.setParameter("nom", "%" + nombreContiene + "%");
+		}
+		if(codigoPlano != null){
+			query.setParameter("cdp", "%" + codigoPlano + "%");
 		}
 		return query;
 	}
