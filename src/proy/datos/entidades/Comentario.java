@@ -23,7 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-@NamedQuery(name = "listarComentarios", query = "SELECT c FROM Comentario c ORDER BY c.fechaComentario ")
+@NamedQuery(name = "listarComentarios", query = "SELECT c FROM Comentario c ORDER BY c.fechaComentario desc")
 @Entity
 @Table(name = "comentario")
 public class Comentario {
@@ -37,14 +37,14 @@ public class Comentario {
 	@Column(name = "version")
 	private Long version;
 
-	@Column(name = "texto", length = 500, nullable = false)
+	@Column(name = "texto", length = 50000, nullable = false)
 	private String texto;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "comentario_codoperario_fk"), nullable = false)
 	private Operario operario;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "fecha", nullable = false)
 	private Date fechaComentario;
 

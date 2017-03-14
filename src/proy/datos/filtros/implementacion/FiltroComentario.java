@@ -6,10 +6,13 @@
  */
 package proy.datos.filtros.implementacion;
 
+import java.util.Date;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import proy.datos.entidades.Comentario;
+import proy.datos.entidades.Operario;
 import proy.datos.filtros.Filtro;
 
 public class FiltroComentario extends Filtro<Comentario> {
@@ -17,6 +20,9 @@ public class FiltroComentario extends Filtro<Comentario> {
 	private String nombreEntidad = "c";
 	private String consulta = "";
 	private String namedQuery = "";
+	public Operario operario;
+	public Date fechaInicio;
+	public Date fechaFin;
 
 	public static class Builder {
 
@@ -29,6 +35,21 @@ public class FiltroComentario extends Filtro<Comentario> {
 
 		public Builder nombreEntidad(String nombreEntidad) {
 			filtro.nombreEntidad = nombreEntidad;
+			return this;
+		}
+
+		public Builder operario(Operario operario) {
+			filtro.operario = operario;
+			return this;
+		}
+
+		public Builder fechaInicio(Date fechaInicio) {
+			filtro.fechaInicio = fechaInicio;
+			return this;
+		}
+
+		public Builder fechaFin(Date fechaFin) {
+			filtro.fechaFin = fechaFin;
 			return this;
 		}
 
@@ -48,6 +69,15 @@ public class FiltroComentario extends Filtro<Comentario> {
 	}
 
 	private void setNamedQuery() {
+		if(operario != null){
+			return;
+		}
+		if(fechaInicio != null){
+			return;
+		}
+		if(fechaFin != null){
+			return;
+		}
 		namedQuery = "listarComentarios";
 	}
 
@@ -62,7 +92,15 @@ public class FiltroComentario extends Filtro<Comentario> {
 	}
 
 	private String getWhere() {
-		String where = "";
+		String where =
+				((this.operario != null) ? (this.nombreEntidad + ".operario = :ope AND ") : (""))
+						+ ((this.fechaInicio != null) ? (this.nombreEntidad + ".fechaComentario >= :fei AND ") : (""))
+						+ ((this.fechaFin != null) ? (this.nombreEntidad + ".fechaComentario <= :fef AND ") : (""));
+
+		if(!where.isEmpty()){
+			where = " WHERE " + where;
+			where = where.substring(0, where.length() - 4);
+		}
 		return where;
 	}
 
@@ -77,12 +115,21 @@ public class FiltroComentario extends Filtro<Comentario> {
 	}
 
 	private String getOrderBy() {
-		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaComentario ";
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaComentario desc";
 		return orderBy;
 	}
 
 	@Override
 	public Query setParametros(Query query) {
+		if(operario != null){
+			query.setParameter("ope", operario);
+		}
+		if(fechaInicio != null){
+			query.setParameter("fei", fechaInicio);
+		}
+		if(fechaFin != null){
+			query.setParameter("fef", fechaFin);
+		}
 		return query;
 	}
 

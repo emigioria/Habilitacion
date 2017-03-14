@@ -43,6 +43,11 @@ public class MenuAdministracionController extends ControladorRomano {
 		this.nuevaScene(ATareasController.URL_VISTA);
 	}
 
+	@FXML
+	public void administrarComentarios() {
+		this.nuevaScene(AComentariosController.URL_VISTA);
+	}
+
 	@Override
 	public void actualizar() {
 		stage.setTitle("Panel de administración");

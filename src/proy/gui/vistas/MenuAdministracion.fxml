@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="20.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
+<GridPane hgap="20.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
    <columnConstraints>
       <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" />
       <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" />
@@ -33,7 +33,7 @@
       <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMaquinas" text="Máquinas" GridPane.rowIndex="1" />
       <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarProcesos" text="Procesos" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarTareas" text="Tareas" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-      <Button mnemonicParsing="false" onAction="#salir" text="Ver comentarios de los operarios" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+      <Button mnemonicParsing="false" onAction="#administrarComentarios" text="Ver comentarios de los operarios" GridPane.columnSpan="3" GridPane.rowIndex="2" />
       <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" prefWidth="75.0" text="Salir" GridPane.columnSpan="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <GridPane.margin>
             <Insets />

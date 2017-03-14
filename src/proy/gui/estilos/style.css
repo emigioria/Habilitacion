@@ -40,6 +40,10 @@
   -fx-font-weight: bold;
 }
 
+.text-area *.text {
+    -fx-text-alignment: justify;
+}
+
 .table-view{
    -fx-background-color: transparent;
 }

@@ -30,6 +30,9 @@ public class ConversorFechas {
 	 * @return la fecha convertida a LocalDate
 	 */
 	public LocalDate getLocalDate(Date fecha) {
+		if(fecha == null){
+			return null;
+		}
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(fecha);
 		LocalDate localDate = LocalDate.of(cal.get(Calendar.YEAR),
@@ -46,6 +49,9 @@ public class ConversorFechas {
 	 * @return la fecha convertida a Date
 	 */
 	public Date getDate(LocalDate fecha) {
+		if(fecha == null){
+			return null;
+		}
 		Instant instant = Instant.from(fecha.atStartOfDay(ZoneId.systemDefault()));
 		Date date = Date.from(instant);
 		return date;
@@ -64,7 +70,7 @@ public class ConversorFechas {
 	}
 
 	/**
-	 * Retorna un string con la hora y minutos de la fecha que se le pasa
+	 * Convierte de Date a un String con el formato HH:mm
 	 *
 	 * @param fecha
 	 *            de la que se va a obtener la hora y minutos
@@ -72,6 +78,18 @@ public class ConversorFechas {
 	 */
 	public String horaYMinutosToString(Date fecha) {
 		DateFormat formatter = new SimpleDateFormat("HH:mm");
+		return formatter.format(fecha);
+	}
+
+	/**
+	 * Convierte de Date a un String con el formato dd/MM/yyyy HH:mm
+	 *
+	 * @param fecha
+	 *            de la que se va a obtener la hora y minutos
+	 * @return un string con la hora y minutos de la fecha que se le pasa
+	 */
+	public String diaMesAnioHoraYMinutosToString(Date fecha) {
+		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		return formatter.format(fecha);
 	}
 }
