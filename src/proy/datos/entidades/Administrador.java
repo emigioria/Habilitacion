@@ -29,12 +29,6 @@ public class Administrador extends Usuario {
 		super();
 	}
 
-	public Administrador(String nombre, String apellido, String dni, String contrasenia, String sal) {
-		super(nombre, apellido, dni);
-		this.contrasenia = contrasenia;
-		this.sal = sal;
-	}
-
 	public String getContrasenia() {
 		return contrasenia;
 	}

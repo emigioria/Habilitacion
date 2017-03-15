@@ -47,6 +47,20 @@ public class ProcesoServiceImpl implements ProcesoService {
 	}
 
 	@Override
+	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
+	public ArrayList<String> obtenerDescripciones(Filtro<String> filtro) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		return filtro.listar(session);
+	}
+
+	@Override
+	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
+	public ArrayList<String> obtenerTipos(Filtro<String> filtro) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		return filtro.listar(session);
+	}
+
+	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
 	public void guardarProceso(Proceso proceso) throws PersistenciaException {
 		try{
@@ -173,5 +187,4 @@ public class ProcesoServiceImpl implements ProcesoService {
 			throw new DeleteException();
 		}
 	}
-
 }

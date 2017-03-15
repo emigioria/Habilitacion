@@ -21,8 +21,4 @@ public class Operario extends Usuario {
 	public Operario() {
 		super();
 	}
-
-	public Operario(String nombre, String apellido, String dni) {
-		super(nombre, apellido, dni);
-	}
 }

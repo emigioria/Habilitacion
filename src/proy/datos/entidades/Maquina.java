@@ -52,11 +52,6 @@ public class Maquina {
 		partes = new HashSet<>();
 	}
 
-	public Maquina(String nombre) {
-		this();
-		this.nombre = nombre;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

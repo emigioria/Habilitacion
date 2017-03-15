@@ -58,14 +58,6 @@ public class Pausa implements Serializable {
 		super();
 	}
 
-	public Pausa(Tarea tarea, String causa, Date fechaHoraInicio, Date fechaHoraFin) {
-		this();
-		this.tarea = tarea;
-		this.causa = causa;
-		this.fechaHoraInicio = fechaHoraInicio;
-		this.fechaHoraFin = fechaHoraFin;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

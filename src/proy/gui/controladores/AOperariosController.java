@@ -12,7 +12,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Operario;
@@ -62,13 +61,12 @@ public class AOperariosController extends ControladorRomano {
 		//Inicialización de la columna Nombre
 		{
 			//Seteamos el Cell Value Factory
-			columnaNombre.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getNombre()));
-					}
+			columnaNombre.setCellValueFactory(param -> {
+				try{
+					return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getNombre().toString()));
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombre.setCellFactory(col -> {
@@ -101,13 +99,12 @@ public class AOperariosController extends ControladorRomano {
 		//Inicialización de la columna Apellido
 		{
 			//Seteamos el Cell Value Factory
-			columnaApellido.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					if(param.getValue().getApellido() != null){
-						return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getApellido()));
-					}
+			columnaApellido.setCellValueFactory(param -> {
+				try{
+					return new SimpleStringProperty(formateadorString.nombrePropio(param.getValue().getApellido().toString()));
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaApellido.setCellFactory(col -> {
@@ -140,13 +137,12 @@ public class AOperariosController extends ControladorRomano {
 		//Inicialización de la columna DNI
 		{
 			//Seteamos el Cell Value Factory
-			columnaDNI.setCellValueFactory((CellDataFeatures<Operario, String> param) -> {
-				if(param.getValue() != null){
-					if(param.getValue().getDNI() != null){
-						return new SimpleStringProperty(param.getValue().getDNI());
-					}
+			columnaDNI.setCellValueFactory(param -> {
+				try{
+					return new SimpleStringProperty(param.getValue().getDNI().toString());
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaDNI.setCellFactory(col -> {

@@ -61,11 +61,6 @@ public class Herramienta {
 		estado = new Estado(EstadoStr.ALTA);
 	}
 
-	public Herramienta(String nombre) {
-		this();
-		this.nombre = nombre;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

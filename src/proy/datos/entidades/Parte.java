@@ -72,14 +72,6 @@ public class Parte {
 		procesos = new HashSet<>();
 	}
 
-	public Parte(String nombre, Integer cantidad, Estado estado, Maquina maquina) {
-		this();
-		this.nombre = nombre;
-		this.cantidad = cantidad;
-		this.estado = estado;
-		this.maquina = maquina;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

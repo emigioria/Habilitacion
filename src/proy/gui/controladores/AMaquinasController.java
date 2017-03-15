@@ -36,12 +36,11 @@ public class AMaquinasController extends ControladorRomano {
 	@Override
 	protected void inicializar() {
 		columnaNombre.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(param.getValue().toString());
-				}
+			try{
+				return new SimpleStringProperty(param.getValue().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
-			return new SimpleStringProperty("<Sin nombre>");
 		});
 
 		actualizar();
@@ -71,23 +70,19 @@ public class AMaquinasController extends ControladorRomano {
 		if(maquina == null){
 			return;
 		}
-		//se pregunta al usuario si desea confirmar la elininación de la máquina
+		//se pregunta 2 veces al usuario si desea confirmar la eliminación de la máquina
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
-				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus componentes de forma permanente.\n" +
+				"Se eliminará la máquina <" + maquina + "> y sus componentes de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){
 			return;
 		}
-		vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
-				"Se eliminará la máquina <" + maquina.getNombre() + "> y sus procesos y tareas de forma permanente.\n" +
-						"¿Está seguro de que desea continuar?",
-				stage);
 		if(!vc.acepta()){
 			return;
 		}
 		vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar máquina",
-				"Se eliminará la máquina <" + maquina.getNombre() + "> y no se podrá recuperar.\n" +
+				"Se eliminará la máquina <" + maquina + "> y no se podrá recuperar.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){

@@ -89,28 +89,25 @@ public class NMTareaController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
+		columnaProceso.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().toString());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+		columnaMaquina.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
 		columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getParte().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			try{
+				return new SimpleStringProperty(param.getValue().getParte().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
 		cantidad.getEditor().setTextFormatter(new TextFormatter<>(

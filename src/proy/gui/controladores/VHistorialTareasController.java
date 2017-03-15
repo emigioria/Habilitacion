@@ -13,7 +13,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
@@ -52,25 +51,28 @@ public class VHistorialTareasController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaPieza.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+		columnaPieza.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaMaterial.setCellValueFactory((CellDataFeatures<Pieza, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getMaterial().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+		columnaMaterial.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getMaterial().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
 
 		panelTarea.setExpanded(true);
-		tablaPiezas.getItems().add(new Pieza("Hola", null, null, null, null, new Material("Chau", null)));
+		Material material = new Material();
+		material.setNombre("Chau");
+		Pieza pieza = new Pieza();
+		pieza.setMaterial(material);
+		pieza.setNombre("Hola");
+		tablaPiezas.getItems().add(pieza);
 
 		(new Thread(() -> {
 			try{

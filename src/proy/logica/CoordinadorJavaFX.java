@@ -189,6 +189,14 @@ public class CoordinadorJavaFX {
 		return gestorMaterial.eliminarMaterial(material);
 	}
 
+	public ArrayList<String> listarDescripciones(Filtro<String> filtro) throws PersistenciaException {
+		return gestorProceso.listarDescripciones(filtro);
+	}
+
+	public ArrayList<String> listarTipos(Filtro<String> filtro) throws PersistenciaException {
+		return gestorProceso.listarTipos(filtro);
+	}
+
 	public ArrayList<Proceso> listarProcesos(Filtro<Proceso> filtro) throws PersistenciaException {
 		return gestorProceso.listarProcesos(filtro);
 	}

@@ -10,7 +10,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Tarea;
@@ -52,52 +51,46 @@ public class ATareasController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaProceso.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-			if(param.getValue() != null){
+		columnaProceso.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getProceso().toString());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
-			}
-		});
-		columnaMaquina.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getProceso().getParte().getMaquina().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaParte.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getProceso().getParte().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+		columnaMaquina.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getProceso().getParte().getMaquina().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaOperario.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-			if(param.getValue() != null){
+		columnaParte.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getProceso().getParte().getNombre().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		columnaOperario.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getOperario().toString());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaCantidad.setCellValueFactory((CellDataFeatures<Tarea, Number> param) -> {
-			if(param.getValue() != null){
-				return new SimpleIntegerProperty(param.getValue().getCantidadTeorica());
-			}
-			else{
+		columnaCantidad.setCellValueFactory(param -> {
+			try{
+				return new SimpleIntegerProperty(param.getValue().getCantidadTeorica().intValue());
+			} catch(NullPointerException e){
 				return new SimpleIntegerProperty(-1);
 			}
 		});
-		columnaFecha.setCellValueFactory((CellDataFeatures<Tarea, String> param) -> {
-			if(param.getValue() != null){
+		columnaFecha.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(conversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
 	}

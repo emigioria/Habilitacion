@@ -6,14 +6,19 @@
  */
 package proy.gui.controladores;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Proceso;
+import proy.datos.filtros.implementacion.FiltroProceso;
+import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
+import proy.logica.gestores.resultados.ResultadoEliminarProceso;
+import proy.logica.gestores.resultados.ResultadoEliminarProceso.ErrorEliminarProceso;
 
 public class AProcesosController extends ControladorRomano {
 
@@ -45,52 +50,54 @@ public class AProcesosController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaMaquina.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
+		columnaMaquina.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
+		columnaParte.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getParte().getNombre());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaDescripcion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
+		columnaDescripcion.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getDescripcion());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaTipo.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
+		columnaTipo.setCellValueFactory(param -> {
+			try{
 				return new SimpleStringProperty(param.getValue().getTipo());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
-			}
-		});
-		columnaTiempoPreparacion.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getTiempoTeoricoPreparacion());
-			}
-			else{
-				return new SimpleStringProperty("<no name>");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
-		columnaTiempoProceso.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
-			if(param.getValue() != null){
-				return new SimpleStringProperty(param.getValue().getTiempoTeoricoProceso());
+		columnaTiempoPreparacion.setCellValueFactory(param -> {
+			try{
+				long milisTTP = param.getValue().getTiempoTeoricoPreparacion().longValue();
+				long segsTTP = (milisTTP / 1000) % 60;
+				long minsTTP = (milisTTP / 60000) % 60;
+				long horasTTP = milisTTP / 3600000;
+				return new SimpleStringProperty(horasTTP + "hs " + minsTTP + "ms " + segsTTP + "ss");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
-			else{
-				return new SimpleStringProperty("<no name>");
+		});
+		columnaTiempoProceso.setCellValueFactory(param -> {
+			try{
+				long milisTTP = param.getValue().getTiempoTeoricoProceso().longValue();
+				long segsTTP = (milisTTP / 1000) % 60;
+				long minsTTP = (milisTTP / 60000) % 60;
+				long horasTTP = milisTTP / 3600000;
+				return new SimpleStringProperty(horasTTP + "hs " + minsTTP + "ms " + segsTTP + "ss");
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
 		});
 	}
@@ -112,11 +119,74 @@ public class AProcesosController extends ControladorRomano {
 
 	@FXML
 	public void eliminarProceso() {
+		ResultadoEliminarProceso resultado;
+		StringBuffer erroresBfr = new StringBuffer();
+		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
 
+		if(proceso == null){
+			return;
+		}
+
+		//se pregunta al usuario si desea confirmar la eliminación del proceso
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar proceso",
+				"Se eliminará el proceso <" + proceso + "> y sus componentes de forma permanente.\n" +
+						"¿Está seguro de que desea continuar?",
+				stage);
+		if(!vc.acepta()){
+			return;
+		}
+
+		//Inicio transacciones al gestor
+		try{
+			resultado = coordinador.eliminarProceso(proceso);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultado.hayErrores()){
+			for(ErrorEliminarProceso e: resultado.getErrores()){
+				switch(e) {
+				//no hay errores de eliminar maquina por ahora
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al eliminar el proceso", errores, stage);
+			}
+		}
+		else{
+			tablaProcesos.getItems().remove(proceso);
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado el proceso con éxito", stage);
+		}
+	}
+
+	public void buscar() {
+		String nombreBuscado = nombreProceso.getText().trim().toLowerCase();
+		tablaProcesos.getItems().clear();
+		try{
+			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		}
 	}
 
 	@Override
 	public void actualizar() {
+		Platform.runLater(() -> {
+			stage.setTitle("Lista de procesos");
 
+			tablaProcesos.getItems().clear();
+			try{
+				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+			} catch(PersistenciaException e){
+				presentadorVentanas.presentarExcepcion(e, stage);
+			}
+		});
 	}
 }

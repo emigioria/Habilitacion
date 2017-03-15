@@ -52,13 +52,6 @@ public class Comentario {
 		super();
 	}
 
-	public Comentario(String texto, Date fecha, Operario operario) {
-		this();
-		this.texto = texto;
-		this.fechaComentario = fecha;
-		this.operario = operario;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

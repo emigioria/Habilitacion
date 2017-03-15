@@ -59,13 +59,6 @@ public abstract class Usuario {
 		estado = new Estado(EstadoStr.ALTA);
 	}
 
-	public Usuario(String nombre, String apellido, String dni) {
-		this();
-		this.nombre = nombre;
-		this.apellido = apellido;
-		this.dni = dni;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

@@ -75,16 +75,6 @@ public class Pieza {
 		estado = new Estado(EstadoStr.ALTA);
 	}
 
-	public Pieza(String nombre, String codigoPlano, Integer cantidad, Estado estado, Parte parte, Material material) {
-		this();
-		this.nombre = nombre;
-		this.codigoPlano = codigoPlano;
-		this.cantidad = cantidad;
-		this.estado = estado;
-		this.parte = parte;
-		this.material = material;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

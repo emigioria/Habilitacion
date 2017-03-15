@@ -49,20 +49,18 @@ public class AMaterialesController extends ControladorRomano {
 	@Override
 	protected void inicializar() {
 		columnaMaterial.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-				}
+			try{
+				return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre().toString()));
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
-			return new SimpleStringProperty("");
 		});
 		columnaMedidas.setCellValueFactory(param -> {
-			if(param.getValue() != null){
-				if(param.getValue().getMedidas() != null){
-					return new SimpleStringProperty(param.getValue().getMedidas());
-				}
+			try{
+				return new SimpleStringProperty(param.getValue().getMedidas().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
-			return new SimpleStringProperty("");
 		});
 
 		columnaMaterial.setCellFactory(col -> {

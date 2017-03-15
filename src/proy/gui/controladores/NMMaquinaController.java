@@ -113,12 +113,11 @@ public class NMMaquinaController extends ControladorRomano {
 		{
 			//Seteamos el Cell Value Factory
 			columnaNombreParte.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+				try{
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre().toString()));
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombreParte.setCellFactory(col -> {
@@ -148,12 +147,11 @@ public class NMMaquinaController extends ControladorRomano {
 		{
 			//Seteamos el Cell Value Factory
 			columnaCantidadParte.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCantidad() != null){
-						return new SimpleIntegerProperty(param.getValue().getCantidad());
-					}
+				try{
+					return new SimpleIntegerProperty(param.getValue().getCantidad().intValue());
+				} catch(NullPointerException e){
+					return new SimpleIntegerProperty(0);
 				}
-				return new SimpleIntegerProperty(0);
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCantidadParte.setCellFactory(col -> {
@@ -185,12 +183,11 @@ public class NMMaquinaController extends ControladorRomano {
 		{
 			//Seteamos el Cell Value Factory
 			columnaNombrePieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getNombre() != null){
-						return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-					}
+				try{
+					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre().toString()));
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaNombrePieza.setCellFactory(col -> {
@@ -225,12 +222,11 @@ public class NMMaquinaController extends ControladorRomano {
 		{
 			//Seteamos el Cell Value Factory
 			columnaCantidadPieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCantidad() != null){
-						return new SimpleIntegerProperty(param.getValue().getCantidad());
-					}
+				try{
+					return new SimpleIntegerProperty(param.getValue().getCantidad().intValue());
+				} catch(NullPointerException e){
+					return new SimpleIntegerProperty(0);
 				}
-				return new SimpleIntegerProperty(0);
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCantidadPieza.setCellFactory(col -> {
@@ -308,12 +304,11 @@ public class NMMaquinaController extends ControladorRomano {
 		{
 			//Seteamos el Cell Value Factory
 			columnaCodigoPlanoPieza.setCellValueFactory(param -> {
-				if(param.getValue() != null){
-					if(param.getValue().getCodigoPlano() != null){
-						return new SimpleStringProperty(param.getValue().getCodigoPlano());
-					}
+				try{
+					return new SimpleStringProperty(param.getValue().getCodigoPlano().toString());
+				} catch(NullPointerException e){
+					return new SimpleStringProperty("");
 				}
-				return new SimpleStringProperty("");
 			});
 			//Seteamos el Cell Factory para permitir edición
 			columnaCodigoPlanoPieza.setCellFactory(col -> {

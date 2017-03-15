@@ -33,6 +33,14 @@ public class ProcesoGestor {
 	@Resource
 	private ProcesoService persistidorProceso;
 
+	public ArrayList<String> listarDescripciones(Filtro<String> filtro) throws PersistenciaException {
+		return persistidorProceso.obtenerDescripciones(filtro);
+	}
+
+	public ArrayList<String> listarTipos(Filtro<String> filtro) throws PersistenciaException {
+		return persistidorProceso.obtenerTipos(filtro);
+	}
+
 	public ArrayList<Proceso> listarProcesos(Filtro<Proceso> filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerProcesos(filtro);
 	}
@@ -46,7 +54,15 @@ public class ProcesoGestor {
 	}
 
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		ResultadoEliminarProceso resultadoEliminarProceso = validarEliminarProceso(proceso);
+		if(!resultadoEliminarProceso.hayErrores()){
+			persistidorProceso.bajaProceso(proceso);
+		}
+		return resultadoEliminarProceso;
+	}
+
+	public ResultadoEliminarProceso validarEliminarProceso(Proceso proceso) throws PersistenciaException {
+		return new ResultadoEliminarProceso();
 	}
 
 	public ResultadoEliminarProcesos validarEliminarProcesos(ArrayList<Proceso> procesos) {
@@ -128,5 +144,4 @@ public class ProcesoGestor {
 	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
-
 }

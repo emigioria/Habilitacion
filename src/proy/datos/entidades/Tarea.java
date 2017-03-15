@@ -85,19 +85,6 @@ public class Tarea {
 		estado = new EstadoTarea(EstadoTareaStr.PLANIFICADA);
 	}
 
-	public Tarea(Integer cantidadSolicitada, Integer cantidadReal, Date fechaPlanificada, Date fechaHoraInicio, Date fechaHoraFin, String observaciones, EstadoTarea estado, Proceso proceso, Operario operario) {
-		this();
-		this.cantidadSolicitada = cantidadSolicitada;
-		this.cantidadReal = cantidadReal;
-		this.fechaPlanificada = fechaPlanificada;
-		this.fechaHoraInicio = fechaHoraInicio;
-		this.fechaHoraFin = fechaHoraFin;
-		this.observaciones = observaciones;
-		this.estado = estado;
-		this.proceso = proceso;
-		this.operario = operario;
-	}
-
 	public Long getId() {
 		return codigo;
 	}

@@ -17,6 +17,10 @@ public interface ProcesoService {
 
 	public ArrayList<Proceso> obtenerProcesos(Filtro<Proceso> filtro) throws PersistenciaException;
 
+	public ArrayList<String> obtenerDescripciones(Filtro<String> filtro) throws PersistenciaException;
+
+	public ArrayList<String> obtenerTipos(Filtro<String> filtro) throws PersistenciaException;
+
 	public void guardarProceso(Proceso proceso) throws PersistenciaException;
 
 	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException;

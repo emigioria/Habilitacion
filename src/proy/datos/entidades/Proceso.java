@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -28,8 +29,13 @@ import javax.persistence.Version;
 
 import proy.comun.FormateadorString;
 import proy.datos.clases.EstadoStr;
+import proy.datos.clases.EstadoTareaStr;
 
-@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado.nombre = :est ORDER BY p.descripcion , p.tipo")
+@NamedQueries(value = {
+		@NamedQuery(name = "listarProcesos", query = "SELECT p FROM Proceso p WHERE p.estado.nombre = :est ORDER BY p.descripcion , p.tipo"),
+		@NamedQuery(name = "listarDescripcionesProcesos", query = "SELECT DISTINCT p.descripcion FROM Proceso p WHERE p.estado.nombre = :est ORDER BY p.descripcion"),
+		@NamedQuery(name = "listarTiposProcesos", query = "SELECT DISTINCT p.tipo FROM Proceso p WHERE p.estado.nombre = :est ORDER BY p.tipo")
+})
 @Entity
 @Table(name = "proceso")
 public class Proceso {
@@ -46,11 +52,11 @@ public class Proceso {
 	@Column(name = "descripcion", length = 100)
 	private String descripcion;
 
-	@Column(name = "tiempo_proc", length = 100)
-	private String tiempoTeoricoProceso;
+	@Column(name = "tiempo_proc")
+	private Long tiempoTeoricoProceso;
 
-	@Column(name = "tiempo_prep", length = 100)
-	private String tiempoTeoricoPreparacion;
+	@Column(name = "tiempo_prep")
+	private Long tiempoTeoricoPreparacion;
 
 	@Column(name = "observaciones", length = 500)
 	private String observaciones;
@@ -88,17 +94,6 @@ public class Proceso {
 		tareas = new HashSet<>();
 	}
 
-	public Proceso(String descripcion, String tiempoTeoricoProceso, String tiempoTeoricoPreparacion, String observaciones, String tipo, Estado estado, Parte parte) {
-		this();
-		this.descripcion = descripcion;
-		this.tiempoTeoricoProceso = tiempoTeoricoProceso;
-		this.tiempoTeoricoPreparacion = tiempoTeoricoPreparacion;
-		this.observaciones = observaciones;
-		this.tipo = tipo;
-		this.estado = estado;
-		this.parte = parte;
-	}
-
 	public Long getId() {
 		return codigo;
 	}
@@ -111,19 +106,19 @@ public class Proceso {
 		this.descripcion = descripcion;
 	}
 
-	public String getTiempoTeoricoProceso() {
+	public Long getTiempoTeoricoProceso() {
 		return tiempoTeoricoProceso;
 	}
 
-	public void setTiempoTeoricoProceso(String tiempoTeoricoProceso) {
+	public void setTiempoTeoricoProceso(Long tiempoTeoricoProceso) {
 		this.tiempoTeoricoProceso = tiempoTeoricoProceso;
 	}
 
-	public String getTiempoTeoricoPreparacion() {
+	public Long getTiempoTeoricoPreparacion() {
 		return tiempoTeoricoPreparacion;
 	}
 
-	public void setTiempoTeoricoPreparacion(String tiempoTeoricoPreparacion) {
+	public void setTiempoTeoricoPreparacion(Long tiempoTeoricoPreparacion) {
 		this.tiempoTeoricoPreparacion = tiempoTeoricoPreparacion;
 	}
 
@@ -176,6 +171,19 @@ public class Proceso {
 
 	public void darDeBaja() {
 		this.setEstado(new Estado(EstadoStr.BAJA));
+	}
+
+	public Long getTiempoPromedioProceso() {
+		Long suma = 0L;
+		Integer cantidadTareas = 0;
+		for(Tarea t: this.getTareas()){
+			if(EstadoTareaStr.FINALIZADA.equals(t.getEstado().getNombre())){
+				suma += (t.getFechaHoraFin().getTime() - t.getFechaHoraInicio().getTime());
+				cantidadTareas++;
+			}
+		}
+		suma = suma / cantidadTareas;
+		return suma;
 	}
 
 	@Override

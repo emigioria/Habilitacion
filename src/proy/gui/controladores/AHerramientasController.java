@@ -12,7 +12,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import proy.datos.entidades.Herramienta;
@@ -49,13 +48,12 @@ public class AHerramientasController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		columnaNombre.setCellValueFactory((CellDataFeatures<Herramienta, String> param) -> {
-			if(param.getValue() != null){
-				if(param.getValue().getNombre() != null){
-					return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre()));
-				}
+		columnaNombre.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getNombre().toString()));
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
 			}
-			return new SimpleStringProperty("");
 		});
 
 		tablaHerramientas.setEditable(true);

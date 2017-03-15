@@ -55,12 +55,6 @@ public class Material {
 		estado = new Estado(EstadoStr.ALTA);
 	}
 
-	public Material(String nombre, String medidas) {
-		this();
-		this.nombre = nombre;
-		this.medidas = medidas;
-	}
-
 	public Long getId() {
 		return codigo;
 	}
