@@ -33,6 +33,8 @@ import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearProceso.ErrorCrearProceso;
+import proy.logica.gestores.resultados.ResultadoModificarProceso;
+import proy.logica.gestores.resultados.ResultadoModificarProceso.ErrorModificarProceso;
 
 public class NMProcesoController extends ControladorRomano {
 
@@ -208,8 +210,63 @@ public class NMProcesoController extends ControladorRomano {
 	}
 
 	private Boolean modificarProceso() {
-		// TODO Auto-generated method stub
-		return null;
+		ResultadoModificarProceso resultadoModificarProceso;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		proceso.setParte(cbParte.getValue());
+		proceso.setDescripcion(cbDescripcion.getValue().trim());
+		proceso.setTipo(cbTipo.getValue().trim());
+
+		long segsTTP = spSsTTPreparacion.getValue();
+		long minsTTP = spMsTTPreparacion.getValue();
+		long horasTTP = spHsTTPreparacion.getValue();
+		long milisTTP = horasTTP * 3600000 + minsTTP * 60000 + segsTTP * 1000;
+		proceso.setTiempoTeoricoPreparacion(milisTTP);
+
+		segsTTP = spSsTTProceso.getValue();
+		minsTTP = spMsTTProceso.getValue();
+		horasTTP = spHsTTProceso.getValue();
+		milisTTP = horasTTP * 3600000 + minsTTP * 60000 + segsTTP * 1000;
+		proceso.setTiempoTeoricoProceso(milisTTP);
+
+		proceso.getPiezas().clear();
+		proceso.getPiezas().addAll(listaPiezas.getItems());
+
+		proceso.getHerramientas().clear();
+		proceso.getHerramientas().addAll(listaHerramientas.getItems());
+
+		proceso.setObservaciones(observacionesProceso.getText().trim());
+
+		//Inicio transacciones al gestor
+		try{
+			resultadoModificarProceso = coordinador.modificarProceso(proceso);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return true;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return true;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarProceso.hayErrores()){
+			for(ErrorModificarProceso e: resultadoModificarProceso.getErrores()){
+				switch(e) {
+
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar el proceso", errores, stage);
+			}
+			return true;
+		}
+		else{
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha modificado el proceso con éxito", stage);
+			return false;
+		}
 	}
 
 	public void formatearNuevoProceso() {
