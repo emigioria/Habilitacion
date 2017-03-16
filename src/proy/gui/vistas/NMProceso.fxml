@@ -22,13 +22,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-
 <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMProcesoController">
    <content>
       <GridPane hgap="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="20.0">
         <columnConstraints>
           <ColumnConstraints hgrow="NEVER" minWidth="171.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="600.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="500.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints vgrow="NEVER" />

@@ -9,10 +9,15 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import proy.datos.entidades.Maquina;
+import proy.datos.entidades.Parte;
 import proy.datos.entidades.Proceso;
+import proy.datos.filtros.implementacion.FiltroMaquina;
+import proy.datos.filtros.implementacion.FiltroParte;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
@@ -25,7 +30,30 @@ public class AProcesosController extends ControladorRomano {
 	public static final String URL_VISTA = "/proy/gui/vistas/AProcesos.fxml";
 
 	@FXML
-	private TextField nombreProceso;
+	private ComboBox<Maquina> cbMaquina;
+
+	private Maquina nullMaquina = new Maquina() {
+		@Override
+		public String toString() {
+			return "Máquina";
+		}
+	};
+
+	@FXML
+	private ComboBox<Parte> cbParte;
+
+	private Parte nullParte = new Parte() {
+		@Override
+		public String toString() {
+			return "Parte";
+		}
+	};
+
+	@FXML
+	private TextField descripcionProceso;
+
+	@FXML
+	private TextField tipoProceso;
 
 	@FXML
 	private TableView<Proceso> tablaProcesos;
@@ -52,28 +80,28 @@ public class AProcesosController extends ControladorRomano {
 	protected void inicializar() {
 		columnaMaquina.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre());
+				return new SimpleStringProperty(param.getValue().getParte().getMaquina().toString());
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
 		columnaParte.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getParte().getNombre());
+				return new SimpleStringProperty(param.getValue().getParte().toString());
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
 		columnaDescripcion.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getDescripcion());
+				return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getDescripcion().toString()));
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
 		columnaTipo.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getTipo());
+				return new SimpleStringProperty(formateadorString.primeraMayuscula(param.getValue().getTipo().toString()));
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
@@ -100,6 +128,21 @@ public class AProcesosController extends ControladorRomano {
 				return new SimpleStringProperty("");
 			}
 		});
+		cbMaquina.getSelectionModel().selectedItemProperty().addListener((obs, olvV, newV) -> {
+			cbParte.getItems().clear();
+			cbParte.getItems().add(nullParte);
+			if(newV != null){
+				try{
+					if(newV != nullMaquina){
+						cbParte.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(newV).build()));
+					}
+				} catch(PersistenciaException e){
+					presentadorVentanas.presentarExcepcion(e, stage);
+				}
+			}
+		});
+
+		actualizar();
 	}
 
 	@FXML
@@ -151,7 +194,7 @@ public class AProcesosController extends ControladorRomano {
 		if(resultado.hayErrores()){
 			for(ErrorEliminarProceso e: resultado.getErrores()){
 				switch(e) {
-				//no hay errores de eliminar maquina por ahora
+				//no hay errores de eliminar proceso por ahora
 				}
 			}
 
@@ -162,15 +205,29 @@ public class AProcesosController extends ControladorRomano {
 		}
 		else{
 			tablaProcesos.getItems().remove(proceso);
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado el proceso con éxito", stage);
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado el proceso <" + proceso + ">con éxito", stage);
 		}
 	}
 
 	public void buscar() {
-		String nombreBuscado = nombreProceso.getText().trim().toLowerCase();
+		Maquina maquinaBuscada = cbMaquina.getValue();
+		if(maquinaBuscada == nullMaquina){
+			maquinaBuscada = null;
+		}
+		Parte parteBuscada = cbParte.getValue();
+		if(parteBuscada == nullParte){
+			parteBuscada = null;
+		}
+		String descripcionBuscada = descripcionProceso.getText().trim().toLowerCase();
+		String tipoBuscado = tipoProceso.getText().trim().toLowerCase();
 		tablaProcesos.getItems().clear();
 		try{
-			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder()
+					.parte(parteBuscada)
+					.descripcionContiene(descripcionBuscada)
+					.tipoContiene(tipoBuscado)
+					.maquina(maquinaBuscada)
+					.build()));
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 		}
@@ -182,8 +239,17 @@ public class AProcesosController extends ControladorRomano {
 			stage.setTitle("Lista de procesos");
 
 			tablaProcesos.getItems().clear();
+
+			cbMaquina.getItems().clear();
+			cbMaquina.getItems().add(nullMaquina);
+
+			cbParte.getItems().clear();
+			cbParte.getItems().add(nullParte);
+
 			try{
 				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+
+				cbMaquina.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}

@@ -9,6 +9,8 @@ package proy.gui.controladores;
 import java.util.List;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,6 +33,7 @@ import proy.datos.filtros.implementacion.FiltroPieza;
 import proy.datos.filtros.implementacion.FiltroTipoProceso;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearProceso.ErrorCrearProceso;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
@@ -92,10 +95,12 @@ public class NMProcesoController extends ControladorRomano {
 
 	private Proceso proceso;
 
+	private Boolean guardado = false;
+
 	@FXML
 	public void agregarPieza() {
 		Pieza piezaAAgregar = cbPieza.getSelectionModel().getSelectedItem();
-		if(piezaAAgregar != null){
+		if(piezaAAgregar == null){
 			return;
 		}
 		cbPieza.getItems().remove(piezaAAgregar);
@@ -106,7 +111,7 @@ public class NMProcesoController extends ControladorRomano {
 	@FXML
 	public void quitarPieza() {
 		Pieza piezaAQuitar = listaPiezas.getSelectionModel().getSelectedItem();
-		if(piezaAQuitar != null){
+		if(piezaAQuitar == null){
 			return;
 		}
 		cbPieza.getItems().add(piezaAQuitar);
@@ -116,7 +121,7 @@ public class NMProcesoController extends ControladorRomano {
 	@FXML
 	public void agregarHerramienta() {
 		Herramienta herramientaAAgregar = cbHerramienta.getSelectionModel().getSelectedItem();
-		if(herramientaAAgregar != null){
+		if(herramientaAAgregar == null){
 			return;
 		}
 		cbHerramienta.getItems().remove(herramientaAAgregar);
@@ -127,7 +132,7 @@ public class NMProcesoController extends ControladorRomano {
 	@FXML
 	public void quitarHerramienta() {
 		Herramienta herramientaAQuitar = listaHerramientas.getSelectionModel().getSelectedItem();
-		if(herramientaAQuitar != null){
+		if(herramientaAQuitar == null){
 			return;
 		}
 		cbHerramienta.getItems().add(herramientaAQuitar);
@@ -144,6 +149,7 @@ public class NMProcesoController extends ControladorRomano {
 			hayErrores = modificarProceso();
 		}
 		if(!hayErrores){
+			guardado = true;
 			salir();
 		}
 	}
@@ -155,8 +161,8 @@ public class NMProcesoController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		proceso.setParte(cbParte.getValue());
-		proceso.setDescripcion(cbDescripcion.getValue().trim());
-		proceso.setTipo(cbTipo.getValue().trim());
+		proceso.setDescripcion(cbDescripcion.getValue().toLowerCase().trim());
+		proceso.setTipo(cbTipo.getValue().toLowerCase().trim());
 
 		long segsTTP = spSsTTPreparacion.getValue();
 		long minsTTP = spMsTTPreparacion.getValue();
@@ -193,7 +199,24 @@ public class NMProcesoController extends ControladorRomano {
 		if(resultadoCrearProceso.hayErrores()){
 			for(ErrorCrearProceso e: resultadoCrearProceso.getErrores()){
 				switch(e) {
-
+				case DESCRIPCION_PROCESO_INCOMPLETA:
+					erroresBfr.append("Descripción del proceso incompleta.\n");
+					break;
+				case MAQUINA_PARTE_DESCRIPCION_Y_TIPO_REPETIDO:
+					erroresBfr.append("Ya ha creado otro proceso con la misma descripción y tipo para la parte de la máquina seleccionada.\n");
+					break;
+				case PARTE_INCOMPLETA:
+					erroresBfr.append("No ha seleccionado una parte para el proceso.\n");
+					break;
+				case TIEMPO_TEORICO_PREPARACION_INCOMPLETO:
+					erroresBfr.append("Tiempo teórico de preparación incompleto.\n");
+					break;
+				case TIEMPO_TEORICO_PROCESO_INCOMPLETO:
+					erroresBfr.append("Tiempo teórico de proceso incompleto.\n");
+					break;
+				case TIPO_PROCESO_INCOMPLETO:
+					erroresBfr.append("Tipo del proceso incompleto.\n");
+					break;
 				}
 			}
 
@@ -215,8 +238,8 @@ public class NMProcesoController extends ControladorRomano {
 
 		//Toma de datos de la vista
 		proceso.setParte(cbParte.getValue());
-		proceso.setDescripcion(cbDescripcion.getValue().trim());
-		proceso.setTipo(cbTipo.getValue().trim());
+		proceso.setDescripcion(cbDescripcion.getValue().toLowerCase().trim());
+		proceso.setTipo(cbTipo.getValue().toLowerCase().trim());
 
 		long segsTTP = spSsTTPreparacion.getValue();
 		long minsTTP = spMsTTPreparacion.getValue();
@@ -253,7 +276,24 @@ public class NMProcesoController extends ControladorRomano {
 		if(resultadoModificarProceso.hayErrores()){
 			for(ErrorModificarProceso e: resultadoModificarProceso.getErrores()){
 				switch(e) {
-
+				case DESCRIPCION_PROCESO_INCOMPLETA:
+					erroresBfr.append("Descripción del proceso incompleta.\n");
+					break;
+				case MAQUINA_PARTE_DESCRIPCION_Y_TIPO_REPETIDO:
+					erroresBfr.append("Ya ha creado otro proceso con la misma descripción y tipo para la parte de la máquina seleccionada.\n");
+					break;
+				case PARTE_INCOMPLETA:
+					erroresBfr.append("No ha seleccionado una parte para el proceso.\n");
+					break;
+				case TIEMPO_TEORICO_PREPARACION_INCOMPLETO:
+					erroresBfr.append("Tiempo teórico de preparación incompleto.\n");
+					break;
+				case TIEMPO_TEORICO_PROCESO_INCOMPLETO:
+					erroresBfr.append("Tiempo teórico de proceso incompleto.\n");
+					break;
+				case TIPO_PROCESO_INCOMPLETO:
+					erroresBfr.append("Tipo del proceso incompleto.\n");
+					break;
 				}
 			}
 
@@ -276,7 +316,6 @@ public class NMProcesoController extends ControladorRomano {
 	public void formatearModificarProceso(Proceso proceso) {
 		titulo = "Modificar proceso";
 		this.proceso = proceso;
-		cargarDatosProceso(proceso);
 	}
 
 	private void cargarDatosProceso(Proceso proceso) {
@@ -302,11 +341,13 @@ public class NMProcesoController extends ControladorRomano {
 			spMsTTProceso.getValueFactory().setValue((int) minsTTP);
 			spSsTTProceso.getValueFactory().setValue((int) segsTTP);
 
-			milisTTP = proceso.getTiempoPromedioProceso();
-			segsTTP = (milisTTP / 1000) % 60;
-			minsTTP = (milisTTP / 60000) % 60;
-			horasTTP = milisTTP / 3600000;
-			lbTiempoPromedioProceso.setText(horasTTP + "hs " + minsTTP + "ms " + segsTTP + "ss");
+			long milisTPP = proceso.getTiempoPromedioProceso();
+			if(milisTPP > 0){
+				long segsTPP = (milisTPP / 1000) % 60;
+				long minsTPP = (milisTPP / 60000) % 60;
+				long horasTPP = milisTPP / 3600000;
+				lbTiempoPromedioProceso.setText(horasTPP + "hs " + minsTPP + "ms " + segsTPP + "ss");
+			}
 
 			cbPieza.getItems().removeAll(proceso.getPiezas());
 			listaPiezas.getItems().addAll(proceso.getPiezas());
@@ -364,16 +405,22 @@ public class NMProcesoController extends ControladorRomano {
 	protected void inicializar() {
 		spHsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spHsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+		spHsTTPreparacion.focusedProperty().addListener(getChangeListener(spHsTTPreparacion));
 		spMsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spMsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+		spMsTTPreparacion.focusedProperty().addListener(getChangeListener(spMsTTPreparacion));
 		spSsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spSsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+		spSsTTPreparacion.focusedProperty().addListener(getChangeListener(spSsTTPreparacion));
 		spHsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spHsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+		spHsTTProceso.focusedProperty().addListener(getChangeListener(spHsTTProceso));
 		spMsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spMsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+		spMsTTProceso.focusedProperty().addListener(getChangeListener(spMsTTProceso));
 		spSsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spSsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
+		spSsTTProceso.focusedProperty().addListener(getChangeListener(spSsTTProceso));
 
 		cbMaquina.getSelectionModel().selectedItemProperty().addListener((obs, olvV, newV) -> {
 			cbParte.getItems().clear();
@@ -397,6 +444,19 @@ public class NMProcesoController extends ControladorRomano {
 			}
 		});
 		actualizar();
+
+		if(proceso != null){
+			cargarDatosProceso(proceso);
+		}
+	}
+
+	private ChangeListener<? super Boolean> getChangeListener(final Spinner<Integer> spinner) {
+		return new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				spinner.increment(0);
+			}
+		};
 	}
 
 	private TextFormatter<Integer> getTextFormatter() {
@@ -416,5 +476,18 @@ public class NMProcesoController extends ControladorRomano {
 					}
 					return c;
 				});
+	}
+
+	@Override
+	public Boolean sePuedeSalir() {
+		if(guardado){
+			return true;
+		}
+		VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+				"Si sale ahora se perderán los cambios.", stage);
+		if(confirmacion.acepta()){
+			return true;
+		}
+		return false;
 	}
 }

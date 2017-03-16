@@ -182,8 +182,46 @@ public class Proceso {
 				cantidadTareas++;
 			}
 		}
-		suma = suma / cantidadTareas;
+		if(cantidadTareas > 1){
+			suma = suma / cantidadTareas;
+		}
 		return suma;
+	}
+
+	public Boolean cambioPoco(Proceso procesoAnterior) {
+		if(descripcion == null){
+			if(procesoAnterior.descripcion != null){
+				return false;
+			}
+		}
+		else if(!descripcion.equals(procesoAnterior.descripcion)){
+			return false;
+		}
+		if(estado == null){
+			if(procesoAnterior.estado != null){
+				return false;
+			}
+		}
+		else if(!estado.equals(procesoAnterior.estado)){
+			return false;
+		}
+		if(tipo == null){
+			if(procesoAnterior.tipo != null){
+				return false;
+			}
+		}
+		else if(!tipo.equals(procesoAnterior.tipo)){
+			return false;
+		}
+		if(version == null){
+			if(procesoAnterior.version != null){
+				return false;
+			}
+		}
+		else if(!version.equals(procesoAnterior.version)){
+			return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public interface ProcesoService {
 
 	public void guardarProceso(Proceso proceso) throws PersistenciaException;
 
-	public void actualizarProcesos(ArrayList<Proceso> procesos) throws PersistenciaException;
+	public void actualizarProceso(Proceso proceso) throws PersistenciaException;
 
 	public void bajaProceso(Proceso proceso) throws PersistenciaException;
 

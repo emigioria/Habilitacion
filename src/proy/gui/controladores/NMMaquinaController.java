@@ -105,6 +105,8 @@ public class NMMaquinaController extends ControladorRomano {
 
 	private TratamientoDeErroresModificarMaquina tratamientoDeErroresModificarMaquina = new TratamientoDeErroresModificarMaquina();
 
+	private Boolean guardada = false;
+
 	@Override
 	protected void inicializar() {
 		tablaPartes.setEditable(true);
@@ -595,6 +597,7 @@ public class NMMaquinaController extends ControladorRomano {
 			hayErrores = modificarMaquina();
 		}
 		if(!hayErrores){
+			guardada = true;
 			salir();
 		}
 	}
@@ -760,5 +763,18 @@ public class NMMaquinaController extends ControladorRomano {
 				presentadorVentanas.presentarExcepcion(e, stage);
 			}
 		});
+	}
+
+	@Override
+	public Boolean sePuedeSalir() {
+		if(guardada){
+			return true;
+		}
+		VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+				"Si sale ahora se perderán los cambios.", stage);
+		if(confirmacion.acepta()){
+			return true;
+		}
+		return false;
 	}
 }

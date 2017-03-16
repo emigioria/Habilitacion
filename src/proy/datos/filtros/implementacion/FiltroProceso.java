@@ -13,6 +13,7 @@ import org.hibernate.Session;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Herramienta;
+import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
@@ -24,9 +25,15 @@ public class FiltroProceso extends Filtro<Proceso> {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
+	public Maquina maquina;
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
 	private ArrayList<Herramienta> herramientas;
+	public Long id;
+	public String descripcionContiene;
+	public String tipoContiene;
+	public String descripcionExacta;
+	public String tipoExacto;
 
 	public static class Builder {
 
@@ -39,6 +46,11 @@ public class FiltroProceso extends Filtro<Proceso> {
 
 		public Builder nombreEntidad(String nombreEntidad) {
 			filtro.nombreEntidad = nombreEntidad;
+			return this;
+		}
+
+		public Builder maquina(Maquina maquina) {
+			filtro.maquina = maquina;
 			return this;
 		}
 
@@ -77,6 +89,41 @@ public class FiltroProceso extends Filtro<Proceso> {
 			return this;
 		}
 
+		public Builder descripcionContiene(String descripcion) {
+			if(descripcion != null && !descripcion.isEmpty()){
+				filtro.descripcionContiene = descripcion;
+			}
+			return this;
+		}
+
+		public Builder tipoContiene(String tipo) {
+			if(tipo != null && !tipo.isEmpty()){
+				filtro.tipoContiene = tipo;
+			}
+			return this;
+		}
+
+		public Builder descripcionExacta(String descripcion) {
+			if(descripcion != null && !descripcion.isEmpty()){
+				filtro.descripcionExacta = descripcion;
+			}
+			return this;
+		}
+
+		public Builder tipoExacto(String tipo) {
+			if(tipo != null && !tipo.isEmpty()){
+				filtro.tipoExacto = tipo;
+			}
+			return this;
+		}
+
+		public Builder id(Long id) {
+			if(id != null){
+				filtro.id = id;
+			}
+			return this;
+		}
+
 		public FiltroProceso build() {
 			filtro.setConsulta();
 			filtro.setNamedQuery();
@@ -96,6 +143,9 @@ public class FiltroProceso extends Filtro<Proceso> {
 		if(this.estado != EstadoStr.ALTA){
 			return;
 		}
+		if(this.maquina != null){
+			return;
+		}
 		if(this.parte != null){
 			return;
 		}
@@ -103,6 +153,21 @@ public class FiltroProceso extends Filtro<Proceso> {
 			return;
 		}
 		if(this.herramientas != null){
+			return;
+		}
+		if(this.descripcionContiene != null){
+			return;
+		}
+		if(this.tipoContiene != null){
+			return;
+		}
+		if(this.descripcionExacta != null){
+			return;
+		}
+		if(this.tipoExacto != null){
+			return;
+		}
+		if(this.id != null){
 			return;
 		}
 		namedQuery = "listarProcesos";
@@ -140,6 +205,12 @@ public class FiltroProceso extends Filtro<Proceso> {
 		String where =
 				((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : (""))
 						+ ((this.parte != null) ? (this.nombreEntidad + ".parte = :par AND ") : (""))
+						+ ((this.maquina != null) ? (this.nombreEntidad + ".parte.maquina = :maq AND ") : (""))
+						+ ((this.descripcionContiene != null) ? (this.nombreEntidad + ".descripcion LIKE :des AND ") : (""))
+						+ ((this.tipoContiene != null) ? (this.nombreEntidad + ".tipo LIKE :tip AND ") : (""))
+						+ ((this.descripcionExacta != null) ? (this.nombreEntidad + ".descripcion = :dee AND ") : (""))
+						+ ((this.tipoExacto != null) ? (this.nombreEntidad + ".tipo = :tie AND ") : (""))
+						+ ((this.id != null) ? (this.nombreEntidad + ".id = :id AND ") : (""))
 						+ ((this.piezas != null) ? ("piez in (:pzs) AND ") : (""))
 						+ ((this.herramientas != null) ? ("herr in (:hes) AND ") : (""));
 
@@ -170,8 +241,23 @@ public class FiltroProceso extends Filtro<Proceso> {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
+		if(maquina != null){
+			query.setParameter("maq", maquina);
+		}
 		if(parte != null){
 			query.setParameter("par", parte);
+		}
+		if(descripcionContiene != null){
+			query.setParameter("des", "%" + descripcionContiene + "%");
+		}
+		if(tipoContiene != null){
+			query.setParameter("tip", "%" + tipoContiene + "%");
+		}
+		if(descripcionExacta != null){
+			query.setParameter("dee", descripcionExacta);
+		}
+		if(tipoExacto != null){
+			query.setParameter("tie", tipoExacto);
 		}
 		if(piezas != null){
 			query.setParameterList("pzs", piezas);
@@ -179,11 +265,17 @@ public class FiltroProceso extends Filtro<Proceso> {
 		if(herramientas != null){
 			query.setParameterList("hes", herramientas);
 		}
+		if(id != null){
+			query.setParameter("id", id);
+		}
 		return query;
 	}
 
 	@Override
 	public void updateParametros(Session session) {
+		if(maquina != null){
+			session.update(maquina);
+		}
 		if(parte != null){
 			session.update(parte);
 		}
