@@ -36,12 +36,28 @@ import proy.gui.componentes.tablecell.TableCellComboBox;
 import proy.gui.componentes.tablecell.TableCellTextView;
 import proy.gui.componentes.tablecell.TableCellTextViewString;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
-import proy.gui.controladores.errores.TratamientoDeErroresCrearMaquina;
-import proy.gui.controladores.errores.TratamientoDeErroresModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearMaquina.ErrorCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartesAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearModificarPartesAlModificarMaquina.ErrorCrearModificarPartesAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPartesAlCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPartesAlCrearMaquina.ErrorCrearPartesAlCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlCrearMaquina.ErrorCrearPiezasALCrearMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoCrearPiezasAlModificarMaquina.ErrorCrearPiezasAlModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoEliminarParte;
+import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezasDeParte;
+import proy.logica.gestores.resultados.ResultadoEliminarPiezasDeParte.ErrorEliminarPiezasDeParte;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
+import proy.logica.gestores.resultados.ResultadoEliminarProcesos.ErrorEliminarProcesos;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
+import proy.logica.gestores.resultados.ResultadoModificarMaquina.ErrorModificarMaquina;
 
 public class NMMaquinaController extends ControladorRomano {
 
@@ -99,11 +115,6 @@ public class NMMaquinaController extends ControladorRomano {
 
 	private ArrayList<Parte> partesAGuardar = new ArrayList<>(); //Partes nuevas no persistidas
 	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new IdentityHashMap<>(); //Piezas nuevas no persistidas
-
-	//Traducen los resultados a string
-	private TratamientoDeErroresCrearMaquina tratamientoDeErroresCrearMaquina = new TratamientoDeErroresCrearMaquina();
-
-	private TratamientoDeErroresModificarMaquina tratamientoDeErroresModificarMaquina = new TratamientoDeErroresModificarMaquina();
 
 	private Boolean guardada = false;
 
@@ -477,7 +488,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultadoEliminarParte.hayErrores()){
-			String errores = tratamientoDeErroresModificarMaquina.tratarErroresEliminarParte(resultadoEliminarParte); //TODO unificar todos los tratamientos de errores
+			String errores = this.tratarErroresEliminarParte(resultadoEliminarParte);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al eliminar parte", errores, stage);
 			}
@@ -489,6 +500,68 @@ public class NMMaquinaController extends ControladorRomano {
 
 			presentadorVentanas.presentarToast("Se ha eliminado correctamente la parte", stage);
 		}
+	}
+
+	/**
+	 * Traduce un ResultadoEliminarParte a un String entendible por el usuario
+	 *
+	 * @param resultadoEliminarPiezas
+	 *            resultado a traducir
+	 * @return
+	 */
+	public String tratarErroresEliminarParte(ResultadoEliminarParte resultadoEliminarParte) {
+		StringBuffer erroresBfr = new StringBuffer();
+		for(ErrorEliminarParte ep: resultadoEliminarParte.getErrores()){
+			switch(ep) {
+			case ERROR_AL_ELIMINAR_TAREAS:
+				erroresBfr.append(tratarErroresEliminarTareas(resultadoEliminarParte.getResultadoTareas()));
+				break;
+			case ERROR_AL_ELIMINAR_PIEZAS:
+				erroresBfr.append(tratarErroresEliminarPiezasDeParte(resultadoEliminarParte.getResultadosEliminarPiezasDeParte()));
+				break;
+			case ERROR_AL_ELIMINAR_PROCESOS:
+				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarParte.getResultadosEliminarProcesos()));
+				break;
+			}
+		}
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresEliminarTareas(ResultadoEliminarTareas resultadoTareas) {
+		String errores = "";
+		if(resultadoTareas.hayErrores()){
+			for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+				switch(ep) {
+				//Todavia no hay errores en eliminar tarea
+				}
+			}
+		}
+		return errores;
+	}
+
+	private String tratarErroresEliminarPiezasDeParte(ResultadoEliminarPiezasDeParte resultadoEliminarPiezasDeParte) {
+		StringBuffer erroresBfr = new StringBuffer();
+		if(resultadoEliminarPiezasDeParte.hayErrores()){
+			for(ErrorEliminarPiezasDeParte ep: resultadoEliminarPiezasDeParte.getErrores()){
+				switch(ep) {
+				//No hay errores todavía
+				}
+			}
+		}
+
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresEliminarProcesos(ResultadoEliminarProcesos resultadoEliminarProcesos) {
+		String errores = "";
+		if(resultadoEliminarProcesos.hayErrores()){
+			for(ErrorEliminarProcesos ep: resultadoEliminarProcesos.getErrores()){
+				switch(ep) {
+				//Todavia no hay errores en eliminar procesos
+				}
+			}
+		}
+		return errores;
 	}
 
 	@FXML
@@ -576,7 +649,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultadoEliminarPieza.hayErrores()){
-			String errores = tratamientoDeErroresModificarMaquina.tratarErroresEliminarPieza(resultadoEliminarPieza);
+			String errores = this.tratarErroresEliminarPieza(resultadoEliminarPieza);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al eliminar pieza", errores, stage);
 			}
@@ -585,6 +658,27 @@ public class NMMaquinaController extends ControladorRomano {
 			tablaPiezas.getItems().remove(piezaAEliminar);
 			presentadorVentanas.presentarToast("Se ha eliminado correctamente la pieza", stage);
 		}
+	}
+
+	/**
+	 * Traduce un ResultadoEliminarPiezas a un String entendible por el usuario
+	 *
+	 * @param resultadoEliminarPiezas
+	 *            resultado a traducir
+	 * @return
+	 */
+	public String tratarErroresEliminarPieza(ResultadoEliminarPieza resultadoEliminarPieza) {
+		StringBuffer erroresBfr = new StringBuffer();
+		for(ErrorEliminarPieza ep: resultadoEliminarPieza.getErrores()){
+			switch(ep) {
+			case ERROR_AL_ELIMINAR_TAREAS:
+				erroresBfr.append(tratarErroresEliminarTareas(resultadoEliminarPieza.getResultadoEliminarTareas()));
+				break;
+			case ERROR_AL_ELIMINAR_PROCESOS:
+				erroresBfr.append(tratarErroresEliminarProcesos(resultadoEliminarPieza.getResultadoEliminarProcesos()));
+			}
+		}
+		return erroresBfr.toString();
 	}
 
 	@FXML
@@ -634,7 +728,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultado.hayErrores()){
-			String errores = tratamientoDeErroresCrearMaquina.tratarErroresCrearMaquina(resultado);
+			String errores = this.tratarErroresCrearMaquina(resultado);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al crear la máquina", errores, stage);
 			}
@@ -644,6 +738,110 @@ public class NMMaquinaController extends ControladorRomano {
 			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha creado la máquina con éxito", stage);
 			return false;
 		}
+	}
+
+	/**
+	 * Traduce un ResultadoCrearMaquina a un String entendible por el usuario
+	 *
+	 * @param resultadoCrearMaquina
+	 *            resultado a traducir
+	 * @return
+	 */
+	public String tratarErroresCrearMaquina(ResultadoCrearMaquina resultadoCrearMaquina) {
+		StringBuffer erroresBfr = new StringBuffer();
+		for(ErrorCrearMaquina e: resultadoCrearMaquina.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append("El nombre de la máquina está vacío.\n");
+				break;
+			case NOMBRE_REPETIDO:
+				erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
+				break;
+			case ERROR_AL_CREAR_PARTES:
+				erroresBfr.append(tratarErroresCrearPartesNuevas(resultadoCrearMaquina.getResultadosCrearPartes(), 1));
+				break;
+			}
+		}
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresCrearPartesNuevas(ResultadoCrearPartesAlCrearMaquina resultadoCrearPartes, int nivelIndentacion) {
+		StringBuffer erroresBfr = new StringBuffer();
+		StringBuffer indentacion = new StringBuffer();
+		for(int i = 0; i < nivelIndentacion; i++){
+			indentacion.append('\t');
+		}
+
+		for(ErrorCrearPartesAlCrearMaquina e: resultadoCrearPartes.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes con nombre vacío.\n");
+				break;
+			case NOMBRE_INGRESADO_REPETIDO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes nuevas o modificadas con el mismo nombre:\n");
+				for(String parte: resultadoCrearPartes.getNombresRepetidos()){
+					erroresBfr.append("\t<");
+					erroresBfr.append(parte);
+					erroresBfr.append(">\n");
+				}
+				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes sin cantidad o con una cantidad menor a 1.\n");
+				break;
+			case ERROR_AL_CREAR_PIEZAS:
+				for(Map.Entry<String, ResultadoCrearPiezasAlCrearMaquina> ParteYResultadoCrearPiezas: resultadoCrearPartes.getResultadosCrearPiezas().entrySet()){
+					if(ParteYResultadoCrearPiezas.getValue().hayErrores()){
+						erroresBfr.append(indentacion);
+						erroresBfr.append("Errores en la creación de las piezas para la parte <");
+						erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
+						erroresBfr.append(">:\n");
+						erroresBfr.append(tratarErroresCrearPiezasNuevas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
+					}
+				}
+			}
+		}
+
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresCrearPiezasNuevas(ResultadoCrearPiezasAlCrearMaquina resultadoCrearPiezas, int nivelIndentacion) {
+		StringBuffer erroresBfr = new StringBuffer();
+		StringBuffer indentacion = new StringBuffer();
+		for(int i = 0; i < nivelIndentacion; i++){
+			indentacion.append('\t');
+		}
+
+		for(ErrorCrearPiezasALCrearMaquina e: resultadoCrearPiezas.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas con nombre vacío.\n");
+				break;
+			case NOMBRE_INGRESADO_REPETIDO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas nuevas con el mismo nombre:\n");
+				for(String pieza: resultadoCrearPiezas.getNombresRepetidos()){
+					erroresBfr.append(indentacion);
+					erroresBfr.append("\t<");
+					erroresBfr.append(pieza);
+					erroresBfr.append(">\n");
+				}
+				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin cantidad o con una cantidad menor a 1.\n");
+				break;
+			case MATERIAL_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin material.\n");
+				break;
+			}
+		}
+
+		return erroresBfr.toString();
 	}
 
 	private Boolean modificarMaquina() {
@@ -674,7 +872,7 @@ public class NMMaquinaController extends ControladorRomano {
 
 		//Tratamiento de errores
 		if(resultadoModificarMaquina.hayErrores()){
-			String errores = tratamientoDeErroresModificarMaquina.tratarErroresModificarMaquina(resultadoModificarMaquina);
+			String errores = this.tratarErroresModificarMaquina(resultadoModificarMaquina);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la máquina", errores, stage);
 			}
@@ -684,6 +882,118 @@ public class NMMaquinaController extends ControladorRomano {
 			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha modificado la máquina con éxito", stage);
 			return false;
 		}
+	}
+
+	/**
+	 * Traduce un ResultadoModificarMaquina a un String entendible por el usuario
+	 *
+	 * @param resultadoModificarMaquina
+	 *            resultado a traducir
+	 * @return
+	 */
+	public String tratarErroresModificarMaquina(ResultadoModificarMaquina resultadoModificarMaquina) {
+		StringBuffer erroresBfr = new StringBuffer();
+		for(ErrorModificarMaquina e: resultadoModificarMaquina.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append("El nombre de la máquina está vacío.\n");
+				break;
+			case NOMBRE_REPETIDO:
+				erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
+				break;
+			case ERROR_AL_CREAR_O_MODIFICAR_PARTES:
+				erroresBfr.append(tratarErroresCrearModificarPartes(resultadoModificarMaquina.getResultadoCrearModificarPartes(), 1));
+			}
+		}
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresCrearModificarPartes(ResultadoCrearModificarPartesAlModificarMaquina resultadoCrearModificarPartes, int nivelIndentacion) {
+		StringBuffer erroresBfr = new StringBuffer();
+		StringBuffer indentacion = new StringBuffer();
+		for(int i = 0; i < nivelIndentacion; i++){
+			indentacion.append('\t');
+		}
+
+		for(ErrorCrearModificarPartesAlModificarMaquina e: resultadoCrearModificarPartes.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes con nombre vacío.\n");
+				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes sin cantidad o con una cantidad menor a 1.\n");
+				break;
+			case NOMBRE_INGRESADO_REPETIDO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay partes nuevas o modificadas con el mismo nombre.\n");
+				break;
+			case NOMBRE_YA_EXISTENTE:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Estas partes ya existen en el sistema:\n");
+				for(String parte: resultadoCrearModificarPartes.getNombresYaExistentes()){
+					erroresBfr.append("\t<");
+					erroresBfr.append(parte);
+					erroresBfr.append(">\n");
+				}
+				break;
+			case ERROR_AL_CREAR_PIEZAS:
+				for(Map.Entry<String, ResultadoCrearPiezasAlModificarMaquina> ParteYResultadoCrearPiezas: resultadoCrearModificarPartes.getResultadosCrearPiezas().entrySet()){
+					if(ParteYResultadoCrearPiezas.getValue().hayErrores()){
+						erroresBfr.append(indentacion);
+						erroresBfr.append("Errores en la creación de las piezas para la parte <");
+						erroresBfr.append(ParteYResultadoCrearPiezas.getKey());
+						erroresBfr.append(">:\n");
+						erroresBfr.append(tratarErroresCrearPiezas(ParteYResultadoCrearPiezas.getValue(), nivelIndentacion + 1));
+					}
+				}
+				break;
+			}
+		}
+
+		return erroresBfr.toString();
+	}
+
+	private String tratarErroresCrearPiezas(ResultadoCrearPiezasAlModificarMaquina resultadoCrearPiezas, int nivelIndentacion) {
+		StringBuffer erroresBfr = new StringBuffer();
+		StringBuffer indentacion = new StringBuffer();
+		for(int i = 0; i < nivelIndentacion; i++){
+			indentacion.append('\t');
+		}
+
+		for(ErrorCrearPiezasAlModificarMaquina e: resultadoCrearPiezas.getErrores()){
+			switch(e) {
+			case NOMBRE_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas con nombre vacío.\n");
+				break;
+			case CANTIDAD_INCOMPLETA:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin cantidad o con una cantidad menor a 1.\n");
+				break;
+			case MATERIAL_INCOMPLETO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas sin material.\n");
+				break;
+			case NOMBRE_INGRESADO_REPETIDO:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Hay piezas nuevas con el mismo nombre.\n");
+				break;
+			case NOMBRE_YA_EXISTENTE:
+				erroresBfr.append(indentacion);
+				erroresBfr.append("Estas piezas ya existen en el sistema:\n");
+				for(String pieza: resultadoCrearPiezas.getNombresYaExistentes()){
+					erroresBfr.append(indentacion);
+					erroresBfr.append("\t<");
+					erroresBfr.append(pieza);
+					erroresBfr.append(">\n");
+				}
+				break;
+			}
+		}
+
+		return erroresBfr.toString();
 	}
 
 	public void formatearNuevaMaquina() {
