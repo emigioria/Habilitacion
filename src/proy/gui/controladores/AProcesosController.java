@@ -24,6 +24,8 @@ import proy.gui.ControladorRomano;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso.ErrorEliminarProceso;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 
 public class AProcesosController extends ControladorRomano {
 
@@ -160,26 +162,48 @@ public class AProcesosController extends ControladorRomano {
 
 	@FXML
 	public void eliminarProceso() {
-		ResultadoEliminarProceso resultado;
+		ResultadoEliminarProceso resultadoEliminarProceso;
 		StringBuffer erroresBfr = new StringBuffer();
-		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
+		Proceso procesoAEliminar = tablaProcesos.getSelectionModel().getSelectedItem();
 
-		if(proceso == null){
+		if(procesoAEliminar == null){
 			return;
 		}
 
-		//se pregunta al usuario si desea confirmar la eliminación del proceso
+		//Se le pide al usuario que confirme la eliminación del proceso
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar proceso",
-				"Se eliminará el proceso <" + proceso + "> y sus componentes de forma permanente.\n" +
+				"Se eliminará el proceso <" + procesoAEliminar + "> y sus componentes de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){
 			return;
 		}
 
+		//Si acepta dar de baja se verifica que el proceso a eliminar no tiene tareas no terminadas asociadas
+		Boolean tieneTareasNoTerminadasAsociadas = false;
+		try{
+			tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(procesoAEliminar);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Se pregunta si quiere dar de baja estas tareas asociadas
+		if(tieneTareasNoTerminadasAsociadas){
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar proceso",
+					"El proceso <" + procesoAEliminar + "> tiene tareas no terminadas asociadas.\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarlo?",
+					stage);
+			if(!vc.acepta()){
+				return;
+			}
+		}
+
 		//Inicio transacciones al gestor
 		try{
-			resultado = coordinador.eliminarProceso(proceso);
+			resultadoEliminarProceso = coordinador.eliminarProceso(procesoAEliminar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -189,10 +213,19 @@ public class AProcesosController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		if(resultado.hayErrores()){
-			for(ErrorEliminarProceso e: resultado.getErrores()){
+		if(resultadoEliminarProceso.hayErrores()){
+			for(ErrorEliminarProceso e: resultadoEliminarProceso.getErrores()){
 				switch(e) {
-				//no hay errores de eliminar proceso por ahora
+				case ERROR_AL_ELIMINAR_TAREAS:
+					ResultadoEliminarTareas resultadoTareas = resultadoEliminarProceso.getResultadoEliminarTareas();
+					if(resultadoTareas.hayErrores()){
+						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
+							switch(ep) {
+							//Todavia no hay errores en eliminar tarea
+							}
+						}
+					}
+					break;
 				}
 			}
 
@@ -202,8 +235,8 @@ public class AProcesosController extends ControladorRomano {
 			}
 		}
 		else{
-			tablaProcesos.getItems().remove(proceso);
-			presentadorVentanas.presentarToast("Se ha eliminado el proceso <" + proceso + ">con éxito", stage);
+			tablaProcesos.getItems().remove(procesoAEliminar);
+			presentadorVentanas.presentarToast("Se ha eliminado el proceso <" + procesoAEliminar + ">con éxito", stage);
 		}
 	}
 

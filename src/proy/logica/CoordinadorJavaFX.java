@@ -49,6 +49,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarParte.ErrorEliminarParte
 import proy.logica.gestores.resultados.ResultadoEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarPieza.ErrorEliminarPieza;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
+import proy.logica.gestores.resultados.ResultadoEliminarProceso.ErrorEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
@@ -99,6 +100,11 @@ public class CoordinadorJavaFX {
 
 		//Se continúa con la eliminación del operario
 		return gestorUsuario.eliminarOperario(operario);
+	}
+
+	public Boolean tieneTareasNoTerminadasAsociadas(Operario operario) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).operario(operario).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
 	public ArrayList<Maquina> listarMaquinas(Filtro<Maquina> filtro) throws PersistenciaException {
@@ -214,7 +220,19 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarProceso eliminarProceso(Proceso proceso) throws PersistenciaException {
+		//Se eliminan las tareas del proceso
+		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).proceso(proceso).build()));
+		if(resultadoEliminarTareas.hayErrores()){
+			return new ResultadoEliminarProceso(resultadoEliminarTareas, ErrorEliminarProceso.ERROR_AL_ELIMINAR_TAREAS);
+		}
+
+		//Se continúa con la eliminación del proceso
 		return gestorProceso.eliminarProceso(proceso);
+	}
+
+	public Boolean tieneTareasNoTerminadasAsociadas(Proceso proceso) throws PersistenciaException {
+		ArrayList<Tarea> tareasNoTerminadasAsociadas = gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).proceso(proceso).build());
+		return tareasNoTerminadasAsociadas.size() > 0;
 	}
 
 	public ArrayList<Tarea> listarTareas(Filtro<Tarea> filtro) throws PersistenciaException {

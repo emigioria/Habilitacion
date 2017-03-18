@@ -132,6 +132,7 @@ public class ProcesoGestor {
 						procesoNuevo.getPiezas().clear();
 						procesoNuevo.getPiezas().addAll(proceso.getPiezas());
 
+						persistidorProceso.bajaTareas(this.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).proceso(proceso).build()));
 						persistidorProceso.actualizarProceso(procesoAnterior);
 						persistidorProceso.guardarProceso(procesoNuevo);
 						return resultado;

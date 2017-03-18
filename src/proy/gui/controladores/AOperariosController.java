@@ -267,13 +267,35 @@ public class AOperariosController extends ControladorRomano {
 			return;
 		}
 
-		//Se le pide al usuario que confirme la eliminación de la máquina
+		//Se le pide al usuario que confirme la eliminación del operario
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar operario",
-				"Se eliminará el operario <" + operarioAEliminar + "> de forma permanente junto con sus tareas no terminadas asociadas.\n" +
+				"Se eliminará el operario <" + operarioAEliminar + "> de forma permanente.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){
 			return;
+		}
+
+		//Si acepta dar de baja se verifica que el operario a eliminar no tiene tareas no terminadas asociadas
+		Boolean tieneTareasNoTerminadasAsociadas = false;
+		try{
+			tieneTareasNoTerminadasAsociadas = coordinador.tieneTareasNoTerminadasAsociadas(operarioAEliminar);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Se pregunta si quiere dar de baja estas tareas asociadas
+		if(tieneTareasNoTerminadasAsociadas){
+			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar operario",
+					"El operario <" + operarioAEliminar + "> tiene tareas no terminadas asociadas.\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarlo?",
+					stage);
+			if(!vc.acepta()){
+				return;
+			}
 		}
 
 		//Inicio transacciones al gestor

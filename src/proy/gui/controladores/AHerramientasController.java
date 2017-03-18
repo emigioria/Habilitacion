@@ -223,7 +223,7 @@ public class AHerramientasController extends ControladorRomano {
 		//Se pregunta si quiere dar de baja estas tareas asociadas
 		if(tieneTareasNoTerminadasAsociadas){
 			vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar herramienta",
-					"La herramienta  <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas.\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
+					"La herramienta <" + herramientaAEliminar + "> tiene tareas no terminadas asociadas.\nSi continúa, esas tareas se eliminarán\n¿Está seguro que desea eliminarla?",
 					stage);
 			if(!vc.acepta()){
 				return;

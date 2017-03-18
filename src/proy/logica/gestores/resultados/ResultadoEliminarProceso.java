@@ -11,10 +11,21 @@ import proy.logica.gestores.resultados.ResultadoEliminarProceso.ErrorEliminarPro
 public class ResultadoEliminarProceso extends Resultado<ErrorEliminarProceso> {
 
 	public enum ErrorEliminarProceso {
-
+		ERROR_AL_ELIMINAR_TAREAS
 	}
+
+	private ResultadoEliminarTareas resultadoEliminarTareas;
 
 	public ResultadoEliminarProceso(ErrorEliminarProceso... errores) {
 		super(errores);
+	}
+
+	public ResultadoEliminarProceso(ResultadoEliminarTareas resultadoEliminarTareas, ErrorEliminarProceso... errores) {
+		super(errores);
+		this.resultadoEliminarTareas = resultadoEliminarTareas;
+	}
+
+	public ResultadoEliminarTareas getResultadoEliminarTareas() {
+		return resultadoEliminarTareas;
 	}
 }
