@@ -131,11 +131,9 @@ public class AProcesosController extends ControladorRomano {
 		cbMaquina.getSelectionModel().selectedItemProperty().addListener((obs, olvV, newV) -> {
 			cbParte.getItems().clear();
 			cbParte.getItems().add(nullParte);
-			if(newV != null){
+			if(newV != null && newV != nullMaquina){
 				try{
-					if(newV != nullMaquina){
-						cbParte.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(newV).build()));
-					}
+					cbParte.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(newV).build()));
 				} catch(PersistenciaException e){
 					presentadorVentanas.presentarExcepcion(e, stage);
 				}
@@ -205,7 +203,7 @@ public class AProcesosController extends ControladorRomano {
 		}
 		else{
 			tablaProcesos.getItems().remove(proceso);
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha eliminado el proceso <" + proceso + ">con éxito", stage);
+			presentadorVentanas.presentarToast("Se ha eliminado el proceso <" + proceso + ">con éxito", stage);
 		}
 	}
 

@@ -11,6 +11,7 @@ import proy.logica.gestores.resultados.ResultadoCrearTarea.ErrorCrearTarea;
 public class ResultadoCrearTarea extends Resultado<ErrorCrearTarea> {
 
 	public enum ErrorCrearTarea {
+		OPERARIO_INCOMPLETO, PROCESO_INCOMPLETO, CANTIDAD_INCOMPLETA, FECHA_INCOMPLETA, FECHA_ANTERIOR_A_HOY
 
 	}
 

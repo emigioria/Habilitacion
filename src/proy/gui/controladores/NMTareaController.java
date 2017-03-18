@@ -6,32 +6,35 @@
  */
 package proy.gui.controladores;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.util.converter.IntegerStringConverter;
-import proy.datos.clases.EstadoTareaStr;
-import proy.datos.entidades.EstadoTarea;
+import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Operario;
+import proy.datos.entidades.Parte;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.implementacion.FiltroMaquina;
 import proy.datos.filtros.implementacion.FiltroOperario;
+import proy.datos.filtros.implementacion.FiltroParte;
 import proy.datos.filtros.implementacion.FiltroProceso;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
 import proy.logica.gestores.resultados.ResultadoCrearTarea.ErrorCrearTarea;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
@@ -42,19 +45,27 @@ public class NMTareaController extends ControladorRomano {
 	public static final String URL_VISTA = "/proy/gui/vistas/NMTarea.fxml";
 
 	@FXML
-	private Label lbTitulo;
+	private ComboBox<Parte> cbParte;
+
+	private Parte nullParte = new Parte() {
+		@Override
+		public String toString() {
+			return "Parte";
+		}
+	};
 
 	@FXML
-	private TextField proceso;
+	private ComboBox<Maquina> cbMaquina;
 
-	@FXML
-	private TextField maquina;
+	private Maquina nullMaquina = new Maquina() {
+		@Override
+		public String toString() {
+			return "Máquina";
+		}
+	};
 
 	@FXML
 	private Spinner<Integer> cantidad;
-
-	@FXML
-	private TextArea observaciones;
 
 	@FXML
 	private ComboBox<Operario> cbOperario;
@@ -74,14 +85,28 @@ public class NMTareaController extends ControladorRomano {
 	@FXML
 	private TableColumn<Proceso, String> columnaParte;
 
+	@FXML
+	private TextArea observaciones;
+
 	private Tarea tarea;
+
+	private String titulo;
+
+	private Boolean guardado = false;
 
 	@FXML
 	public void buscar() {
-		//TODO buscar bien procesos
+		Maquina maquinaBuscada = cbMaquina.getValue();
+		if(maquinaBuscada == nullMaquina){
+			maquinaBuscada = null;
+		}
+		Parte parteBuscada = cbParte.getValue();
+		if(parteBuscada == nullParte){
+			parteBuscada = null;
+		}
 		tablaProcesos.getItems().clear();
 		try{
-			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+			tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().maquina(maquinaBuscada).parte(parteBuscada).build()));
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 		}
@@ -98,18 +123,32 @@ public class NMTareaController extends ControladorRomano {
 		});
 		columnaMaquina.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getParte().getMaquina().getNombre().toString());
+				return new SimpleStringProperty(param.getValue().getParte().getMaquina().toString());
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
 		columnaParte.setCellValueFactory((CellDataFeatures<Proceso, String> param) -> {
 			try{
-				return new SimpleStringProperty(param.getValue().getParte().getNombre().toString());
+				return new SimpleStringProperty(param.getValue().getParte().toString());
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
+
+		cbMaquina.getSelectionModel().selectedItemProperty().addListener((obs, olvV, newV) -> {
+			cbParte.getItems().clear();
+			cbParte.getItems().add(nullParte);
+			if(newV != null && newV != nullMaquina){
+				try{
+					cbParte.getItems().addAll(coordinador.listarPartes(new FiltroParte.Builder().maquina(newV).build()));
+				} catch(PersistenciaException e){
+					presentadorVentanas.presentarExcepcion(e, stage);
+				}
+			}
+		});
+
+		//Inicialización del spinner de cantidad
 		cantidad.getEditor().setTextFormatter(new TextFormatter<>(
 				new IntegerStringConverter(), 0,
 				c -> {
@@ -126,13 +165,31 @@ public class NMTareaController extends ControladorRomano {
 					}
 					return c;
 				}));
-		cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
+		cantidad.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1));
+		cantidad.focusedProperty().addListener((obs, oldV, newV) -> {
+			cantidad.increment(0);
+		});
+
+		fechaTarea.setDayCellFactory(p -> new DateCell() {
+			@Override
+			public void updateItem(LocalDate ld, boolean bln) {
+				super.updateItem(ld, bln);
+
+				//Desactivo las fechas previas a hoy
+				setDisable(ld.isBefore(conversorFechas.getLocalDate(new Date())));
+			}
+		});
 		fechaTarea.setValue(conversorFechas.getLocalDate(new Date()));
+
 		actualizar();
+
+		if(tarea != null){
+			cargarDatos(tarea);
+		}
 	}
 
 	@FXML
-	public void guardarTarea() {
+	public void guardar() {
 		Boolean hayErrores = true;
 		if(tarea == null){
 			hayErrores = crearTarea();
@@ -141,33 +198,26 @@ public class NMTareaController extends ControladorRomano {
 			hayErrores = modificarTarea();
 		}
 		if(!hayErrores){
+			guardado = true;
 			salir();
 		}
 	}
 
 	public Boolean crearTarea() {
-		ResultadoCrearTarea resultado = null;
-		Boolean hayErrores;
-		Tarea tar = null;
-		String errores = "";
+		ResultadoCrearTarea resultadoCrearTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+		Tarea tarea = new Tarea();
 
 		//Toma de datos de la vista
-		if(fechaTarea.getValue() == null){
-			presentadorVentanas.presentarError("Error al crear tarea", "La fecha no debe estar vacía", stage);
-			return true;
-		}
-
-		tar = new Tarea();
-		tar.setCantidadTeorica(cantidad.getValue());
-		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
-		tar.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
-		tar.setObservaciones(observaciones.getText().trim());
-		tar.setOperario(cbOperario.getValue());
-		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
+		tarea.setCantidadTeorica(cantidad.getValue());
+		tarea.setOperario(cbOperario.getValue());
+		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
+		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
+		tarea.setObservaciones(observaciones.getText().trim());
 
 		//Inicio transacción al gestor
 		try{
-			resultado = coordinador.crearTarea(tar);
+			resultadoCrearTarea = coordinador.crearTarea(tarea);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return true;
@@ -177,81 +227,105 @@ public class NMTareaController extends ControladorRomano {
 		}
 
 		//Tratamiento de errores
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
-			for(ErrorCrearTarea r: resultado.getErrores()){
+		if(resultadoCrearTarea.hayErrores()){
+			for(ErrorCrearTarea r: resultadoCrearTarea.getErrores()){
 				switch(r) {
-				//TODO hacer validador primero
-				default: //no usar default
-					//ejemplo de error
-					errores += "El nombre no es válido.\n";
-				}
-			}
-			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al crear tarea", errores, stage);
-			}
-		}
-
-		return hayErrores;
-	}
-
-	public Boolean modificarTarea() {
-		ResultadoModificarTarea resultado = null;
-		Boolean hayErrores;
-		Tarea tar = null;
-		String errores = "";
-
-		//Toma de datos de la vista
-		if(fechaTarea.getValue() == null){
-			presentadorVentanas.presentarError("Error al crear tarea", "La fecha no debe estar vacía", stage);
-			return true;
-		}
-
-		tar = this.tarea;
-		tar.setCantidadTeorica(cantidad.getValue());
-		tar.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
-		tar.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
-		tar.setObservaciones(observaciones.getText());
-		tar.setOperario(cbOperario.getValue());
-		tar.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
-
-		//Inicio transacción al gestor
-		try{
-			resultado = coordinador.modificarTarea(tar);
-		} catch(PersistenciaException e){
-			presentadorVentanas.presentarExcepcion(e, stage);
-			return true;
-		} catch(Exception e){
-			presentadorVentanas.presentarExcepcionInesperada(e, stage);
-			return true;
-		}
-
-		//Tratamiento de errores
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
-			for(ErrorModificarTarea r: resultado.getErrores()){
-				switch(r) {
-				default: //ejemplo, no usar default
-					errores += "El nombre no es válido.\n";
+				case CANTIDAD_INCOMPLETA:
+					erroresBfr.append("Cantidad incompleta o menor a 1.\n");
+					break;
+				case FECHA_ANTERIOR_A_HOY:
+					erroresBfr.append("Fecha de planificación anterior a hoy.\n");
+					break;
+				case FECHA_INCOMPLETA:
+					erroresBfr.append("Fecha de planificación incompleta.\n");
+					break;
+				case OPERARIO_INCOMPLETO:
+					erroresBfr.append("Operario incompleto.\n");
+					break;
+				case PROCESO_INCOMPLETO:
+					erroresBfr.append("Proceso incompleto.\n");
 					break;
 				}
 			}
+
+			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
-				presentadorVentanas.presentarError("Error al modificar tarea", errores, stage);
+				presentadorVentanas.presentarError("Error al crear la tarea", errores, stage);
 			}
+			return true;
+		}
+		else{
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha creado la tarea con éxito.", stage);
+			return false;
+		}
+	}
+
+	public Boolean modificarTarea() {
+		ResultadoModificarTarea resultadoModificarTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Toma de datos de la vista
+		tarea.setCantidadTeorica(cantidad.getValue());
+		tarea.setOperario(cbOperario.getValue());
+		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
+		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
+		tarea.setObservaciones(observaciones.getText().trim());
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarTarea = coordinador.modificarTarea(tarea);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return true;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return true;
 		}
 
-		return hayErrores;
+		//Tratamiento de errores
+		if(resultadoModificarTarea.hayErrores()){
+			for(ErrorModificarTarea r: resultadoModificarTarea.getErrores()){
+				switch(r) {
+				case CANTIDAD_INCOMPLETA:
+					erroresBfr.append("Cantidad incompleta o menor a 1.\n");
+					break;
+				case FECHA_ANTERIOR_A_HOY:
+					erroresBfr.append("Fecha de planificación anterior a hoy.\n");
+					break;
+				case FECHA_INCOMPLETA:
+					erroresBfr.append("Fecha de planificación incompleta.\n");
+					break;
+				case OPERARIO_INCOMPLETO:
+					erroresBfr.append("Operario incompleto.\n");
+					break;
+				case PROCESO_INCOMPLETO:
+					erroresBfr.append("Proceso incompleto.\n");
+					break;
+				case TAREA_NO_PLANIFICADA:
+					erroresBfr.append("La tarea seleccionada ya fue empezada por un operario, por lo que no se puede modificar.\n");
+					break;
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return true;
+		}
+		else{
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha modificado la tarea con éxito.", stage);
+			return false;
+		}
 	}
 
 	public void formatearNuevaTarea() {
-		lbTitulo.setText("Nueva tarea");
+		titulo = "Nueva tarea";
 	}
 
 	public void formatearModificarTarea(Tarea tarea) {
-		lbTitulo.setText("Modificar tarea");
+		titulo = "Modificar tarea";
 		this.tarea = tarea;
-		cargarDatos(tarea);
 	}
 
 	public void cargarDatos(Tarea tarea) {
@@ -265,14 +339,41 @@ public class NMTareaController extends ControladorRomano {
 	@Override
 	public void actualizar() {
 		Platform.runLater(() -> {
-			try{
-				cbOperario.getItems().clear();
-				cbOperario.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
-				tablaProcesos.getItems().clear();
-				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
-			} catch(PersistenciaException e){
+			stage.setTitle(titulo);
 
+			cbOperario.getItems().clear();
+			Operario operarioAnterior = cbOperario.getValue();
+			tablaProcesos.getItems().clear();
+			Proceso procesoAnterior = tablaProcesos.getSelectionModel().getSelectedItem();
+
+			cbMaquina.getItems().clear();
+			cbMaquina.getItems().add(nullMaquina);
+			cbParte.getItems().clear();
+
+			try{
+				cbOperario.getItems().addAll(coordinador.listarOperarios(new FiltroOperario.Builder().build()));
+				tablaProcesos.getItems().addAll(coordinador.listarProcesos(new FiltroProceso.Builder().build()));
+
+				cbMaquina.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
+			} catch(PersistenciaException e){
+				presentadorVentanas.presentarExcepcion(e, stage);
 			}
+
+			cbOperario.getSelectionModel().select(operarioAnterior);
+			tablaProcesos.getSelectionModel().select(procesoAnterior);
 		});
+	}
+
+	@Override
+	public Boolean sePuedeSalir() {
+		if(guardado){
+			return true;
+		}
+		VentanaConfirmacion confirmacion = presentadorVentanas.presentarConfirmacion("¿Quiere salir sin guardar?",
+				"Si sale ahora se perderán los cambios.", stage);
+		if(confirmacion.acepta()){
+			return true;
+		}
+		return false;
 	}
 }

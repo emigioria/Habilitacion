@@ -18,93 +18,70 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMTareaController">
+<GridPane hgap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="493.0" prefWidth="640.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMTareaController">
    <children>
-      <TableView fx:id="tablaProcesos" prefHeight="217.0" prefWidth="177.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Label text="Cantidad solicitada:" />
+      <Spinner fx:id="cantidad" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
+      <Label text="Operario:" GridPane.rowIndex="2" />
+      <ComboBox fx:id="cbOperario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="171.0" promptText="Seleccione un operario..." GridPane.rowIndex="3" />
+      <Label text="Fecha planificación:" GridPane.rowIndex="4" />
+      <DatePicker fx:id="fechaTarea" GridPane.rowIndex="5" />
+      <Label minWidth="45.0" text="Proceso:" GridPane.columnIndex="1" />
+      <TableView fx:id="tablaProcesos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="4">
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
          <columns>
-            <TableColumn fx:id="columnaProceso" minWidth="0.0" prefWidth="139.0" text="Proceso" />
-            <TableColumn fx:id="columnaMaquina" minWidth="0.0" prefWidth="97.0" text="Maquina" />
-            <TableColumn fx:id="columnaParte" minWidth="0.0" prefWidth="282.0" text="Parte" />
+            <TableColumn fx:id="columnaMaquina" minWidth="-1.0" prefWidth="-1.0" text="Maquina" />
+            <TableColumn fx:id="columnaParte" minWidth="-1.0" prefWidth="-1.0" text="Parte" />
+            <TableColumn fx:id="columnaProceso" minWidth="-1.0" prefWidth="-1.0" text="Proceso" />
          </columns>
       </TableView>
-      <Label fx:id="lbTitulo" text="Nueva tarea" GridPane.columnIndex="1">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <TextField fx:id="proceso" prefWidth="100.0" promptText="Proceso">
+            <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" promptText="Máquina" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" promptText="Parte" HBox.hgrow="ALWAYS" />
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#buscar" prefWidth="75.0" text="Buscar" />
+         </children>
+      </HBox>
+      <HBox alignment="TOP_RIGHT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="8">
+         <children>
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#guardar" prefWidth="75.0" text="Guardar">
                <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
-            </TextField>
-            <TextField fx:id="maquina" prefWidth="100.0" promptText="Maquina">
+            </Button>
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" prefWidth="75.0" text="Salir">
                <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </TextField>
-            <Button fx:id="botonBuscar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#buscar" text="Buscar">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets />
                </HBox.margin>
             </Button>
          </children>
       </HBox>
-      <HBox alignment="TOP_RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="3">
-         <children>
-            <Button fx:id="botonGuardar" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#guardarTarea" text="Guardar">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-            <Button fx:id="botonSalir" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#salir" text="Salir">
-               <HBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </HBox.margin>
-            </Button>
-         </children>
-      </HBox>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.rowIndex="2">
-         <children>
-            <Label text="Cantidad" />
-            <Spinner fx:id="cantidad" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-            <Label text="Operario" />
-            <ComboBox fx:id="cbOperario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-            <Label text="Fecha" />
-            <DatePicker fx:id="fechaTarea" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
-            <Label text="Observaciones" />
-            <TextArea fx:id="observaciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-         </children>
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-         <padding>
-            <Insets left="10.0" />
-         </padding>
-      </VBox>
+      <Label text="Observaciones:" GridPane.rowIndex="6" />
+      <TextArea fx:id="observaciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Ingrese sus observaciones..." wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="7" />
    </children>
    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="534.0" minWidth="10.0" prefWidth="39.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="534.0" minWidth="0.0" prefWidth="333.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="228.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="556.0" minWidth="10.0" prefWidth="53.0" />
+      <ColumnConstraints hgrow="NEVER" minWidth="104.0" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="55.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="183.0" minHeight="10.0" prefHeight="39.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="498.0" minHeight="10.0" prefHeight="339.0" vgrow="SOMETIMES" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints maxHeight="1.7976931348623157E308" valignment="TOP" vgrow="ALWAYS" />
+      <RowConstraints vgrow="NEVER" />
+      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
       <RowConstraints vgrow="NEVER" />
    </rowConstraints>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
 </GridPane>

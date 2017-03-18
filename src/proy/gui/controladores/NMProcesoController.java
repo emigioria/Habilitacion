@@ -227,7 +227,7 @@ public class NMProcesoController extends ControladorRomano {
 			return true;
 		}
 		else{
-			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha creado el proceso con éxito", stage);
+			presentadorVentanas.presentarInformacion("Operación exitosa", "Se ha creado el proceso con éxito.", stage);
 			return false;
 		}
 	}
@@ -403,21 +403,28 @@ public class NMProcesoController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
+		//Inicialización de los spinners de tiempo teórico de preparación
 		spHsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spHsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
 		spHsTTPreparacion.focusedProperty().addListener(getChangeListener(spHsTTPreparacion));
+
 		spMsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spMsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		spMsTTPreparacion.focusedProperty().addListener(getChangeListener(spMsTTPreparacion));
+
 		spSsTTPreparacion.getEditor().setTextFormatter(getTextFormatter());
 		spSsTTPreparacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		spSsTTPreparacion.focusedProperty().addListener(getChangeListener(spSsTTPreparacion));
+
+		//Inicialización de los spinners de tiempo teórico de proceso
 		spHsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spHsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 0));
 		spHsTTProceso.focusedProperty().addListener(getChangeListener(spHsTTProceso));
+
 		spMsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spMsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		spMsTTProceso.focusedProperty().addListener(getChangeListener(spMsTTProceso));
+
 		spSsTTProceso.getEditor().setTextFormatter(getTextFormatter());
 		spSsTTProceso.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 		spSsTTProceso.focusedProperty().addListener(getChangeListener(spSsTTProceso));

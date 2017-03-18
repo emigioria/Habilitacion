@@ -46,7 +46,7 @@ public class Tarea {
 	@Column(name = "cantidad_solicitada", nullable = false)
 	private Integer cantidadSolicitada;
 
-	@Column(name = "cantidad_real", nullable = false)
+	@Column(name = "cantidad_real")
 	private Integer cantidadReal;
 
 	@Temporal(TemporalType.DATE)
@@ -54,11 +54,11 @@ public class Tarea {
 	private Date fechaPlanificada;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_hora_inicio", nullable = false)
+	@Column(name = "fecha_hora_inicio")
 	private Date fechaHoraInicio;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_hora_fin", nullable = false)
+	@Column(name = "fecha_hora_fin")
 	private Date fechaHoraFin;
 
 	@Column(name = "observaciones", length = 500)
@@ -73,7 +73,7 @@ public class Tarea {
 	private Proceso proceso;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "tarea_codoperario_fk"))
+	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "tarea_codoperario_fk"), nullable = false)
 	private Operario operario;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "tarea")

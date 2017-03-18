@@ -36,7 +36,7 @@ public class Estado {
 	private Long version;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = COLUMNA_NOMBRE, length = 10, nullable = false, unique = true)
+	@Column(name = COLUMNA_NOMBRE, length = 15, nullable = false, unique = true)
 	private EstadoStr nombre;
 
 	@Transient

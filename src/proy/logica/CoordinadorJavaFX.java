@@ -122,11 +122,13 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarParte eliminarParte(Parte parte) throws PersistenciaException {
+		//Se eliminan las tareas de la parte
 		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).parte(parte).build()));
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarParte(resultadoEliminarTareas, ErrorEliminarParte.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
+		//Se continúa con la eliminación de la parte
 		return gestorTaller.eliminarParte(parte);
 	}
 
@@ -140,11 +142,13 @@ public class CoordinadorJavaFX {
 	}
 
 	public ResultadoEliminarPieza eliminarPieza(Pieza piezaAEliminar) throws PersistenciaException {
+		//Se eliminan las tareas de la pieza
 		ResultadoEliminarTareas resultadoEliminarTareas = gestorProceso.eliminarTareas(gestorProceso.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).pieza(piezaAEliminar).build()));
 		if(resultadoEliminarTareas.hayErrores()){
 			return new ResultadoEliminarPieza(resultadoEliminarTareas, ErrorEliminarPieza.ERROR_AL_ELIMINAR_TAREAS);
 		}
 
+		//Se continúa con la eliminación de la pieza
 		return gestorTaller.eliminarPieza(piezaAEliminar);
 	}
 

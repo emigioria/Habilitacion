@@ -269,7 +269,7 @@ public class AOperariosController extends ControladorRomano {
 
 		//Se le pide al usuario que confirme la eliminación de la máquina
 		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar eliminar operario",
-				"Se eliminará el operario <" + operarioAEliminar + "> de forma permanente.\n" +
+				"Se eliminará el operario <" + operarioAEliminar + "> de forma permanente junto con sus tareas no terminadas asociadas.\n" +
 						"¿Está seguro de que desea continuar?",
 				stage);
 		if(!vc.acepta()){

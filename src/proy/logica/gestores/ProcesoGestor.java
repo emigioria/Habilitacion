@@ -7,6 +7,7 @@
 package proy.logica.gestores;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,8 @@ import javax.annotation.Resource;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
+import proy.comun.ConversorFechas;
+import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
@@ -27,19 +30,25 @@ import proy.excepciones.PersistenciaException;
 import proy.logica.gestores.resultados.ResultadoCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearProceso.ErrorCrearProceso;
 import proy.logica.gestores.resultados.ResultadoCrearTarea;
+import proy.logica.gestores.resultados.ResultadoCrearTarea.ErrorCrearTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
+import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarProceso.ErrorModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
+import proy.logica.gestores.resultados.ResultadoModificarTarea.ErrorModificarTarea;
 
 @Service
 public class ProcesoGestor {
 
 	@Resource
 	private ProcesoService persistidorProceso;
+
+	@Resource
+	private ConversorFechas conversorFechas;
 
 	public ArrayList<String> listarDescripciones(Filtro<String> filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerDescripciones(filtro);
@@ -214,12 +223,37 @@ public class ProcesoGestor {
 		if(!resultado.hayErrores()){
 			persistidorProceso.guardarTarea(tarea);
 		}
-		throw new NotYetImplementedException();
+		return resultado;
 	}
 
 	private ResultadoCrearTarea validarCrearTarea(Tarea tarea) {
-		// TODO validar tarea para crearla
-		return new ResultadoCrearTarea();
+		Set<ErrorCrearTarea> errores = new HashSet<>();
+
+		//Veo si la tarea no tiene operario
+		if(tarea.getOperario() == null){
+			errores.add(ErrorCrearTarea.OPERARIO_INCOMPLETO);
+		}
+
+		//Veo si la tarea no tiene proceso
+		if(tarea.getProceso() == null){
+			errores.add(ErrorCrearTarea.PROCESO_INCOMPLETO);
+		}
+
+		//Veo si la tarea no tiene cantidad teórica
+		if(tarea.getCantidadTeorica() == null || tarea.getCantidadTeorica() < 1){
+			errores.add(ErrorCrearTarea.CANTIDAD_INCOMPLETA);
+		}
+
+		//Veo si la tarea no tiene fecha o tiene una fecha anterior a hoy
+		Date hoy = conversorFechas.getDate(conversorFechas.getLocalDate(new Date()));
+		if(tarea.getFechaPlanificada() == null){
+			errores.add(ErrorCrearTarea.FECHA_INCOMPLETA);
+		}
+		else if(tarea.getFechaPlanificada().before(hoy)){
+			errores.add(ErrorCrearTarea.FECHA_ANTERIOR_A_HOY);
+		}
+
+		return new ResultadoCrearTarea(errores.toArray(new ErrorCrearTarea[0]));
 	}
 
 	public ResultadoModificarTarea modificarTarea(Tarea tarea) throws PersistenciaException {
@@ -231,8 +265,38 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarTarea validarModificarTarea(Tarea tarea) {
-		// TODO validar tarea para modificarla
-		return new ResultadoModificarTarea();
+		Set<ErrorModificarTarea> errores = new HashSet<>();
+
+		//Veo si la tarea no tiene operario
+		if(tarea.getOperario() == null){
+			errores.add(ErrorModificarTarea.OPERARIO_INCOMPLETO);
+		}
+
+		//Veo si la tarea no tiene proceso
+		if(tarea.getProceso() == null){
+			errores.add(ErrorModificarTarea.PROCESO_INCOMPLETO);
+		}
+
+		//Veo si la tarea no tiene cantidad teórica
+		if(tarea.getCantidadTeorica() == null || tarea.getCantidadTeorica() < 1){
+			errores.add(ErrorModificarTarea.CANTIDAD_INCOMPLETA);
+		}
+
+		//Veo si la tarea no tiene fecha o tiene una fecha anterior a hoy
+		Date hoy = conversorFechas.getDate(conversorFechas.getLocalDate(new Date()));
+		if(tarea.getFechaPlanificada() == null){
+			errores.add(ErrorModificarTarea.FECHA_INCOMPLETA);
+		}
+		else if(tarea.getFechaPlanificada().before(hoy)){
+			errores.add(ErrorModificarTarea.FECHA_ANTERIOR_A_HOY);
+		}
+
+		//Veo si la tarea está planificada
+		if(!EstadoTareaStr.PLANIFICADA.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarTarea.TAREA_NO_PLANIFICADA);
+		}
+
+		return new ResultadoModificarTarea(errores.toArray(new ErrorModificarTarea[0]));
 	}
 
 	public ResultadoEliminarTareas eliminarTareas(ArrayList<Tarea> tareas) throws PersistenciaException {
@@ -257,8 +321,11 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoEliminarTarea validarEliminarTarea(Tarea tarea) {
-		// TODO validar tarea para eliminarla
-		return new ResultadoEliminarTarea();
+		Set<ErrorEliminarTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.PLANIFICADA.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorEliminarTarea.TAREA_NO_PLANIFICADA);
+		}
+		return new ResultadoEliminarTarea(errores.toArray(new ErrorEliminarTarea[0]));
 	}
 
 	public ResultadoModificarTarea comenzarTarea(Tarea tarea) throws PersistenciaException {

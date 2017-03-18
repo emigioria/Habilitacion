@@ -14,6 +14,7 @@ import org.hibernate.Session;
 
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Herramienta;
+import proy.datos.entidades.Maquina;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
@@ -29,6 +30,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private EstadoTareaStr noEstado;
 	private EstadoTareaStr estado;
 	private ArrayList<Herramienta> herramientas;
+	private Maquina maquina;
 	private Operario operario;
 	private Date fechaPlanificadaInicio;
 	private Date fechaPlanificadaFin;
@@ -87,6 +89,11 @@ public class FiltroTarea extends Filtro<Tarea> {
 
 		public Builder fechaPlanificadaFin(Date fechaPlanificadaFin) {
 			filtro.fechaPlanificadaFin = fechaPlanificadaFin;
+			return this;
+		}
+
+		public Builder maquina(Maquina maquina) {
+			filtro.maquina = maquina;
 			return this;
 		}
 
@@ -159,6 +166,9 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(this.fechaPlanificadaFin != null){
 			return;
 		}
+		if(this.maquina != null){
+			return;
+		}
 		if(this.partes != null){
 			return;
 		}
@@ -207,9 +217,10 @@ public class FiltroTarea extends Filtro<Tarea> {
 				((this.noEstado != null) ? (this.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
 						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
 						((this.herramientas != null) ? ("herr in (:hes) AND ") : ("")) +
-						((this.operario != null) ? (this.nombreEntidad + ".operario = :op AND ") : ("")) +
+						((this.operario != null) ? (this.nombreEntidad + ".operario = :ope AND ") : ("")) +
 						((this.fechaPlanificadaInicio != null) ? (this.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
 						((this.fechaPlanificadaFin != null) ? (this.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : ("")) +
+						((this.maquina != null) ? (this.nombreEntidad + ".proceso.parte.maquina = :maq AND ") : ("")) +
 						((this.partes != null) ? ("proc.parte in (:prs) AND ") : ("")) +
 						((this.piezas != null) ? ("pies in (:pis) AND ") : ("")) +
 						((this.proceso != null) ? (this.nombreEntidad + ".proceso = :pro AND ") : (""));
@@ -248,13 +259,16 @@ public class FiltroTarea extends Filtro<Tarea> {
 			query.setParameterList("hes", herramientas);
 		}
 		if(operario != null){
-			query.setParameter("op", operario);
+			query.setParameter("ope", operario);
 		}
 		if(fechaPlanificadaInicio != null){
 			query.setParameter("fpi", fechaPlanificadaInicio);
 		}
 		if(fechaPlanificadaFin != null){
 			query.setParameter("fpf", fechaPlanificadaFin);
+		}
+		if(maquina != null){
+			query.setParameter("maq", maquina);
 		}
 		if(partes != null){
 			query.setParameterList("prs", partes);
@@ -277,6 +291,9 @@ public class FiltroTarea extends Filtro<Tarea> {
 			for(Herramienta herramienta: herramientas){
 				session.update(herramienta);
 			}
+		}
+		if(maquina != null){
+			session.update(maquina);
 		}
 		if(partes != null){
 			for(Parte parte: partes){

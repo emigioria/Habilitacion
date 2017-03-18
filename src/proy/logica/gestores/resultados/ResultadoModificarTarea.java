@@ -11,6 +11,7 @@ import proy.logica.gestores.resultados.ResultadoModificarTarea.ErrorModificarTar
 public class ResultadoModificarTarea extends Resultado<ErrorModificarTarea> {
 
 	public enum ErrorModificarTarea {
+		OPERARIO_INCOMPLETO, PROCESO_INCOMPLETO, CANTIDAD_INCOMPLETA, FECHA_INCOMPLETA, FECHA_ANTERIOR_A_HOY, TAREA_NO_PLANIFICADA
 
 	}
 
