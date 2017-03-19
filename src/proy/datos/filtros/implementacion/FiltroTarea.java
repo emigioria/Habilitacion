@@ -37,6 +37,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private ArrayList<Parte> partes;
 	private ArrayList<Pieza> piezas;
 	private Proceso proceso;
+	private Boolean fechaFinalizada = false;
 
 	public static class Builder {
 
@@ -132,6 +133,11 @@ public class FiltroTarea extends Filtro<Tarea> {
 			return this;
 		}
 
+		public Builder ordenFechaFinalizada() {
+			filtro.fechaFinalizada = true;
+			return this;
+		}
+
 		public FiltroTarea build() {
 			filtro.setConsulta();
 			filtro.setNamedQuery();
@@ -176,6 +182,9 @@ public class FiltroTarea extends Filtro<Tarea> {
 			return;
 		}
 		if(this.proceso != null){
+			return;
+		}
+		if(this.fechaFinalizada){
 			return;
 		}
 		namedQuery = "listarTareas";
@@ -243,7 +252,13 @@ public class FiltroTarea extends Filtro<Tarea> {
 	}
 
 	private String getOrderBy() {
-		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaPlanificada ASC";
+		String orderBy;
+		if(fechaFinalizada){
+			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaHoraFin DESC";
+		}
+		else{
+			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaPlanificada ASC";
+		}
 		return orderBy;
 	}
 

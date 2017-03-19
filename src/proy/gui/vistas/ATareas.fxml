@@ -63,6 +63,7 @@
                   <Insets />
                </VBox.margin>
             </Button>
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#verHistorialDeTareas" prefWidth="75.0" text="Ver tareas finalizadas" textAlignment="CENTER" wrapText="true" />
          </children>
       </VBox>
       <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" prefWidth="75.0" text="Salir" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />

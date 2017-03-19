@@ -225,6 +225,11 @@ public class ATareasController extends ControladorRomano {
 	}
 
 	@FXML
+	public void verHistorialDeTareas() {
+		this.nuevaScene(VHistorialTareasController.URL_VISTA);
+	}
+
+	@FXML
 	public void buscar() {
 		Operario operarioBuscado = cbOperario.getValue();
 		if(operarioBuscado == nullOperario){

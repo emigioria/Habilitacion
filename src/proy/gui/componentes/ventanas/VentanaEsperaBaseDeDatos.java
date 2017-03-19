@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import proy.gui.componentes.IconoAnimadoEspera;
+import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.StyleCSS;
 
 public class VentanaEsperaBaseDeDatos extends Stage {
@@ -40,8 +41,9 @@ public class VentanaEsperaBaseDeDatos extends Stage {
 		ImageView imagen = new ImageView(new IconoAnimadoEspera());
 		panel.getChildren().add(imagen);
 
-		//Setear titulo de espera
+		//Setear icono y titulo de espera
 		this.setTitle("Esperando");
+		this.getIcons().add(new IconoAplicacion());
 
 		//Setear texto de espera
 		Label esperando = new Label("Esperando a la base de datos...");
