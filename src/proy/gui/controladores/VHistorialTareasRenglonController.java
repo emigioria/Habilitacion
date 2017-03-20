@@ -8,12 +8,12 @@ package proy.gui.controladores;
 
 import java.io.IOException;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TitledPane;
 import proy.datos.entidades.Tarea;
+import proy.gui.ControladorJavaFX;
 
-public class VHistorialTareasRenglonController {
+public class VHistorialTareasRenglonController extends ControladorJavaFX {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/VHistorialTareasRenglon.fxml";
 
@@ -41,8 +41,14 @@ public class VHistorialTareasRenglonController {
 		return root;
 	}
 
-	@FXML
-	private void initialize() {
-		tarea.getPausas();
+	@Override
+	protected void inicializar() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void salir() {
+
 	}
 }

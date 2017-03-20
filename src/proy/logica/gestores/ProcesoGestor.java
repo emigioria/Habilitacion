@@ -36,6 +36,8 @@ import proy.logica.gestores.resultados.ResultadoEliminarProcesos;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarProceso.ErrorModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
@@ -309,8 +311,13 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoEliminarTareas validarEliminarTareas(ArrayList<Tarea> tareas) {
-		//No hay validaciones hasta el momento
-		return new ResultadoEliminarTareas();
+		Set<ErrorEliminarTareas> errores = new HashSet<>();
+		for(Tarea tarea: tareas){
+			if(!EstadoTareaStr.FINALIZADA.equals(tarea.getEstado().getNombre())){
+				errores.add(ErrorEliminarTareas.HAY_TAREA_FINALIZADA);
+			}
+		}
+		return new ResultadoEliminarTareas(errores.toArray(new ErrorEliminarTareas[0]));
 	}
 
 	public ResultadoEliminarTarea eliminarTarea(Tarea tarea) throws PersistenciaException {
@@ -329,23 +336,23 @@ public class ProcesoGestor {
 		return new ResultadoEliminarTarea(errores.toArray(new ErrorEliminarTarea[0]));
 	}
 
-	public ResultadoModificarTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea pausarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea pausarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea terminarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea terminarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
-	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 }

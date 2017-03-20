@@ -7,9 +7,9 @@
 package proy.gui.controladores;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,12 +25,17 @@ import javafx.scene.input.MouseEvent;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Tarea;
+import proy.datos.filtros.implementacion.FiltroTarea;
+import proy.excepciones.PersistenciaException;
+import proy.gui.ControladorJavaFX;
 import proy.gui.componentes.IconoCancelar;
 import proy.gui.componentes.IconoDetener;
 import proy.gui.componentes.IconoPausa;
 import proy.gui.componentes.IconoPlay;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModificarEstadoTarea;
 
-public class VTareasOperarioTabController {
+public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/VTareasOperarioTab.fxml";
 
@@ -76,12 +81,10 @@ public class VTareasOperarioTabController {
 
 	private Tarea tareaEjecutando;
 
-	private Runnable refreshAction;
+	private Tarea tareaMostrada;
 
-	public VTareasOperarioTabController(Operario operario, List<Tarea> tareas, Runnable refreshAction) throws IOException {
+	public VTareasOperarioTabController(Operario operario) throws IOException {
 		this.operario = operario;
-		this.tareas = tareas;
-		this.refreshAction = refreshAction;
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource(URL_VISTA));
@@ -95,36 +98,15 @@ public class VTareasOperarioTabController {
 		loader.load();
 	}
 
-	@FXML
-	private void initialize() throws IOException {
+	@Override
+	protected void inicializar() {
 		//Configurar botones
 		configurarBotones();
 
 		//Setear operario
 		operarioTab.setText(operario.toString());
 
-		//Cargar tareas
-		for(final Tarea tarea: tareas){
-			TitledPane renglon = new VTareasTareaRenglonController(tarea).getRenglon();
-			renglon.focusedProperty().addListener((obs, oldV, newV) -> {
-				if(newV){
-					cargarTarea(tarea);
-				}
-			});
-			renglon.setText(getNombreTarea(tarea));
-			tareasBox.getPanes().add(renglon);
-		}
-
-		//Mostrar tarea
-		if(tareas.size() > 0){
-			cargarTarea(tareas.get(0));
-		}
-		for(Tarea tarea: tareas){
-			if(EstadoTareaStr.EJECUTANDO.equals(tarea.getEstado().getNombre())){
-				tareaEjecutando = tarea;
-				cargarTarea(tareaEjecutando);
-			}
-		}
+		actualizar();
 	}
 
 	private String getNombreTarea(Tarea tarea) {
@@ -132,66 +114,317 @@ public class VTareasOperarioTabController {
 	}
 
 	private void configurarBotones() {
-		Platform.runLater(() -> {
-			ImageView imagen = new ImageView(new IconoDetener());
-			imagen.setFitWidth(botonDetener.getWidth());
-			imagen.setFitHeight(botonDetener.getHeight());
-			botonDetener.setGraphic(imagen);
+		ImageView imagen = new ImageView(new IconoDetener());
+		imagen.setFitWidth(botonDetener.getWidth());
+		imagen.setFitHeight(botonDetener.getHeight());
+		botonDetener.setGraphic(imagen);
 
-			imagen = new ImageView(new IconoPlay());
-			imagen.setFitWidth(botonPlay.getWidth());
-			imagen.setFitHeight(botonPlay.getHeight());
-			botonPlay.setGraphic(imagen);
+		imagen = new ImageView(new IconoPlay());
+		imagen.setFitWidth(botonPlay.getWidth());
+		imagen.setFitHeight(botonPlay.getHeight());
+		botonPlay.setGraphic(imagen);
 
-			imagen = new ImageView(new IconoCancelar());
-			imagen.setFitWidth(botonCancelar.getWidth());
-			imagen.setFitHeight(botonCancelar.getHeight());
-			botonCancelar.setGraphic(imagen);
+		imagen = new ImageView(new IconoCancelar());
+		imagen.setFitWidth(botonCancelar.getWidth());
+		imagen.setFitHeight(botonCancelar.getHeight());
+		botonCancelar.setGraphic(imagen);
 
-			imagen = new ImageView(new IconoPausa());
-			imagen.setFitWidth(botonPausa.getWidth());
-			imagen.setFitHeight(botonPausa.getHeight());
-			botonPausa.setGraphic(imagen);
+		imagen = new ImageView(new IconoPausa());
+		imagen.setFitWidth(botonPausa.getWidth());
+		imagen.setFitHeight(botonPausa.getHeight());
+		botonPausa.setGraphic(imagen);
 
-			final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5 5 5 5;";
-			final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
-			botonDetener.setStyle(STYLE_NORMAL);
-			botonPlay.setStyle(STYLE_NORMAL);
-			botonPausa.setStyle(STYLE_NORMAL);
-			botonCancelar.setStyle(STYLE_NORMAL);
+		final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5 5 5 5;";
+		final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
+		botonDetener.setStyle(STYLE_NORMAL);
+		botonPlay.setStyle(STYLE_NORMAL);
+		botonPausa.setStyle(STYLE_NORMAL);
+		botonCancelar.setStyle(STYLE_NORMAL);
 
-			EventHandler<MouseEvent> eventoClickPressed = new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					((Button) event.getSource()).setStyle(STYLE_PRESSED);
-				}
-			};
-			EventHandler<MouseEvent> eventoClickReleased = new EventHandler<MouseEvent>() {
-				@Override
-				public void handle(MouseEvent event) {
-					((Button) event.getSource()).setStyle(STYLE_NORMAL);
-				}
-			};
-			botonPlay.setOnMousePressed(eventoClickPressed);
-			botonPlay.setOnMouseReleased(eventoClickReleased);
-			botonDetener.setOnMousePressed(eventoClickPressed);
-			botonDetener.setOnMouseReleased(eventoClickReleased);
-			botonCancelar.setOnMousePressed(eventoClickPressed);
-			botonCancelar.setOnMouseReleased(eventoClickReleased);
-			botonPausa.setOnMousePressed(eventoClickPressed);
-			botonPausa.setOnMouseReleased(eventoClickReleased);
+		EventHandler<MouseEvent> eventoClickPressed = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				((Button) event.getSource()).setStyle(STYLE_PRESSED);
+			}
+		};
+		EventHandler<MouseEvent> eventoClickReleased = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				((Button) event.getSource()).setStyle(STYLE_NORMAL);
+			}
+		};
+		botonPlay.setOnMousePressed(eventoClickPressed);
+		botonPlay.setOnMouseReleased(eventoClickReleased);
+		botonDetener.setOnMousePressed(eventoClickPressed);
+		botonDetener.setOnMouseReleased(eventoClickReleased);
+		botonCancelar.setOnMousePressed(eventoClickPressed);
+		botonCancelar.setOnMouseReleased(eventoClickReleased);
+		botonPausa.setOnMousePressed(eventoClickPressed);
+		botonPausa.setOnMouseReleased(eventoClickReleased);
 
-			botonPlay.setTooltip(new Tooltip("Comenzar tarea"));
-			botonDetener.setTooltip(new Tooltip("Detener tarea"));
-			botonCancelar.setTooltip(new Tooltip("Cancelar tarea"));
-			botonPausa.setTooltip(new Tooltip("Pausar tarea"));
-		});
+		botonPlay.setTooltip(new Tooltip("Comenzar tarea"));
+		botonDetener.setTooltip(new Tooltip("Terminar tarea"));
+		botonCancelar.setTooltip(new Tooltip("Cancelar tarea"));
+		botonPausa.setTooltip(new Tooltip("Pausar tarea"));
 	}
 
-	private void cargarTarea(Tarea tarea) {
+	@FXML
+	private void comenzarReanudarTarea() {
+		switch(tareaMostrada.getEstado().getNombre()) {
+		case PLANIFICADA:
+			comenzarTarea();
+			break;
+		case PAUSADA:
+			reanudarTarea();
+			break;
+		default:
+			throw new RuntimeException();
+		}
+	}
+
+	private void comenzarTarea() {
+		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarEstadoTarea = coordinador.comenzarTarea(tareaMostrada);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarEstadoTarea.hayErrores()){
+			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+				switch(r) {
+				//TODO hacer validador primero
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return;
+		}
+		else{
+			actualizar();
+			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
+			return;
+		}
+	}
+
+	private void reanudarTarea() {
+		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarEstadoTarea = coordinador.reanudarTarea(tareaMostrada);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarEstadoTarea.hayErrores()){
+			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+				switch(r) {
+				//TODO hacer validador primero
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return;
+		}
+		else{
+			actualizar();
+			presentadorVentanas.presentarToast("Tarea reanudada con éxito.", stage);
+			return;
+		}
+	}
+
+	@FXML
+	private void pausarTarea() {
+		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarEstadoTarea = coordinador.pausarTarea(tareaMostrada);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarEstadoTarea.hayErrores()){
+			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+				switch(r) {
+				//TODO hacer validador primero
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return;
+		}
+		else{
+			actualizar();
+			presentadorVentanas.presentarToast("Tarea pausada con éxito.", stage);
+			return;
+		}
+	}
+
+	@FXML
+	private void detenerTarea() {
+		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarEstadoTarea = coordinador.terminarTarea(tareaMostrada);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarEstadoTarea.hayErrores()){
+			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+				switch(r) {
+				//TODO hacer validador primero
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return;
+		}
+		else{
+			actualizar();
+			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
+			return;
+		}
+	}
+
+	@FXML
+	private void cancelarTarea() {
+		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		StringBuffer erroresBfr = new StringBuffer();
+
+		//Inicio transacción al gestor
+		try{
+			resultadoModificarEstadoTarea = coordinador.cancelarTarea(tareaMostrada);
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+			return;
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+			return;
+		}
+
+		//Tratamiento de errores
+		if(resultadoModificarEstadoTarea.hayErrores()){
+			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+				switch(r) {
+				//TODO hacer validador primero
+				}
+			}
+
+			String errores = erroresBfr.toString();
+			if(!errores.isEmpty()){
+				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
+			}
+			return;
+		}
+		else{
+			actualizar();
+			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
+			return;
+		}
+	}
+
+	public Tab getTab() {
+		return operarioTab;
+	}
+
+	public void actualizar() {
+		tareasBox.getPanes().clear();
+
+		//Cargar tareas
+		ArrayList<EstadoTareaStr> estados = new ArrayList<>();
+		estados.add(EstadoTareaStr.EJECUTANDO);
+		estados.add(EstadoTareaStr.PAUSADA);
+		estados.add(EstadoTareaStr.PLANIFICADA);
+
+		try{
+			tareas = coordinador.listarTareas(new FiltroTarea.Builder().estados(estados).operario(operario).ordenFechaFinalizada().build());
+
+			for(final Tarea tarea: tareas){
+				TitledPane renglon = new VTareasTareaRenglonController(tarea).getRenglon();
+				renglon.focusedProperty().addListener((obs, oldV, newV) -> {
+					if(newV){
+						mostrarTarea(tarea);
+					}
+				});
+				renglon.setText(getNombreTarea(tarea));
+				tareasBox.getPanes().add(renglon);
+			}
+
+			//Mostrar la tarea que se está ejecutando
+			tareaEjecutando = null;
+			for(Tarea tarea: tareas){
+				if(EstadoTareaStr.EJECUTANDO.equals(tarea.getEstado().getNombre())){
+					tareaEjecutando = tarea;
+					mostrarTarea(tareaEjecutando);
+				}
+			}
+
+			//Si no se mostró ninguna tarea ejecutando
+			if(tareaEjecutando == null){
+				//Actualizar tarea que ya estaba o mostrar la primera en la lista
+				if(tareaMostrada != null){
+					mostrarTarea(tareaMostrada);
+				}
+				else{
+					if(tareas.size() > 0){
+						mostrarTarea(tareas.get(0));
+					}
+				}
+			}
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+		}
+	}
+
+	private void mostrarTarea(Tarea tarea) {
 		if(tareaEjecutando != null && tarea != tareaEjecutando){
 			return;
 		}
+		tareaMostrada = tarea;
 		numeroTarea.setText(getNombreTarea(tarea));
 		estadoTarea.setText(tarea.getEstado().toString());
 		nombreParte.setText(tarea.getProceso().getParte().toString());
@@ -242,31 +475,8 @@ public class VTareasOperarioTabController {
 		}
 	}
 
-	@FXML
-	private void comenzarReanudarTarea() {
+	@Override
+	protected void salir() {
 
-		refreshAction.run();
-	}
-
-	@FXML
-	private void pausarTarea() {
-
-		refreshAction.run();
-	}
-
-	@FXML
-	private void detenerTarea() {
-
-		refreshAction.run();
-	}
-
-	@FXML
-	private void cancelarTarea() {
-
-		refreshAction.run();
-	}
-
-	public Tab getTab() {
-		return operarioTab;
 	}
 }

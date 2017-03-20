@@ -6,18 +6,13 @@
  */
 package proy.gui.controladores;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
-import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Operario;
-import proy.datos.entidades.Tarea;
 import proy.datos.filtros.implementacion.FiltroOperario;
-import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
 import proy.gui.componentes.ventanas.VentanaPersonalizada;
@@ -29,9 +24,23 @@ public class VTareasController extends ControladorRomano {
 	@FXML
 	private TabPane operarioBox;
 
+	private AnimationTimer timer;
+
 	@Override
 	protected void inicializar() {
-		actualizar();
+		timer = new AnimationTimer() {
+
+			long anterior = -1;
+
+			@Override
+			public void handle(long now) {
+				if(now - anterior > 60000000000L){
+					actualizar();
+					anterior = now;
+				}
+			}
+		};
+		timer.start();
 	}
 
 	@FXML
@@ -46,20 +55,22 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
+		int indiceAnterior = operarioBox.getSelectionModel().getSelectedIndex();
 		operarioBox.getTabs().clear();
 
 		try{
-			ArrayList<EstadoTareaStr> estados = new ArrayList<>();
-			estados.add(EstadoTareaStr.EJECUTANDO);
-			estados.add(EstadoTareaStr.PAUSADA);
-			estados.add(EstadoTareaStr.PLANIFICADA);
-
-			List<Tarea> tareas = coordinador.listarTareas(new FiltroTarea.Builder().estados(estados).ordenFechaFinalizada().build());
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
-			Map<Operario, List<Tarea>> tareasPorOperario = tareas.stream().collect(Collectors.groupingBy(Tarea::getOperario));
 
 			for(Operario o: operarios){
-				operarioBox.getTabs().add(new VTareasOperarioTabController(o, tareasPorOperario.getOrDefault(o, new ArrayList<>()), () -> actualizar()).getTab());
+				final VTareasOperarioTabController renglonController = new VTareasOperarioTabController(o);
+				renglonController.setCoordinador(coordinador);
+				renglonController.setStage(stage);
+				operarioBox.getTabs().add(renglonController.getTab());
+				renglonController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
+					if(newV){
+						renglonController.actualizar();
+					}
+				});
 			}
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
@@ -69,12 +80,22 @@ public class VTareasController extends ControladorRomano {
 
 		for(int i = 0; i < operarioBox.getTabs().size(); i++){
 			operarioBox.getSelectionModel().select(i);
-			operarioBox.getSelectionModel().select(0);
 		}
+
+		if(indiceAnterior == -1 && operarioBox.getTabs().size() > 0){
+			indiceAnterior = 0;
+		}
+		operarioBox.getSelectionModel().select(indiceAnterior);
 	}
 
 	@FXML
 	private void enviarComentario() {
 		presentadorVentanas.presentarVentanaPersonalizada(NComentarioController.URL_VISTA, coordinador, stage).showAndWait();
+	}
+
+	@Override
+	public Boolean sePuedeSalir() {
+		timer.stop();
+		return super.sePuedeSalir();
 	}
 }

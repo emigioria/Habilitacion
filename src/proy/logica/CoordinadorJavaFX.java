@@ -52,6 +52,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarProceso.ErrorEliminarProceso;
 import proy.logica.gestores.resultados.ResultadoEliminarTarea;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
 import proy.logica.gestores.resultados.ResultadoModificarMaquina;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
@@ -251,23 +252,23 @@ public class CoordinadorJavaFX {
 		return gestorProceso.eliminarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.comenzarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea pausarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea pausarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.pausarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.reanudarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea terminarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea terminarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.terminarTarea(tarea);
 	}
 
-	public ResultadoModificarTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
+	public ResultadoModificarEstadoTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
 		return gestorProceso.cancelarTarea(tarea);
 	}
 

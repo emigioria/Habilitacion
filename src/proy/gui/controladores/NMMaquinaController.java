@@ -528,15 +528,16 @@ public class NMMaquinaController extends ControladorRomano {
 	}
 
 	private String tratarErroresEliminarTareas(ResultadoEliminarTareas resultadoTareas) {
-		String errores = "";
+		StringBuffer erroresBfr = new StringBuffer();
 		if(resultadoTareas.hayErrores()){
 			for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
 				switch(ep) {
-				//Todavia no hay errores en eliminar tarea
+				case HAY_TAREA_FINALIZADA:
+					throw new RuntimeException();
 				}
 			}
 		}
-		return errores;
+		return erroresBfr.toString();
 	}
 
 	private String tratarErroresEliminarPiezasDeParte(ResultadoEliminarPiezasDeParte resultadoEliminarPiezasDeParte) {
@@ -557,7 +558,7 @@ public class NMMaquinaController extends ControladorRomano {
 		if(resultadoEliminarProcesos.hayErrores()){
 			for(ErrorEliminarProcesos ep: resultadoEliminarProcesos.getErrores()){
 				switch(ep) {
-				//Todavia no hay errores en eliminar procesos
+				//No hay errores todavía
 				}
 			}
 		}

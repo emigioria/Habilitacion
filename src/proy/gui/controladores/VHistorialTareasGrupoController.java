@@ -18,8 +18,9 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import proy.comun.ConversorFechas;
 import proy.datos.entidades.Tarea;
+import proy.gui.ControladorJavaFX;
 
-public class VHistorialTareasGrupoController {
+public class VHistorialTareasGrupoController extends ControladorJavaFX {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/VHistorialTareasGrupo.fxml";
 
@@ -35,11 +36,8 @@ public class VHistorialTareasGrupoController {
 
 	private Date fecha;
 
-	private List<Tarea> tareas;
-
 	public VHistorialTareasGrupoController(Date fecha, List<Tarea> tareas) throws IOException {
 		this.fecha = fecha;
-		this.tareas = tareas;
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource(URL_VISTA));
@@ -52,18 +50,24 @@ public class VHistorialTareasGrupoController {
 		});
 
 		root = loader.load();
+
+		//Cargar renglones de tareas
+		for(Tarea t: tareas){
+			renglonBox.getPanes().add(new VHistorialTareasRenglonController(t).getRenglon());
+		}
 	}
 
 	public Node getNode() {
 		return root;
 	}
 
-	@FXML
-	private void initialize() throws IOException {
-		for(Tarea t: tareas){
-			renglonBox.getPanes().add(new VHistorialTareasRenglonController(t).getRenglon());
-		}
-
+	@Override
+	protected void inicializar() {
 		lbFecha.setText(conversorFechas.diaMesYAnioToString(fecha));
+	}
+
+	@Override
+	protected void salir() {
+
 	}
 }

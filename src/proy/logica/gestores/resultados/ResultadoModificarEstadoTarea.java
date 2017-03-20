@@ -6,16 +6,15 @@
  */
 package proy.logica.gestores.resultados;
 
-import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModificarEstadoTarea;
 
-public class ResultadoEliminarTareas extends Resultado<ErrorEliminarTareas> {
+public class ResultadoModificarEstadoTarea extends Resultado<ErrorModificarEstadoTarea> {
 
-	public enum ErrorEliminarTareas {
-		HAY_TAREA_FINALIZADA
+	public enum ErrorModificarEstadoTarea {
 
 	}
 
-	public ResultadoEliminarTareas(ErrorEliminarTareas... errores) {
+	public ResultadoModificarEstadoTarea(ErrorModificarEstadoTarea... errores) {
 		super(errores);
 	}
 }

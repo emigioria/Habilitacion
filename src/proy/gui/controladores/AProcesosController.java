@@ -219,9 +219,10 @@ public class AProcesosController extends ControladorRomano {
 				case ERROR_AL_ELIMINAR_TAREAS:
 					ResultadoEliminarTareas resultadoTareas = resultadoEliminarProceso.getResultadoEliminarTareas();
 					if(resultadoTareas.hayErrores()){
-						for(ErrorEliminarTareas ep: resultadoTareas.getErrores()){
-							switch(ep) {
-							//Todavia no hay errores en eliminar tarea
+						for(ErrorEliminarTareas eet: resultadoTareas.getErrores()){
+							switch(eet) {
+							case HAY_TAREA_FINALIZADA:
+								throw new RuntimeException();
 							}
 						}
 					}
