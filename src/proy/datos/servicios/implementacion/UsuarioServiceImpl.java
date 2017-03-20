@@ -8,6 +8,7 @@ package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -30,6 +31,9 @@ import proy.excepciones.SaveUpdateException;
 public class UsuarioServiceImpl implements UsuarioService {
 
 	private SessionFactory sessionFactory;
+
+	@Resource
+	private AttachEstado attachEstado;
 
 	@Autowired
 	public UsuarioServiceImpl(SessionFactory sessionFactory) {
@@ -81,7 +85,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 			Operario operario;
 			for(int i = 0; i < operarios.size(); i++){
 				operario = operarios.get(i);
-				operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
+				operario.setEstado(attachEstado.attachEstado(session, operario.getEstado()));
 				session.save(operario);
 				if(i % 20 == 0){
 					//flush a batch of inserts and release memory:
@@ -100,7 +104,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public void actualizarOperario(Operario operario) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			operario.setEstado(AttachEstado.attachEstado(session, operario.getEstado()));
+			operario.setEstado(attachEstado.attachEstado(session, operario.getEstado()));
 			session.update(operario);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

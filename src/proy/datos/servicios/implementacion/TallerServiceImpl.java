@@ -8,6 +8,7 @@ package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -31,6 +32,9 @@ public class TallerServiceImpl implements TallerService {
 
 	private SessionFactory sessionFactory;
 
+	@Resource
+	private AttachEstado attachEstado;
+
 	@Autowired
 	public TallerServiceImpl(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
@@ -53,9 +57,9 @@ public class TallerServiceImpl implements TallerService {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
 			for(Parte parte: maquina.getPartes()){
-				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 				for(Pieza pieza: parte.getPiezas()){
-					pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+					pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 				}
 			}
 			session.save(maquina);
@@ -71,9 +75,9 @@ public class TallerServiceImpl implements TallerService {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
 			for(Parte parte: maquina.getPartes()){
-				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 				for(Pieza pieza: parte.getPiezas()){
-					pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+					pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 				}
 			}
 			session.update(maquina);
@@ -113,7 +117,7 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarParte(Parte parte) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+			parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 			session.save(parte);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -129,7 +133,7 @@ public class TallerServiceImpl implements TallerService {
 			Parte parte;
 			for(int i = 0; i < partes.size(); i++){
 				parte = partes.get(i);
-				parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+				parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 				session.update(parte);
 				if(i % 20 == 0){
 					//flush a batch of inserts and release memory:
@@ -151,7 +155,7 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarParte(Parte parte) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			parte.setEstado(AttachEstado.attachEstado(session, parte.getEstado()));
+			parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 			session.update(parte);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -189,7 +193,7 @@ public class TallerServiceImpl implements TallerService {
 	public void guardarPieza(Pieza pieza) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+			pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 			session.save(pieza);
 		} catch(Exception e){
 			e.printStackTrace();
@@ -202,7 +206,7 @@ public class TallerServiceImpl implements TallerService {
 	public void actualizarPieza(Pieza pieza) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			pieza.setEstado(AttachEstado.attachEstado(session, pieza.getEstado()));
+			pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 			session.update(pieza);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

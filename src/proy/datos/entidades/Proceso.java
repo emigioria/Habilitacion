@@ -178,7 +178,7 @@ public class Proceso {
 		Integer cantidadTareas = 0;
 		for(Tarea t: this.getTareas()){
 			if(EstadoTareaStr.FINALIZADA.equals(t.getEstado().getNombre())){
-				suma += (t.getFechaHoraFin().getTime() - t.getFechaHoraInicio().getTime());
+				suma += t.getTiempoEjecutando();
 				cantidadTareas++;
 			}
 		}

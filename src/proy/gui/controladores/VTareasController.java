@@ -6,14 +6,20 @@
  */
 package proy.gui.controladores;
 
-import javafx.event.EventHandler;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TabPane;
+import proy.datos.clases.EstadoTareaStr;
+import proy.datos.entidades.Operario;
+import proy.datos.entidades.Tarea;
+import proy.datos.filtros.implementacion.FiltroOperario;
+import proy.datos.filtros.implementacion.FiltroTarea;
+import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorRomano;
-import proy.gui.componentes.IconoDetener;
-import proy.gui.componentes.IconoPlay;
 import proy.gui.componentes.ventanas.VentanaPersonalizada;
 
 public class VTareasController extends ControladorRomano {
@@ -21,42 +27,11 @@ public class VTareasController extends ControladorRomano {
 	public static final String URL_VISTA = "/proy/gui/vistas/VTareas.fxml";
 
 	@FXML
-	private Button botonDetener;
-
-	@FXML
-	private Button botonPlay;
+	private TabPane operarioBox;
 
 	@Override
 	protected void inicializar() {
-		ImageView imagen = new ImageView(new IconoDetener());
-		imagen.setFitWidth(botonDetener.getWidth());
-		imagen.setFitHeight(botonDetener.getHeight());
-		botonDetener.setGraphic(imagen);
-		imagen = new ImageView(new IconoPlay());
-		imagen.setFitWidth(botonPlay.getWidth());
-		imagen.setFitHeight(botonPlay.getHeight());
-		botonPlay.setGraphic(imagen);
-
-		final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5 5 5 5;";
-		final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
-		botonDetener.setStyle(STYLE_NORMAL);
-		botonPlay.setStyle(STYLE_NORMAL);
-		EventHandler<MouseEvent> eventoClickPressed = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				((Button) event.getSource()).setStyle(STYLE_PRESSED);
-			}
-		};
-		EventHandler<MouseEvent> eventoClickReleased = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				((Button) event.getSource()).setStyle(STYLE_NORMAL);
-			}
-		};
-		botonPlay.setOnMousePressed(eventoClickPressed);
-		botonPlay.setOnMouseReleased(eventoClickReleased);
-		botonDetener.setOnMousePressed(eventoClickPressed);
-		botonDetener.setOnMouseReleased(eventoClickReleased);
+		actualizar();
 	}
 
 	@FXML
@@ -71,7 +46,31 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
+		operarioBox.getTabs().clear();
 
+		try{
+			ArrayList<EstadoTareaStr> estados = new ArrayList<>();
+			estados.add(EstadoTareaStr.EJECUTANDO);
+			estados.add(EstadoTareaStr.PAUSADA);
+			estados.add(EstadoTareaStr.PLANIFICADA);
+
+			List<Tarea> tareas = coordinador.listarTareas(new FiltroTarea.Builder().estados(estados).ordenFechaFinalizada().build());
+			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
+			Map<Operario, List<Tarea>> tareasPorOperario = tareas.stream().collect(Collectors.groupingBy(Tarea::getOperario));
+
+			for(Operario o: operarios){
+				operarioBox.getTabs().add(new VTareasOperarioTabController(o, tareasPorOperario.getOrDefault(o, new ArrayList<>()), () -> actualizar()).getTab());
+			}
+		} catch(PersistenciaException e){
+			presentadorVentanas.presentarExcepcion(e, stage);
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
+		}
+
+		for(int i = 0; i < operarioBox.getTabs().size(); i++){
+			operarioBox.getSelectionModel().select(i);
+			operarioBox.getSelectionModel().select(0);
+		}
 	}
 
 	@FXML

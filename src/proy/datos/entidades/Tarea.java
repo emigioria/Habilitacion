@@ -166,6 +166,40 @@ public class Tarea {
 		return pausas;
 	}
 
+	public Long getTiempoEjecutando() {
+		Long tiempoTotal = 0L;
+		Long tiempoPausas = 0L;
+		switch(this.getEstado().getNombre()) {
+		case FINALIZADA:
+			tiempoTotal = (this.getFechaHoraFin().getTime() - this.getFechaHoraInicio().getTime());
+			for(Pausa p: this.getPausas()){
+				tiempoPausas += p.getTiempo();
+			}
+			break;
+		case EJECUTANDO:
+			tiempoTotal = (new Date().getTime() - this.getFechaHoraInicio().getTime());
+			for(Pausa p: this.getPausas()){
+				tiempoPausas += p.getTiempo();
+			}
+			break;
+		case PAUSADA:
+			Pausa ultimaPausa = null;
+			for(Pausa p: this.getPausas()){
+				if(p.getFechaHoraFin() == null){
+					ultimaPausa = p;
+				}
+				else{
+					tiempoPausas += p.getTiempo();
+				}
+			}
+			tiempoTotal = (ultimaPausa.getFechaHoraInicio().getTime() - this.getFechaHoraInicio().getTime());
+			break;
+		case PLANIFICADA:
+			break;
+		}
+		return tiempoTotal - tiempoPausas;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -28,7 +28,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoTareaStr noEstado;
-	private EstadoTareaStr estado;
+	private ArrayList<EstadoTareaStr> estados;
 	private ArrayList<Herramienta> herramientas;
 	private Maquina maquina;
 	private Operario operario;
@@ -74,7 +74,17 @@ public class FiltroTarea extends Filtro<Tarea> {
 		}
 
 		public Builder estado(EstadoTareaStr estado) {
-			filtro.estado = estado;
+			if(estado != null){
+				filtro.estados = new ArrayList<>();
+				filtro.estados.add(estado);
+			}
+			return this;
+		}
+
+		public Builder estados(ArrayList<EstadoTareaStr> estados) {
+			if(estados != null && !estados.isEmpty()){
+				filtro.estados = estados;
+			}
 			return this;
 		}
 
@@ -157,7 +167,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(this.noEstado != null){
 			return;
 		}
-		if(this.estado != null){
+		if(this.estados != null){
 			return;
 		}
 		if(this.herramientas != null){
@@ -224,7 +234,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private String getWhere() {
 		String where =
 				((this.noEstado != null) ? (this.nombreEntidad + ".estado.nombre != :nEs AND ") : ("")) +
-						((this.estado != null) ? (this.nombreEntidad + ".estado.nombre = :est AND ") : ("")) +
+						((this.estados != null) ? (this.nombreEntidad + ".estado.nombre in (:ets) AND ") : ("")) +
 						((this.herramientas != null) ? ("herr in (:hes) AND ") : ("")) +
 						((this.operario != null) ? (this.nombreEntidad + ".operario = :ope AND ") : ("")) +
 						((this.fechaPlanificadaInicio != null) ? (this.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
@@ -267,8 +277,8 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(noEstado != null){
 			query.setParameter("nEs", noEstado);
 		}
-		if(estado != null){
-			query.setParameter("est", estado);
+		if(estados != null){
+			query.setParameterList("ets", estados);
 		}
 		if(herramientas != null){
 			query.setParameterList("hes", herramientas);

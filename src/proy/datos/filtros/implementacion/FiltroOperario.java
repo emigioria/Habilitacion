@@ -143,7 +143,7 @@ public class FiltroOperario extends Filtro<Operario> {
 	}
 
 	private String getOrderBy() {
-		String orderBy = " ORDER BY " + this.nombreEntidad + ".dni ASC";
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".nombre ASC";
 		return orderBy;
 	}
 

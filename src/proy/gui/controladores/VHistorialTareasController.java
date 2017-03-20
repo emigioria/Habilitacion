@@ -6,10 +6,10 @@
  */
 package proy.gui.controladores;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
@@ -38,20 +38,16 @@ public class VHistorialTareasController extends ControladorRomano {
 
 		try{
 			List<Tarea> tareas = coordinador.listarTareas(new FiltroTarea.Builder().estado(EstadoTareaStr.FINALIZADA).ordenFechaFinalizada().build());
-			tareas.addAll(tareas);
-			tareas.addAll(tareas);
-			tareas.addAll(tareas);
 			Map<Date, List<Tarea>> tareasPorFecha = tareas.stream().collect(Collectors.groupingBy(Tarea::getFechaHoraFin));
-			tareasPorFecha.forEach((f, l) -> {
-				try{
-					grupoVBox.getChildren().add(new VHistorialTareasGrupoController(f, l).getNode());
-				} catch(IOException e){
-					presentadorVentanas.presentarExcepcionInesperada(e, stage);
-				}
-			});
+			for(Entry<Date, List<Tarea>> e: tareasPorFecha.entrySet()){
+				grupoVBox.getChildren().add(new VHistorialTareasGrupoController(e.getKey(), e.getValue()).getNode());
+			}
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
+		} catch(Exception e){
+			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 		}
+
 	}
 
 }

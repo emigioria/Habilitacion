@@ -94,6 +94,15 @@ public class Pausa implements Serializable {
 		this.fechaHoraFin = fechaHoraFin;
 	}
 
+	public Long getTiempo() {
+		if(this.getFechaHoraFin() != null){
+			return this.getFechaHoraFin().getTime() - this.getFechaHoraInicio().getTime();
+		}
+		else{
+			return new Date().getTime() - this.getFechaHoraInicio().getTime();
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

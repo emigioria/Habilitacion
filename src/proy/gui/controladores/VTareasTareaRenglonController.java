@@ -13,15 +13,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TitledPane;
 import proy.datos.entidades.Tarea;
 
-public class VHistorialTareasRenglonController {
+public class VTareasTareaRenglonController {
 
-	public static final String URL_VISTA = "/proy/gui/vistas/VHistorialTareasRenglon.fxml";
+	public static final String URL_VISTA = "/proy/gui/vistas/VTareasTareaRenglon.fxml";
 
 	private TitledPane root;
 
 	private Tarea tarea;
 
-	public VHistorialTareasRenglonController(Tarea tarea) throws IOException {
+	public VTareasTareaRenglonController(Tarea tarea) throws IOException {
 		this.tarea = tarea;
 
 		FXMLLoader loader = new FXMLLoader();

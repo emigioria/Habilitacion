@@ -8,6 +8,7 @@ package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
 
+import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 
 import org.hibernate.Session;
@@ -29,6 +30,9 @@ import proy.excepciones.SaveUpdateException;
 public class MaterialServiceImpl implements MaterialService {
 
 	private SessionFactory sessionFactory;
+
+	@Resource
+	private AttachEstado attachEstado;
 
 	@Autowired
 	public MaterialServiceImpl(SessionFactory sessionFactory) {
@@ -54,7 +58,7 @@ public class MaterialServiceImpl implements MaterialService {
 			Herramienta herramienta;
 			for(int i = 0; i < herramientas.size(); i++){
 				herramienta = herramientas.get(i);
-				herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+				herramienta.setEstado(attachEstado.attachEstado(session, herramienta.getEstado()));
 				session.save(herramienta);
 				if(i % 20 == 0){
 					//flush a batch of inserts and release memory:
@@ -73,7 +77,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public void actualizarHerramienta(Herramienta herramienta) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+			herramienta.setEstado(attachEstado.attachEstado(session, herramienta.getEstado()));
 			session.update(herramienta);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -89,7 +93,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public void bajaHerramienta(Herramienta herramienta) throws PersistenciaException {
 		try{
 			Session session = getSessionFactory().getCurrentSession();
-			herramienta.setEstado(AttachEstado.attachEstado(session, herramienta.getEstado()));
+			herramienta.setEstado(attachEstado.attachEstado(session, herramienta.getEstado()));
 			session.delete(herramienta);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();
@@ -115,7 +119,7 @@ public class MaterialServiceImpl implements MaterialService {
 			Material material;
 			for(int i = 0; i < materiales.size(); i++){
 				material = materiales.get(i);
-				material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+				material.setEstado(attachEstado.attachEstado(session, material.getEstado()));
 				session.save(material);
 				if(i % 20 == 0){
 					//flush a batch of inserts and release memory:
@@ -134,7 +138,7 @@ public class MaterialServiceImpl implements MaterialService {
 	public void actualizarMaterial(Material material) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
-			material.setEstado(AttachEstado.attachEstado(session, material.getEstado()));
+			material.setEstado(attachEstado.attachEstado(session, material.getEstado()));
 			session.update(material);
 		} catch(EntityNotFoundException e){
 			e.printStackTrace();

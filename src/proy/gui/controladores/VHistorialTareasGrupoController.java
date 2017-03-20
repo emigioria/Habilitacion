@@ -61,7 +61,7 @@ public class VHistorialTareasGrupoController {
 	@FXML
 	private void initialize() throws IOException {
 		for(Tarea t: tareas){
-			renglonBox.getPanes().add(new VHistorialTareasRenglonController(t).getNode());
+			renglonBox.getPanes().add(new VHistorialTareasRenglonController(t).getRenglon());
 		}
 
 		lbFecha.setText(conversorFechas.diaMesYAnioToString(fecha));
