@@ -213,7 +213,7 @@ public class NMTareaController extends ControladorRomano {
 		tarea.setOperario(cbOperario.getValue());
 		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
 		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
-		tarea.setObservaciones(observaciones.getText().trim());
+		tarea.setObservacionesTarea(observaciones.getText().trim());
 
 		//Inicio transacción al gestor
 		try{
@@ -269,7 +269,7 @@ public class NMTareaController extends ControladorRomano {
 		tarea.setOperario(cbOperario.getValue());
 		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
 		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
-		tarea.setObservaciones(observaciones.getText().trim());
+		tarea.setObservacionesTarea(observaciones.getText().trim());
 
 		//Inicio transacción al gestor
 		try{
@@ -333,7 +333,7 @@ public class NMTareaController extends ControladorRomano {
 		cantidad.getValueFactory().setValue(tarea.getCantidadTeorica());
 		cbOperario.getSelectionModel().select(tarea.getOperario());
 		fechaTarea.setValue(conversorFechas.getLocalDate(tarea.getFechaPlanificada()));
-		observaciones.setText(tarea.getObservaciones());
+		observaciones.setText(tarea.getObservacionesTarea());
 	}
 
 	@Override

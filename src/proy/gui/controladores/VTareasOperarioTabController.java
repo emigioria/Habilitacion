@@ -8,6 +8,7 @@ package proy.gui.controladores;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javafx.event.EventHandler;
@@ -24,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Operario;
+import proy.datos.entidades.Pausa;
 import proy.datos.entidades.Tarea;
 import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.excepciones.PersistenciaException;
@@ -32,6 +34,8 @@ import proy.gui.componentes.IconoCancelar;
 import proy.gui.componentes.IconoDetener;
 import proy.gui.componentes.IconoPausa;
 import proy.gui.componentes.IconoPlay;
+import proy.gui.componentes.ventanas.VentanaConfirmacion;
+import proy.gui.componentes.ventanas.VentanaPersonalizada;
 import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
 import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModificarEstadoTarea;
 
@@ -186,6 +190,8 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		tareaMostrada.setFechaHoraInicio(new Date());
+
 		//Inicio transacción al gestor
 		try{
 			resultadoModificarEstadoTarea = coordinador.comenzarTarea(tareaMostrada);
@@ -222,9 +228,30 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		//Toma de datos de la vista
+		final Tarea tareaADespausar = tareaMostrada;
+
+		Pausa ultimaPausa = null;
+		for(Pausa p: tareaADespausar.getPausas()){
+			if(p.getFechaHoraFin() == null){
+				ultimaPausa = p;
+			}
+		}
+
+		//Permitir modificar la causa de la pausa
+		VentanaPersonalizada ventanaPausa = presentadorVentanas.presentarVentanaPersonalizada(NMPausaController.URL_VISTA, coordinador, stage);
+		((NMPausaController) ventanaPausa.getControlador()).formatearModificarPausa(ultimaPausa);
+		ventanaPausa.showAndWait();
+
+		ultimaPausa = ((NMPausaController) ventanaPausa.getControlador()).getResultado();
+		if(ultimaPausa == null){
+			return;
+		}
+		ultimaPausa.setFechaHoraFin(new Date());
+
 		//Inicio transacción al gestor
 		try{
-			resultadoModificarEstadoTarea = coordinador.reanudarTarea(tareaMostrada);
+			resultadoModificarEstadoTarea = coordinador.reanudarTarea(tareaADespausar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -259,9 +286,22 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		//Toma de datos de la vista
+		final Tarea tareaAPausar = tareaMostrada;
+
+		//Pedir causa de la pausa
+		VentanaPersonalizada ventanaPausa = presentadorVentanas.presentarVentanaPersonalizada(NMPausaController.URL_VISTA, coordinador, stage);
+		ventanaPausa.showAndWait();
+
+		Pausa pausa = ((NMPausaController) ventanaPausa.getControlador()).getResultado();
+		if(pausa == null){
+			return;
+		}
+		tareaAPausar.getPausas().add(pausa);
+
 		//Inicio transacción al gestor
 		try{
-			resultadoModificarEstadoTarea = coordinador.pausarTarea(tareaMostrada);
+			resultadoModificarEstadoTarea = coordinador.pausarTarea(tareaAPausar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -295,10 +335,23 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	private void detenerTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
 		StringBuffer erroresBfr = new StringBuffer();
+		//Toma de datos de la vista
+		final Tarea tareaADetener = tareaMostrada;
+
+		//Pedir cantidad realizada y observaciones
+		VentanaPersonalizada ventanaPausa = presentadorVentanas.presentarVentanaPersonalizada(NFinTareaController.URL_VISTA, coordinador, stage);
+		((NFinTareaController) ventanaPausa.getControlador()).formatearConTarea(tareaADetener);
+		ventanaPausa.showAndWait();
+
+		Tarea tareaFinal = ((NFinTareaController) ventanaPausa.getControlador()).getResultado();
+		if(tareaFinal == null || tareaADetener != tareaFinal){
+			return;
+		}
+		tareaADetener.setFechaHoraFin(new Date());
 
 		//Inicio transacción al gestor
 		try{
-			resultadoModificarEstadoTarea = coordinador.terminarTarea(tareaMostrada);
+			resultadoModificarEstadoTarea = coordinador.terminarTarea(tareaADetener);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -333,9 +386,25 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 
+		final Tarea tareaACancelar = tareaMostrada;
+		//se pregunta al usuario si desea cancelar la tarea
+		VentanaConfirmacion vc = presentadorVentanas.presentarConfirmacion("Confirmar cancelar tarea",
+				"Se cancelará la tarea seleccionada.\n" +
+						"¿Está seguro de que desea continuar?",
+				stage);
+		if(!vc.acepta()){
+			return;
+		}
+
+		tareaACancelar.setFechaHoraInicio(null);
+		tareaACancelar.setFechaHoraFin(null);
+		tareaACancelar.setCantidadReal(null);
+		tareaACancelar.setObservacionesOperario(null);
+		tareaACancelar.getPausas().clear();
+
 		//Inicio transacción al gestor
 		try{
-			resultadoModificarEstadoTarea = coordinador.cancelarTarea(tareaMostrada);
+			resultadoModificarEstadoTarea = coordinador.cancelarTarea(tareaACancelar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;

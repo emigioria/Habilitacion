@@ -60,7 +60,12 @@ public abstract class TableCellAbstract<O, T> extends TableCell<O, T> implements
 	}
 
 	protected String getString() {
-		O objeto = getTableView().getItems().get(getIndex());
+		O objeto = null;
+		try{
+			objeto = getTableView().getItems().get(getIndex());
+		} catch(Exception e){
+		}
+
 		if(objeto != null){
 			if(getTableColumn().getCellValueFactory() != null){
 				T valor = getTableColumn().getCellValueFactory().call(new CellDataFeatures<>(getTableView(), getTableColumn(), objeto)).getValue();

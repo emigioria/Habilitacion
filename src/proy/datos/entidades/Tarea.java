@@ -43,8 +43,8 @@ public class Tarea {
 	@Column(name = "version")
 	private Long version;
 
-	@Column(name = "cantidad_solicitada", nullable = false)
-	private Integer cantidadSolicitada;
+	@Column(name = "cantidad_teorica", nullable = false)
+	private Integer cantidadTeorica;
 
 	@Column(name = "cantidad_real")
 	private Integer cantidadReal;
@@ -61,8 +61,11 @@ public class Tarea {
 	@Column(name = "fecha_hora_fin")
 	private Date fechaHoraFin;
 
-	@Column(name = "observaciones", length = 500)
-	private String observaciones;
+	@Column(name = "observaciones_tarea", length = 500)
+	private String observacionesTarea;
+
+	@Column(name = "observaciones_operario", length = 500)
+	private String observacionesOperario;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "tarea_codestado_fk"), nullable = false)
@@ -90,11 +93,11 @@ public class Tarea {
 	}
 
 	public Integer getCantidadTeorica() {
-		return cantidadSolicitada;
+		return cantidadTeorica;
 	}
 
-	public void setCantidadTeorica(Integer cantidadSolicitada) {
-		this.cantidadSolicitada = cantidadSolicitada;
+	public void setCantidadTeorica(Integer cantidadTeorica) {
+		this.cantidadTeorica = cantidadTeorica;
 	}
 
 	public Integer getCantidadReal() {
@@ -129,12 +132,20 @@ public class Tarea {
 		this.fechaHoraFin = fechaHoraFin;
 	}
 
-	public String getObservaciones() {
-		return observaciones;
+	public String getObservacionesTarea() {
+		return observacionesTarea;
 	}
 
-	public void setObservaciones(String observaciones) {
-		this.observaciones = observaciones;
+	public void setObservacionesTarea(String observacionesTarea) {
+		this.observacionesTarea = observacionesTarea;
+	}
+
+	public String getObservacionesOperario() {
+		return observacionesOperario;
+	}
+
+	public void setObservacionesOperario(String observacionesOperario) {
+		this.observacionesOperario = observacionesOperario;
 	}
 
 	public EstadoTarea getEstado() {
@@ -200,18 +211,39 @@ public class Tarea {
 		return tiempoTotal - tiempoPausas;
 	}
 
+	public void comenzar() {
+		this.setEstado(new EstadoTarea(EstadoTareaStr.EJECUTANDO));
+	}
+
+	public void reanudar() {
+		this.setEstado(new EstadoTarea(EstadoTareaStr.EJECUTANDO));
+	}
+
+	public void pausar() {
+		this.setEstado(new EstadoTarea(EstadoTareaStr.PAUSADA));
+	}
+
+	public void terminar() {
+		this.setEstado(new EstadoTarea(EstadoTareaStr.FINALIZADA));
+	}
+
+	public void cancelar() {
+		this.setEstado(new EstadoTarea(EstadoTareaStr.PLANIFICADA));
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((cantidadReal == null) ? 0 : cantidadReal.hashCode());
-		result = prime * result + ((cantidadSolicitada == null) ? 0 : cantidadSolicitada.hashCode());
+		result = prime * result + ((cantidadTeorica == null) ? 0 : cantidadTeorica.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((fechaHoraFin == null) ? 0 : fechaHoraFin.hashCode());
 		result = prime * result + ((fechaHoraInicio == null) ? 0 : fechaHoraInicio.hashCode());
 		result = prime * result + ((fechaPlanificada == null) ? 0 : fechaPlanificada.hashCode());
-		result = prime * result + ((observaciones == null) ? 0 : observaciones.hashCode());
+		result = prime * result + ((observacionesTarea == null) ? 0 : observacionesTarea.hashCode());
+		result = prime * result + ((observacionesOperario == null) ? 0 : observacionesOperario.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
@@ -247,12 +279,12 @@ public class Tarea {
 		else if(!cantidadReal.equals(other.cantidadReal)){
 			return false;
 		}
-		if(cantidadSolicitada == null){
-			if(other.cantidadSolicitada != null){
+		if(cantidadTeorica == null){
+			if(other.cantidadTeorica != null){
 				return false;
 			}
 		}
-		else if(!cantidadSolicitada.equals(other.cantidadSolicitada)){
+		else if(!cantidadTeorica.equals(other.cantidadTeorica)){
 			return false;
 		}
 		if(estado == null){
@@ -287,12 +319,20 @@ public class Tarea {
 		else if(!fechaPlanificada.equals(other.fechaPlanificada)){
 			return false;
 		}
-		if(observaciones == null){
-			if(other.observaciones != null){
+		if(observacionesTarea == null){
+			if(other.observacionesTarea != null){
 				return false;
 			}
 		}
-		else if(!observaciones.equals(other.observaciones)){
+		else if(!observacionesTarea.equals(other.observacionesTarea)){
+			return false;
+		}
+		if(observacionesOperario == null){
+			if(other.observacionesOperario != null){
+				return false;
+			}
+		}
+		else if(!observacionesOperario.equals(other.observacionesOperario)){
 			return false;
 		}
 		if(version == null){

@@ -337,22 +337,67 @@ public class ProcesoGestor {
 	}
 
 	public ResultadoModificarEstadoTarea comenzarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoModificarEstadoTarea resultado = validarComenzarTarea(tarea);
+		if(!resultado.hayErrores()){
+			tarea.comenzar();
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarEstadoTarea validarComenzarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
 	public ResultadoModificarEstadoTarea pausarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoModificarEstadoTarea resultado = validarPausarTarea(tarea);
+		if(!resultado.hayErrores()){
+			tarea.pausar();
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarEstadoTarea validarPausarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
 	public ResultadoModificarEstadoTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoModificarEstadoTarea resultado = validarReanudarTarea(tarea);
+		if(!resultado.hayErrores()){
+			tarea.reanudar();
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarEstadoTarea validarReanudarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
 	public ResultadoModificarEstadoTarea terminarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoModificarEstadoTarea resultado = validarTerminarTarea(tarea);
+		if(!resultado.hayErrores()){
+			tarea.terminar();
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarEstadoTarea validarTerminarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 
 	public ResultadoModificarEstadoTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
+		ResultadoModificarEstadoTarea resultado = validarCancelarTarea(tarea);
+		if(!resultado.hayErrores()){
+			tarea.cancelar();
+			persistidorProceso.actualizarTarea(tarea);
+		}
+		return resultado;
+	}
+
+	private ResultadoModificarEstadoTarea validarCancelarTarea(Tarea tarea) throws PersistenciaException {
 		throw new NotYetImplementedException();
 	}
 }
