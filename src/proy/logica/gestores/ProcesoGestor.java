@@ -14,11 +14,11 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 
 import proy.comun.ConversorFechas;
 import proy.datos.clases.EstadoTareaStr;
+import proy.datos.entidades.Pausa;
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
@@ -38,6 +38,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarTarea.ErrorEliminarTarea
 import proy.logica.gestores.resultados.ResultadoEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoEliminarTareas.ErrorEliminarTareas;
 import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
+import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModificarEstadoTarea;
 import proy.logica.gestores.resultados.ResultadoModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarProceso.ErrorModificarProceso;
 import proy.logica.gestores.resultados.ResultadoModificarTarea;
@@ -344,7 +345,20 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarEstadoTarea validarComenzarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		Set<ErrorModificarEstadoTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.PLANIFICADA.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarEstadoTarea.ERROR_ESTADO_TRANSICION);
+		}
+		if(tarea.getFechaHoraInicio() == null){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INCOMPLETOS);
+		}
+		else if(tarea.getFechaHoraInicio().after(new Date())){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+		if(tarea.getCantidadReal() != null || tarea.getFechaHoraFin() != null || tarea.getObservacionesOperario() != null || !tarea.getPausas().isEmpty()){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+		return new ResultadoModificarEstadoTarea(errores.toArray(new ErrorModificarEstadoTarea[0]));
 	}
 
 	public ResultadoModificarEstadoTarea pausarTarea(Tarea tarea) throws PersistenciaException {
@@ -357,7 +371,37 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarEstadoTarea validarPausarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		Set<ErrorModificarEstadoTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.EJECUTANDO.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarEstadoTarea.ERROR_ESTADO_TRANSICION);
+		}
+		if(tarea.getFechaHoraInicio() == null || tarea.getPausas().isEmpty()){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INCOMPLETOS);
+		}
+
+		Pausa ultimaPausa = null;
+		for(Pausa pausa: tarea.getPausas()){
+			if(pausa.getFechaHoraFin() == null){
+				if(ultimaPausa != null){
+					errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+				}
+				else{
+					ultimaPausa = pausa;
+				}
+			}
+
+			if(pausa.getCausa() == null || pausa.getCausa().isEmpty()){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+			if(pausa.getFechaHoraInicio() == null){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+		}
+
+		if(tarea.getCantidadReal() != null || tarea.getFechaHoraFin() != null || tarea.getObservacionesOperario() != null){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+		return new ResultadoModificarEstadoTarea(errores.toArray(new ErrorModificarEstadoTarea[0]));
 	}
 
 	public ResultadoModificarEstadoTarea reanudarTarea(Tarea tarea) throws PersistenciaException {
@@ -370,7 +414,30 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarEstadoTarea validarReanudarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		Set<ErrorModificarEstadoTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.PAUSADA.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarEstadoTarea.ERROR_ESTADO_TRANSICION);
+		}
+		if(tarea.getFechaHoraInicio() == null || tarea.getPausas().isEmpty()){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INCOMPLETOS);
+		}
+
+		for(Pausa pausa: tarea.getPausas()){
+			if(pausa.getFechaHoraInicio() == null){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+			if(pausa.getFechaHoraFin() == null){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+			if(pausa.getCausa() == null || pausa.getCausa().isEmpty()){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+		}
+
+		if(tarea.getCantidadReal() != null || tarea.getFechaHoraFin() != null || tarea.getObservacionesOperario() != null){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+		return new ResultadoModificarEstadoTarea(errores.toArray(new ErrorModificarEstadoTarea[0]));
 	}
 
 	public ResultadoModificarEstadoTarea terminarTarea(Tarea tarea) throws PersistenciaException {
@@ -383,7 +450,31 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarEstadoTarea validarTerminarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		Set<ErrorModificarEstadoTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.EJECUTANDO.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarEstadoTarea.ERROR_ESTADO_TRANSICION);
+		}
+		if(tarea.getFechaHoraInicio() == null || tarea.getCantidadReal() == null || tarea.getFechaHoraFin() == null){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INCOMPLETOS);
+		}
+
+		for(Pausa pausa: tarea.getPausas()){
+			if(pausa.getFechaHoraInicio() == null){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+			if(pausa.getFechaHoraFin() == null){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+			if(pausa.getCausa() == null || pausa.getCausa().isEmpty()){
+				errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+			}
+		}
+
+		if(tarea.getCantidadReal() != null && tarea.getCantidadReal() < 1){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+
+		return new ResultadoModificarEstadoTarea(errores.toArray(new ErrorModificarEstadoTarea[0]));
 	}
 
 	public ResultadoModificarEstadoTarea cancelarTarea(Tarea tarea) throws PersistenciaException {
@@ -396,6 +487,13 @@ public class ProcesoGestor {
 	}
 
 	private ResultadoModificarEstadoTarea validarCancelarTarea(Tarea tarea) throws PersistenciaException {
-		throw new NotYetImplementedException();
+		Set<ErrorModificarEstadoTarea> errores = new HashSet<>();
+		if(!EstadoTareaStr.EJECUTANDO.equals(tarea.getEstado().getNombre()) && !EstadoTareaStr.PAUSADA.equals(tarea.getEstado().getNombre())){
+			errores.add(ErrorModificarEstadoTarea.ERROR_ESTADO_TRANSICION);
+		}
+		if(tarea.getFechaHoraInicio() != null && tarea.getCantidadReal() != null || tarea.getFechaHoraFin() != null || tarea.getObservacionesOperario() != null || !tarea.getPausas().isEmpty()){
+			errores.add(ErrorModificarEstadoTarea.DATOS_INVALIDOS);
+		}
+		return new ResultadoModificarEstadoTarea(errores.toArray(new ErrorModificarEstadoTarea[0]));
 	}
 }

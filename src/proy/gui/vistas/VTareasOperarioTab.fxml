@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 
     Copyright (c) 2016, Andres Leonel Rico - Emiliano Gioria - Marina Ludi
@@ -20,7 +21,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TabPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasOperarioTabController">
+<TabPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasOperarioTabController">
    <tabs>
       <Tab fx:id="operarioTab" closable="false" text="Usuario 1">
          <content>
@@ -39,16 +40,16 @@
                   <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                </rowConstraints>
                <children>
-                  <Button fx:id="botonPlay" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#comenzarReanudarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" visible="false" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
-                  <Button fx:id="botonPausa" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pausarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" visible="false" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
-                  <Button fx:id="botonCancelar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#detenerTarea" prefHeight="20.0" prefWidth="20.0" visible="false" GridPane.columnIndex="1" GridPane.valignment="TOP" />
-                  <Button fx:id="botonDetener" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelarTarea" prefHeight="20.0" prefWidth="20.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
-                  <Label fx:id="tiempoEjecutado" GridPane.rowIndex="3" />
-                  <ProgressBar fx:id="progresoTarea" maxWidth="1.7976931348623157E308" minHeight="-Infinity" progress="0.05" visible="false" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                  <Label fx:id="numeroTarea" text="Sin tareas" GridPane.columnIndex="2" />
-                  <Label fx:id="estadoTarea" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                  <Label fx:id="nombreParte" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                  <Label fx:id="nombreProceso" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                  <Button fx:id="botonPlay" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#comenzarReanudarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
+                  <Button fx:id="botonPausa" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pausarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
+                  <Button fx:id="botonCancelar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelarTarea" prefHeight="20.0" prefWidth="20.0" GridPane.columnIndex="1" GridPane.valignment="TOP" />
+                  <Button fx:id="botonDetener" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#detenerTarea" prefHeight="20.0" prefWidth="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                  <Label fx:id="tiempoEjecutado" text="00:00:00" GridPane.rowIndex="3" />
+                  <ProgressBar fx:id="progresoTarea" maxWidth="1.7976931348623157E308" minHeight="-Infinity" progress="0.05" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+                  <Label fx:id="numeroTarea" text="Tarea 1" GridPane.columnIndex="2" />
+                  <Label fx:id="estadoTarea" text="Planificada" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                  <Label fx:id="nombreParte" text="Tapa lateral" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                  <Label fx:id="nombreProceso" text="Torneado - Frenteado" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                   <ScrollPane fitToWidth="true" GridPane.columnSpan="3" GridPane.rowIndex="5">
                      <content>
                         <Accordion fx:id="tareasBox" />

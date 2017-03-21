@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,6 +24,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Operario;
 import proy.datos.entidades.Pausa;
@@ -36,6 +38,7 @@ import proy.gui.componentes.IconoPausa;
 import proy.gui.componentes.IconoPlay;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.gui.componentes.ventanas.VentanaPersonalizada;
+import proy.logica.CoordinadorJavaFX;
 import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea;
 import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModificarEstadoTarea;
 
@@ -87,8 +90,12 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private Tarea tareaMostrada;
 
-	public VTareasOperarioTabController(Operario operario) throws IOException {
+	private AnimationTimer timer;
+
+	public VTareasOperarioTabController(Operario operario, CoordinadorJavaFX coordinador, Stage stage) throws IOException {
 		this.operario = operario;
+		this.coordinador = coordinador;
+		this.stage = stage;
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource(URL_VISTA));
@@ -100,17 +107,40 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return this;
 		});
 		loader.load();
+
+		iniciar();
+	}
+
+	//Se usa en vez de inicializar para hacerlo sincrónico
+	private void iniciar() {
+		actualizar();
 	}
 
 	@Override
 	protected void inicializar() {
-		//Configurar botones
-		configurarBotones();
-
 		//Setear operario
 		operarioTab.setText(operario.toString());
 
-		actualizar();
+		//Configurar botones
+		configurarBotones();
+
+		iniciarReloj();
+	}
+
+	private void iniciarReloj() {
+		timer = new AnimationTimer() {
+
+			long anterior = -1;
+
+			@Override
+			public void handle(long now) {
+				if(now - anterior > 1000000000L){
+					actualizarReloj();
+					anterior = now;
+				}
+			}
+		};
+		timer.start();
 	}
 
 	private String getNombreTarea(Tarea tarea) {
@@ -186,15 +216,38 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		}
 	}
 
+	private String tratarErrores(ResultadoModificarEstadoTarea resultadoModificarEstadoTarea) {
+		StringBuffer erroresBfr = new StringBuffer();
+		for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
+			switch(r) {
+			case DATOS_INCOMPLETOS:
+				erroresBfr.append("Hay datos incompletos.\n");
+				break;
+			case DATOS_INVALIDOS:
+				erroresBfr.append("Hay datos inválidos.\n");
+				break;
+			case ERROR_ESTADO_TRANSICION:
+				throw new RuntimeException();
+			}
+		}
+		if(erroresBfr.length() > 0){
+			erroresBfr.append("Intente realizar la acción nuevamente o contacte al administrador.");
+		}
+
+		return erroresBfr.toString();
+	}
+
 	private void comenzarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
-		StringBuffer erroresBfr = new StringBuffer();
 
-		tareaMostrada.setFechaHoraInicio(new Date());
+		//Toma de datos de la vista
+		final Tarea tareaAComenzar = tareaMostrada;
+
+		tareaAComenzar.setFechaHoraInicio(new Date());
 
 		//Inicio transacción al gestor
 		try{
-			resultadoModificarEstadoTarea = coordinador.comenzarTarea(tareaMostrada);
+			resultadoModificarEstadoTarea = coordinador.comenzarTarea(tareaAComenzar);
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
 			return;
@@ -205,13 +258,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 		//Tratamiento de errores
 		if(resultadoModificarEstadoTarea.hayErrores()){
-			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
-				switch(r) {
-				//TODO hacer validador primero
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratarErrores(resultadoModificarEstadoTarea);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
 			}
@@ -226,7 +273,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private void reanudarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
-		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
 		final Tarea tareaADespausar = tareaMostrada;
@@ -262,13 +308,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 		//Tratamiento de errores
 		if(resultadoModificarEstadoTarea.hayErrores()){
-			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
-				switch(r) {
-				//TODO hacer validador primero
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratarErrores(resultadoModificarEstadoTarea);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
 			}
@@ -284,7 +324,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void pausarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
-		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
 		final Tarea tareaAPausar = tareaMostrada;
@@ -297,6 +336,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		if(pausa == null){
 			return;
 		}
+		pausa.setTarea(tareaAPausar);
 		tareaAPausar.getPausas().add(pausa);
 
 		//Inicio transacción al gestor
@@ -312,13 +352,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 		//Tratamiento de errores
 		if(resultadoModificarEstadoTarea.hayErrores()){
-			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
-				switch(r) {
-				//TODO hacer validador primero
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratarErrores(resultadoModificarEstadoTarea);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
 			}
@@ -334,7 +368,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void detenerTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
-		StringBuffer erroresBfr = new StringBuffer();
 		//Toma de datos de la vista
 		final Tarea tareaADetener = tareaMostrada;
 
@@ -362,21 +395,16 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 		//Tratamiento de errores
 		if(resultadoModificarEstadoTarea.hayErrores()){
-			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
-				switch(r) {
-				//TODO hacer validador primero
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratarErrores(resultadoModificarEstadoTarea);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
 			}
 			return;
 		}
 		else{
+			tareaMostrada = null;
 			actualizar();
-			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
+			presentadorVentanas.presentarToast("Tarea finalizada con éxito.", stage);
 			return;
 		}
 	}
@@ -384,7 +412,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void cancelarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
-		StringBuffer erroresBfr = new StringBuffer();
 
 		final Tarea tareaACancelar = tareaMostrada;
 		//se pregunta al usuario si desea cancelar la tarea
@@ -415,13 +442,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 		//Tratamiento de errores
 		if(resultadoModificarEstadoTarea.hayErrores()){
-			for(ErrorModificarEstadoTarea r: resultadoModificarEstadoTarea.getErrores()){
-				switch(r) {
-				//TODO hacer validador primero
-				}
-			}
-
-			String errores = erroresBfr.toString();
+			String errores = tratarErrores(resultadoModificarEstadoTarea);
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la tarea", errores, stage);
 			}
@@ -429,7 +450,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		}
 		else{
 			actualizar();
-			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
+			presentadorVentanas.presentarToast("Tarea cancelada con éxito.", stage);
 			return;
 		}
 	}
@@ -480,6 +501,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 					if(tareas.size() > 0){
 						mostrarTarea(tareas.get(0));
 					}
+					else{
+						noMostrarTareas();
+					}
 				}
 			}
 		} catch(PersistenciaException e){
@@ -489,34 +513,21 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		}
 	}
 
-	private void mostrarTarea(Tarea tarea) {
-		if(tareaEjecutando != null && tarea != tareaEjecutando){
+	private void mostrarTarea(Tarea tareaMostrada) {
+		if(tareaEjecutando != null && tareaMostrada != tareaEjecutando){
 			return;
 		}
-		tareaMostrada = tarea;
-		numeroTarea.setText(getNombreTarea(tarea));
-		estadoTarea.setText(tarea.getEstado().toString());
-		nombreParte.setText(tarea.getProceso().getParte().toString());
-		nombreProceso.setText(tarea.getProceso().toString());
+		this.tareaMostrada = tareaMostrada;
+		numeroTarea.setText(getNombreTarea(tareaMostrada));
+		estadoTarea.setText(tareaMostrada.getEstado().toString());
+		nombreParte.setText(tareaMostrada.getProceso().getParte().toString());
+		nombreProceso.setText(tareaMostrada.getProceso().toString());
 
 		//Setear tiempo de proceso y progreso
-		Long tEMilis = tarea.getTiempoEjecutando();
-		Long tESs = tEMilis % 60000;
-		Long tEMs = tEMilis % 3600000;
-		Long tEHs = tEMilis / 3600000;
-		tiempoEjecutado.setText((tEHs < 10 ? "0" + tEHs : tEHs) + ":" + (tEMs < 10 ? "0" + tEMs : tEMs) + ":" + (tESs < 10 ? "0" + tESs : tESs));
-		Long tTPMilis = tarea.getProceso().getTiempoTeoricoProceso();
-		progresoTarea.setVisible(true);
-		progresoTarea.setProgress(tEMilis / tTPMilis);
-		if(progresoTarea.getProgress() >= 1){
-			progresoTarea.setStyle("-fx-accent: red;");
-		}
-		else{
-			progresoTarea.setStyle("");
-		}
+		actualizarReloj();
 
 		//Quitar botones que no van
-		switch(tarea.getEstado().getNombre()) {
+		switch(tareaMostrada.getEstado().getNombre()) {
 		case PLANIFICADA:
 			botonPlay.setVisible(true);
 			botonPausa.setVisible(false);
@@ -541,6 +552,39 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			botonDetener.setVisible(false);
 			botonCancelar.setVisible(false);
 			break;
+		}
+	}
+
+	private void noMostrarTareas() {
+		botonPlay.setVisible(false);
+		botonPausa.setVisible(false);
+		botonDetener.setVisible(false);
+		botonCancelar.setVisible(false);
+		progresoTarea.setVisible(false);
+		numeroTarea.setText("Sin tareas");
+		estadoTarea.setText("");
+		nombreParte.setText("");
+		nombreProceso.setText("");
+		tiempoEjecutado.setText("");
+	}
+
+	private void actualizarReloj() {
+		if(tareaMostrada == null){
+			return;
+		}
+		Long tEMilis = tareaMostrada.getTiempoEjecutando();
+		Long tESs = (tEMilis / 1000) % 60;
+		Long tEMs = (tEMilis / 60000) % 60;
+		Long tEHs = tEMilis / 3600000;
+		tiempoEjecutado.setText((tEHs < 10 ? "0" + tEHs : tEHs) + ":" + (tEMs < 10 ? "0" + tEMs : tEMs) + ":" + (tESs < 10 ? "0" + tESs : tESs));
+		Long tTPMilis = tareaMostrada.getProceso().getTiempoTeoricoProceso();
+		progresoTarea.setVisible(true);
+		progresoTarea.setProgress((double) tEMilis / tTPMilis);
+		if(progresoTarea.getProgress() >= 1){
+			progresoTarea.setStyle("-fx-accent: red;");
+		}
+		else{
+			progresoTarea.setStyle("");
 		}
 	}
 

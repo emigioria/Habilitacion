@@ -11,6 +11,7 @@ import proy.logica.gestores.resultados.ResultadoModificarEstadoTarea.ErrorModifi
 public class ResultadoModificarEstadoTarea extends Resultado<ErrorModificarEstadoTarea> {
 
 	public enum ErrorModificarEstadoTarea {
+		ERROR_ESTADO_TRANSICION, DATOS_INCOMPLETOS, DATOS_INVALIDOS
 
 	}
 

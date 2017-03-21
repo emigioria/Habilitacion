@@ -51,7 +51,7 @@ public class Pausa implements Serializable {
 	private Date fechaHoraInicio;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_hora_fin", nullable = false)
+	@Column(name = "fecha_hora_fin")
 	private Date fechaHoraFin;
 
 	public Pausa() {

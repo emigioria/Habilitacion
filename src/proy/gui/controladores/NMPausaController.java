@@ -9,6 +9,7 @@ package proy.gui.controladores;
 import java.util.Date;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import proy.datos.entidades.Pausa;
 import proy.gui.ControladorDialogo;
@@ -20,34 +21,48 @@ public class NMPausaController extends ControladorDialogo {
 	@FXML
 	private TextArea taCausaStr;
 
+	@FXML
+	private Button botonGuardar;
+
 	private Pausa pausa;
 
 	@FXML
 	private void guardar() {
 		pausa.setCausa(taCausaStr.getText().trim());
+		salir();
 	}
 
 	@Override
 	protected void inicializar() {
 		stage.setTitle("Nueva pausa");
 
-		if(pausa != null){
+		if(pausa == null){
 			pausa = new Pausa();
 			pausa.setFechaHoraInicio(new Date());
 		}
+
+		taCausaStr.textProperty().addListener((obs, oldO, newO) -> {
+			cambiarGuardar();
+		});
+		cambiarGuardar();
+	}
+
+	private void cambiarGuardar() {
+		botonGuardar.setDisable(taCausaStr.getText().trim().isEmpty());
 	}
 
 	public void formatearModificarPausa(Pausa pausa) {
 		this.pausa = pausa;
+		taCausaStr.setText(pausa.getCausa());
 	}
 
 	public Pausa getResultado() {
 		return pausa;
 	}
 
-	@Override
-	protected void salir() {
+	@FXML
+	private void cancelar() {
 		pausa = null;
-		super.salir();
+		salir();
 	}
 }

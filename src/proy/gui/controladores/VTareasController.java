@@ -7,6 +7,7 @@
 package proy.gui.controladores;
 
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
@@ -26,6 +27,8 @@ public class VTareasController extends ControladorRomano {
 
 	private AnimationTimer timer;
 
+	private Semaphore semaforo = new Semaphore(1);
+
 	@Override
 	protected void inicializar() {
 		timer = new AnimationTimer() {
@@ -35,7 +38,13 @@ public class VTareasController extends ControladorRomano {
 			@Override
 			public void handle(long now) {
 				if(now - anterior > 60000000000L){
+					try{
+						semaforo.acquire();
+					} catch(InterruptedException e){
+
+					}
 					actualizar();
+					semaforo.release();
 					anterior = now;
 				}
 			}
@@ -62,9 +71,7 @@ public class VTareasController extends ControladorRomano {
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
 
 			for(Operario o: operarios){
-				final VTareasOperarioTabController renglonController = new VTareasOperarioTabController(o);
-				renglonController.setCoordinador(coordinador);
-				renglonController.setStage(stage);
+				final VTareasOperarioTabController renglonController = new VTareasOperarioTabController(o, coordinador, stage);
 				operarioBox.getTabs().add(renglonController.getTab());
 				renglonController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
 					if(newV){
@@ -96,6 +103,11 @@ public class VTareasController extends ControladorRomano {
 	@Override
 	public Boolean sePuedeSalir() {
 		timer.stop();
+		try{
+			semaforo.acquire();
+		} catch(InterruptedException e){
+
+		}
 		return super.sePuedeSalir();
 	}
 }

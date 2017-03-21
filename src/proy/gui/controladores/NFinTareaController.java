@@ -35,6 +35,7 @@ public class NFinTareaController extends ControladorDialogo {
 	private void guardar() {
 		tarea.setObservacionesOperario(taObservacionesStr.getText().trim());
 		tarea.setCantidadReal(spCantidad.getValue());
+		salir();
 	}
 
 	@Override
@@ -65,6 +66,7 @@ public class NFinTareaController extends ControladorDialogo {
 		spCantidad.valueProperty().addListener((obs, oldO, newO) -> {
 			cambiarGuardar();
 		});
+		cambiarGuardar();
 	}
 
 	private void cambiarGuardar() {
@@ -79,9 +81,9 @@ public class NFinTareaController extends ControladorDialogo {
 		return tarea;
 	}
 
-	@Override
-	protected void salir() {
+	@FXML
+	private void cancelar() {
 		tarea = null;
-		super.salir();
+		salir();
 	}
 }
