@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
@@ -57,7 +58,16 @@ public class ATareasController extends ControladorRomano {
 	private TableColumn<Tarea, String> columnaFecha;
 
 	@FXML
+	private TableColumn<Tarea, String> columnaEstado;
+
+	@FXML
 	private ComboBox<Operario> cbOperario;
+
+	@FXML
+	private Button botonModificar;
+
+	@FXML
+	private Button botonEliminar;
 
 	private Operario nullOperario = new Operario() {
 		@Override
@@ -136,6 +146,13 @@ public class ATareasController extends ControladorRomano {
 				return new SimpleStringProperty("");
 			}
 		});
+		columnaEstado.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getEstado().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
 		cbMaquina.getSelectionModel().selectedItemProperty().addListener((obs, olvV, newV) -> {
 			cbParte.getItems().clear();
 			cbParte.getItems().add(nullParte);
@@ -148,6 +165,12 @@ public class ATareasController extends ControladorRomano {
 			}
 		});
 
+		tablaTareas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			if(newV != null){
+				botonEliminar.setDisable(!EstadoTareaStr.PLANIFICADA.equals(newV.getEstado().getNombre()));
+				botonModificar.setDisable(!EstadoTareaStr.PLANIFICADA.equals(newV.getEstado().getNombre()));
+			}
+		});
 		actualizar();
 	}
 
