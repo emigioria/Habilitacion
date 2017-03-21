@@ -179,7 +179,7 @@ public class Proceso {
 		for(Tarea t: this.getTareas()){
 			if(EstadoTareaStr.FINALIZADA.equals(t.getEstado().getNombre())){
 				suma += t.getTiempoEjecutando();
-				cantidadTareas++;
+				cantidadTareas += t.getCantidadReal();
 			}
 		}
 		if(cantidadTareas > 1){

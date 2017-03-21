@@ -211,6 +211,10 @@ public class Tarea {
 		return tiempoTotal - tiempoPausas;
 	}
 
+	public Long getTiempoTotalTarea() {
+		return this.getProceso().getTiempoTeoricoPreparacion() + this.getProceso().getTiempoTeoricoProceso() * this.getCantidadTeorica();
+	}
+
 	public void comenzar() {
 		this.setEstado(new EstadoTarea(EstadoTareaStr.EJECUTANDO));
 	}

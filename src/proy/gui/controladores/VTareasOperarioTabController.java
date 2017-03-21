@@ -575,9 +575,10 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		Long tEMs = (tEMilis / 60000) % 60;
 		Long tEHs = tEMilis / 3600000;
 		tiempoEjecutado.setText((tEHs < 10 ? "0" + tEHs : tEHs) + ":" + (tEMs < 10 ? "0" + tEMs : tEMs) + ":" + (tESs < 10 ? "0" + tESs : tESs));
-		Long tTPMilis = tareaMostrada.getProceso().getTiempoTeoricoProceso();
+
+		Long tTTMilis = tareaMostrada.getTiempoTotalTarea();
 		progresoTarea.setVisible(true);
-		progresoTarea.setProgress((double) tEMilis / tTPMilis);
+		progresoTarea.setProgress((double) tEMilis / tTTMilis);
 		if(progresoTarea.getProgress() >= 1){
 			progresoTarea.setStyle("-fx-accent: red;");
 		}
