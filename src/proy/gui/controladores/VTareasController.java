@@ -38,13 +38,7 @@ public class VTareasController extends ControladorRomano {
 			@Override
 			public void handle(long now) {
 				if(now - anterior > 60000000000L){
-					try{
-						semaforo.acquire();
-					} catch(InterruptedException e){
-
-					}
 					actualizar();
-					semaforo.release();
 					anterior = now;
 				}
 			}
@@ -64,6 +58,12 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
+		try{
+			semaforo.acquire();
+		} catch(InterruptedException e){
+
+		}
+
 		int indiceAnterior = operarioBox.getSelectionModel().getSelectedIndex();
 		operarioBox.getTabs().clear();
 
@@ -71,11 +71,11 @@ public class VTareasController extends ControladorRomano {
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
 
 			for(Operario o: operarios){
-				final VTareasOperarioTabController renglonController = new VTareasOperarioTabController(o, coordinador, stage);
-				operarioBox.getTabs().add(renglonController.getTab());
-				renglonController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
+				final VTareasOperarioTabController tabController = new VTareasOperarioTabController(o, () -> actualizar(), coordinador, stage);
+				operarioBox.getTabs().add(tabController.getTab());
+				tabController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
 					if(newV){
-						renglonController.actualizar();
+						tabController.actualizar();
 					}
 				});
 			}
@@ -93,6 +93,8 @@ public class VTareasController extends ControladorRomano {
 			indiceAnterior = 0;
 		}
 		operarioBox.getSelectionModel().select(indiceAnterior);
+
+		semaforo.release();
 	}
 
 	@FXML

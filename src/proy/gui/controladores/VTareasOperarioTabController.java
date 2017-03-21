@@ -92,10 +92,13 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private AnimationTimer timer;
 
-	public VTareasOperarioTabController(Operario operario, CoordinadorJavaFX coordinador, Stage stage) throws IOException {
+	private Runnable actualizadorGlobal;
+
+	public VTareasOperarioTabController(Operario operario, Runnable fullUpdateMethod, CoordinadorJavaFX coordinador, Stage stage) throws IOException {
 		this.operario = operario;
 		this.coordinador = coordinador;
 		this.stage = stage;
+		this.actualizadorGlobal = fullUpdateMethod;
 
 		FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(this.getClass().getResource(URL_VISTA));
@@ -108,11 +111,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		});
 		loader.load();
 
-		iniciar();
-	}
-
-	//Se usa en vez de inicializar para hacerlo sincrónico
-	private void iniciar() {
+		//Se pone acá en vez de en inicializar para hacerlo sincrónico
 		actualizar();
 	}
 
@@ -265,7 +264,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		else{
-			actualizar();
+			actualizadorGlobal.run();
 			presentadorVentanas.presentarToast("Tarea comenzada con éxito.", stage);
 			return;
 		}
@@ -315,7 +314,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		else{
-			actualizar();
+			actualizadorGlobal.run();
 			presentadorVentanas.presentarToast("Tarea reanudada con éxito.", stage);
 			return;
 		}
@@ -359,7 +358,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		else{
-			actualizar();
+			actualizadorGlobal.run();
 			presentadorVentanas.presentarToast("Tarea pausada con éxito.", stage);
 			return;
 		}
@@ -402,8 +401,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		else{
-			tareaMostrada = null;
-			actualizar();
+			actualizadorGlobal.run();
 			presentadorVentanas.presentarToast("Tarea finalizada con éxito.", stage);
 			return;
 		}
@@ -449,7 +447,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		else{
-			actualizar();
+			actualizadorGlobal.run();
 			presentadorVentanas.presentarToast("Tarea cancelada con éxito.", stage);
 			return;
 		}
