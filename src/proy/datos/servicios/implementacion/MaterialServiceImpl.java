@@ -67,8 +67,7 @@ public class MaterialServiceImpl implements MaterialService {
 				}
 			}
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -80,11 +79,9 @@ public class MaterialServiceImpl implements MaterialService {
 			herramienta.setEstado(attachEstado.attachEstado(session, herramienta.getEstado()));
 			session.update(herramienta);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -96,11 +93,9 @@ public class MaterialServiceImpl implements MaterialService {
 			herramienta.setEstado(attachEstado.attachEstado(session, herramienta.getEstado()));
 			session.delete(herramienta);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 
@@ -128,8 +123,7 @@ public class MaterialServiceImpl implements MaterialService {
 				}
 			}
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -141,11 +135,9 @@ public class MaterialServiceImpl implements MaterialService {
 			material.setEstado(attachEstado.attachEstado(session, material.getEstado()));
 			session.update(material);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -156,11 +148,9 @@ public class MaterialServiceImpl implements MaterialService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(material);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 

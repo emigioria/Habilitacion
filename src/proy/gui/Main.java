@@ -15,6 +15,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
+import proy.excepciones.ErrorInicioException;
 import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.gui.componentes.ventanas.VentanaEsperaBaseDeDatos;
@@ -72,7 +73,7 @@ public class Main extends Application {
 
 	private void iniciarHibernate() {
 		//Crear ventana de espera
-		VentanaEsperaBaseDeDatos ventanaEspera = presentador.presentarEsperaBaseDeDatos();
+		VentanaEsperaBaseDeDatos ventanaEspera = presentador.presentarEsperaBaseDeDatos(primaryStage);
 
 		//Crear tarea para iniciar hibernate y el coordinador de la aplicacion
 		Task<Boolean> task = new Task<Boolean>() {
@@ -103,12 +104,12 @@ public class Main extends Application {
 					try{
 						throw task.getException();
 					} catch(Throwable e){
-						e.printStackTrace();
+						System.out.println(e.getClass());
 						if(appContext != null){
 							SessionFactory sessionFact = (SessionFactory) appContext.getBean("sessionFactory");
 							sessionFact.close();
 						}
-						presentador.presentarExcepcionInesperada(new Exception(e), primaryStage);
+						presentador.presentarExcepcion(new ErrorInicioException(e), ventanaEspera);
 						System.exit(1);
 					}
 				});

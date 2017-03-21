@@ -32,10 +32,7 @@ public class VentanaInformacion extends CustomAlert {
 	 *            ventana en la que se mostrar� este di�logo
 	 */
 	protected VentanaInformacion(String titulo, String mensaje, Window padre) {
-		super(AlertType.INFORMATION);
-		if(padre != null){
-			this.initOwner(padre);
-		}
+		super(AlertType.INFORMATION, padre);
 		this.setContentText(mensaje);
 		this.setHeaderText(null);
 		this.setTitle(titulo);

@@ -119,8 +119,6 @@ public class ProcesoGestor {
 				Proceso procesoAnterior = procesoAnteriorList.get(0);
 				if(!proceso.cambioPoco(procesoAnterior)){
 					if(!proceso.getTareas().isEmpty()){
-						procesoAnterior.darDeBaja();
-
 						Proceso procesoNuevo = new Proceso();
 						procesoNuevo.setDescripcion(proceso.getDescripcion());
 						procesoNuevo.setEstado(proceso.getEstado());
@@ -135,7 +133,7 @@ public class ProcesoGestor {
 						procesoNuevo.getPiezas().addAll(proceso.getPiezas());
 
 						persistidorProceso.bajaTareas(this.listarTareas(new FiltroTarea.Builder().noEstado(EstadoTareaStr.FINALIZADA).proceso(proceso).build()));
-						persistidorProceso.actualizarProceso(procesoAnterior);
+						this.eliminarProceso(procesoAnterior);
 						persistidorProceso.guardarProceso(procesoNuevo);
 						return resultado;
 					}

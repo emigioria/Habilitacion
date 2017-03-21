@@ -55,11 +55,11 @@ public class Pieza {
 	@JoinColumn(name = "codestado", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codestado_fk"), nullable = false)
 	private Estado estado;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "codparte", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codparte_fk"), nullable = false)
 	private Parte parte;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "codmaterial", referencedColumnName = "codigo", foreignKey = @ForeignKey(name = "pieza_codmaterial_fk"), nullable = false)
 	private Material material;
 

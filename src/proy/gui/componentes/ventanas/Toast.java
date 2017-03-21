@@ -4,7 +4,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-package proy.gui.componentes;
+package proy.gui.componentes.ventanas;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -20,9 +20,14 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 public final class Toast {
-	public Toast(Window padre, String toastMsg, int toastDelay, int fadeInDelay, int fadeOutDelay, int ajusteHeight) {
+
+	protected Toast(Window padre, String toastMsg, int toastDelay, int fadeInDelay, int fadeOutDelay, int ajusteHeight) {
 		Stage toastStage = new Stage();
-		toastStage.initOwner(padre);
+		try{
+			toastStage.initOwner(padre);
+		} catch(NullPointerException e){
+			//Si no tiene scene tira esta excepcion
+		}
 		toastStage.setResizable(false);
 		toastStage.initStyle(StageStyle.TRANSPARENT);
 

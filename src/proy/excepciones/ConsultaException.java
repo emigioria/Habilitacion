@@ -13,7 +13,7 @@ public class ConsultaException extends PersistenciaException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ConsultaException() {
-		super("Error inesperado interactuando con la base de datos.\nNo se pudieron obtener los datos deseados.");
+	public ConsultaException(Throwable causa) {
+		super("Error inesperado interactuando con la base de datos.\nNo se pudieron obtener los datos deseados.", causa);
 	}
 }

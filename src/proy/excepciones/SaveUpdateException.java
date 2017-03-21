@@ -13,7 +13,7 @@ public class SaveUpdateException extends PersistenciaException {
 
 	private static final long serialVersionUID = 1L;
 
-	public SaveUpdateException() {
-		super("Error inesperado interactuando con la base de datos.\nNo se pudieron guardar los datos deseados.");
+	public SaveUpdateException(Throwable causa) {
+		super("Error inesperado interactuando con la base de datos.\nNo se pudieron guardar los datos deseados.", causa);
 	}
 }

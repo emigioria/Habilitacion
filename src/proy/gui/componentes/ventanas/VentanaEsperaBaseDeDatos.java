@@ -14,22 +14,21 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import proy.gui.componentes.IconoAnimadoEspera;
-import proy.gui.componentes.IconoAplicacion;
 import proy.gui.componentes.StyleCSS;
 
 public class VentanaEsperaBaseDeDatos extends Stage {
 
-	protected VentanaEsperaBaseDeDatos() {
-		this(null);
-	}
-
-	protected VentanaEsperaBaseDeDatos(Window padre) {
+	protected VentanaEsperaBaseDeDatos(Stage padre) {
 		//Crear panel base
 		this.initStyle(StageStyle.UNDECORATED);
 		if(padre != null){
-			this.initOwner(padre);
+			try{
+				this.initOwner(padre);
+			} catch(NullPointerException e){
+				//Si no tiene scene tira esta excepcion
+			}
+			this.getIcons().addAll(padre.getIcons());
 		}
 		VBox panel = new VBox();
 		panel.setAlignment(Pos.CENTER);
@@ -43,7 +42,6 @@ public class VentanaEsperaBaseDeDatos extends Stage {
 
 		//Setear icono y titulo de espera
 		this.setTitle("Esperando");
-		this.getIcons().add(new IconoAplicacion());
 
 		//Setear texto de espera
 		Label esperando = new Label("Esperando a la base de datos...");

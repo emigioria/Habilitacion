@@ -58,8 +58,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.save(comentario);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -94,8 +93,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 				}
 			}
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -107,11 +105,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 			operario.setEstado(attachEstado.attachEstado(session, operario.getEstado()));
 			session.update(operario);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -122,11 +118,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(operario);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 

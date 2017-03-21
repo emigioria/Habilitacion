@@ -48,8 +48,7 @@ public interface FiltroHibernate<T> {
 				}
 			}
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new ConsultaException();
+			throw new ConsultaException(e);
 		}
 		return resultado;
 	}

@@ -8,7 +8,6 @@ package proy.gui.componentes.ventanas;
 
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import proy.gui.componentes.Toast;
 import proy.logica.CoordinadorJavaFX;
 
 public class PresentadorVentanas {
@@ -36,12 +35,8 @@ public class PresentadorVentanas {
 		return new VentanaErrorExcepcionInesperada(padre);
 	}
 
-	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos(Window padre) {
+	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos(Stage padre) {
 		return new VentanaEsperaBaseDeDatos(padre);
-	}
-
-	public VentanaEsperaBaseDeDatos presentarEsperaBaseDeDatos() {
-		return new VentanaEsperaBaseDeDatos();
 	}
 
 	public VentanaPersonalizada presentarVentanaPersonalizada(String URLVista, CoordinadorJavaFX coordinador, Stage padre) {

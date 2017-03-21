@@ -7,18 +7,18 @@
 package proy.gui.componentes.ventanas;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.stage.Window;
 import proy.gui.componentes.StyleCSS;
 
 public abstract class CustomAlert extends Alert {
 
-	public CustomAlert(AlertType alertType, String contentText, ButtonType[] buttons) {
-		super(alertType, contentText, buttons);
-		this.getDialogPane().getStylesheets().add(new StyleCSS().getDefaultStyle());
-	}
-
-	public CustomAlert(AlertType alertType) {
+	public CustomAlert(AlertType alertType, Window padre) {
 		super(alertType);
+		try{
+			this.initOwner(padre);
+		} catch(NullPointerException e){
+			//Si no tiene scene tira esta excepcion
+		}
 		this.getDialogPane().getStylesheets().add(new StyleCSS().getDefaultStyle());
 	}
 

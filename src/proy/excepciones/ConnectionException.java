@@ -13,7 +13,7 @@ public class ConnectionException extends PersistenciaException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ConnectionException() {
-		super("No se pudo conectar con la base de datos.");
+	public ConnectionException(Throwable causa) {
+		super("No se pudo conectar con la base de datos.", causa);
 	}
 }

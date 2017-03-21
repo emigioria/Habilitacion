@@ -72,8 +72,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 			proceso.setEstado(attachEstado.attachEstado(session, proceso.getEstado()));
 			session.save(proceso);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -85,11 +84,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 			proceso.setEstado(attachEstado.attachEstado(session, proceso.getEstado()));
 			session.update(proceso);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -100,11 +97,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(proceso);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 
@@ -123,8 +118,7 @@ public class ProcesoServiceImpl implements ProcesoService {
 			tarea.setEstado(attachEstado.attachEstadoTarea(session, tarea.getEstado()));
 			session.save(tarea);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -136,11 +130,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 			tarea.setEstado(attachEstado.attachEstadoTarea(session, tarea.getEstado()));
 			session.update(tarea);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -151,11 +143,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(tarea);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 
@@ -175,11 +165,9 @@ public class ProcesoServiceImpl implements ProcesoService {
 				}
 			}
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 }

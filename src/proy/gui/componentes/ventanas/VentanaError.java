@@ -16,18 +16,8 @@ public class VentanaError extends CustomAlert {
 	/**
 	 * Constructor. Genera parte de la ventana
 	 */
-	protected VentanaError(AlertType alertType) {
-		super(alertType);
-	}
-
-	/**
-	 * Constructor. Genera la ventana
-	 *
-	 * @param mensaje
-	 *            mensaje a mostrar en la ventana
-	 */
-	protected VentanaError(String titulo, String mensaje) {
-		this(titulo, mensaje, null);
+	protected VentanaError(Window padre) {
+		super(AlertType.ERROR, padre);
 	}
 
 	/**
@@ -39,10 +29,7 @@ public class VentanaError extends CustomAlert {
 	 *            ventana en la que se mostrar� este di�logo
 	 */
 	protected VentanaError(String titulo, String mensaje, Window padre) {
-		super(AlertType.ERROR);
-		if(padre != null){
-			this.initOwner(padre);
-		}
+		this(padre);
 		this.setContentText(mensaje);
 		this.setHeaderText(null);
 		this.setTitle(titulo);

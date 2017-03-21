@@ -64,8 +64,7 @@ public class TallerServiceImpl implements TallerService {
 			}
 			session.save(maquina);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -82,11 +81,9 @@ public class TallerServiceImpl implements TallerService {
 			}
 			session.update(maquina);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -97,11 +94,9 @@ public class TallerServiceImpl implements TallerService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(maquina);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 
@@ -120,8 +115,7 @@ public class TallerServiceImpl implements TallerService {
 			parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 			session.save(parte);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -142,11 +136,9 @@ public class TallerServiceImpl implements TallerService {
 				}
 			}
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -158,11 +150,9 @@ public class TallerServiceImpl implements TallerService {
 			parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
 			session.update(parte);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -173,11 +163,9 @@ public class TallerServiceImpl implements TallerService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(parte);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 
@@ -196,8 +184,7 @@ public class TallerServiceImpl implements TallerService {
 			pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 			session.save(pieza);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -209,11 +196,9 @@ public class TallerServiceImpl implements TallerService {
 			pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
 			session.update(pieza);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("modificar");
+			throw new ObjNotFoundException("modificar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new SaveUpdateException();
+			throw new SaveUpdateException(e);
 		}
 	}
 
@@ -224,11 +209,9 @@ public class TallerServiceImpl implements TallerService {
 			Session session = getSessionFactory().getCurrentSession();
 			session.delete(pieza);
 		} catch(EntityNotFoundException e){
-			e.printStackTrace();
-			throw new ObjNotFoundException("eliminar");
+			throw new ObjNotFoundException("eliminar", e);
 		} catch(Exception e){
-			e.printStackTrace();
-			throw new DeleteException();
+			throw new DeleteException(e);
 		}
 	}
 }

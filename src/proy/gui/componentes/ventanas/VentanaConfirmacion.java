@@ -19,24 +19,11 @@ public class VentanaConfirmacion extends CustomAlert {
 	 *
 	 * @param mensaje
 	 *            mensaje a mostrar en la ventana
-	 */
-	protected VentanaConfirmacion(String titulo, String mensaje) {
-		this(titulo, mensaje, null);
-	}
-
-	/**
-	 * Constructor. Genera la ventana
-	 *
-	 * @param mensaje
-	 *            mensaje a mostrar en la ventana
 	 * @param padre
 	 *            ventana en la que se mostrará este diálogo
 	 */
 	protected VentanaConfirmacion(String titulo, String mensaje, Window padre) {
-		super(AlertType.CONFIRMATION);
-		if(padre != null){
-			this.initOwner(padre);
-		}
+		super(AlertType.CONFIRMATION, padre);
 		this.setContentText(mensaje);
 		this.setHeaderText(null);
 		this.setTitle(titulo);

@@ -43,9 +43,13 @@ public class VentanaPersonalizada extends Stage {
 			this.initModality(Modality.APPLICATION_MODAL);
 			this.initStyle(StageStyle.DECORATED);
 			if(padre != null){
-				this.initOwner(padre);
+				try{
+					this.initOwner(padre);
+				} catch(NullPointerException e){
+					//Si no tiene scene tira esta excepcion
+				}
+				this.getIcons().addAll(padre.getIcons());
 			}
-			this.getIcons().addAll(padre.getIcons());
 
 			controlador.setStage(this);
 			controlador.setCoordinador(coordinador);

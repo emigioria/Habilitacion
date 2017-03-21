@@ -138,7 +138,7 @@ public class MaterialGestor {
 				//si el material tiene tareas asociadas, se le da de baja lógica junto a sus procesos
 				herramienta.darDeBaja();
 				for(Proceso p: herramienta.getProcesos()){
-					p.darDeBaja();
+					gestorProceso.eliminarProceso(p);
 				}
 				persistidorMaterial.actualizarHerramienta(herramienta);
 			}

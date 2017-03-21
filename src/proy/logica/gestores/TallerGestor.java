@@ -474,14 +474,15 @@ public class TallerGestor {
 
 			if(!tareasDeLaParte.isEmpty()){
 				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
-				//dar de baja logica piezas
+
+				//dar de baja piezas
 				for(Pieza pieza: parte.getPiezas()){
-					pieza.darDeBaja();
+					this.eliminarPieza(pieza);
 				}
 
-				//dar de baja logica procesos
+				//dar de baja procesos
 				for(Proceso proceso: parte.getProcesos()){
-					proceso.darDeBaja();
+					gestorProceso.eliminarProceso(proceso);
 				}
 
 				//dar de baja logica parte
@@ -565,7 +566,7 @@ public class TallerGestor {
 				//si la parte tiene tareas asociadas, se le da de baja lógica junto a sus procesos y piezas
 				//dar de baja logica procesos
 				for(Proceso proceso: pieza.getProcesos()){
-					proceso.darDeBaja();
+					gestorProceso.eliminarProceso(proceso);
 				}
 
 				//dar de baja logica pieza

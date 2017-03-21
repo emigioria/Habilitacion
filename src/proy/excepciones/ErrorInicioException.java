@@ -7,13 +7,15 @@
 package proy.excepciones;
 
 /**
- * Representa un error al borrar datos de la base de datos
+ * Representa un error en la gestión de datos
  */
-public class DeleteException extends PersistenciaException {
+public class ErrorInicioException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	public DeleteException(Throwable causa) {
-		super("Error inesperado interactuando con la base de datos.\nNo se pudieron eliminar los datos deseados.", causa);
+	public ErrorInicioException(Throwable causa) {
+		super("Error al iniciar la aplicación.\n"
+				+ "Puede deberse a un error de conexión a la base de datos.\n"
+				+ "Haga click en aceptar para cerrarla", causa);
 	}
 }
