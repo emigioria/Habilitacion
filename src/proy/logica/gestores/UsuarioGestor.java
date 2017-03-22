@@ -196,7 +196,7 @@ public class UsuarioGestor {
 			//si el operario tiene tareas asociadas, se le da baja lógica
 			ArrayList<Tarea> tareasDelOperario = persistidorProceso.obtenerTareas(new FiltroTarea.Builder().operario(operario).build());
 
-			if(tareasDelOperario.isEmpty()){
+			if(!tareasDelOperario.isEmpty()){
 				//si el operario tiene tareas asociadas, se le da de baja lógica
 				operario.darDeBaja();
 				persistidorUsuario.actualizarOperario(operario);

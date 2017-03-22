@@ -9,7 +9,7 @@ package proy.gui;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
-import proy.comun.ConversorFechas;
+import proy.comun.ConversorTiempos;
 import proy.comun.FormateadorString;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
@@ -20,7 +20,7 @@ public abstract class ControladorJavaFX {
 
 	protected CoordinadorJavaFX coordinador;
 
-	protected ConversorFechas conversorFechas = new ConversorFechas();
+	protected ConversorTiempos conversorTiempos = new ConversorTiempos();
 
 	protected FormateadorString formateadorString = new FormateadorString();
 

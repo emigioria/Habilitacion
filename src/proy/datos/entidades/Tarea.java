@@ -79,7 +79,7 @@ public class Tarea {
 	@JoinColumn(name = "codoperario", referencedColumnName = "codusuario", foreignKey = @ForeignKey(name = "tarea_codoperario_fk"), nullable = false)
 	private Operario operario;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "tarea")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "tarea")
 	private Set<Pausa> pausas;
 
 	public Tarea() {

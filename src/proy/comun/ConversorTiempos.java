@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * Clase encargada de la conversion de fechas
  */
 @Service
-public class ConversorFechas {
+public class ConversorTiempos {
 
 	/**
 	 * Convierte de Date a LocalDate
@@ -91,5 +91,33 @@ public class ConversorFechas {
 	public String diaMesAnioHoraYMinutosToString(Date fecha) {
 		DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		return formatter.format(fecha);
+	}
+
+	/**
+	 * Convierte de Long que representan milisegundos a un String con el formato horas "hs " mins "ms " segs "ss"
+	 *
+	 * @param milis
+	 *            de la que se va a obtener las horas, minutos y segundos
+	 * @return un string con las horas, minutos y segundos de los milisegundos que se le pasa
+	 */
+	public String milisAHsMsSsConTexto(Long milis) {
+		long segs = (milis / 1000) % 60;
+		long mins = (milis / 60000) % 60;
+		long horas = milis / 3600000;
+		return horas + "hs " + mins + "ms " + segs + "ss";
+	}
+
+	/**
+	 * Convierte de Long que representan milisegundos a un String con el formato HH:mm:ss
+	 *
+	 * @param milis
+	 *            de la que se va a obtener las horas, minutos y segundos
+	 * @return un string con las horas, minutos y segundos de los milisegundos que se le pasa
+	 */
+	public String milisAHsMsSsConDosPuntos(Long milis) {
+		long segs = (milis / 1000) % 60;
+		long mins = (milis / 60000) % 60;
+		long horas = milis / 3600000;
+		return (horas < 10 ? "0" : "") + horas + ":" + (mins < 10 ? "0" : "") + mins + ":" + (segs < 10 ? "0" : "") + segs;
 	}
 }

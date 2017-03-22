@@ -16,7 +16,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
-import proy.comun.ConversorFechas;
+import proy.comun.ConversorTiempos;
 import proy.datos.entidades.Tarea;
 import proy.gui.ControladorJavaFX;
 
@@ -24,7 +24,7 @@ public class VHistorialTareasGrupoController extends ControladorJavaFX {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/VHistorialTareasGrupo.fxml";
 
-	private ConversorFechas conversorFechas = new ConversorFechas();
+	private ConversorTiempos conversorFechas = new ConversorTiempos();
 
 	private Parent root;
 

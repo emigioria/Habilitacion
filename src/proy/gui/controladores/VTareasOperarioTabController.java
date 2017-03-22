@@ -110,9 +110,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return this;
 		});
 		loader.load();
-
-		//Se pone acá en vez de en inicializar para hacerlo sincrónico
-		actualizar();
 	}
 
 	@Override
@@ -238,6 +235,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private void comenzarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		if(tareaMostrada == null){
+			return;
+		}
 
 		//Toma de datos de la vista
 		final Tarea tareaAComenzar = tareaMostrada;
@@ -272,6 +272,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private void reanudarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		if(tareaMostrada == null){
+			return;
+		}
 
 		//Toma de datos de la vista
 		final Tarea tareaADespausar = tareaMostrada;
@@ -323,6 +326,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void pausarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		if(tareaMostrada == null){
+			return;
+		}
 
 		//Toma de datos de la vista
 		final Tarea tareaAPausar = tareaMostrada;
@@ -367,6 +373,10 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void detenerTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		if(tareaMostrada == null){
+			return;
+		}
+
 		//Toma de datos de la vista
 		final Tarea tareaADetener = tareaMostrada;
 
@@ -410,6 +420,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@FXML
 	private void cancelarTarea() {
 		ResultadoModificarEstadoTarea resultadoModificarEstadoTarea;
+		if(tareaMostrada == null){
+			return;
+		}
 
 		final Tarea tareaACancelar = tareaMostrada;
 		//se pregunta al usuario si desea cancelar la tarea
@@ -571,10 +584,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			return;
 		}
 		Long tEMilis = tareaMostrada.getTiempoEjecutando();
-		Long tESs = (tEMilis / 1000) % 60;
-		Long tEMs = (tEMilis / 60000) % 60;
-		Long tEHs = tEMilis / 3600000;
-		tiempoEjecutado.setText((tEHs < 10 ? "0" + tEHs : tEHs) + ":" + (tEMs < 10 ? "0" + tEMs : tEMs) + ":" + (tESs < 10 ? "0" + tESs : tESs));
+		tiempoEjecutado.setText(conversorTiempos.milisAHsMsSsConDosPuntos(tEMilis));
 
 		Long tTTMilis = tareaMostrada.getTiempoTotalTarea();
 		progresoTarea.setVisible(true);

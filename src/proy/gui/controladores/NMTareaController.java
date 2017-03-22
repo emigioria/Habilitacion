@@ -176,10 +176,10 @@ public class NMTareaController extends ControladorRomano {
 				super.updateItem(ld, bln);
 
 				//Desactivo las fechas previas a hoy
-				setDisable(ld.isBefore(conversorFechas.getLocalDate(new Date())));
+				setDisable(ld.isBefore(conversorTiempos.getLocalDate(new Date())));
 			}
 		});
-		fechaTarea.setValue(conversorFechas.getLocalDate(new Date()));
+		fechaTarea.setValue(conversorTiempos.getLocalDate(new Date()));
 
 		actualizar();
 
@@ -211,7 +211,7 @@ public class NMTareaController extends ControladorRomano {
 		//Toma de datos de la vista
 		tarea.setCantidadTeorica(cantidad.getValue());
 		tarea.setOperario(cbOperario.getValue());
-		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
+		tarea.setFechaPlanificada(conversorTiempos.getDate(fechaTarea.getValue()));
 		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 		tarea.setObservacionesTarea(observaciones.getText().trim());
 
@@ -267,7 +267,7 @@ public class NMTareaController extends ControladorRomano {
 		//Toma de datos de la vista
 		tarea.setCantidadTeorica(cantidad.getValue());
 		tarea.setOperario(cbOperario.getValue());
-		tarea.setFechaPlanificada(conversorFechas.getDate(fechaTarea.getValue()));
+		tarea.setFechaPlanificada(conversorTiempos.getDate(fechaTarea.getValue()));
 		tarea.setProceso(tablaProcesos.getSelectionModel().getSelectedItem());
 		tarea.setObservacionesTarea(observaciones.getText().trim());
 
@@ -332,7 +332,7 @@ public class NMTareaController extends ControladorRomano {
 		tablaProcesos.getSelectionModel().select(tarea.getProceso());
 		cantidad.getValueFactory().setValue(tarea.getCantidadTeorica());
 		cbOperario.getSelectionModel().select(tarea.getOperario());
-		fechaTarea.setValue(conversorFechas.getLocalDate(tarea.getFechaPlanificada()));
+		fechaTarea.setValue(conversorTiempos.getLocalDate(tarea.getFechaPlanificada()));
 		observaciones.setText(tarea.getObservacionesTarea());
 	}
 

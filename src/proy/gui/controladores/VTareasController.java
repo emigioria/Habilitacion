@@ -6,11 +6,13 @@
  */
 package proy.gui.controladores;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import proy.datos.entidades.Operario;
 import proy.datos.filtros.implementacion.FiltroOperario;
@@ -64,20 +66,19 @@ public class VTareasController extends ControladorRomano {
 
 		}
 
+		//Guardo qué pestaña se estaba mostrando antes
 		int indiceAnterior = operarioBox.getSelectionModel().getSelectedIndex();
-		operarioBox.getTabs().clear();
 
+		//Quito las pestañas viejas, cargo los operarios en pestañas y guardo sus controladores
+		operarioBox.getTabs().clear();
+		List<VTareasOperarioTabController> tabControllers = new ArrayList<>();
 		try{
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
 
 			for(Operario o: operarios){
 				final VTareasOperarioTabController tabController = new VTareasOperarioTabController(o, () -> actualizar(), coordinador, stage);
 				operarioBox.getTabs().add(tabController.getTab());
-				tabController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
-					if(newV){
-						tabController.actualizar();
-					}
-				});
+				tabControllers.add(tabController);
 			}
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);
@@ -85,15 +86,33 @@ public class VTareasController extends ControladorRomano {
 			presentadorVentanas.presentarExcepcionInesperada(e, stage);
 		}
 
-		for(int i = 0; i < operarioBox.getTabs().size(); i++){
-			operarioBox.getSelectionModel().select(i);
+		//Arreglo bug gráfico donde aparecen todas las pestañas seleccionadas
+		for(Tab tab: operarioBox.getTabs()){
+			operarioBox.getSelectionModel().select(tab);
 		}
 
-		if(indiceAnterior == -1 && operarioBox.getTabs().size() > 0){
+		//Inicializo el índice la primera vez o cuando el índice queda fuera del rango
+		if(indiceAnterior == -1 || operarioBox.getTabs().size() < indiceAnterior){
 			indiceAnterior = 0;
 		}
 		operarioBox.getSelectionModel().select(indiceAnterior);
 
+		//Cuando se selecciona una pestaña se actualiza su contenido
+		for(VTareasOperarioTabController tabController: tabControllers){
+			tabController.getTab().selectedProperty().addListener((obs, oldV, newV) -> {
+				if(newV){
+					tabController.actualizar();
+				}
+			});
+		}
+
+		//Si hay operarios, se muestran las tareas de la pestaña seleccionada
+		if(operarioBox.getTabs().size() > 0){
+			VTareasOperarioTabController pestañaMostrada = tabControllers.get(indiceAnterior);
+			if(pestañaMostrada != null){
+				pestañaMostrada.actualizar();
+			}
+		}
 		semaforo.release();
 	}
 

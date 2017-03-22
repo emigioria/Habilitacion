@@ -52,7 +52,7 @@
                   <Label fx:id="nombreProceso" text="Torneado - Frenteado" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                   <ScrollPane fitToWidth="true" GridPane.columnSpan="3" GridPane.rowIndex="5">
                      <content>
-                        <Accordion fx:id="tareasBox" />
+                        <Accordion fx:id="tareasBox" maxHeight="1.7976931348623157E308" />
                      </content>
                   </ScrollPane>
                </children>

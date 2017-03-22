@@ -110,22 +110,14 @@ public class AProcesosController extends ControladorRomano {
 		});
 		columnaTiempoPreparacion.setCellValueFactory(param -> {
 			try{
-				long milisTTP = param.getValue().getTiempoTeoricoPreparacion().longValue();
-				long segsTTP = (milisTTP / 1000) % 60;
-				long minsTTP = (milisTTP / 60000) % 60;
-				long horasTTP = milisTTP / 3600000;
-				return new SimpleStringProperty(horasTTP + "hs " + minsTTP + "ms " + segsTTP + "ss");
+				return new SimpleStringProperty(conversorTiempos.milisAHsMsSsConTexto(param.getValue().getTiempoTeoricoPreparacion().longValue()));
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
 		});
 		columnaTiempoProceso.setCellValueFactory(param -> {
 			try{
-				long milisTTP = param.getValue().getTiempoTeoricoProceso().longValue();
-				long segsTTP = (milisTTP / 1000) % 60;
-				long minsTTP = (milisTTP / 60000) % 60;
-				long horasTTP = milisTTP / 3600000;
-				return new SimpleStringProperty(horasTTP + "hs " + minsTTP + "ms " + segsTTP + "ss");
+				return new SimpleStringProperty(conversorTiempos.milisAHsMsSsConTexto(param.getValue().getTiempoTeoricoProceso().longValue()));
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}

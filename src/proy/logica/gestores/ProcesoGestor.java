@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
-import proy.comun.ConversorFechas;
+import proy.comun.ConversorTiempos;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Pausa;
 import proy.datos.entidades.Proceso;
@@ -51,7 +51,7 @@ public class ProcesoGestor {
 	private ProcesoService persistidorProceso;
 
 	@Resource
-	private ConversorFechas conversorFechas;
+	private ConversorTiempos conversorTiempos;
 
 	public ArrayList<String> listarDescripciones(Filtro<String> filtro) throws PersistenciaException {
 		return persistidorProceso.obtenerDescripciones(filtro);
@@ -247,7 +247,7 @@ public class ProcesoGestor {
 		}
 
 		//Veo si la tarea no tiene fecha o tiene una fecha anterior a hoy
-		Date hoy = conversorFechas.getDate(conversorFechas.getLocalDate(new Date()));
+		Date hoy = conversorTiempos.getDate(conversorTiempos.getLocalDate(new Date()));
 		if(tarea.getFechaPlanificada() == null){
 			errores.add(ErrorCrearTarea.FECHA_INCOMPLETA);
 		}
@@ -285,7 +285,7 @@ public class ProcesoGestor {
 		}
 
 		//Veo si la tarea no tiene fecha o tiene una fecha anterior a hoy
-		Date hoy = conversorFechas.getDate(conversorFechas.getLocalDate(new Date()));
+		Date hoy = conversorTiempos.getDate(conversorTiempos.getLocalDate(new Date()));
 		if(tarea.getFechaPlanificada() == null){
 			errores.add(ErrorModificarTarea.FECHA_INCOMPLETA);
 		}
@@ -312,7 +312,7 @@ public class ProcesoGestor {
 	private ResultadoEliminarTareas validarEliminarTareas(ArrayList<Tarea> tareas) {
 		Set<ErrorEliminarTareas> errores = new HashSet<>();
 		for(Tarea tarea: tareas){
-			if(!EstadoTareaStr.FINALIZADA.equals(tarea.getEstado().getNombre())){
+			if(EstadoTareaStr.FINALIZADA.equals(tarea.getEstado().getNombre())){
 				errores.add(ErrorEliminarTareas.HAY_TAREA_FINALIZADA);
 			}
 		}

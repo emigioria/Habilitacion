@@ -8,8 +8,17 @@ package proy.gui.controladores;
 
 import java.io.IOException;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import proy.datos.clases.EstadoStr;
+import proy.datos.entidades.Herramienta;
+import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Tarea;
 import proy.gui.ControladorJavaFX;
 
@@ -20,6 +29,57 @@ public class VTareasTareaRenglonController extends ControladorJavaFX {
 	private TitledPane root;
 
 	private Tarea tarea;
+
+	@FXML
+	private Label lbMaquina;
+
+	@FXML
+	private Label lbParte;
+
+	@FXML
+	private Label lbTipoProceso;
+
+	@FXML
+	private Label lbDescripciónProceso;
+
+	@FXML
+	private Label lbCantidad;
+
+	@FXML
+	private Label lbTTPPreparacion;
+
+	@FXML
+	private Label lbTTProceso;
+
+	@FXML
+	private Label lbTTTarea;
+
+	@FXML
+	private TextArea taObservacionesProceso;
+
+	@FXML
+	private TextArea taObservacionesTarea;
+
+	@FXML
+	private TableView<Pieza> tablaPiezas;
+
+	@FXML
+	private TableColumn<Pieza, String> columnaNombrePieza;
+
+	@FXML
+	private TableColumn<Pieza, String> columnaCodigoPlano;
+
+	@FXML
+	private TableColumn<Pieza, String> columnaNombreMaterial;
+
+	@FXML
+	private TableColumn<Pieza, String> columnaMedidasMaterial;
+
+	@FXML
+	private TableView<Herramienta> tablaHerramientas;
+
+	@FXML
+	private TableColumn<Herramienta, String> columnaNombreHerramienta;
 
 	public VTareasTareaRenglonController(Tarea tarea) throws IOException {
 		this.tarea = tarea;
@@ -43,8 +103,62 @@ public class VTareasTareaRenglonController extends ControladorJavaFX {
 
 	@Override
 	protected void inicializar() {
-		// TODO Auto-generated method stub
+		columnaNombrePieza.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		columnaCodigoPlano.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getCodigoPlano().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		columnaNombreMaterial.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getMaterial().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		columnaMedidasMaterial.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getMaterial().getMedidas().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		columnaNombreHerramienta.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
+		lbMaquina.setText("Maquina: " + tarea.getProceso().getParte().getMaquina().toString());
+		lbParte.setText("Parte: " + tarea.getProceso().getParte().toString());
+		lbTipoProceso.setText("Tipo de proceso: " + formateadorString.primeraMayuscula(tarea.getProceso().getTipo().toString()));
+		lbDescripciónProceso.setText("Descipción de proceso: " + formateadorString.primeraMayuscula(tarea.getProceso().getDescripcion().toString()));
+		lbCantidad.setText("Cantidad: " + tarea.getCantidadTeorica().toString());
+		lbTTPPreparacion.setText("Tiempo teórico de preparación: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getProceso().getTiempoTeoricoPreparacion()));
+		lbTTProceso.setText("Tiempo teórico de proceso: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getProceso().getTiempoTeoricoProceso()));
+		lbTTTarea.setText("Tiempo total de la tarea: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getTiempoTotalTarea()));
+		taObservacionesProceso.setText(tarea.getProceso().getObservaciones());
+		taObservacionesTarea.setText(tarea.getObservacionesTarea());
 
+		for(Pieza pieza: tarea.getProceso().getPiezas()){
+			if(EstadoStr.ALTA.equals(pieza.getEstado().getNombre())){
+				tablaPiezas.getItems().add(pieza);
+			}
+		}
+		for(Herramienta herramienta: tarea.getProceso().getHerramientas()){
+			if(EstadoStr.ALTA.equals(herramienta.getEstado().getNombre())){
+				tablaHerramientas.getItems().add(herramienta);
+			}
+		}
 	}
 
 	@Override

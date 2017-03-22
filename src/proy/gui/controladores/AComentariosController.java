@@ -67,7 +67,7 @@ public class AComentariosController extends ControladorRomano {
 				//Setear fecha comentario
 				Label fecha = new Label();
 				fecha.setStyle("-fx-background-color: transparent; -fx-background-insets: 0px;");
-				fecha.setText("Fecha: " + conversorFechas.diaMesAnioHoraYMinutosToString(comentario.getFechaComentario()));
+				fecha.setText("Fecha: " + conversorTiempos.diaMesAnioHoraYMinutosToString(comentario.getFechaComentario()));
 				contenedor.getChildren().add(fecha);
 
 				//Setear texto comentario
@@ -107,8 +107,8 @@ public class AComentariosController extends ControladorRomano {
 		if(cbOperarioBuscado.getValue() == nullOperario){
 			operarioBuscado = null;
 		}
-		Date fechaInicio = conversorFechas.getDate(dpDespuesDeBuscado.getValue());
-		Date fechaFin = conversorFechas.getDate(dpAntesDeBuscado.getValue());
+		Date fechaInicio = conversorTiempos.getDate(dpDespuesDeBuscado.getValue());
+		Date fechaFin = conversorTiempos.getDate(dpAntesDeBuscado.getValue());
 		listaComentarios.clear();
 		try{
 			listaComentarios.addAll(coordinador.listarComentarios(new FiltroComentario.Builder().operario(operarioBuscado).fechaInicio(fechaInicio).fechaFin(fechaFin).build()));

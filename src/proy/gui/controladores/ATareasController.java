@@ -141,7 +141,7 @@ public class ATareasController extends ControladorRomano {
 		});
 		columnaFecha.setCellValueFactory(param -> {
 			try{
-				return new SimpleStringProperty(conversorFechas.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
+				return new SimpleStringProperty(conversorTiempos.diaMesYAnioToString(param.getValue().getFechaPlanificada()));
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
@@ -266,8 +266,8 @@ public class ATareasController extends ControladorRomano {
 		if(parteBuscada == nullParte){
 			parteBuscada = null;
 		}
-		Date fechaInicio = conversorFechas.getDate(dpDespuesDe.getValue());
-		Date fechaFin = conversorFechas.getDate(dpAntesDe.getValue());
+		Date fechaInicio = conversorTiempos.getDate(dpDespuesDe.getValue());
+		Date fechaFin = conversorTiempos.getDate(dpAntesDe.getValue());
 
 		tablaTareas.getItems().clear();
 		try{
