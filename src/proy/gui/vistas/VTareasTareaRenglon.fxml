@@ -19,9 +19,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TitledPane maxHeight="450.0" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="960.0" text="Tarea 1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasTareaRenglonController">
+<TitledPane maxWidth="1.7976931348623157E308" text="Tarea 1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasTareaRenglonController">
    <content>
-      <GridPane hgap="10.0" maxHeight="424.0" minHeight="424.0" prefHeight="424.0" vgap="10.0">
+      <GridPane hgap="10.0" vgap="10.0">
          <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
             <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
@@ -32,8 +32,8 @@
             <RowConstraints vgrow="NEVER" />
             <RowConstraints vgrow="NEVER" />
             <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints maxHeight="100.0" vgrow="ALWAYS" />
+            <RowConstraints maxHeight="150.0" vgrow="ALWAYS" />
          </rowConstraints>
          <children>
             <Label fx:id="lbMaquina" text="Maquina: Cortadora de tapas de empanada" />
@@ -41,14 +41,14 @@
             <Label fx:id="lbTipoProceso" text="Tipo de proceso: Soldadura de punto" GridPane.rowIndex="2" />
             <Label fx:id="lbDescripciónProceso" text="Descipción de proceso: Escuadras" GridPane.rowIndex="3" />
             <Label text="Observaciones del proceso:" GridPane.rowIndex="4" />
-            <TextArea fx:id="taObservacionesProceso" editable="false" maxHeight="100.0" prefHeight="100.0" text="Aquí van las observaciones del administrador sobre el proceso." wrapText="true" GridPane.rowIndex="5" />
+            <TextArea fx:id="taObservacionesProceso" editable="false" text="Aquí van las observaciones del administrador sobre el proceso." wrapText="true" GridPane.rowIndex="5" />
             <Label fx:id="lbCantidad" text="Cantidad: 4" GridPane.columnIndex="1" />
             <Label fx:id="lbTTPPreparacion" text="Tiempo teórico de preparación: 10 min" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label fx:id="lbTTProceso" text="Tiempo teórico de proceso: 4 hs" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label fx:id="lbTTTarea" text="Tiempo total de la tarea: 16 hs 10 ms" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Observaciones de la tarea:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextArea fx:id="taObservacionesTarea" editable="false" maxHeight="100.0" prefHeight="100.0" text="Aquí van las observaciones del administrador sobre la tarea." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TableView fx:id="tablaPiezas" maxHeight="150.0" prefHeight="150.0" GridPane.rowIndex="6">
+            <TextArea fx:id="taObservacionesTarea" editable="false" text="Aquí van las observaciones del administrador sobre la tarea." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TableView fx:id="tablaPiezas" GridPane.rowIndex="6">
                <columns>
                   <TableColumn fx:id="columnaNombrePieza" minWidth="-1.0" prefWidth="-1.0" text="Pieza" />
                   <TableColumn fx:id="columnaCodigoPlano" minWidth="-1.0" prefWidth="-1.0" text="Codigo plano" />
@@ -59,7 +59,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <TableView fx:id="tablaHerramientas" maxHeight="150.0" prefHeight="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+            <TableView fx:id="tablaHerramientas" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <columns>
                   <TableColumn fx:id="columnaNombreHerramienta" minWidth="-1.0" prefWidth="-1.0" text="Herramienta" />
                </columns>
