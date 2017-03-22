@@ -40,12 +40,14 @@ public class VTareasController extends ControladorRomano {
 			@Override
 			public void handle(long now) {
 				if(now - anterior > 60000000000L){
-					actualizar();
+					actualizacionPeriodica();
 					anterior = now;
 				}
 			}
 		};
 		timer.start();
+
+		actualizar();
 	}
 
 	@FXML
@@ -60,6 +62,12 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
+		stage.setTitle("Sistema de asignaciòn de tareas Romano TaskFast");
+
+		actualizacionPeriodica();
+	}
+
+	public void actualizacionPeriodica() {
 		try{
 			semaforo.acquire();
 		} catch(InterruptedException e){
@@ -76,7 +84,7 @@ public class VTareasController extends ControladorRomano {
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
 
 			for(Operario o: operarios){
-				final VTareasOperarioTabController tabController = new VTareasOperarioTabController(o, () -> actualizar(), coordinador, stage);
+				final VTareasOperarioTabController tabController = new VTareasOperarioTabController(o, () -> actualizacionPeriodica(), coordinador, stage);
 				operarioBox.getTabs().add(tabController.getTab());
 				tabControllers.add(tabController);
 			}

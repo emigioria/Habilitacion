@@ -6,7 +6,7 @@
  */
 package proy.gui.controladores;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -34,13 +34,15 @@ public class VHistorialTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
+		stage.setTitle("Historial de tareas finalizadas");
+
 		grupoVBox.getChildren().clear();
 
 		try{
 			List<Tarea> tareas = coordinador.listarTareas(new FiltroTarea.Builder().estado(EstadoTareaStr.FINALIZADA).ordenFechaFinalizada().build());
-			Map<Date, List<Tarea>> tareasPorFecha = tareas.stream().collect(Collectors.groupingBy(Tarea::getFechaHoraFin));
-			for(Entry<Date, List<Tarea>> e: tareasPorFecha.entrySet()){
-				grupoVBox.getChildren().add(new VHistorialTareasGrupoController(e.getKey(), e.getValue()).getNode());
+			Map<LocalDate, List<Tarea>> tareasPorFecha = tareas.stream().collect(Collectors.groupingBy(t -> conversorTiempos.getLocalDate(t.getFechaHoraFin())));
+			for(Entry<LocalDate, List<Tarea>> e: tareasPorFecha.entrySet()){
+				grupoVBox.getChildren().add(new VHistorialTareasGrupoController(conversorTiempos.getDate(e.getKey()), e.getValue()).getNode());
 			}
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);

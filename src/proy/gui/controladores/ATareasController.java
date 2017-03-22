@@ -277,6 +277,7 @@ public class ATareasController extends ControladorRomano {
 					.parte(parteBuscada)
 					.fechaPlanificadaInicio(fechaInicio)
 					.fechaPlanificadaFin(fechaFin)
+					.noEstado(EstadoTareaStr.FINALIZADA)
 					.build()));
 		} catch(PersistenciaException e){
 			presentadorVentanas.presentarExcepcion(e, stage);

@@ -23,8 +23,8 @@
    <content>
       <GridPane hgap="10.0" vgap="10.0">
          <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" percentWidth="50.0" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" prefWidth="300.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints vgrow="NEVER" />
@@ -41,13 +41,13 @@
             <Label fx:id="lbTipoProceso" text="Tipo de proceso: Soldadura de punto" GridPane.rowIndex="2" />
             <Label fx:id="lbDescripciónProceso" text="Descipción de proceso: Escuadras" GridPane.rowIndex="3" />
             <Label text="Observaciones del proceso:" GridPane.rowIndex="4" />
-            <TextArea fx:id="taObservacionesProceso" editable="false" text="Aquí van las observaciones del administrador sobre el proceso." wrapText="true" GridPane.rowIndex="5" />
+            <TextArea fx:id="taObservacionesProceso" editable="false" wrapText="true" GridPane.rowIndex="5" />
             <Label fx:id="lbCantidad" text="Cantidad: 4" GridPane.columnIndex="1" />
-            <Label fx:id="lbTTPPreparacion" text="Tiempo teórico de preparación: 10 min" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="lbTTPreparacion" text="Tiempo teórico de preparación: 10 ms" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label fx:id="lbTTProceso" text="Tiempo teórico de proceso: 4 hs" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label fx:id="lbTTTarea" text="Tiempo total de la tarea: 16 hs 10 ms" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Observaciones de la tarea:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextArea fx:id="taObservacionesTarea" editable="false" text="Aquí van las observaciones del administrador sobre la tarea." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextArea fx:id="taObservacionesTarea" editable="false" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <TableView fx:id="tablaPiezas" GridPane.rowIndex="6">
                <columns>
                   <TableColumn fx:id="columnaNombrePieza" minWidth="-1.0" prefWidth="-1.0" text="Pieza" />

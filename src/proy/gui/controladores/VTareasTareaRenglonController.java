@@ -26,9 +26,9 @@ public class VTareasTareaRenglonController extends ControladorJavaFX {
 
 	public static final String URL_VISTA = "/proy/gui/vistas/VTareasTareaRenglon.fxml";
 
-	private TitledPane root;
-
 	private Tarea tarea;
+
+	private TitledPane root;
 
 	@FXML
 	private Label lbMaquina;
@@ -46,7 +46,7 @@ public class VTareasTareaRenglonController extends ControladorJavaFX {
 	private Label lbCantidad;
 
 	@FXML
-	private Label lbTTPPreparacion;
+	private Label lbTTPreparacion;
 
 	@FXML
 	private Label lbTTProceso;
@@ -143,11 +143,17 @@ public class VTareasTareaRenglonController extends ControladorJavaFX {
 		lbTipoProceso.setText("Tipo de proceso: " + formateadorString.primeraMayuscula(tarea.getProceso().getTipo().toString()));
 		lbDescripciónProceso.setText("Descipción de proceso: " + formateadorString.primeraMayuscula(tarea.getProceso().getDescripcion().toString()));
 		lbCantidad.setText("Cantidad: " + tarea.getCantidadTeorica().toString());
-		lbTTPPreparacion.setText("Tiempo teórico de preparación: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getProceso().getTiempoTeoricoPreparacion()));
+		lbTTPreparacion.setText("Tiempo teórico de preparación: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getProceso().getTiempoTeoricoPreparacion()));
 		lbTTProceso.setText("Tiempo teórico de proceso: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getProceso().getTiempoTeoricoProceso()));
 		lbTTTarea.setText("Tiempo total de la tarea: " + conversorTiempos.milisAHsMsSsConTexto(tarea.getTiempoTotalTarea()));
-		taObservacionesProceso.setText(tarea.getProceso().getObservaciones());
-		taObservacionesTarea.setText(tarea.getObservacionesTarea());
+		taObservacionesProceso.setText("");
+		if(tarea.getProceso().getObservaciones() != null){
+			taObservacionesProceso.setText(tarea.getProceso().getObservaciones());
+		}
+		taObservacionesTarea.setText("");
+		if(tarea.getObservacionesTarea() != null){
+			taObservacionesTarea.setText(tarea.getObservacionesTarea());
+		}
 
 		for(Pieza pieza: tarea.getProceso().getPiezas()){
 			if(EstadoStr.ALTA.equals(pieza.getEstado().getNombre())){

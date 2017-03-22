@@ -95,6 +95,7 @@ public class ConversorTiempos {
 
 	/**
 	 * Convierte de Long que representan milisegundos a un String con el formato horas "hs " mins "ms " segs "ss"
+	 * Si alguna parte es 0 no se muestra
 	 *
 	 * @param milis
 	 *            de la que se va a obtener las horas, minutos y segundos
@@ -104,7 +105,7 @@ public class ConversorTiempos {
 		long segs = (milis / 1000) % 60;
 		long mins = (milis / 60000) % 60;
 		long horas = milis / 3600000;
-		return horas + "hs " + mins + "ms " + segs + "ss";
+		return (horas > 0 ? horas + "hs " : "") + (mins > 0 ? mins + "ms " : "") + (segs > 0 ? segs + "ss" : "");
 	}
 
 	/**
