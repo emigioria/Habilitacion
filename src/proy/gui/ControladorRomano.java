@@ -45,8 +45,8 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 
 			//Setear estilo si no tiene
 			if(scenaSiguiente.getStylesheets().isEmpty()){
-				//TODO descomentar
-				//				scenaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
+				//TODO descomentar y hacer estilo
+				//scenaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
 			}
 
 			Scene scene = new Scene(scenaSiguiente);
@@ -69,9 +69,17 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 	@Override
 	@FXML
 	protected void salir() {
-		if(sePuedeSalir()){
-			apilador.desapilarScene();
-		}
+		apilador.desapilarScene();
+	}
+
+	@Override
+	public void dejarDeMostrar() {
+
+	}
+
+	@Override
+	public void actualizar() {
+
 	}
 
 	@Override
@@ -88,6 +96,11 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 
 			@Override
 			public void inicializar() {
+			}
+
+			@Override
+			public void dejarDeMostrar() {
+
 			}
 		};
 		pantallaMock.setApilador(apilador);

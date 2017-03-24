@@ -27,28 +27,33 @@ public class PilaScene {
 
 	public void apilarScene(Scene scene, ControladorApilable controller) {
 		scenes.push(scene);
+		if(!isEmpty()){
+			controllers.peek().dejarDeMostrar();
+		}
+		controllers.push(controller);
+		stagePrincipal.setScene(scene);
+		stagePrincipal.show();
+	}
+
+	public void cambiarScene(Scene scene, ControladorApilable controller) {
+		scenes.pop();
+		scenes.push(scene);
+		controllers.pop().dejarDeMostrar();
 		controllers.push(controller);
 		stagePrincipal.setScene(scene);
 		stagePrincipal.show();
 	}
 
 	public void desapilarScene() {
-		scenes.pop();
-		controllers.pop();
-		if(!isEmpty()){
-			stagePrincipal.setScene(scenes.peek());
-			controllers.peek().actualizar();
-			stagePrincipal.show();
+		if(sePuedeSalir()){
+			scenes.pop();
+			controllers.pop().dejarDeMostrar();
+			if(!isEmpty()){
+				stagePrincipal.setScene(scenes.peek());
+				controllers.peek().actualizar();
+				stagePrincipal.show();
+			}
 		}
-	}
-
-	public void cambiarScene(Scene scene, ControladorApilable controller) {
-		scenes.pop();
-		controllers.pop();
-		scenes.push(scene);
-		controllers.push(controller);
-		stagePrincipal.setScene(scene);
-		stagePrincipal.show();
 	}
 
 	public Boolean sePuedeSalir() {
@@ -56,6 +61,6 @@ public class PilaScene {
 	}
 
 	private boolean isEmpty() {
-		return scenes.isEmpty();
+		return controllers.isEmpty() || scenes.isEmpty();
 	}
 }

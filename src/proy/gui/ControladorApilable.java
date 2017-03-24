@@ -10,5 +10,7 @@ public interface ControladorApilable {
 
 	public void actualizar();
 
+	public void dejarDeMostrar();
+
 	public Boolean sePuedeSalir();
 }

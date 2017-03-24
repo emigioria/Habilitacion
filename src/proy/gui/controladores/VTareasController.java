@@ -45,9 +45,12 @@ public class VTareasController extends ControladorRomano {
 				}
 			}
 		};
-		timer.start();
-
 		actualizar();
+	}
+
+	@Override
+	public void dejarDeMostrar() {
+		timer.stop();
 	}
 
 	@FXML
@@ -63,8 +66,7 @@ public class VTareasController extends ControladorRomano {
 	@Override
 	public void actualizar() {
 		stage.setTitle("Sistema de asignaciòn de tareas Romano FasTask");
-
-		actualizacionPeriodica();
+		timer.start();
 	}
 
 	public void actualizacionPeriodica() {
@@ -137,6 +139,6 @@ public class VTareasController extends ControladorRomano {
 		} catch(InterruptedException e){
 
 		}
-		return super.sePuedeSalir();
+		return true;
 	}
 }
