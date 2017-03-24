@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="20.0" prefWidth="600.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AHerramientasController">
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AHerramientasController">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" />
       <ColumnConstraints hgrow="NEVER" />
@@ -34,7 +34,7 @@
    <children>
       <TableView fx:id="tablaHerramientas" GridPane.rowIndex="1" GridPane.rowSpan="2">
          <columns>
-            <TableColumn fx:id="columnaNombre" minWidth="0.0" prefWidth="0.0" text="Herramienta" />
+            <TableColumn fx:id="columnaNombre" minWidth="-1.0" prefWidth="-1.0" text="Herramienta" />
          </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -68,7 +68,7 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreHerramienta" promptText="Nombre">
+            <TextField fx:id="nombreHerramienta" promptText="Nombre" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>

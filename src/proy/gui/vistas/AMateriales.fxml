@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="20.0" prefWidth="600.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AMaterialesController">
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AMaterialesController">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" />
       <ColumnConstraints hgrow="NEVER" />
@@ -69,12 +69,12 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreMaterial" promptText="Nombre">
+            <TextField fx:id="nombreMaterial" promptText="Nombre" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </TextField>
-            <TextField fx:id="medidaMaterial" promptText="Medidas" />
+            <TextField fx:id="medidaMaterial" promptText="Medidas" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

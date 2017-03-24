@@ -22,93 +22,103 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMProcesoController">
-   <content>
-      <GridPane hgap="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="20.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="NEVER" minWidth="171.0" />
-          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="500.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints vgrow="NEVER" />
-          <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-          <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-            <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-            <RowConstraints vgrow="NEVER" />
-        </rowConstraints>
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMProcesoController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+      <RowConstraints vgrow="NEVER" />
+   </rowConstraints>
+   <children>
+      <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+         <content>
+            <GridPane hgap="20.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" vgap="20.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="171.0" />
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="250.0" prefWidth="500.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="75.0" vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="75.0" vgrow="NEVER" />
+                  <RowConstraints vgrow="NEVER" />
+                  <RowConstraints maxHeight="1.7976931348623157E308" minHeight="75.0" vgrow="ALWAYS" />
+              </rowConstraints>
+               <children>
+                  <Label text="*Máquina:" />
+                  <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione una máquina..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                  <Label text="*Parte:" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione una parte..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                  <Label text="*Descripción:" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="cbDescripcion" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione o ingrese una descripción..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                  <Label text="*Tipo de proceso:" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="cbTipo" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione o ingrese un tipo..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+                  <Label text="*Tiempo teórico de preparación:" GridPane.rowIndex="4" />
+                  <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <children>
+                        <Spinner fx:id="spHsTTPreparacion" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="hs" />
+                        <Spinner fx:id="spMsTTPreparacion" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="ms" />
+                        <Spinner fx:id="spSsTTPreparacion" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="ss" />
+                     </children>
+                  </HBox>
+                  <Label text="*Tiempo teórico de proceso:" GridPane.rowIndex="5" />
+                  <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <children>
+                        <Spinner fx:id="spHsTTProceso" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="hs" />
+                        <Spinner fx:id="spMsTTProceso" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="ms" />
+                        <Spinner fx:id="spSsTTProceso" editable="true" prefWidth="75.0" />
+                        <Label minWidth="16.0" text="ss" />
+                     </children>
+                  </HBox>
+                  <Label text="Piezas:" GridPane.rowIndex="7" />
+                  <HBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <children>
+                        <ComboBox fx:id="cbPieza" maxWidth="1.7976931348623157E308" promptText="Seleccione una pieza..." HBox.hgrow="ALWAYS" />
+                        <Button minWidth="75.0" mnemonicParsing="false" onAction="#agregarPieza" text="(+) Agregar" />
+                        <Button minWidth="75.0" mnemonicParsing="false" onAction="#quitarPieza" text="(-) Quitar" />
+                     </children>
+                  </HBox>
+                  <ListView fx:id="listaPiezas" minHeight="30.0" prefHeight="100.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <Label text="Herramientas:" GridPane.rowIndex="9" />
+                  <HBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                     <children>
+                        <ComboBox fx:id="cbHerramienta" maxWidth="1.7976931348623157E308" promptText="Seleccione una herramienta..." HBox.hgrow="ALWAYS" />
+                        <Button minWidth="75.0" mnemonicParsing="false" onAction="#agregarHerramienta" text="(+) Agregar" />
+                        <Button minWidth="75.0" mnemonicParsing="false" onAction="#quitarHerramienta" text="(-) Quitar" />
+                     </children>
+                  </HBox>
+                  <ListView fx:id="listaHerramientas" minHeight="30.0" prefHeight="100.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                  <Label text="Observaciones:" GridPane.rowIndex="11" />
+                  <TextArea fx:id="observacionesProceso" minHeight="30.0" prefHeight="100.0" promptText="Ingrese sus observaciones..." GridPane.columnSpan="2" GridPane.rowIndex="12" />
+                  <Label text="Tiempo promedio del proceso:" GridPane.rowIndex="6" />
+                  <Label fx:id="lbTiempoPromedioProceso" text="&lt;No hay datos aún&gt;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+               </children>
+            </GridPane>
+         </content>
+      </ScrollPane>
+      <HBox alignment="CENTER" spacing="20.0" GridPane.rowIndex="1">
          <children>
-            <Label text="*Máquina:" />
-            <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione una máquina..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
-            <Label text="*Parte:" GridPane.rowIndex="1" />
-            <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione una parte..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
-            <Label text="*Descripción:" GridPane.rowIndex="2" />
-            <ComboBox fx:id="cbDescripcion" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione o ingrese una descripción..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-            <Label text="*Tipo de proceso:" GridPane.rowIndex="3" />
-            <ComboBox fx:id="cbTipo" editable="true" maxWidth="1.7976931348623157E308" prefHeight="25.0" prefWidth="175.0" promptText="Seleccione o ingrese un tipo..." GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-            <Label text="*Tiempo teórico de preparación:" GridPane.rowIndex="4" />
-            <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-               <children>
-                  <Spinner fx:id="spHsTTPreparacion" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="hs" />
-                  <Spinner fx:id="spMsTTPreparacion" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="ms" />
-                  <Spinner fx:id="spSsTTPreparacion" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="ss" />
-               </children>
-            </HBox>
-            <Label text="*Tiempo teórico de proceso:" GridPane.rowIndex="5" />
-            <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-               <children>
-                  <Spinner fx:id="spHsTTProceso" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="hs" />
-                  <Spinner fx:id="spMsTTProceso" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="ms" />
-                  <Spinner fx:id="spSsTTProceso" editable="true" prefWidth="75.0" />
-                  <Label minWidth="16.0" text="ss" />
-               </children>
-            </HBox>
-            <Label text="Piezas:" GridPane.rowIndex="7" />
-            <HBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
-               <children>
-                  <ComboBox fx:id="cbPieza" maxWidth="1.7976931348623157E308" promptText="Seleccione una pieza..." HBox.hgrow="ALWAYS" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#agregarPieza" text="(+) Agregar" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#quitarPieza" text="(-) Quitar" />
-               </children>
-            </HBox>
-            <ListView fx:id="listaPiezas" minHeight="25.0" prefHeight="100.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <Label text="Herramientas:" GridPane.rowIndex="9" />
-            <HBox spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
-               <children>
-                  <ComboBox fx:id="cbHerramienta" maxWidth="1.7976931348623157E308" promptText="Seleccione una herramienta..." HBox.hgrow="ALWAYS" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#agregarHerramienta" text="(+) Agregar" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#quitarHerramienta" text="(-) Quitar" />
-               </children>
-            </HBox>
-            <ListView fx:id="listaHerramientas" minHeight="25.0" prefHeight="100.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <Label text="Observaciones:" GridPane.rowIndex="11" />
-            <TextArea fx:id="observacionesProceso" prefHeight="100.0" promptText="Ingrese sus observaciones..." GridPane.columnSpan="2" GridPane.rowIndex="12" />
-            <HBox alignment="BOTTOM_RIGHT" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="13">
-               <children>
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#guardar" text="Guardar" />
-                  <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" text="Salir" />
-               </children>
-            </HBox>
-            <Label text="*Campos obligatorios" GridPane.rowIndex="13" />
-            <Label text="Tiempo promedio del proceso:" GridPane.rowIndex="6" />
-            <Label fx:id="lbTiempoPromedioProceso" text="&lt;No hay datos aún&gt;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label maxWidth="1.7976931348623157E308" text="*Campos obligatorios" HBox.hgrow="ALWAYS" />
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#guardar" text="Guardar" />
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" text="Salir" />
          </children>
-         <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-         </padding>
-      </GridPane>
-   </content>
-</ScrollPane>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</GridPane>

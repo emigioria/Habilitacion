@@ -15,24 +15,42 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="20.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
    <columnConstraints>
-      <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" />
-      <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" />
-      <ColumnConstraints hgrow="NEVER" maxWidth="1.7976931348623157E308" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER" />
-      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="NEVER" />
+      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
       <RowConstraints vgrow="NEVER" />
    </rowConstraints>
    <children>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMateriales" text="Materiales" />
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarHerramientas" text="Herramientas" GridPane.columnIndex="1" />
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarOperarios" text="Operarios" GridPane.columnIndex="2" />
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMaquinas" text="Máquinas" GridPane.rowIndex="1" />
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarProcesos" text="Procesos" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarTareas" text="Tareas" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMateriales" text="Materiales" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarHerramientas" text="Herramientas" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarOperarios" text="Operarios" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMaquinas" text="Máquinas" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarProcesos" text="Procesos" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
+      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarTareas" text="Tareas" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></Button>
       <Button mnemonicParsing="false" onAction="#administrarComentarios" text="Ver comentarios de los operarios" GridPane.columnSpan="3" GridPane.rowIndex="2" />
       <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" prefWidth="75.0" text="Salir" GridPane.columnSpan="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
          <GridPane.margin>

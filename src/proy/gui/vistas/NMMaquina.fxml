@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane hgap="20.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMMaquinaController">
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMMaquinaController">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
       <ColumnConstraints hgrow="NEVER" />
@@ -52,12 +52,12 @@
       </HBox>
       <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" spacing="10.0" GridPane.rowIndex="1">
          <children>
-            <Label text="Filtros:">
+            <Label minWidth="35.0" text="Filtros:">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreParte" promptText="Nombre">
+            <TextField fx:id="nombreParte" promptText="Nombre" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
@@ -74,7 +74,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <HBox alignment="CENTER_RIGHT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
+      <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevaParte" prefWidth="75.0" text="(+) Nueva" />
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarParte" prefWidth="75.0" text="(-) Eliminar" />
@@ -82,18 +82,24 @@
       </HBox>
       <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <children>
-            <Label text="Filtros:">
+            <Label minWidth="35.0" text="Filtros:">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombrePieza" promptText="Nombre">
+            <TextField fx:id="nombrePieza" promptText="Nombre" HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </TextField>
-            <ComboBox fx:id="materialPieza" prefWidth="150.0" promptText="Material" />
-            <TextField fx:id="codigoPlanoPieza" promptText="Codigo plano" />
+            <ComboBox fx:id="materialPieza" prefWidth="150.0" promptText="Material" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></ComboBox>
+            <TextField fx:id="codigoPlanoPieza" promptText="Codigo plano" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></TextField>
          </children>
       </HBox>
       <Button minWidth="75.0" mnemonicParsing="false" onAction="#buscarPiezas" prefWidth="75.0" text="Filtrar" GridPane.columnIndex="3" GridPane.rowIndex="1" />
@@ -108,7 +114,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <HBox alignment="CENTER_RIGHT" spacing="20.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
+      <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevaPieza" prefWidth="75.0" text="(+) Nueva" />
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarPieza" prefWidth="75.0" text="(-) Eliminar" />

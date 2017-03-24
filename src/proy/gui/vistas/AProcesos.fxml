@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="20.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AProcesosController">
+<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.AProcesosController">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
       <ColumnConstraints hgrow="NEVER" />
@@ -74,10 +74,10 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <ComboBox fx:id="cbMaquina" prefWidth="150.0" promptText="Máquina" />
-            <ComboBox fx:id="cbParte" prefWidth="150.0" promptText="Parte" />
-            <TextField fx:id="descripcionProceso" promptText="Descripción" />
-            <TextField fx:id="tipoProceso" promptText="Tipo" />
+            <ComboBox fx:id="cbMaquina" prefWidth="150.0" promptText="Máquina" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cbParte" prefWidth="150.0" promptText="Parte" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="descripcionProceso" promptText="Descripción" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="tipoProceso" promptText="Tipo" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>
