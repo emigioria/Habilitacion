@@ -32,7 +32,7 @@
             <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="500.0" vgrow="ALWAYS" />
          </rowConstraints>
          <children>
-            <GridPane>
+            <GridPane styleClass="topbar">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
@@ -51,66 +51,66 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <ToggleButton fx:id="toggleButtonComentarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarComentarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-salir" />
-                        <Label alignment="CENTER" minWidth="68.0" styleClass="label-white" text="Comentarios" />
+                        <ToggleButton fx:id="toggleButtonComentarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarComentarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-comentario">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="68.0" text="Comentarios" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="1">
                      <children>
-                        <ToggleButton fx:id="toggleButtonMateriales" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMateriales" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-vendedor" />
-                        <Label alignment="CENTER" minWidth="55.0" styleClass="label-white" text="Materiales" />
+                        <ToggleButton fx:id="toggleButtonMateriales" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMateriales" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-material">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="55.0" text="Materiales" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="2">
                      <children>
-                        <ToggleButton fx:id="toggleButtonHerramientas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarHerramientas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-cliente" />
-                        <Label alignment="CENTER" minWidth="71.0" styleClass="label-white" text="Herramientas" />
+                        <ToggleButton fx:id="toggleButtonHerramientas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarHerramientas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-herramienta">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="71.0" text="Herramientas" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="3">
                      <children>
-                        <ToggleButton fx:id="toggleButtonOperarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarOperarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-inmueble" />
-                        <Label alignment="CENTER" minWidth="52.0" styleClass="label-white" text="Operarios" />
+                        <ToggleButton fx:id="toggleButtonOperarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarOperarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-operario">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="52.0" text="Operarios" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="4">
                      <children>
-                        <ToggleButton fx:id="toggleButtonMaquinas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMaquinas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-propietario" />
-                        <Label alignment="CENTER" minWidth="52.0" styleClass="label-white" text="Máquinas" />
+                        <ToggleButton fx:id="toggleButtonMaquinas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMaquinas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-maquina">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="52.0" text="Máquinas" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="5">
                      <children>
-                        <ToggleButton fx:id="toggleButtonProcesos" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarProcesos" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-vendedor" />
-                        <Label alignment="CENTER" minWidth="47.0" styleClass="label-white" text="Procesos" />
+                        <ToggleButton fx:id="toggleButtonProcesos" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarProcesos" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-proceso">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="47.0" text="Procesos" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                   <VBox alignment="CENTER" GridPane.columnIndex="6">
                      <children>
-                        <ToggleButton fx:id="toggleButtonTareas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarTareas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-salir" />
-                        <Label alignment="CENTER" minWidth="35.0" styleClass="label-white" text="Tareas" />
+                        <ToggleButton fx:id="toggleButtonTareas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarTareas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-tarea">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></ToggleButton>
+                        <Label alignment="CENTER" minWidth="35.0" text="Tareas" />
                      </children>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
                   </VBox>
                </children>
                <padding>

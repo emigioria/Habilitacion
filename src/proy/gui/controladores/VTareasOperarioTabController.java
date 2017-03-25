@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 import javafx.animation.AnimationTimer;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Accordion;
@@ -22,8 +21,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Operario;
@@ -32,10 +29,6 @@ import proy.datos.entidades.Tarea;
 import proy.datos.filtros.implementacion.FiltroTarea;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorJavaFX;
-import proy.gui.componentes.IconoCancelar;
-import proy.gui.componentes.IconoDetener;
-import proy.gui.componentes.IconoPausa;
-import proy.gui.componentes.IconoPlay;
 import proy.gui.componentes.ventanas.VentanaConfirmacion;
 import proy.gui.componentes.ventanas.VentanaPersonalizada;
 import proy.logica.CoordinadorJavaFX;
@@ -118,7 +111,10 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		operarioTab.setText(operario.toString());
 
 		//Configurar botones
-		configurarBotones();
+		botonPlay.setTooltip(new Tooltip("Comenzar tarea"));
+		botonDetener.setTooltip(new Tooltip("Terminar tarea"));
+		botonCancelar.setTooltip(new Tooltip("Cancelar tarea"));
+		botonPausa.setTooltip(new Tooltip("Pausar tarea"));
 
 		iniciarReloj();
 	}
@@ -141,61 +137,6 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 
 	private String getNombreTarea(Tarea tarea) {
 		return "Tarea " + (tareas.indexOf(tarea) + 1);
-	}
-
-	private void configurarBotones() {
-		ImageView imagen = new ImageView(new IconoDetener());
-		imagen.setFitWidth(botonDetener.getWidth());
-		imagen.setFitHeight(botonDetener.getHeight());
-		botonDetener.setGraphic(imagen);
-
-		imagen = new ImageView(new IconoPlay());
-		imagen.setFitWidth(botonPlay.getWidth());
-		imagen.setFitHeight(botonPlay.getHeight());
-		botonPlay.setGraphic(imagen);
-
-		imagen = new ImageView(new IconoCancelar());
-		imagen.setFitWidth(botonCancelar.getWidth());
-		imagen.setFitHeight(botonCancelar.getHeight());
-		botonCancelar.setGraphic(imagen);
-
-		imagen = new ImageView(new IconoPausa());
-		imagen.setFitWidth(botonPausa.getWidth());
-		imagen.setFitHeight(botonPausa.getHeight());
-		botonPausa.setGraphic(imagen);
-
-		final String STYLE_NORMAL = "-fx-background-color: transparent; -fx-padding: 5 5 5 5;";
-		final String STYLE_PRESSED = "-fx-background-color: transparent; -fx-padding: 6 4 4 6;";
-		botonDetener.setStyle(STYLE_NORMAL);
-		botonPlay.setStyle(STYLE_NORMAL);
-		botonPausa.setStyle(STYLE_NORMAL);
-		botonCancelar.setStyle(STYLE_NORMAL);
-
-		EventHandler<MouseEvent> eventoClickPressed = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				((Button) event.getSource()).setStyle(STYLE_PRESSED);
-			}
-		};
-		EventHandler<MouseEvent> eventoClickReleased = new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				((Button) event.getSource()).setStyle(STYLE_NORMAL);
-			}
-		};
-		botonPlay.setOnMousePressed(eventoClickPressed);
-		botonPlay.setOnMouseReleased(eventoClickReleased);
-		botonDetener.setOnMousePressed(eventoClickPressed);
-		botonDetener.setOnMouseReleased(eventoClickReleased);
-		botonCancelar.setOnMousePressed(eventoClickPressed);
-		botonCancelar.setOnMouseReleased(eventoClickReleased);
-		botonPausa.setOnMousePressed(eventoClickPressed);
-		botonPausa.setOnMouseReleased(eventoClickReleased);
-
-		botonPlay.setTooltip(new Tooltip("Comenzar tarea"));
-		botonDetener.setTooltip(new Tooltip("Terminar tarea"));
-		botonCancelar.setTooltip(new Tooltip("Cancelar tarea"));
-		botonPausa.setTooltip(new Tooltip("Pausar tarea"));
 	}
 
 	@FXML

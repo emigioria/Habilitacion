@@ -21,11 +21,11 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TabPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasOperarioTabController">
+<TabPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.VTareasOperarioTabController">
    <tabs>
       <Tab fx:id="operarioTab" closable="false" text="Usuario 1">
          <content>
-            <GridPane hgap="10.0" vgap="10.0">
+            <GridPane hgap="10.0" styleClass="ver-tarea-grid" vgap="10.0">
                <columnConstraints>
                   <ColumnConstraints hgrow="NEVER" />
                   <ColumnConstraints hgrow="NEVER" minWidth="40.0" prefWidth="40.0" />
@@ -40,10 +40,10 @@
                   <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
                </rowConstraints>
                <children>
-                  <Button fx:id="botonPlay" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#comenzarReanudarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
-                  <Button fx:id="botonPausa" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pausarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
-                  <Button fx:id="botonCancelar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelarTarea" prefHeight="20.0" prefWidth="20.0" GridPane.columnIndex="1" GridPane.valignment="TOP" />
-                  <Button fx:id="botonDetener" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#detenerTarea" prefHeight="20.0" prefWidth="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
+                  <Button fx:id="botonPlay" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#comenzarReanudarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" styleClass="button-play" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
+                  <Button fx:id="botonPausa" depthTest="DISABLE" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#pausarTarea" prefHeight="60.0" prefWidth="60.0" style="-fx-background-radius: 50;" styleClass="button-pause" GridPane.halignment="LEFT" GridPane.rowSpan="3" GridPane.valignment="CENTER" />
+                  <Button fx:id="botonCancelar" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cancelarTarea" prefHeight="20.0" prefWidth="20.0" styleClass="button-cancel" GridPane.columnIndex="1" GridPane.valignment="TOP" />
+                  <Button fx:id="botonDetener" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#detenerTarea" prefHeight="20.0" prefWidth="20.0" styleClass="button-stop" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />
                   <Label fx:id="tiempoEjecutado" text="00:00:00" GridPane.rowIndex="3" />
                   <ProgressBar fx:id="progresoTarea" maxWidth="1.7976931348623157E308" minHeight="-Infinity" progress="0.05" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                   <Label fx:id="numeroTarea" text="Tarea 1" GridPane.columnIndex="2" />
