@@ -37,11 +37,11 @@
   -fx-background-color: whitesmoke;
 }
 .combo-box-base:editable .arrow-button:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
   -fx-text-fill: black;
 }
 .combo-box-base:editable .arrow-button:pressed {
-  -fx-background-color: #2754ba;
+  -fx-background-color: #005be6;
   -fx-text-fill: white;
 }
 
@@ -54,7 +54,7 @@
   -fx-text-fill: black;
 }
 .button:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
   -fx-text-fill: black;
 }
 .button:focused {
@@ -62,7 +62,7 @@
   -fx-text-fill: black;
 }
 .button:pressed {
-  -fx-background-color: #2754ba;
+  -fx-background-color: #005be6;
   -fx-text-fill: white;
 }
 
@@ -76,12 +76,12 @@
 }
 .spinner .increment-arrow-button:hover,
 .spinner .decrement-arrow-button:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
   -fx-text-fill: black;
 }
 .spinner .increment-arrow-button:pressed,
 .spinner .decrement-arrow-button:pressed {
-  -fx-background-color: #00aee6;
+  -fx-background-color: #005be6;
   -fx-text-fill: white;
 }
 
@@ -90,7 +90,7 @@
   -fx-background-color: transparent;
 }
 .table-view .column-header {
-  -fx-background-color: #2754ba;
+  -fx-background-color: #005be6;
   -fx-border-color: -fx-box-border;
   -fx-border-width: 0 1 3 0;
 }
@@ -125,10 +125,10 @@
   -fx-background-color: whitesmoke;
 }
 .table-row-cell:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
 }
 .table-row-cell:odd:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
 }
 
 /* Listas */
@@ -148,10 +148,10 @@
   -fx-background-color: whitesmoke;
 }
 .list-view .list-cell:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
 }
 .list-view .list-cell:odd:hover {
-  -fx-background-color: #b1d4e5;
+  -fx-background-color: #67a3ff;
 }
 
 /* Calendario */
@@ -243,7 +243,7 @@
   -fx-border-color: transparent;
 }
 .tab-pane .tab-header-area .headers-region .tab {
-  -fx-background-color: #2754ba;
+  -fx-background-color: #005be6;
 }
 .tab-pane .tab-header-area .headers-region .tab .tab-container .tab-label {
   -fx-text-fill: white;
