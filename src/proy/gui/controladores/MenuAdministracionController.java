@@ -95,7 +95,7 @@ public class MenuAdministracionController extends ControladorRomano {
 
 	@FXML
 	public void administrarComentarios() {
-		if(this.nuevaScene(AOperariosController.URL_VISTA) == null){
+		if(this.nuevaScene(AComentariosController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
