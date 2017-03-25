@@ -109,6 +109,9 @@
                </children>
             </GridPane>
          </content>
+         <padding>
+            <Insets right="20.0" />
+         </padding>
       </ScrollPane>
       <HBox alignment="CENTER" spacing="20.0" GridPane.rowIndex="1">
          <children>
@@ -116,9 +119,12 @@
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#guardar" text="Guardar" />
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" text="Salir" />
          </children>
+         <padding>
+            <Insets right="20.0" />
+         </padding>
       </HBox>
    </children>
    <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      <Insets bottom="20.0" left="20.0" top="20.0" />
    </padding>
 </GridPane>

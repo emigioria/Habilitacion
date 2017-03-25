@@ -29,13 +29,15 @@ public class VTareasController extends ControladorRomano {
 
 	private AnimationTimer timer;
 
+	private List<Runnable> pararRelojes = new ArrayList<>();
+
 	private Semaphore semaforo = new Semaphore(1);
+
+	private Long anterior;
 
 	@Override
 	protected void inicializar() {
 		timer = new AnimationTimer() {
-
-			long anterior = -1;
 
 			@Override
 			public void handle(long now) {
@@ -50,7 +52,7 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void dejarDeMostrar() {
-		timer.stop();
+		pararRelojes();
 	}
 
 	@FXML
@@ -66,6 +68,7 @@ public class VTareasController extends ControladorRomano {
 	@Override
 	public void actualizar() {
 		stage.setTitle("Sistema de asignaciòn de tareas Romano FasTask");
+		anterior = -1L;
 		timer.start();
 	}
 
@@ -88,6 +91,7 @@ public class VTareasController extends ControladorRomano {
 			for(Operario o: operarios){
 				final VTareasOperarioTabController tabController = new VTareasOperarioTabController(o, () -> actualizacionPeriodica(), coordinador, stage);
 				operarioBox.getTabs().add(tabController.getTab());
+				pararRelojes.add(tabController.getPararReloj());
 				tabControllers.add(tabController);
 			}
 		} catch(PersistenciaException e){
@@ -131,9 +135,16 @@ public class VTareasController extends ControladorRomano {
 		presentadorVentanas.presentarVentanaPersonalizada(NComentarioController.URL_VISTA, coordinador, stage).showAndWait();
 	}
 
+	private void pararRelojes() {
+		timer.stop();
+		for(Runnable r: pararRelojes){
+			r.run();
+		}
+	}
+
 	@Override
 	public Boolean sePuedeSalir() {
-		timer.stop();
+		pararRelojes();
 		try{
 			semaforo.acquire();
 		} catch(InterruptedException e){

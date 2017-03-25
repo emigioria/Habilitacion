@@ -12,8 +12,10 @@ import java.util.Date;
 import java.util.List;
 
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -505,6 +507,22 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 			botonCancelar.setVisible(false);
 			break;
 		}
+
+		//Colorear flecha de la tarea mostrada
+		for(TitledPane otroRenglon: tareasBox.getPanes()){
+			Platform.runLater(() -> {
+				Node arrow = otroRenglon.lookup(".arrow");
+				if(arrow != null){
+					arrow.setStyle("");
+				}
+			});
+		}
+		Platform.runLater(() -> {
+			Node arrow = tareasBox.getPanes().get(tareas.indexOf(tareaMostrada)).lookup(".arrow");
+			if(arrow != null){
+				arrow.setStyle(" -fx-background-color: #FF5119;  -fx-border-color: #000000;");
+			}
+		});
 	}
 
 	private void noMostrarTareas() {
@@ -541,5 +559,9 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	@Override
 	protected void salir() {
 
+	}
+
+	public Runnable getPararReloj() {
+		return () -> timer.stop();
 	}
 }

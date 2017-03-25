@@ -8,7 +8,7 @@ package proy.gui.controladores;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import proy.datos.clases.DatosLogin;
 import proy.excepciones.PersistenciaException;
 import proy.gui.ControladorDialogo;
@@ -24,7 +24,7 @@ public class LoguearAdminController extends ControladorDialogo {
 	private TextField nombre;
 
 	@FXML
-	private GridPane contenedor;
+	private VBox passwordBox;
 
 	private SafePasswordField contra;
 
@@ -35,9 +35,8 @@ public class LoguearAdminController extends ControladorDialogo {
 		stage.setTitle("Loguearse como administrador");
 
 		contra = new SafePasswordField();
-		contenedor.getChildren().add(contra);
-		GridPane.setColumnIndex(contra, 1);
-		GridPane.setRowIndex(contra, 1);
+		contra.setPromptText("Ingrese su contraseña...");
+		passwordBox.getChildren().add(contra);
 	}
 
 	@FXML

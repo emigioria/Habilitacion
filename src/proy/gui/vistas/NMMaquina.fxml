@@ -43,7 +43,7 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreMaquina">
+            <TextField fx:id="nombreMaquina" maxWidth="1.7976931348623157E308" promptText="Ingrese un nombre..." HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
@@ -77,7 +77,7 @@
       <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevaParte" prefWidth="75.0" text="(+) Nueva" />
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarParte" prefWidth="75.0" text="(-) Eliminar" />
+            <Button minWidth="80.0" mnemonicParsing="false" onAction="#eliminarParte" prefWidth="80.0" text="(-) Eliminar" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -117,7 +117,7 @@
       <HBox alignment="CENTER_LEFT" spacing="20.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
             <Button minWidth="75.0" mnemonicParsing="false" onAction="#nuevaPieza" prefWidth="75.0" text="(+) Nueva" />
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarPieza" prefWidth="75.0" text="(-) Eliminar" />
+            <Button minWidth="80.0" mnemonicParsing="false" onAction="#eliminarPieza" prefWidth="80.0" text="(-) Eliminar" />
          </children>
       </HBox>
       <HBox alignment="BOTTOM_RIGHT" prefWidth="330.0" spacing="20.0" GridPane.columnSpan="4" GridPane.rowIndex="4">

@@ -17,8 +17,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<GridPane fx:id="contenedor" hgap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="350.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.LoguearAdminController">
+<GridPane hgap="20.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="350.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.LoguearAdminController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
@@ -29,6 +30,22 @@
     <RowConstraints vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
+      <Label text="Contraseña" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </Label>
+      <Label text="Nombre">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </Label>
+      <TextField fx:id="nombre" promptText="Ingrese su nombre..." GridPane.columnIndex="1">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </TextField>
+      <VBox fx:id="passwordBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" />
       <HBox alignment="CENTER_RIGHT" spacing="20.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
             <Button mnemonicParsing="false" onAction="#iniciarSesion" text="Iniciar Sesión">
@@ -43,21 +60,6 @@
             </Button>
          </children>
       </HBox>
-      <Label text="Contraseña" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-      </Label>
-      <Label text="Nombre">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-      </Label>
-      <TextField fx:id="nombre" GridPane.columnIndex="1">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-      </TextField>
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

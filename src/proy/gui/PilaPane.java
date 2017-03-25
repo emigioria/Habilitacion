@@ -53,13 +53,15 @@ public class PilaPane extends PilaJavaFX {
 
 	@Override
 	public void desapilarPantalla() {
-		if(!hayUnaSolaPantalla() && sePuedeSalir()){
-			pantallas.pop();
-			controllers.pop().dejarDeMostrar();
-			if(!isEmpty()){
-				controllers.peek().actualizar();
-				fondo.getChildren().clear();
-				fondo.getChildren().add(pantallas.peek());
+		if(!hayUnaSolaPantalla()){
+			if(sePuedeSalir()){
+				pantallas.pop();
+				controllers.pop().dejarDeMostrar();
+				if(!isEmpty()){
+					controllers.peek().actualizar();
+					fondo.getChildren().clear();
+					fondo.getChildren().add(pantallas.peek());
+				}
 			}
 		}
 		else{
