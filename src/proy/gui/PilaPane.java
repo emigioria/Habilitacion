@@ -9,18 +9,21 @@ package proy.gui;
 import java.util.Stack;
 
 import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 
-public class PilaScene extends PilaJavaFX {
+public class PilaPane extends PilaJavaFX {
 
-	private Scene scenaPrincipal;
+	private Pane fondo;
 
 	private Stack<Parent> pantallas;
 
 	private Stack<ControladorApilable> controllers;
 
-	public PilaScene(Scene scenaPrincipal) {
-		this.scenaPrincipal = scenaPrincipal;
+	private ControladorApilable padre;
+
+	public PilaPane(Pane fondo, ControladorApilable padre) {
+		this.padre = padre;
+		this.fondo = fondo;
 		pantallas = new Stack<>();
 		controllers = new Stack<>();
 	}
@@ -32,7 +35,8 @@ public class PilaScene extends PilaJavaFX {
 			controllers.peek().dejarDeMostrar();
 		}
 		controllers.push(controller);
-		scenaPrincipal.setRoot(pantalla);
+		fondo.getChildren().clear();
+		fondo.getChildren().add(pantalla);
 	}
 
 	@Override
@@ -41,18 +45,23 @@ public class PilaScene extends PilaJavaFX {
 		pantallas.push(pantalla);
 		controllers.pop().dejarDeMostrar();
 		controllers.push(controller);
-		scenaPrincipal.setRoot(pantalla);
+		fondo.getChildren().clear();
+		fondo.getChildren().add(pantalla);
 	}
 
 	@Override
 	public void desapilarPantalla() {
-		if(sePuedeSalir()){
+		if(!hayUnaSolaPantalla() && sePuedeSalir()){
 			pantallas.pop();
 			controllers.pop().dejarDeMostrar();
 			if(!isEmpty()){
 				controllers.peek().actualizar();
-				scenaPrincipal.setRoot(pantallas.peek());
+				fondo.getChildren().clear();
+				fondo.getChildren().add(pantallas.peek());
 			}
+		}
+		else{
+			padre.salir();
 		}
 	}
 
@@ -62,5 +71,9 @@ public class PilaScene extends PilaJavaFX {
 
 	private boolean isEmpty() {
 		return controllers.isEmpty() || pantallas.isEmpty();
+	}
+
+	private boolean hayUnaSolaPantalla() {
+		return controllers.size() == 1 || pantallas.size() == 1;
 	}
 }

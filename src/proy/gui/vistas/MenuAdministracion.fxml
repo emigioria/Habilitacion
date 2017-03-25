@@ -10,55 +10,114 @@
 -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
+<GridPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.MenuAdministracionController">
    <columnConstraints>
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
-      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" prefWidth="850.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
-      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="ALWAYS" />
       <RowConstraints vgrow="NEVER" />
+      <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="500.0" vgrow="ALWAYS" />
    </rowConstraints>
    <children>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMateriales" text="Materiales" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarHerramientas" text="Herramientas" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarOperarios" text="Operarios" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarMaquinas" text="Máquinas" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarProcesos" text="Procesos" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button minHeight="150.0" minWidth="150.0" mnemonicParsing="false" onAction="#administrarTareas" text="Tareas" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin></Button>
-      <Button mnemonicParsing="false" onAction="#administrarComentarios" text="Ver comentarios de los operarios" GridPane.columnSpan="3" GridPane.rowIndex="2" />
-      <Button minWidth="75.0" mnemonicParsing="false" onAction="#salir" prefWidth="75.0" text="Salir" GridPane.columnSpan="3" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+      <GridPane>
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
-      </Button>
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints valignment="CENTER" vgrow="NEVER" />
+         </rowConstraints>
+         <children>
+            <VBox alignment="CENTER">
+               <children>
+                  <ToggleButton fx:id="toggleButtonComentarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarComentarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-salir" />
+                  <Label alignment="CENTER" minWidth="68.0" styleClass="label-white" text="Comentarios" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="1">
+               <children>
+                  <ToggleButton fx:id="toggleButtonMateriales" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMateriales" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-vendedor" />
+                  <Label alignment="CENTER" minWidth="55.0" styleClass="label-white" text="Materiales" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="2">
+               <children>
+                  <ToggleButton fx:id="toggleButtonHerramientas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarHerramientas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-cliente" />
+                  <Label alignment="CENTER" minWidth="71.0" styleClass="label-white" text="Herramientas" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="3">
+               <children>
+                  <ToggleButton fx:id="toggleButtonOperarios" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarOperarios" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-inmueble" />
+                  <Label alignment="CENTER" minWidth="52.0" styleClass="label-white" text="Operarios" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="4">
+               <children>
+                  <ToggleButton fx:id="toggleButtonMaquinas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarMaquinas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-propietario" />
+                  <Label alignment="CENTER" minWidth="52.0" styleClass="label-white" text="Máquinas" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="5">
+               <children>
+                  <ToggleButton fx:id="toggleButtonProcesos" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarProcesos" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-vendedor" />
+                  <Label alignment="CENTER" minWidth="47.0" styleClass="label-white" text="Procesos" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+            <VBox alignment="CENTER" GridPane.columnIndex="6">
+               <children>
+                  <ToggleButton fx:id="toggleButtonTareas" maxHeight="80.0" maxWidth="80.0" minHeight="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#administrarTareas" prefHeight="80.0" prefWidth="80.0" styleClass="toggle-button-salir" />
+                  <Label alignment="CENTER" minWidth="35.0" styleClass="label-white" text="Tareas" />
+               </children>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </GridPane>
+      <AnchorPane GridPane.rowIndex="1">
+         <children>
+            <StackPane fx:id="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
    </children>
-   <padding>
-      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-   </padding>
 </GridPane>

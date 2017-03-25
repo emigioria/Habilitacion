@@ -12,15 +12,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
 public abstract class ControladorRomano extends ControladorJavaFX implements ControladorApilable {
 
-	protected PilaScene apilador;
+	protected PilaJavaFX apilador;
 
-	private void setApilador(PilaScene apilador) {
+	public void setApilador(PilaJavaFX apilador) {
 		this.apilador = apilador;
 	}
 
@@ -32,29 +33,28 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		return nuevaCambiarScene(URLVista, apilador, coordinador, true);
 	}
 
-	private ControladorRomano nuevaCambiarScene(String URLVista, PilaScene apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
+	protected ControladorRomano nuevaCambiarScene(String URLVista, PilaJavaFX apilador, CoordinadorJavaFX coordinador, Boolean cambiar) {
 		try{
 			//Crear el cargador de la pantalla
 			FXMLLoader loader = new FXMLLoader(ControladorRomano.class.getResource(URLVista));
 
 			//Cargar vista
-			Parent scenaSiguiente = (Parent) loader.load();
+			Parent pantallaSiguiente = (Parent) loader.load();
 
 			//Cargar controlador
 			ControladorRomano controlador = loader.getController();
 
 			//Setear estilo si no tiene
-			if(scenaSiguiente.getStylesheets().isEmpty()){
+			if(pantallaSiguiente.getStylesheets().isEmpty()){
 				//TODO descomentar y hacer estilo
-				//scenaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
+				// pantallaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
 			}
 
-			Scene scene = new Scene(scenaSiguiente);
 			if(cambiar){
-				apilador.cambiarScene(scene, controlador);
+				apilador.cambiarPantalla(pantallaSiguiente, controlador);
 			}
 			else{
-				apilador.apilarScene(scene, controlador);
+				apilador.apilarPantalla(pantallaSiguiente, controlador);
 			}
 			controlador.setStage(stage);
 			controlador.setApilador(apilador);
@@ -68,8 +68,8 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 
 	@Override
 	@FXML
-	protected void salir() {
-		apilador.desapilarScene();
+	public void salir() {
+		apilador.desapilarPantalla();
 	}
 
 	@Override
@@ -88,7 +88,9 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 	}
 
 	public static PilaScene crearYMostrarPrimeraVentana(CoordinadorJavaFX coordinador, Stage primaryStage, String URL_Vista) {
-		PilaScene apilador = new PilaScene(primaryStage);
+		Scene primaryScene = new Scene(new Pane());
+		primaryStage.setScene(primaryScene);
+		PilaScene apilador = new PilaScene(primaryScene);
 		ControladorRomano pantallaMock = new ControladorRomano() {
 			@Override
 			public void actualizar() {
@@ -107,6 +109,7 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		pantallaMock.setCoordinador(coordinador);
 		pantallaMock.setStage(primaryStage);
 		pantallaMock.nuevaScene(URL_Vista);
+		primaryStage.show();
 		return apilador;
 	}
 }
