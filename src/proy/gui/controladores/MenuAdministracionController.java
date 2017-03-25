@@ -107,9 +107,6 @@ public class MenuAdministracionController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
-		//Primera pantalla a mostrar
-		administrarComentarios();
-
 		//Agrupados botones
 		toggleButtonComentarios.setToggleGroup(toggleGroup);
 		toggleButtonMateriales.setToggleGroup(toggleGroup);
@@ -125,6 +122,10 @@ public class MenuAdministracionController extends ControladorRomano {
 		}
 
 		actualizar();
+
+		//Primera pantalla a mostrar
+		toggleButtonComentarios.setSelected(true);
+		administrarComentarios();
 	}
 
 	private void agregarListenerSeleccionado(Toggle t) {
