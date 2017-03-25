@@ -38,12 +38,12 @@
    <children>
       <HBox alignment="CENTER_LEFT" GridPane.columnSpan="4">
          <children>
-            <Label text="Nombre de la Maquina">
+            <Label text="Nombre de la máquina:">
                <HBox.margin>
                   <Insets />
                </HBox.margin>
             </Label>
-            <TextField fx:id="nombreMaquina" maxWidth="1.7976931348623157E308" promptText="Ingrese un nombre..." HBox.hgrow="ALWAYS">
+            <TextField fx:id="nombreMaquina" maxWidth="1.7976931348623157E308" promptText="Ingrese un nombre para la máquina..." HBox.hgrow="ALWAYS">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>
