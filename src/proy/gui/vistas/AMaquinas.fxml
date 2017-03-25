@@ -28,7 +28,7 @@
    </columnConstraints>
    <rowConstraints>
       <RowConstraints vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+      <RowConstraints vgrow="ALWAYS" />
       <RowConstraints vgrow="NEVER" />
    </rowConstraints>
    <children>

@@ -109,6 +109,8 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		pantallaMock.setCoordinador(coordinador);
 		pantallaMock.setStage(primaryStage);
 		pantallaMock.nuevaScene(URL_Vista);
+		primaryStage.setMinHeight(400);
+		primaryStage.setMinWidth(450);
 		primaryStage.show();
 		return apilador;
 	}

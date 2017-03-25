@@ -31,7 +31,7 @@
    <rowConstraints>
       <RowConstraints vgrow="SOMETIMES" />
       <RowConstraints vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="150.0" vgrow="SOMETIMES" />
       <RowConstraints vgrow="SOMETIMES" />
       <RowConstraints vgrow="SOMETIMES" />
    </rowConstraints>
