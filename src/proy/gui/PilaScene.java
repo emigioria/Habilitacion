@@ -37,9 +37,11 @@ public class PilaScene extends PilaJavaFX {
 
 	@Override
 	public void cambiarPantalla(Parent pantalla, ControladorApilable controller) {
-		pantallas.pop();
+		if(!isEmpty()){
+			pantallas.pop();
+			controllers.pop().dejarDeMostrar();
+		}
 		pantallas.push(pantalla);
-		controllers.pop().dejarDeMostrar();
 		controllers.push(controller);
 		scenaPrincipal.setRoot(pantalla);
 	}
@@ -56,8 +58,14 @@ public class PilaScene extends PilaJavaFX {
 		}
 	}
 
+	@Override
 	public Boolean sePuedeSalir() {
-		return controllers.peek().sePuedeSalir();
+		if(!isEmpty()){
+			return controllers.peek().sePuedeSalir();
+		}
+		else{
+			return null;
+		}
 	}
 
 	private boolean isEmpty() {

@@ -42,44 +42,62 @@ public class MenuAdministracionController extends ControladorRomano {
 	@FXML
 	private ToggleButton toggleButtonTareas;
 
-	private ToggleGroup toggleGroupSidebar = new ToggleGroup();
+	private ToggleGroup toggleGroup = new ToggleGroup();
 
 	@FXML
 	private Pane background;
 
+	private PilaPane backgroundApilador;
+
+	private Toggle botonAnteriormenteSeleccionado;
+
 	@FXML
 	public void administrarOperarios() {
-		this.nuevaScene(AOperariosController.URL_VISTA);
+		if(this.nuevaScene(AOperariosController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarMaquinas() {
-		this.nuevaScene(AMaquinasController.URL_VISTA);
+		if(this.nuevaScene(AMaquinasController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarProcesos() {
-		this.nuevaScene(AProcesosController.URL_VISTA);
+		if(this.nuevaScene(AProcesosController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarMateriales() {
-		this.nuevaScene(AMaterialesController.URL_VISTA);
+		if(this.nuevaScene(AMaterialesController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarHerramientas() {
-		this.nuevaScene(AHerramientasController.URL_VISTA);
+		if(this.nuevaScene(AHerramientasController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarTareas() {
-		this.nuevaScene(ATareasController.URL_VISTA);
+		if(this.nuevaScene(ATareasController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@FXML
 	public void administrarComentarios() {
-		this.nuevaScene(AComentariosController.URL_VISTA);
+		if(this.nuevaScene(AOperariosController.URL_VISTA) == null){
+			botonAnteriormenteSeleccionado.setSelected(true);
+		}
 	}
 
 	@Override
@@ -93,16 +111,28 @@ public class MenuAdministracionController extends ControladorRomano {
 		administrarComentarios();
 
 		//Agrupados botones
-		toggleButtonComentarios.setToggleGroup(toggleGroupSidebar);
-		toggleButtonMateriales.setToggleGroup(toggleGroupSidebar);
-		toggleButtonHerramientas.setToggleGroup(toggleGroupSidebar);
-		toggleButtonOperarios.setToggleGroup(toggleGroupSidebar);
-		toggleButtonMaquinas.setToggleGroup(toggleGroupSidebar);
-		toggleButtonProcesos.setToggleGroup(toggleGroupSidebar);
-		toggleButtonTareas.setToggleGroup(toggleGroupSidebar);
-		addAlwaysOneSelectedSupport(toggleGroupSidebar);
+		toggleButtonComentarios.setToggleGroup(toggleGroup);
+		toggleButtonMateriales.setToggleGroup(toggleGroup);
+		toggleButtonHerramientas.setToggleGroup(toggleGroup);
+		toggleButtonOperarios.setToggleGroup(toggleGroup);
+		toggleButtonMaquinas.setToggleGroup(toggleGroup);
+		toggleButtonProcesos.setToggleGroup(toggleGroup);
+		toggleButtonTareas.setToggleGroup(toggleGroup);
+		addAlwaysOneSelectedSupport(toggleGroup);
+
+		for(Toggle t: toggleGroup.getToggles()){
+			agregarListenerSeleccionado(t);
+		}
 
 		actualizar();
+	}
+
+	private void agregarListenerSeleccionado(Toggle t) {
+		t.selectedProperty().addListener((obs, oldV, newV) -> {
+			if(!newV){
+				botonAnteriormenteSeleccionado = t;
+			}
+		});
 	}
 
 	private void addAlwaysOneSelectedSupport(final ToggleGroup toggleGroup) {
@@ -132,13 +162,15 @@ public class MenuAdministracionController extends ControladorRomano {
 
 	@Override
 	protected ControladorRomano nuevaScene(String URLVista) {
-		background.getChildren().clear();
-		return nuevaCambiarScene(URLVista, new PilaPane(background, this), coordinador, false);
+		if(backgroundApilador == null || backgroundApilador.sePuedeSalir()){
+			backgroundApilador = new PilaPane(background, this);
+			return nuevaCambiarScene(URLVista, backgroundApilador, coordinador, false);
+		}
+		return null;
 	}
 
 	@Override
 	protected ControladorRomano cambiarScene(String URLVista) {
-		background.getChildren().clear();
-		return nuevaCambiarScene(URLVista, new PilaPane(background, this), coordinador, true);
+		throw new RuntimeException();
 	}
 }

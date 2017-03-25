@@ -16,4 +16,6 @@ public abstract class PilaJavaFX {
 
 	public abstract void apilarPantalla(Parent pantalla, ControladorApilable controlador);
 
+	public abstract Boolean sePuedeSalir();
+
 }

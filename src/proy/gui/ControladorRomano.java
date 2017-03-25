@@ -14,14 +14,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import proy.gui.componentes.StyleCSS;
 import proy.gui.componentes.ventanas.PresentadorVentanas;
 import proy.logica.CoordinadorJavaFX;
 
 public abstract class ControladorRomano extends ControladorJavaFX implements ControladorApilable {
 
-	protected PilaJavaFX apilador;
+	private PilaJavaFX apilador;
 
-	public void setApilador(PilaJavaFX apilador) {
+	private void setApilador(PilaJavaFX apilador) {
 		this.apilador = apilador;
 	}
 
@@ -46,8 +47,7 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 
 			//Setear estilo si no tiene
 			if(pantallaSiguiente.getStylesheets().isEmpty()){
-				//TODO descomentar y hacer estilo
-				// pantallaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
+				pantallaSiguiente.getStylesheets().add(new StyleCSS().getDefaultStyle());
 			}
 
 			if(cambiar){
