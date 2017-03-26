@@ -102,7 +102,7 @@ public class AComentariosController extends ControladorRomano {
 	}
 
 	@FXML
-	public void buscar() {
+	private void buscar() {
 		Operario operarioBuscado = cbOperarioBuscado.getValue();
 		if(cbOperarioBuscado.getValue() == nullOperario){
 			operarioBuscado = null;

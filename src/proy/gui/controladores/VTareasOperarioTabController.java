@@ -562,6 +562,10 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 	}
 
 	public Runnable getPararReloj() {
-		return () -> timer.stop();
+		return () -> {
+			if(timer != null){
+				timer.stop();
+			}
+		};
 	}
 }

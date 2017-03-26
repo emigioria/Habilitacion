@@ -175,13 +175,13 @@ public class ATareasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void nuevaTarea() {
+	private void nuevaTarea() {
 		NMTareaController nuevaPantalla = (NMTareaController) this.nuevaScene(NMTareaController.URL_VISTA);
 		nuevaPantalla.formatearNuevaTarea();
 	}
 
 	@FXML
-	public void modificarTarea() {
+	private void modificarTarea() {
 		Tarea tarea = tablaTareas.getSelectionModel().getSelectedItem();
 		if(tarea != null){
 			NMTareaController nuevaPantalla = (NMTareaController) this.nuevaScene(NMTareaController.URL_VISTA);
@@ -190,7 +190,7 @@ public class ATareasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarTarea() {
+	private void eliminarTarea() {
 		ResultadoEliminarTarea resultado;
 		StringBuffer erroresBfr = new StringBuffer();
 
@@ -248,12 +248,12 @@ public class ATareasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void verHistorialDeTareas() {
+	private void verHistorialDeTareas() {
 		this.nuevaScene(VHistorialTareasController.URL_VISTA);
 	}
 
 	@FXML
-	public void buscar() {
+	private void buscar() {
 		Operario operarioBuscado = cbOperario.getValue();
 		if(operarioBuscado == nullOperario){
 			operarioBuscado = null;

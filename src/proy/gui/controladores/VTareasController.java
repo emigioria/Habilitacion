@@ -72,7 +72,7 @@ public class VTareasController extends ControladorRomano {
 		timer.start();
 	}
 
-	public void actualizacionPeriodica() {
+	private void actualizacionPeriodica() {
 		try{
 			semaforo.acquire();
 		} catch(InterruptedException e){

@@ -8,6 +8,7 @@ package proy.gui;
 
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -110,8 +111,10 @@ public abstract class ControladorRomano extends ControladorJavaFX implements Con
 		pantallaMock.setStage(primaryStage);
 		pantallaMock.nuevaScene(URL_Vista);
 		primaryStage.setMinHeight(400);
-		primaryStage.setMinWidth(450);
-		primaryStage.show();
+		primaryStage.setMinWidth(650);
+		Platform.runLater(() -> {
+			primaryStage.show();
+		});
 		return apilador;
 	}
 }

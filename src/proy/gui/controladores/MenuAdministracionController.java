@@ -52,49 +52,49 @@ public class MenuAdministracionController extends ControladorRomano {
 	private Toggle botonAnteriormenteSeleccionado;
 
 	@FXML
-	public void administrarOperarios() {
+	private void administrarOperarios() {
 		if(this.nuevaScene(AOperariosController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarMaquinas() {
+	private void administrarMaquinas() {
 		if(this.nuevaScene(AMaquinasController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarProcesos() {
+	private void administrarProcesos() {
 		if(this.nuevaScene(AProcesosController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarMateriales() {
+	private void administrarMateriales() {
 		if(this.nuevaScene(AMaterialesController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarHerramientas() {
+	private void administrarHerramientas() {
 		if(this.nuevaScene(AHerramientasController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarTareas() {
+	private void administrarTareas() {
 		if(this.nuevaScene(ATareasController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}
 	}
 
 	@FXML
-	public void administrarComentarios() {
+	private void administrarComentarios() {
 		if(this.nuevaScene(AComentariosController.URL_VISTA) == null){
 			botonAnteriormenteSeleccionado.setSelected(true);
 		}

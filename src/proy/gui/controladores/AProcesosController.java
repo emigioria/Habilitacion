@@ -138,13 +138,13 @@ public class AProcesosController extends ControladorRomano {
 	}
 
 	@FXML
-	public void nuevoProceso() {
+	private void nuevoProceso() {
 		NMProcesoController nuevaPantalla = (NMProcesoController) this.nuevaScene(NMProcesoController.URL_VISTA);
 		nuevaPantalla.formatearNuevoProceso();
 	}
 
 	@FXML
-	public void modificarProceso() {
+	private void modificarProceso() {
 		Proceso proceso = tablaProcesos.getSelectionModel().getSelectedItem();
 		if(proceso != null){
 			NMProcesoController nuevaPantalla = (NMProcesoController) this.nuevaScene(NMProcesoController.URL_VISTA);
@@ -153,7 +153,7 @@ public class AProcesosController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarProceso() {
+	private void eliminarProceso() {
 		ResultadoEliminarProceso resultadoEliminarProceso;
 		StringBuffer erroresBfr = new StringBuffer();
 		Proceso procesoAEliminar = tablaProcesos.getSelectionModel().getSelectedItem();
@@ -233,7 +233,8 @@ public class AProcesosController extends ControladorRomano {
 		}
 	}
 
-	public void buscar() {
+	@FXML
+	private void buscar() {
 		Maquina maquinaBuscada = cbMaquina.getValue();
 		if(maquinaBuscada == nullMaquina){
 			maquinaBuscada = null;

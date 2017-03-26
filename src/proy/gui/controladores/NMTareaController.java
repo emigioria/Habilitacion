@@ -95,7 +95,7 @@ public class NMTareaController extends ControladorRomano {
 	private Boolean guardado = false;
 
 	@FXML
-	public void buscar() {
+	private void buscar() {
 		Maquina maquinaBuscada = cbMaquina.getValue();
 		if(maquinaBuscada == nullMaquina){
 			maquinaBuscada = null;
@@ -189,7 +189,7 @@ public class NMTareaController extends ControladorRomano {
 	}
 
 	@FXML
-	public void guardar() {
+	private void guardar() {
 		Boolean hayErrores = true;
 		if(tarea == null){
 			hayErrores = crearTarea();
@@ -203,7 +203,7 @@ public class NMTareaController extends ControladorRomano {
 		}
 	}
 
-	public Boolean crearTarea() {
+	private Boolean crearTarea() {
 		ResultadoCrearTarea resultadoCrearTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 		Tarea tarea = new Tarea();
@@ -260,7 +260,7 @@ public class NMTareaController extends ControladorRomano {
 		}
 	}
 
-	public Boolean modificarTarea() {
+	private Boolean modificarTarea() {
 		ResultadoModificarTarea resultadoModificarTarea;
 		StringBuffer erroresBfr = new StringBuffer();
 
@@ -328,7 +328,7 @@ public class NMTareaController extends ControladorRomano {
 		this.tarea = tarea;
 	}
 
-	public void cargarDatos(Tarea tarea) {
+	private void cargarDatos(Tarea tarea) {
 		tablaProcesos.getSelectionModel().select(tarea.getProceso());
 		cantidad.getValueFactory().setValue(tarea.getCantidadTeorica());
 		cbOperario.getSelectionModel().select(tarea.getOperario());

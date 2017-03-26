@@ -280,7 +280,8 @@ public class AHerramientasController extends ControladorRomano {
 		}
 	}
 
-	public void buscar() {
+	@FXML
+	private void buscar() {
 		String nombreBuscado = nombreHerramienta.getText().trim().toLowerCase();
 		tablaHerramientas.getItems().clear();
 		tablaHerramientas.getItems().addAll(herramientasAGuardar);

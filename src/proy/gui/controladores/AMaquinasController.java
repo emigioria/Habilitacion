@@ -47,13 +47,13 @@ public class AMaquinasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void nuevaMaquina() {
+	private void nuevaMaquina() {
 		NMMaquinaController nuevaPantalla = (NMMaquinaController) this.nuevaScene(NMMaquinaController.URL_VISTA);
 		nuevaPantalla.formatearNuevaMaquina();
 	}
 
 	@FXML
-	public void modificarMaquina() {
+	private void modificarMaquina() {
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
 		if(maquina != null){
 			NMMaquinaController nuevaPantalla = (NMMaquinaController) this.nuevaScene(NMMaquinaController.URL_VISTA);
@@ -62,7 +62,16 @@ public class AMaquinasController extends ControladorRomano {
 	}
 
 	@FXML
-	public void eliminarMaquina() {
+	private void verEstadisticasMaquina() {
+		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
+		if(maquina != null){
+			VEstadisticasMaquinaController nuevaPantalla = (VEstadisticasMaquinaController) this.nuevaScene(VEstadisticasMaquinaController.URL_VISTA);
+			nuevaPantalla.formatearMaquina(maquina);
+		}
+	}
+
+	@FXML
+	private void eliminarMaquina() {
 		ResultadoEliminarMaquina resultado;
 		StringBuffer erroresBfr = new StringBuffer();
 		Maquina maquina = tablaMaquinas.getSelectionModel().getSelectedItem();
@@ -119,7 +128,8 @@ public class AMaquinasController extends ControladorRomano {
 		}
 	}
 
-	public void buscar() {
+	@FXML
+	private void buscar() {
 		String nombreBuscado = nombreMaquina.getText().trim().toLowerCase();
 		tablaMaquinas.getItems().clear();
 		try{

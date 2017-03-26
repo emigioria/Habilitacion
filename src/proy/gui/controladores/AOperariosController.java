@@ -176,7 +176,7 @@ public class AOperariosController extends ControladorRomano {
 	}
 
 	@FXML
-	public void nuevoOperario() {
+	private void nuevoOperario() {
 		if(!tablaOperarios.isEditable()){
 			tablaOperarios.setEditable(true);
 		}

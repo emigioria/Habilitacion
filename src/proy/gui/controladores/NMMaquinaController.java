@@ -509,7 +509,7 @@ public class NMMaquinaController extends ControladorRomano {
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresEliminarParte(ResultadoEliminarParte resultadoEliminarParte) {
+	private String tratarErroresEliminarParte(ResultadoEliminarParte resultadoEliminarParte) {
 		StringBuffer erroresBfr = new StringBuffer();
 		for(ErrorEliminarParte ep: resultadoEliminarParte.getErrores()){
 			switch(ep) {
@@ -668,7 +668,7 @@ public class NMMaquinaController extends ControladorRomano {
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresEliminarPieza(ResultadoEliminarPieza resultadoEliminarPieza) {
+	private String tratarErroresEliminarPieza(ResultadoEliminarPieza resultadoEliminarPieza) {
 		StringBuffer erroresBfr = new StringBuffer();
 		for(ErrorEliminarPieza ep: resultadoEliminarPieza.getErrores()){
 			switch(ep) {
@@ -748,7 +748,7 @@ public class NMMaquinaController extends ControladorRomano {
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresCrearMaquina(ResultadoCrearMaquina resultadoCrearMaquina) {
+	private String tratarErroresCrearMaquina(ResultadoCrearMaquina resultadoCrearMaquina) {
 		StringBuffer erroresBfr = new StringBuffer();
 		for(ErrorCrearMaquina e: resultadoCrearMaquina.getErrores()){
 			switch(e) {
@@ -892,7 +892,7 @@ public class NMMaquinaController extends ControladorRomano {
 	 *            resultado a traducir
 	 * @return
 	 */
-	public String tratarErroresModificarMaquina(ResultadoModificarMaquina resultadoModificarMaquina) {
+	private String tratarErroresModificarMaquina(ResultadoModificarMaquina resultadoModificarMaquina) {
 		StringBuffer erroresBfr = new StringBuffer();
 		for(ErrorModificarMaquina e: resultadoModificarMaquina.getErrores()){
 			switch(e) {
@@ -1007,7 +1007,8 @@ public class NMMaquinaController extends ControladorRomano {
 		nombreMaquina.setText(formateadorString.primeraMayuscula(maquina.getNombre()));
 	}
 
-	public void buscarPartes() {
+	@FXML
+	private void buscarPartes() {
 		String nombreBuscado = nombreParte.getText().trim().toLowerCase();
 		tablaPartes.getItems().clear();
 		tablaPiezas.getItems().clear();
@@ -1021,7 +1022,8 @@ public class NMMaquinaController extends ControladorRomano {
 		}
 	}
 
-	public void buscarPiezas() {
+	@FXML
+	private void buscarPiezas() {
 		Parte parteSeleccionada = tablaPartes.getSelectionModel().getSelectedItem();
 		if(parteSeleccionada == null){
 			return;

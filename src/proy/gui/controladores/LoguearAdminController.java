@@ -40,7 +40,7 @@ public class LoguearAdminController extends ControladorDialogo {
 	}
 
 	@FXML
-	public void iniciarSesion() {
+	private void iniciarSesion() {
 		//TODO borrar para activar login
 		loginExitoso = true;
 		salir();

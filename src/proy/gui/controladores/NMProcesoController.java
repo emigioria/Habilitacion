@@ -98,7 +98,7 @@ public class NMProcesoController extends ControladorRomano {
 	private Boolean guardado = false;
 
 	@FXML
-	public void agregarPieza() {
+	private void agregarPieza() {
 		Pieza piezaAAgregar = cbPieza.getSelectionModel().getSelectedItem();
 		if(piezaAAgregar == null){
 			return;
@@ -109,7 +109,7 @@ public class NMProcesoController extends ControladorRomano {
 	}
 
 	@FXML
-	public void quitarPieza() {
+	private void quitarPieza() {
 		Pieza piezaAQuitar = listaPiezas.getSelectionModel().getSelectedItem();
 		if(piezaAQuitar == null){
 			return;
@@ -119,7 +119,7 @@ public class NMProcesoController extends ControladorRomano {
 	}
 
 	@FXML
-	public void agregarHerramienta() {
+	private void agregarHerramienta() {
 		Herramienta herramientaAAgregar = cbHerramienta.getSelectionModel().getSelectedItem();
 		if(herramientaAAgregar == null){
 			return;
@@ -130,7 +130,7 @@ public class NMProcesoController extends ControladorRomano {
 	}
 
 	@FXML
-	public void quitarHerramienta() {
+	private void quitarHerramienta() {
 		Herramienta herramientaAQuitar = listaHerramientas.getSelectionModel().getSelectedItem();
 		if(herramientaAQuitar == null){
 			return;
@@ -140,7 +140,7 @@ public class NMProcesoController extends ControladorRomano {
 	}
 
 	@FXML
-	public void guardar() {
+	private void guardar() {
 		Boolean hayErrores = true;
 		if(proceso == null){
 			hayErrores = crearProceso();
@@ -367,10 +367,10 @@ public class NMProcesoController extends ControladorRomano {
 			Parte parteAnterior = cbParte.getValue();
 			cbParte.getItems().clear();
 			String descripcionAnterior = cbDescripcion.getValue();
-			List<Pieza> piezasAnteriores = listaPiezas.getItems();
 			cbDescripcion.getItems().clear();
 			String tipoAnterior = cbTipo.getValue();
 			cbTipo.getItems().clear();
+			List<Pieza> piezasAnteriores = listaPiezas.getItems();
 			cbPieza.getItems().clear();
 			cbHerramienta.getItems().clear();
 
@@ -378,7 +378,6 @@ public class NMProcesoController extends ControladorRomano {
 				cbMaquina.getItems().addAll(coordinador.listarMaquinas(new FiltroMaquina.Builder().build()));
 				cbDescripcion.getItems().addAll(coordinador.listarDescripciones(new FiltroDescripcionProceso.Builder().build()));
 				cbTipo.getItems().addAll(coordinador.listarTipos(new FiltroTipoProceso.Builder().build()));
-				cbPieza.getItems().addAll(coordinador.listarPiezas(new FiltroPieza.Builder().build()));
 				cbHerramienta.getItems().addAll(coordinador.listarHerramientas(new FiltroHerramienta.Builder().build()));
 			} catch(PersistenciaException e){
 				presentadorVentanas.presentarExcepcion(e, stage);
