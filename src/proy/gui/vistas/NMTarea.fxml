@@ -26,11 +26,11 @@
 <GridPane hgap="20.0" prefHeight="500.0" prefWidth="850.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="proy.gui.controladores.NMTareaController">
    <children>
       <Label text="Cantidad solicitada:" />
-      <Spinner fx:id="cantidad" editable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
+      <Spinner fx:id="cantidad" editable="true" maxWidth="1.7976931348623157E308" GridPane.rowIndex="1" />
       <Label text="Operario:" GridPane.rowIndex="2" />
-      <ComboBox fx:id="cbOperario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="171.0" promptText="Seleccione un operario..." GridPane.rowIndex="3" />
+      <ComboBox fx:id="cbOperario" maxWidth="1.7976931348623157E308" minWidth="180.0" promptText="Seleccione un operario..." GridPane.rowIndex="3" />
       <Label text="Fecha planificación:" GridPane.rowIndex="4" />
-      <DatePicker fx:id="fechaTarea" GridPane.rowIndex="5" />
+      <DatePicker fx:id="fechaTarea" maxWidth="1.7976931348623157E308" GridPane.rowIndex="5" />
       <Label minWidth="45.0" text="Proceso:" GridPane.columnIndex="1" />
       <TableView fx:id="tablaProcesos" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.rowSpan="4">
          <columnResizePolicy>
@@ -42,11 +42,11 @@
             <TableColumn fx:id="columnaProceso" minWidth="-1.0" prefWidth="-1.0" text="Proceso" />
          </columns>
       </TableView>
-      <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <HBox alignment="CENTER_LEFT" spacing="10.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
          <children>
-            <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" promptText="Máquina" HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" promptText="Parte" HBox.hgrow="ALWAYS" />
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#buscar" prefWidth="75.0" text="Buscar" />
+            <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" promptText="Máquina" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" promptText="Parte" HBox.hgrow="ALWAYS" />
+            <Button minWidth="75.0" mnemonicParsing="false" onAction="#buscar" prefWidth="75.0" text="Buscar" HBox.hgrow="NEVER" />
          </children>
       </HBox>
       <HBox alignment="TOP_RIGHT" spacing="20.0" GridPane.columnSpan="2" GridPane.rowIndex="8">
@@ -67,7 +67,7 @@
       <TextArea fx:id="observaciones" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" promptText="Ingrese sus observaciones..." wrapText="true" GridPane.columnSpan="2" GridPane.rowIndex="7" />
    </children>
    <columnConstraints>
-      <ColumnConstraints hgrow="NEVER" minWidth="104.0" />
+      <ColumnConstraints hgrow="NEVER" />
       <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
    </columnConstraints>
    <rowConstraints>

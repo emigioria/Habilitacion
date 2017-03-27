@@ -170,7 +170,12 @@ public class ATareasController extends ControladorRomano {
 				botonEliminar.setDisable(!EstadoTareaStr.PLANIFICADA.equals(newV.getEstado().getNombre()));
 				botonModificar.setDisable(!EstadoTareaStr.PLANIFICADA.equals(newV.getEstado().getNombre()));
 			}
+			else{
+				botonEliminar.setDisable(true);
+				botonModificar.setDisable(true);
+			}
 		});
+
 		actualizar();
 	}
 

@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -76,6 +77,12 @@ public class NMMaquinaController extends ControladorRomano {
 
 	@FXML
 	private ComboBox<Material> materialPieza;
+
+	@FXML
+	private Button botonEliminarParte;
+
+	@FXML
+	private Button botonEliminarPieza;
 
 	private Material nullMaterial = new Material() {
 		@Override
@@ -359,6 +366,14 @@ public class NMMaquinaController extends ControladorRomano {
 					presentadorVentanas.presentarExcepcion(e, stage);
 				}
 			});
+		});
+
+		//Cuando hay algo seleccionado se activa el boton de eliminar
+		tablaPartes.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonEliminarParte.setDisable(newV == null);
+		});
+		tablaPiezas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonEliminarPieza.setDisable(newV == null);
 		});
 
 		actualizar();

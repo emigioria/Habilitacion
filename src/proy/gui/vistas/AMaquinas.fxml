@@ -47,17 +47,17 @@
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="80.0" mnemonicParsing="false" onAction="#modificarMaquina" prefWidth="80.0" text="Modificar">
+            <Button fx:id="botonModificar" disable="true" minWidth="80.0" mnemonicParsing="false" onAction="#modificarMaquina" prefWidth="80.0" text="Modificar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="80.0" mnemonicParsing="false" onAction="#eliminarMaquina" prefWidth="80.0" text="Eliminar">
+            <Button fx:id="botonEliminar" disable="true" minWidth="80.0" mnemonicParsing="false" onAction="#eliminarMaquina" prefWidth="80.0" text="Eliminar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="80.0" mnemonicParsing="false" onAction="#verEstadisticasMaquina" prefWidth="80.0" text="Ver estadísticas" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="botonEstadisticas" disable="true" minWidth="80.0" mnemonicParsing="false" onAction="#verEstadisticasMaquina" prefWidth="80.0" text="Ver estadísticas" textAlignment="CENTER" wrapText="true" />
          </children>
       </VBox>
       <Button minWidth="80.0" mnemonicParsing="false" onAction="#salir" prefWidth="80.0" text="Salir" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM" />

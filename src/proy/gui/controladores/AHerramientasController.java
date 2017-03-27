@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -44,6 +45,9 @@ public class AHerramientasController extends ControladorRomano {
 	@FXML
 	private TableColumn<Herramienta, String> columnaNombre;
 
+	@FXML
+	private Button botonEliminar;
+
 	private ArrayList<Herramienta> herramientasAGuardar = new ArrayList<>();
 
 	@Override
@@ -55,8 +59,6 @@ public class AHerramientasController extends ControladorRomano {
 				return new SimpleStringProperty("");
 			}
 		});
-
-		tablaHerramientas.setEditable(true);
 
 		columnaNombre.setCellFactory(col -> {
 			return new TableCellTextViewString<Herramienta>() {
@@ -85,6 +87,10 @@ public class AHerramientasController extends ControladorRomano {
 					return super.getEstilo(item, empty);
 				}
 			};
+		});
+
+		tablaHerramientas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonEliminar.setDisable(newV == null);
 		});
 
 		actualizar();

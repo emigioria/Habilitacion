@@ -48,7 +48,7 @@
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarMaterial" prefWidth="75.0" text="Eliminar">
+            <Button fx:id="botonEliminar" disable="true" minWidth="75.0" mnemonicParsing="false" onAction="#eliminarMaterial" prefWidth="75.0" text="Eliminar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>

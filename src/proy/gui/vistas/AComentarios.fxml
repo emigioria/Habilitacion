@@ -48,9 +48,9 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <ComboBox fx:id="cbOperarioBuscado" maxWidth="1.7976931348623157E308" promptText="Operario" HBox.hgrow="ALWAYS" />
-            <DatePicker fx:id="dpDespuesDeBuscado" promptText="Despues de" />
-            <DatePicker fx:id="dpAntesDeBuscado" promptText="Antes de" />
+            <ComboBox fx:id="cbOperarioBuscado" maxWidth="1.7976931348623157E308" prefWidth="100.0" promptText="Operario" HBox.hgrow="ALWAYS" />
+            <DatePicker fx:id="dpDespuesDeBuscado" minWidth="90.0" prefWidth="150.0" promptText="Despues de" HBox.hgrow="NEVER" />
+            <DatePicker fx:id="dpAntesDeBuscado" minWidth="90.0" prefWidth="150.0" promptText="Antes de" HBox.hgrow="NEVER" />
          </children>
       </HBox>
    </children>

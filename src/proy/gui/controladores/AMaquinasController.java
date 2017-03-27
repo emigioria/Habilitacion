@@ -9,6 +9,7 @@ package proy.gui.controladores;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -33,6 +34,15 @@ public class AMaquinasController extends ControladorRomano {
 	@FXML
 	private TableColumn<Maquina, String> columnaNombre;
 
+	@FXML
+	private Button botonModificar;
+
+	@FXML
+	private Button botonEliminar;
+
+	@FXML
+	private Button botonEstadisticas;
+
 	@Override
 	protected void inicializar() {
 		columnaNombre.setCellValueFactory(param -> {
@@ -41,6 +51,12 @@ public class AMaquinasController extends ControladorRomano {
 			} catch(NullPointerException e){
 				return new SimpleStringProperty("");
 			}
+		});
+
+		tablaMaquinas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonEliminar.setDisable(newV == null);
+			botonModificar.setDisable(newV == null);
+			botonEstadisticas.setDisable(newV == null);
 		});
 
 		actualizar();

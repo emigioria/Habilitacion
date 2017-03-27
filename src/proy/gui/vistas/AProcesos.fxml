@@ -53,12 +53,12 @@
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#modificarProceso" prefWidth="75.0" text="Modificar">
+            <Button fx:id="botonModificar" disable="true" minWidth="75.0" mnemonicParsing="false" onAction="#modificarProceso" prefWidth="75.0" text="Modificar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
             </Button>
-            <Button minWidth="75.0" mnemonicParsing="false" onAction="#eliminarProceso" prefWidth="75.0" text="Eliminar">
+            <Button fx:id="botonEliminar" disable="true" minWidth="75.0" mnemonicParsing="false" onAction="#eliminarProceso" prefWidth="75.0" text="Eliminar">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
@@ -74,10 +74,10 @@
                   <Insets />
                </HBox.margin>
             </Label>
-            <ComboBox fx:id="cbMaquina" prefWidth="150.0" promptText="Máquina" HBox.hgrow="ALWAYS" />
-            <ComboBox fx:id="cbParte" prefWidth="150.0" promptText="Parte" HBox.hgrow="ALWAYS" />
-            <TextField fx:id="descripcionProceso" promptText="Descripción" HBox.hgrow="ALWAYS" />
-            <TextField fx:id="tipoProceso" promptText="Tipo" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cbMaquina" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Máquina" HBox.hgrow="ALWAYS" />
+            <ComboBox fx:id="cbParte" maxWidth="1.7976931348623157E308" prefWidth="150.0" promptText="Parte" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="descripcionProceso" maxWidth="1.7976931348623157E308" promptText="Descripción" HBox.hgrow="ALWAYS" />
+            <TextField fx:id="tipoProceso" maxWidth="1.7976931348623157E308" promptText="Tipo" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
    </children>

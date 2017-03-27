@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -90,6 +91,18 @@ public class NMProcesoController extends ControladorRomano {
 
 	@FXML
 	private TextArea observacionesProceso;
+
+	@FXML
+	private Button botonAgregarPieza;
+
+	@FXML
+	private Button botonQuitarPieza;
+
+	@FXML
+	private Button botonAgregarHerramienta;
+
+	@FXML
+	private Button botonQuitarHerramienta;
 
 	private String titulo;
 
@@ -449,6 +462,23 @@ public class NMProcesoController extends ControladorRomano {
 				}
 			}
 		});
+
+		//Cuando hay algo seleccionado se activa el boton de agregar
+		cbPieza.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonAgregarPieza.setDisable(newV == null);
+		});
+		cbHerramienta.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonAgregarHerramienta.setDisable(newV == null);
+		});
+
+		//Cuando hay algo seleccionado se activa el boton de eliminar
+		listaPiezas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonQuitarPieza.setDisable(newV == null);
+		});
+		listaHerramientas.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+			botonQuitarHerramienta.setDisable(newV == null);
+		});
+
 		actualizar();
 
 		if(proceso != null){
