@@ -41,19 +41,8 @@ public class LoguearAdminController extends ControladorDialogo {
 
 	@FXML
 	private void iniciarSesion() {
-		//TODO borrar para activar login
-		loginExitoso = true;
-		salir();
-		if(true){
-			return;
-		}
-		@SuppressWarnings("unused")
-		//borrar
-
 		ResultadoAutenticacion resultado = null;
-		Boolean hayErrores;
-		DatosLogin datos;
-		String errores = "";
+		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
 		String user = nombre.getText().trim();
@@ -62,7 +51,7 @@ public class LoguearAdminController extends ControladorDialogo {
 			presentadorVentanas.presentarError("No se ha podido iniciar sesión", "Campos vacíos.", stage);
 			return;
 		}
-		datos = new DatosLogin(user, pass);
+		DatosLogin datos = new DatosLogin(user, pass);
 
 		//Inicio transacción al gestor
 		try{
@@ -76,15 +65,16 @@ public class LoguearAdminController extends ControladorDialogo {
 		}
 
 		//Tratamiento de errores
-		hayErrores = resultado.hayErrores();
-		if(hayErrores){
+		if(resultado.hayErrores()){
 			for(ErrorAutenticacion r: resultado.getErrores()){
 				switch(r) {
 				case DATOS_INVALIDOS:
-					errores += "Datos inválidos al iniciar sesión.\n";
+					erroresBfr.append("Datos inválidos al iniciar sesión.\n");
 					break;
 				}
 			}
+
+			String errores = erroresBfr.toString();
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("No se ha podido iniciar sesión", errores, stage);
 			}

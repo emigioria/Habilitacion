@@ -59,8 +59,8 @@ public class VTareasController extends ControladorRomano {
 	private void loguearse() {
 		VentanaPersonalizada ventanaLogin = presentadorVentanas.presentarVentanaPersonalizada(LoguearAdminController.URL_VISTA, coordinador, stage);
 		ventanaLogin.showAndWait();
-		LoguearAdminController pantallaLogin = (LoguearAdminController) ventanaLogin.getControlador();
-		if(pantallaLogin.fueExitosoLogin()){
+		LoguearAdminController controladorLogin = (LoguearAdminController) ventanaLogin.getControlador();
+		if(controladorLogin.fueExitosoLogin()){
 			this.nuevaScene(MenuAdministracionController.URL_VISTA);
 		}
 	}

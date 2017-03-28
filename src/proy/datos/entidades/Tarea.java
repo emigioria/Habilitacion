@@ -220,7 +220,7 @@ public class Tarea {
 	}
 
 	public void reanudar() {
-		this.setEstado(new EstadoTarea(EstadoTareaStr.EJECUTANDO));
+		this.comenzar();
 	}
 
 	public void pausar() {

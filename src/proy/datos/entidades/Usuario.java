@@ -44,7 +44,7 @@ public abstract class Usuario {
 	@Column(name = "apellido", length = 100, nullable = false)
 	private String apellido;
 
-	@Column(name = "dni", length = 10, nullable = false, unique = true)
+	@Column(name = "dni", length = 10, nullable = false)
 	private String dni;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
