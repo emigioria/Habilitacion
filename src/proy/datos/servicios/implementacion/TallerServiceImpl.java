@@ -109,41 +109,6 @@ public class TallerServiceImpl implements TallerService {
 
 	@Override
 	@Transactional(rollbackFor = PersistenciaException.class)
-	public void guardarParte(Parte parte) throws PersistenciaException {
-		Session session = getSessionFactory().getCurrentSession();
-		try{
-			parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
-			session.save(parte);
-		} catch(Exception e){
-			throw new SaveUpdateException(e);
-		}
-	}
-
-	@Override
-	@Transactional(rollbackFor = PersistenciaException.class)
-	public void actualizarPartes(ArrayList<Parte> partes) throws PersistenciaException {
-		Session session = getSessionFactory().getCurrentSession();
-		try{
-			Parte parte;
-			for(int i = 0; i < partes.size(); i++){
-				parte = partes.get(i);
-				parte.setEstado(attachEstado.attachEstado(session, parte.getEstado()));
-				session.update(parte);
-				if(i % 20 == 0){
-					//flush a batch of inserts and release memory:
-					session.flush();
-					session.clear();
-				}
-			}
-		} catch(EntityNotFoundException e){
-			throw new ObjNotFoundException("modificar", e);
-		} catch(Exception e){
-			throw new SaveUpdateException(e);
-		}
-	}
-
-	@Override
-	@Transactional(rollbackFor = PersistenciaException.class)
 	public void actualizarParte(Parte parte) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		try{
@@ -174,18 +139,6 @@ public class TallerServiceImpl implements TallerService {
 	public ArrayList<Pieza> obtenerPiezas(Filtro<Pieza> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		return filtro.listar(session);
-	}
-
-	@Override
-	@Transactional(rollbackFor = PersistenciaException.class)
-	public void guardarPieza(Pieza pieza) throws PersistenciaException {
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			pieza.setEstado(attachEstado.attachEstado(session, pieza.getEstado()));
-			session.save(pieza);
-		} catch(Exception e){
-			throw new SaveUpdateException(e);
-		}
 	}
 
 	@Override

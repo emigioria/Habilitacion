@@ -12,7 +12,7 @@ import proy.logica.gestores.resultados.ResultadoEliminarMaterial.ErrorEliminarMa
 
 public class ResultadoEliminarMaterial extends Resultado<ErrorEliminarMaterial> {
 
-	List<String> piezasAsociadasAlMaterial;
+	private List<String> piezasAsociadasAlMaterial;
 
 	public enum ErrorEliminarMaterial {
 		PIEZAS_ACTIVAS_ASOCIADAS

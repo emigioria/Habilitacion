@@ -21,8 +21,7 @@ public class ResultadoAutenticacion extends Resultado<ErrorAutenticacion> {
 		super(errores);
 	}
 
-	public ResultadoAutenticacion(Administrador administrador, ErrorAutenticacion... errores) {
-		super(errores);
+	public ResultadoAutenticacion(Administrador administrador) {
 		this.administrador = administrador;
 	}
 

@@ -11,8 +11,8 @@ import javafx.util.StringConverter;
 
 public abstract class TableCellTextView<O, T> extends TableCellAbstract<O, T> {
 
-	protected TextField textField;
-	protected StringConverter<? extends T> convertidor;
+	private TextField textField;
+	private StringConverter<? extends T> convertidor;
 
 	public TableCellTextView(StringConverter<? extends T> convertidor) {
 		super();

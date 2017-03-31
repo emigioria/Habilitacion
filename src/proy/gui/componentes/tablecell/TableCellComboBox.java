@@ -12,7 +12,7 @@ import javafx.scene.control.ComboBox;
 
 public abstract class TableCellComboBox<O, T> extends TableCellAbstract<O, T> {
 
-	protected ComboBox<T> comboBox;
+	private ComboBox<T> comboBox;
 	private Collection<? extends T> opciones;
 
 	public TableCellComboBox(Collection<? extends T> opciones) {

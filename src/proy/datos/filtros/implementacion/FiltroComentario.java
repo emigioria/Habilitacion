@@ -20,9 +20,9 @@ public class FiltroComentario extends Filtro<Comentario> {
 	private String nombreEntidad = "c";
 	private String consulta = "";
 	private String namedQuery = "";
-	public Operario operario;
-	public Date fechaInicio;
-	public Date fechaFin;
+	private Operario operario;
+	private Date fechaInicio;
+	private Date fechaFin;
 
 	public static class Builder {
 

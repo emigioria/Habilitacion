@@ -208,7 +208,7 @@ public class ProcesoGestor {
 		return resultadoEliminarProceso;
 	}
 
-	public ResultadoEliminarProceso validarEliminarProceso(Proceso proceso) throws PersistenciaException {
+	private ResultadoEliminarProceso validarEliminarProceso(Proceso proceso) throws PersistenciaException {
 		return new ResultadoEliminarProceso();
 	}
 

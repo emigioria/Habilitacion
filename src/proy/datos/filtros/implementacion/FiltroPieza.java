@@ -30,8 +30,8 @@ public class FiltroPieza extends Filtro<Pieza> {
 	private ArrayList<Pieza> piezas;
 	private ArrayList<Proceso> procesos;
 	private ArrayList<String> nombres;
-	public String nombreContiene;
-	public String codigoPlano;
+	private String nombreContiene;
+	private String codigoPlano;
 
 	public static class Builder {
 

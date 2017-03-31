@@ -13,7 +13,7 @@ import proy.logica.gestores.resultados.ResultadoCrearOperarios.ErrorCrearOperari
 
 public class ResultadoCrearOperarios extends Resultado<ErrorCrearOperarios> {
 
-	HashSet<String> dnisYaExistentes;
+	private HashSet<String> dnisYaExistentes;
 
 	public enum ErrorCrearOperarios {
 		NOMBRE_INCOMPLETO, APELLIDO_INCOMPLETO, DNI_INCOMPLETO, DNI_YA_EXISTENTE, DNI_INGRESADO_REPETIDO

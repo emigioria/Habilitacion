@@ -40,7 +40,7 @@ public class EncriptadorPassword {
 		return bytesToString(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes(), ITERATIONS, KEY_LENGTH));
 	}
 
-	public String bytesToString(byte[] data) {
+	private String bytesToString(byte[] data) {
 		String dataOut = "";
 		for(int i = 0; i < data.length; i++){
 			if(data[i] != 0x00){

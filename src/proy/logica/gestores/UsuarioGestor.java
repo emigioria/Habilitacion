@@ -73,6 +73,9 @@ public class UsuarioGestor {
 					//Si no coincide falla
 					errores.add(ErrorAutenticacion.DATOS_INVALIDOS);
 				}
+				else{
+					return new ResultadoAutenticacion(admin);
+				}
 			}
 		}
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 public abstract class Resultado<T> {
 
-	List<T> errores;
+	private List<T> errores;
 
 	@SafeVarargs
 	public Resultado(T... errores) {

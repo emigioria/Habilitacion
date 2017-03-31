@@ -13,7 +13,7 @@ import proy.logica.gestores.resultados.ResultadoCrearHerramientas.ErrorCrearHerr
 
 public class ResultadoCrearHerramientas extends Resultado<ErrorCrearHerramientas> {
 
-	HashSet<String> nombresYaExistentes;
+	private HashSet<String> nombresYaExistentes;
 
 	public enum ErrorCrearHerramientas {
 		NOMBRE_INCOMPLETO, NOMBRE_YA_EXISTENTE, NOMBRE_INGRESADO_REPETIDO

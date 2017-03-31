@@ -24,7 +24,7 @@ public class FiltroOperario extends Filtro<Operario> {
 	private String apellido;
 	private String dni;
 	private EstadoStr estado = EstadoStr.ALTA;
-	public ArrayList<String> dnis;
+	private ArrayList<String> dnis;
 
 	public static class Builder {
 

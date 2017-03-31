@@ -25,15 +25,15 @@ public class FiltroProceso extends Filtro<Proceso> {
 	private String consulta = "";
 	private String namedQuery = "";
 	private EstadoStr estado = EstadoStr.ALTA;
-	public Maquina maquina;
+	private Maquina maquina;
 	private Parte parte;
 	private ArrayList<Pieza> piezas;
 	private ArrayList<Herramienta> herramientas;
-	public Long id;
-	public String descripcionContiene;
-	public String tipoContiene;
-	public String descripcionExacta;
-	public String tipoExacto;
+	private Long id;
+	private String descripcionContiene;
+	private String tipoContiene;
+	private String descripcionExacta;
+	private String tipoExacto;
 
 	public static class Builder {
 

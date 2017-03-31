@@ -270,7 +270,7 @@ public class TallerGestor {
 	 * @return
 	 * @throws PersistenciaException
 	 */
-	public ResultadoCrearModificarPartesAlModificarMaquina validarCrearModificarPartesAlModificarMaquina(Maquina maquina) throws PersistenciaException {
+	private ResultadoCrearModificarPartesAlModificarMaquina validarCrearModificarPartesAlModificarMaquina(Maquina maquina) throws PersistenciaException {
 		Set<ErrorCrearModificarPartesAlModificarMaquina> errores = new HashSet<>();
 
 		//Quito las partes dadas de baja
@@ -358,7 +358,7 @@ public class TallerGestor {
 	 *            son las piezas nuevas y viejas que se quieren validar.
 	 * @return
 	 */
-	public Map<String, ResultadoCrearPiezasAlModificarMaquina> validarCrearPiezasAlModificarMaquina(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
+	private Map<String, ResultadoCrearPiezasAlModificarMaquina> validarCrearPiezasAlModificarMaquina(Collection<Parte> partesDeLasPiezasAValidar) throws PersistenciaException {
 		Map<String, ResultadoCrearPiezasAlModificarMaquina> resultadosCrearPiezas = new HashMap<>();
 
 		for(Parte parte: partesDeLasPiezasAValidar){
@@ -449,7 +449,7 @@ public class TallerGestor {
 		return resultadoEliminarMaquina;
 	}
 
-	public ResultadoEliminarMaquina validarEliminarMaquina(Maquina maquina) throws PersistenciaException {
+	private ResultadoEliminarMaquina validarEliminarMaquina(Maquina maquina) throws PersistenciaException {
 		return new ResultadoEliminarMaquina();
 	}
 
