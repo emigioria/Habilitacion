@@ -6,7 +6,6 @@ Trabajo de Habilitación Profesional - 2016
 
 * **Andrés Leonel Rico** - [andresleonelrico](https://github.com/andresleonelrico)
 * **Emiliano Gioria** - [emigioria](https://github.com/emigioria)
-* **Marina Ludi** - [marinaLudi](https://github.com/marinaLudi)
 
 ## Licencia
 
