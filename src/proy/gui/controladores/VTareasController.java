@@ -67,7 +67,7 @@ public class VTareasController extends ControladorRomano {
 
 	@Override
 	public void actualizar() {
-		stage.setTitle("Sistema de asignaciòn de tareas Romano FasTask");
+		stage.setTitle("Sistema de asignación de tareas Romano FasTask");
 		anterior = -1L;
 		timer.start();
 	}
