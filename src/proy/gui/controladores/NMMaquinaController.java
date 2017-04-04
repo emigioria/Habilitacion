@@ -774,7 +774,7 @@ public class NMMaquinaController extends ControladorRomano {
 				erroresBfr.append("Ya existe una máquina con ese nombre en la Base de Datos.\n");
 				break;
 			case ERROR_AL_CREAR_PARTES:
-				erroresBfr.append(tratarErroresCrearPartesNuevas(resultadoCrearMaquina.getResultadosCrearPartes(), 1));
+				erroresBfr.append(tratarErroresCrearPartesNuevas(resultadoCrearMaquina.getResultadoCrearPartes(), 1));
 				break;
 			}
 		}
