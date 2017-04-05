@@ -174,4 +174,12 @@ public class MenuAdministracionController extends ControladorRomano {
 	protected ControladorRomano cambiarScene(String URLVista) {
 		throw new RuntimeException();
 	}
+
+	@Override
+	public Boolean sePuedeSalir() {
+		if(backgroundApilador != null){
+			return backgroundApilador.sePuedeSalir();
+		}
+		return super.sePuedeSalir();
+	}
 }

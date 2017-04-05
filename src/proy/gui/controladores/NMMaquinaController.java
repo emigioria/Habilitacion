@@ -8,7 +8,7 @@ package proy.gui.controladores;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import javafx.application.Platform;
@@ -121,7 +121,7 @@ public class NMMaquinaController extends ControladorRomano {
 	private Maquina maquina;
 
 	private ArrayList<Parte> partesAGuardar = new ArrayList<>(); //Partes nuevas no persistidas
-	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new IdentityHashMap<>(); //Piezas nuevas no persistidas
+	private Map<Parte, ArrayList<Pieza>> piezasAGuardar = new HashMap<>(); //Piezas nuevas no persistidas
 
 	private Boolean guardada = false;
 

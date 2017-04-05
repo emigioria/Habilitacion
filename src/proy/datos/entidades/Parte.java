@@ -146,50 +146,10 @@ public class Parte {
 			return false;
 		}
 		Parte other = (Parte) obj;
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
-			return false;
-		}
-		else{
+		if(codigo != null && codigo.equals(other.codigo)){
 			return true;
 		}
-		if(cantidad == null){
-			if(other.cantidad != null){
-				return false;
-			}
-		}
-		else if(!cantidad.equals(other.cantidad)){
-			return false;
-		}
-		if(estado == null){
-			if(other.estado != null){
-				return false;
-			}
-		}
-		else if(!estado.equals(other.estado)){
-			return false;
-		}
-		if(nombre == null){
-			if(other.nombre != null){
-				return false;
-			}
-		}
-		else if(!nombre.equals(other.nombre)){
-			return false;
-		}
-		if(version == null){
-			if(other.version != null){
-				return false;
-			}
-		}
-		else if(!version.equals(other.version)){
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override
