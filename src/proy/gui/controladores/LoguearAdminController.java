@@ -21,7 +21,7 @@ public class LoguearAdminController extends ControladorDialogo {
 	public static final String URL_VISTA = "/proy/gui/vistas/LoguearAdmin.fxml";
 
 	@FXML
-	private TextField nombre;
+	private TextField dni;
 
 	@FXML
 	private VBox passwordBox;
@@ -45,13 +45,13 @@ public class LoguearAdminController extends ControladorDialogo {
 		StringBuffer erroresBfr = new StringBuffer();
 
 		//Toma de datos de la vista
-		String user = nombre.getText().trim();
+		String dniStr = dni.getText().trim();
 		char[] pass = contra.getPassword();
-		if(user.isEmpty() || pass.length < 1){
+		if(dniStr.isEmpty() || pass.length < 1){
 			presentadorVentanas.presentarError("No se ha podido iniciar sesión", "Campos vacíos.", stage);
 			return;
 		}
-		DatosLogin datos = new DatosLogin(user, pass);
+		DatosLogin datos = new DatosLogin(dniStr, pass);
 
 		//Inicio transacción al gestor
 		try{
