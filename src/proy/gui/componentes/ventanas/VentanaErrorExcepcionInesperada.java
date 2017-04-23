@@ -17,7 +17,7 @@ public class VentanaErrorExcepcionInesperada extends VentanaErrorExcepcion {
 	 * Constructor. Genera la ventana
 	 *
 	 * @param padre
-	 *            ventana en la que se mostrar� este di�logo
+	 *            ventana en la que se mostrará este diálogo
 	 */
 	protected VentanaErrorExcepcionInesperada(Window padre) {
 		super(padre);

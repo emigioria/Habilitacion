@@ -26,7 +26,7 @@ public class VentanaError extends CustomAlert {
 	 * @param mensaje
 	 *            mensaje a mostrar en la ventana
 	 * @param padre
-	 *            ventana en la que se mostrar� este di�logo
+	 *            ventana en la que se mostrará este diálogo
 	 */
 	protected VentanaError(String titulo, String mensaje, Window padre) {
 		this(padre);

@@ -29,7 +29,7 @@ public class VentanaInformacion extends CustomAlert {
 	 * @param mensaje
 	 *            mensaje a mostrar en la ventana
 	 * @param padre
-	 *            ventana en la que se mostrar� este di�logo
+	 *            ventana en la que se mostrará este diálogo
 	 */
 	protected VentanaInformacion(String titulo, String mensaje, Window padre) {
 		super(AlertType.INFORMATION, padre);
