@@ -423,7 +423,7 @@ public class VTareasOperarioTabController extends ControladorJavaFX {
 		estados.add(EstadoTareaStr.PLANIFICADA);
 
 		try{
-			tareas = coordinador.listarTareas(new FiltroTarea.Builder().estados(estados).operario(operario).ordenFechaFinalizada().build());
+			tareas = coordinador.listarTareas(new FiltroTarea.Builder().estados(estados).operario(operario).ordenId().build());
 
 			for(final Tarea tarea: tareas){
 				TitledPane renglon = new VTareasTareaRenglonController(tarea).getRenglon();

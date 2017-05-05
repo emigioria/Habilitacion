@@ -8,8 +8,8 @@ package proy.datos.filtros.implementacion;
 
 import java.util.Date;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.entidades.Comentario;
 import proy.datos.entidades.Operario;
@@ -120,7 +120,7 @@ public class FiltroComentario extends Filtro<Comentario> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Comentario> setParametros(Query<Comentario> query) {
 		if(operario != null){
 			query.setParameter("ope", operario);
 		}

@@ -78,6 +78,7 @@ public class VTareasController extends ControladorRomano {
 		} catch(InterruptedException e){
 
 		}
+		pararRelojesOperarios();
 
 		//Guardo qué pestaña se estaba mostrando antes
 		int indiceAnterior = operarioBox.getSelectionModel().getSelectedIndex();
@@ -137,6 +138,10 @@ public class VTareasController extends ControladorRomano {
 
 	private void pararRelojes() {
 		timer.stop();
+		pararRelojesOperarios();
+	}
+
+	private void pararRelojesOperarios() {
 		for(Runnable r: pararRelojes){
 			r.run();
 		}

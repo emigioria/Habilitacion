@@ -8,8 +8,8 @@ package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Material;
@@ -170,7 +170,7 @@ public class FiltroMaterial extends Filtro<Material> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Material> setParametros(Query<Material> query) {
 		if(materiales != null){
 			query.setParameterList("mts", materiales);
 		}

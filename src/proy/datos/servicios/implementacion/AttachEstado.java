@@ -6,9 +6,11 @@
  */
 package proy.datos.servicios.implementacion;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import proy.datos.entidades.Estado;
@@ -18,8 +20,12 @@ import proy.datos.entidades.EstadoTarea;
 public class AttachEstado {
 
 	public Estado attachEstado(Session session, Estado estadoEntidad) {
-		Criteria criteria = session.createCriteria(Estado.class);
-		Estado estado = (Estado) criteria.add(Restrictions.eq(Estado.COLUMNA_NOMBRE, estadoEntidad.getNombre())).uniqueResult();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Estado> query = cb.createQuery(Estado.class);
+		Root<Estado> root = query.from(Estado.class);
+		query.select(root).where(cb.equal(root.get(Estado.COLUMNA_NOMBRE), estadoEntidad.getNombre()));
+		Estado estado = session.createQuery(query).getSingleResult();
+
 		if(estado == null){
 			session.save(estadoEntidad);
 			return estadoEntidad;
@@ -28,8 +34,12 @@ public class AttachEstado {
 	}
 
 	public EstadoTarea attachEstadoTarea(Session session, EstadoTarea estadoEntidad) {
-		Criteria criteria = session.createCriteria(EstadoTarea.class);
-		EstadoTarea estado = (EstadoTarea) criteria.add(Restrictions.eq(EstadoTarea.COLUMNA_NOMBRE, estadoEntidad.getNombre())).uniqueResult();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<EstadoTarea> query = cb.createQuery(EstadoTarea.class);
+		Root<EstadoTarea> root = query.from(EstadoTarea.class);
+		query.select(root).where(cb.equal(root.get(EstadoTarea.COLUMNA_NOMBRE), estadoEntidad.getNombre()));
+		EstadoTarea estado = session.createQuery(query).getSingleResult();
+
 		if(estado == null){
 			session.save(estadoEntidad);
 			return estadoEntidad;

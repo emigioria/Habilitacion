@@ -6,8 +6,8 @@
  */
 package proy.datos.filtros.implementacion;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.filtros.Filtro;
@@ -86,7 +86,7 @@ public class FiltroDescripcionProceso extends Filtro<String> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<String> setParametros(Query<String> query) {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}

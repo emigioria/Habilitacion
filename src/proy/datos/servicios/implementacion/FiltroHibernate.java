@@ -7,10 +7,9 @@
 package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.excepciones.ConsultaException;
 import proy.excepciones.PersistenciaException;
@@ -21,32 +20,25 @@ public interface FiltroHibernate<T> {
 
 	public String getNamedQueryName();
 
-	public Query setParametros(Query query);
+	public Query<T> setParametros(Query<T> query);
 
 	public void updateParametros(Session session);
 
-	public Class<? extends T> getClase();
+	public Class<T> getClase();
 
 	public default ArrayList<T> listar(Session session) throws PersistenciaException {
 		ArrayList<T> resultado = new ArrayList<>();
 		try{
-			Query query = null;
+			Query<T> query = null;
 			if(!this.getNamedQueryName().isEmpty()){
-				query = session.getNamedQuery(this.getNamedQueryName());
+				query = session.createNamedQuery(this.getNamedQueryName(), getClase());
 			}
 			else{
-				query = session.createQuery(this.getConsultaDinamica());
+				query = session.createQuery(this.getConsultaDinamica(), getClase());
 			}
 			this.setParametros(query);
 			this.updateParametros(session);
-			List<?> var = query.list();
-			for(Object o: var){
-				try{
-					resultado.add(getClase().cast(o));
-				} catch(ClassCastException e){
-					//no agrega objetos no casteables
-				}
-			}
+			resultado = new ArrayList<>(query.list());
 		} catch(Exception e){
 			throw new ConsultaException(e);
 		}

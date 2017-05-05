@@ -9,8 +9,8 @@ package proy.datos.filtros.implementacion;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.clases.EstadoTareaStr;
 import proy.datos.entidades.Herramienta;
@@ -37,7 +37,8 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private ArrayList<Parte> partes;
 	private ArrayList<Pieza> piezas;
 	private Proceso proceso;
-	private Boolean fechaFinalizada = false;
+	private Boolean ordenFechaFinalizada = false;
+	private Boolean ordenId = false;
 
 	public static class Builder {
 
@@ -144,7 +145,12 @@ public class FiltroTarea extends Filtro<Tarea> {
 		}
 
 		public Builder ordenFechaFinalizada() {
-			filtro.fechaFinalizada = true;
+			filtro.ordenFechaFinalizada = true;
+			return this;
+		}
+
+		public Builder ordenId() {
+			filtro.ordenId = true;
 			return this;
 		}
 
@@ -194,7 +200,10 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(this.proceso != null){
 			return;
 		}
-		if(this.fechaFinalizada){
+		if(this.ordenFechaFinalizada){
+			return;
+		}
+		if(this.ordenId){
 			return;
 		}
 		namedQuery = "listarTareas";
@@ -263,8 +272,11 @@ public class FiltroTarea extends Filtro<Tarea> {
 
 	private String getOrderBy() {
 		String orderBy;
-		if(fechaFinalizada){
+		if(ordenFechaFinalizada){
 			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaHoraFin DESC";
+		}
+		else if(ordenId){
+			orderBy = " ORDER BY " + this.nombreEntidad + ".codigo ASC";
 		}
 		else{
 			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaPlanificada ASC";
@@ -273,7 +285,7 @@ public class FiltroTarea extends Filtro<Tarea> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Tarea> setParametros(Query<Tarea> query) {
 		if(noEstado != null){
 			query.setParameter("nEs", noEstado);
 		}

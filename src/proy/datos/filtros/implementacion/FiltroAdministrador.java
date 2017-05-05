@@ -6,8 +6,8 @@
  */
 package proy.datos.filtros.implementacion;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Administrador;
@@ -105,7 +105,7 @@ public class FiltroAdministrador extends Filtro<Administrador> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Administrador> setParametros(Query<Administrador> query) {
 		if(dni != null){
 			query.setParameter("dni", dni);
 		}

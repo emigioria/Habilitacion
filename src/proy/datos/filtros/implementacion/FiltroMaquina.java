@@ -6,8 +6,8 @@
  */
 package proy.datos.filtros.implementacion;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.entidades.Maquina;
 import proy.datos.filtros.Filtro;
@@ -98,7 +98,7 @@ public class FiltroMaquina extends Filtro<Maquina> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Maquina> setParametros(Query<Maquina> query) {
 		if(nombre != null){
 			query.setParameter("nom", "%" + nombre + "%");
 		}

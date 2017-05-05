@@ -8,8 +8,8 @@ package proy.datos.filtros.implementacion;
 
 import java.util.ArrayList;
 
-import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 import proy.datos.clases.EstadoStr;
 import proy.datos.entidades.Herramienta;
@@ -237,7 +237,7 @@ public class FiltroProceso extends Filtro<Proceso> {
 	}
 
 	@Override
-	public Query setParametros(Query query) {
+	public Query<Proceso> setParametros(Query<Proceso> query) {
 		if(estado != null){
 			query.setParameter("est", estado);
 		}
