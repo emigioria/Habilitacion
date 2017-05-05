@@ -892,6 +892,7 @@ public class NMMaquinaController extends ControladorRomano {
 			if(!errores.isEmpty()){
 				presentadorVentanas.presentarError("Error al modificar la máquina", errores, stage);
 			}
+			maquina.getPartes().removeAll(partesAGuardar);
 			return true;
 		}
 		else{
