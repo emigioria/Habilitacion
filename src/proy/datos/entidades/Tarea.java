@@ -239,16 +239,7 @@ public class Tarea {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cantidadReal == null) ? 0 : cantidadReal.hashCode());
-		result = prime * result + ((cantidadTeorica == null) ? 0 : cantidadTeorica.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
-		result = prime * result + ((fechaHoraFin == null) ? 0 : fechaHoraFin.hashCode());
-		result = prime * result + ((fechaHoraInicio == null) ? 0 : fechaHoraInicio.hashCode());
-		result = prime * result + ((fechaPlanificada == null) ? 0 : fechaPlanificada.hashCode());
-		result = prime * result + ((observacionesTarea == null) ? 0 : observacionesTarea.hashCode());
-		result = prime * result + ((observacionesOperario == null) ? 0 : observacionesOperario.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -264,89 +255,9 @@ public class Tarea {
 			return false;
 		}
 		Tarea other = (Tarea) obj;
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
-			return false;
-		}
-		else{
+		if(codigo != null && codigo.equals(other.codigo)){
 			return true;
 		}
-		if(cantidadReal == null){
-			if(other.cantidadReal != null){
-				return false;
-			}
-		}
-		else if(!cantidadReal.equals(other.cantidadReal)){
-			return false;
-		}
-		if(cantidadTeorica == null){
-			if(other.cantidadTeorica != null){
-				return false;
-			}
-		}
-		else if(!cantidadTeorica.equals(other.cantidadTeorica)){
-			return false;
-		}
-		if(estado == null){
-			if(other.estado != null){
-				return false;
-			}
-		}
-		else if(!estado.equals(other.estado)){
-			return false;
-		}
-		if(fechaHoraFin == null){
-			if(other.fechaHoraFin != null){
-				return false;
-			}
-		}
-		else if(!fechaHoraFin.equals(other.fechaHoraFin)){
-			return false;
-		}
-		if(fechaHoraInicio == null){
-			if(other.fechaHoraInicio != null){
-				return false;
-			}
-		}
-		else if(!fechaHoraInicio.equals(other.fechaHoraInicio)){
-			return false;
-		}
-		if(fechaPlanificada == null){
-			if(other.fechaPlanificada != null){
-				return false;
-			}
-		}
-		else if(!fechaPlanificada.equals(other.fechaPlanificada)){
-			return false;
-		}
-		if(observacionesTarea == null){
-			if(other.observacionesTarea != null){
-				return false;
-			}
-		}
-		else if(!observacionesTarea.equals(other.observacionesTarea)){
-			return false;
-		}
-		if(observacionesOperario == null){
-			if(other.observacionesOperario != null){
-				return false;
-			}
-		}
-		else if(!observacionesOperario.equals(other.observacionesOperario)){
-			return false;
-		}
-		if(version == null){
-			if(other.version != null){
-				return false;
-			}
-		}
-		else if(!version.equals(other.version)){
-			return false;
-		}
-		return true;
+		return false;
 	}
 }

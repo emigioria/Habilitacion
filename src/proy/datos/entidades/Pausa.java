@@ -107,11 +107,7 @@ public class Pausa implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((causa == null) ? 0 : causa.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((fechaHoraFin == null) ? 0 : fechaHoraFin.hashCode());
-		result = prime * result + ((fechaHoraInicio == null) ? 0 : fechaHoraInicio.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -127,49 +123,9 @@ public class Pausa implements Serializable {
 			return false;
 		}
 		Pausa other = (Pausa) obj;
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
-			return false;
-		}
-		else{
+		if(codigo != null && codigo.equals(other.codigo)){
 			return true;
 		}
-		if(causa == null){
-			if(other.causa != null){
-				return false;
-			}
-		}
-		else if(!causa.equals(other.causa)){
-			return false;
-		}
-		if(fechaHoraFin == null){
-			if(other.fechaHoraFin != null){
-				return false;
-			}
-		}
-		else if(!fechaHoraFin.equals(other.fechaHoraFin)){
-			return false;
-		}
-		if(fechaHoraInicio == null){
-			if(other.fechaHoraInicio != null){
-				return false;
-			}
-		}
-		else if(!fechaHoraInicio.equals(other.fechaHoraInicio)){
-			return false;
-		}
-		if(version == null){
-			if(other.version != null){
-				return false;
-			}
-		}
-		else if(!version.equals(other.version)){
-			return false;
-		}
-		return true;
+		return false;
 	}
 }

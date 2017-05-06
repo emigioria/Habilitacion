@@ -126,11 +126,7 @@ public class Parte {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cantidad == null) ? 0 : cantidad.hashCode());
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
-		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 

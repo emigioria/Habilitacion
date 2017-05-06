@@ -229,13 +229,6 @@ public class Proceso {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
-		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
-		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
-		result = prime * result + ((observaciones == null) ? 0 : observaciones.hashCode());
-		result = prime * result + ((tiempoTeoricoPreparacion == null) ? 0 : tiempoTeoricoPreparacion.hashCode());
-		result = prime * result + ((tiempoTeoricoProceso == null) ? 0 : tiempoTeoricoProceso.hashCode());
-		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
 	}
 
@@ -251,74 +244,10 @@ public class Proceso {
 			return false;
 		}
 		Proceso other = (Proceso) obj;
-		if(codigo == null){
-			if(other.codigo != null){
-				return false;
-			}
-		}
-		else if(!codigo.equals(other.codigo)){
-			return false;
-		}
-		else{
+		if(codigo != null && codigo.equals(other.codigo)){
 			return true;
 		}
-		if(descripcion == null){
-			if(other.descripcion != null){
-				return false;
-			}
-		}
-		else if(!descripcion.equals(other.descripcion)){
-			return false;
-		}
-		if(estado == null){
-			if(other.estado != null){
-				return false;
-			}
-		}
-		else if(!estado.equals(other.estado)){
-			return false;
-		}
-		if(observaciones == null){
-			if(other.observaciones != null){
-				return false;
-			}
-		}
-		else if(!observaciones.equals(other.observaciones)){
-			return false;
-		}
-		if(tiempoTeoricoPreparacion == null){
-			if(other.tiempoTeoricoPreparacion != null){
-				return false;
-			}
-		}
-		else if(!tiempoTeoricoPreparacion.equals(other.tiempoTeoricoPreparacion)){
-			return false;
-		}
-		if(tiempoTeoricoProceso == null){
-			if(other.tiempoTeoricoProceso != null){
-				return false;
-			}
-		}
-		else if(!tiempoTeoricoProceso.equals(other.tiempoTeoricoProceso)){
-			return false;
-		}
-		if(tipo == null){
-			if(other.tipo != null){
-				return false;
-			}
-		}
-		else if(!tipo.equals(other.tipo)){
-			return false;
-		}
-		if(version == null){
-			if(other.version != null){
-				return false;
-			}
-		}
-		else if(!version.equals(other.version)){
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	@Override

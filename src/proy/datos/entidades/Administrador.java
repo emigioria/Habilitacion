@@ -47,42 +47,11 @@ public class Administrador extends Usuario {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((contrasenia == null) ? 0 : contrasenia.hashCode());
-		result = prime * result + ((sal == null) ? 0 : sal.hashCode());
-		return result;
+		return super.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(this == obj){
-			return true;
-		}
-		if(!super.equals(obj)){
-			return false;
-		}
-		if(getClass() != obj.getClass()){
-			return false;
-		}
-		Administrador other = (Administrador) obj;
-		if(contrasenia == null){
-			if(other.contrasenia != null){
-				return false;
-			}
-		}
-		else if(!contrasenia.equals(other.contrasenia)){
-			return false;
-		}
-		if(sal == null){
-			if(other.sal != null){
-				return false;
-			}
-		}
-		else if(!sal.equals(other.sal)){
-			return false;
-		}
-		return true;
+		return super.equals(obj);
 	}
-
 }
