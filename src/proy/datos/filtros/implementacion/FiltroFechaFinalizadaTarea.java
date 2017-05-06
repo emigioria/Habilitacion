@@ -19,10 +19,9 @@ import proy.datos.entidades.Operario;
 import proy.datos.entidades.Parte;
 import proy.datos.entidades.Pieza;
 import proy.datos.entidades.Proceso;
-import proy.datos.entidades.Tarea;
 import proy.datos.filtros.Filtro;
 
-public class FiltroTarea extends Filtro<Tarea> {
+public class FiltroFechaFinalizadaTarea extends Filtro<Date> {
 
 	private String nombreEntidad = "a";
 	private String consulta = "";
@@ -34,21 +33,17 @@ public class FiltroTarea extends Filtro<Tarea> {
 	private Operario operario;
 	private Date fechaPlanificadaInicio;
 	private Date fechaPlanificadaFin;
-	private Date fechaFinalizadaInicio;
-	private Date fechaFinalizadaFin;
 	private ArrayList<Parte> partes;
 	private ArrayList<Pieza> piezas;
 	private Proceso proceso;
-	private Boolean ordenFechaFinalizada = false;
-	private Boolean ordenId = false;
 
 	public static class Builder {
 
-		private FiltroTarea filtro;
+		private FiltroFechaFinalizadaTarea filtro;
 
 		public Builder() {
 			super();
-			filtro = new FiltroTarea();
+			filtro = new FiltroFechaFinalizadaTarea();
 		}
 
 		public Builder nombreEntidad(String nombreEntidad) {
@@ -106,16 +101,6 @@ public class FiltroTarea extends Filtro<Tarea> {
 			return this;
 		}
 
-		public Builder fechaFinalizadaInicio(Date fechaFinalizadaInicio) {
-			filtro.fechaFinalizadaInicio = fechaFinalizadaInicio;
-			return this;
-		}
-
-		public Builder fechaFinalizadaFin(Date fechaFinalizadaFin) {
-			filtro.fechaFinalizadaFin = fechaFinalizadaFin;
-			return this;
-		}
-
 		public Builder maquina(Maquina maquina) {
 			filtro.maquina = maquina;
 			return this;
@@ -156,25 +141,15 @@ public class FiltroTarea extends Filtro<Tarea> {
 			return this;
 		}
 
-		public Builder ordenFechaFinalizada() {
-			filtro.ordenFechaFinalizada = true;
-			return this;
-		}
-
-		public Builder ordenId() {
-			filtro.ordenId = true;
-			return this;
-		}
-
-		public FiltroTarea build() {
+		public FiltroFechaFinalizadaTarea build() {
 			filtro.setConsulta();
 			filtro.setNamedQuery();
 			return filtro;
 		}
 	}
 
-	private FiltroTarea() {
-		super(Tarea.class);
+	private FiltroFechaFinalizadaTarea() {
+		super(Date.class);
 	}
 
 	private void setConsulta() {
@@ -200,12 +175,6 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(this.fechaPlanificadaFin != null){
 			return;
 		}
-		if(this.fechaFinalizadaInicio != null){
-			return;
-		}
-		if(this.fechaFinalizadaFin != null){
-			return;
-		}
 		if(this.maquina != null){
 			return;
 		}
@@ -218,23 +187,11 @@ public class FiltroTarea extends Filtro<Tarea> {
 		if(this.proceso != null){
 			return;
 		}
-		if(this.ordenFechaFinalizada){
-			return;
-		}
-		if(this.ordenId){
-			return;
-		}
 		namedQuery = "listarTareas";
 	}
 
 	private String getSelect() {
-		String select;
-		if(this.herramientas != null || this.partes != null || this.piezas != null){
-			select = "SELECT DISTINCT " + this.nombreEntidad;
-		}
-		else{
-			select = "SELECT " + this.nombreEntidad;
-		}
+		String select = "SELECT DISTINCT " + this.nombreEntidad + ".fechaHoraFin ";
 		return select;
 	}
 
@@ -266,8 +223,6 @@ public class FiltroTarea extends Filtro<Tarea> {
 						((this.operario != null) ? (this.nombreEntidad + ".operario = :ope AND ") : ("")) +
 						((this.fechaPlanificadaInicio != null) ? (this.nombreEntidad + ".fechaPlanificada >= :fpi AND ") : ("")) +
 						((this.fechaPlanificadaFin != null) ? (this.nombreEntidad + ".fechaPlanificada <= :fpf AND ") : ("")) +
-						((this.fechaFinalizadaInicio != null) ? (this.nombreEntidad + ".fechaHoraFin >= :ffi AND ") : ("")) +
-						((this.fechaFinalizadaFin != null) ? (this.nombreEntidad + ".fechaHoraFin < :fff AND ") : ("")) +
 						((this.maquina != null) ? (this.nombreEntidad + ".proceso.parte.maquina = :maq AND ") : ("")) +
 						((this.partes != null) ? ("proc.parte in (:prs) AND ") : ("")) +
 						((this.piezas != null) ? ("pies in (:pis) AND ") : ("")) +
@@ -291,21 +246,12 @@ public class FiltroTarea extends Filtro<Tarea> {
 	}
 
 	private String getOrderBy() {
-		String orderBy;
-		if(ordenFechaFinalizada){
-			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaHoraFin DESC";
-		}
-		else if(ordenId){
-			orderBy = " ORDER BY " + this.nombreEntidad + ".codigo ASC";
-		}
-		else{
-			orderBy = " ORDER BY " + this.nombreEntidad + ".fechaPlanificada ASC";
-		}
+		String orderBy = " ORDER BY " + this.nombreEntidad + ".fechaHoraFin DESC ";
 		return orderBy;
 	}
 
 	@Override
-	public Query<Tarea> setParametros(Query<Tarea> query) {
+	public Query<Date> setParametros(Query<Date> query) {
 		if(noEstado != null){
 			query.setParameter("nEs", noEstado);
 		}
@@ -323,12 +269,6 @@ public class FiltroTarea extends Filtro<Tarea> {
 		}
 		if(fechaPlanificadaFin != null){
 			query.setParameter("fpf", fechaPlanificadaFin);
-		}
-		if(fechaFinalizadaInicio != null){
-			query.setParameter("ffi", fechaFinalizadaInicio);
-		}
-		if(fechaFinalizadaFin != null){
-			query.setParameter("fff", fechaFinalizadaFin);
 		}
 		if(maquina != null){
 			query.setParameter("maq", maquina);

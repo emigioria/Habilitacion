@@ -7,6 +7,7 @@
 package proy.datos.servicios.implementacion;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
@@ -106,6 +107,13 @@ public class ProcesoServiceImpl implements ProcesoService {
 	@Override
 	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
 	public ArrayList<Tarea> obtenerTareas(Filtro<Tarea> filtro) throws PersistenciaException {
+		Session session = getSessionFactory().getCurrentSession();
+		return filtro.listar(session);
+	}
+
+	@Override
+	@Transactional(readOnly = true, rollbackFor = PersistenciaException.class)
+	public ArrayList<Date> obtenerFechasFinTareas(Filtro<Date> filtro) throws PersistenciaException {
 		Session session = getSessionFactory().getCurrentSession();
 		return filtro.listar(session);
 	}

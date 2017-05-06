@@ -220,6 +220,10 @@ public class ProcesoGestor {
 		return persistidorProceso.obtenerTareas(filtro);
 	}
 
+	public ArrayList<Date> listarFechasFinTareas(Filtro<Date> filtro) throws PersistenciaException {
+		return persistidorProceso.obtenerFechasFinTareas(filtro);
+	}
+
 	public ResultadoCrearTarea crearTarea(Tarea tarea) throws PersistenciaException {
 		ResultadoCrearTarea resultado = validarCrearTarea(tarea);
 		if(!resultado.hayErrores()){

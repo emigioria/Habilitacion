@@ -43,6 +43,9 @@
   -fx-background-color: #005be6;
   -fx-text-fill: white;
 }
+.combo-box-base-centrado {
+    -fx-alignment: CENTER;
+}
 
 /* Botones */
 .button {
@@ -300,6 +303,43 @@
 
 .button-cancel:pressed {
   -fx-graphic: url('file:archivos/imagenes/boton_cancelar_selected.png');
+}
+
+/* Botones ver historial de tareas */
+.button-left {
+  -fx-graphic: url('file:archivos/imagenes/flecha_izquierda.png');
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.button-right {
+  -fx-graphic: url('file:archivos/imagenes/flecha_derecha.png');
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.button-left:focused, .button-right:focused {
+  -fx-opacity: 1;
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.button-left:focus, .button-right:focus {
+  -fx-opacity: 0.7;
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.button-left:hover:focus, .button-right:hover:focus {
+  -fx-opacity: 0.7;
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
+}
+
+.button-left:hover, .button-right:hover {
+  -fx-opacity: 0.5;
+  -fx-border-color: transparent;
+  -fx-background-color: transparent;
 }
 
 /* Topbar */

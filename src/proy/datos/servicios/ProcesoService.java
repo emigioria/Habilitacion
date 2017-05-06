@@ -7,6 +7,7 @@
 package proy.datos.servicios;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import proy.datos.entidades.Proceso;
 import proy.datos.entidades.Tarea;
@@ -28,6 +29,8 @@ public interface ProcesoService {
 	public void bajaProceso(Proceso proceso) throws PersistenciaException;
 
 	public ArrayList<Tarea> obtenerTareas(Filtro<Tarea> filtro) throws PersistenciaException;
+
+	public ArrayList<Date> obtenerFechasFinTareas(Filtro<Date> filtro) throws PersistenciaException;
 
 	public void guardarTarea(Tarea tarea) throws PersistenciaException;
 

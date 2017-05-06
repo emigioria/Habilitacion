@@ -7,6 +7,7 @@
 package proy.logica;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
@@ -238,6 +239,10 @@ public class CoordinadorJavaFX {
 
 	public ArrayList<Tarea> listarTareas(Filtro<Tarea> filtro) throws PersistenciaException {
 		return gestorProceso.listarTareas(filtro);
+	}
+
+	public ArrayList<Date> listarFechasFinTareas(Filtro<Date> filtro) throws PersistenciaException {
+		return gestorProceso.listarFechasFinTareas(filtro);
 	}
 
 	public ResultadoCrearTarea crearTarea(Tarea tarea) throws PersistenciaException {
