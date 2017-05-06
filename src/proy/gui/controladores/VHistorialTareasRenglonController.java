@@ -9,6 +9,7 @@ package proy.gui.controladores;
 import java.io.IOException;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Accordion;
@@ -131,10 +132,25 @@ public class VHistorialTareasRenglonController extends ControladorJavaFX {
 
 	@Override
 	protected void inicializar() {
-		((Region) root.getParent().getParent().getParent().getParent()).widthProperty().addListener((obs, oldV, newV) -> {
-			tablaTitulos.setPrefWidth(newV.intValue() - 33);
-			tablaTitulos.autosize();
-		});
+		//Hack para que se acomode el título del renglón al ancho del padre
+		try{
+			ChangeListener<Number> widthListener = (obs, oldV, newV) -> {
+				tablaTitulos.setPrefWidth(newV.intValue() - 33);
+				tablaTitulos.autosize();
+			};
+			((Region) root.getParent().getParent().getParent().getParent()).widthProperty().addListener(widthListener);
+			root.parentProperty().addListener((obs, oldV, newV) -> {
+				if(newV == null){
+					try{
+						((Region) oldV.getParent().getParent().getParent()).widthProperty().removeListener(widthListener);
+					} catch(NullPointerException e){
+						//Si los getParent fallan
+					}
+				}
+			});
+		} catch(NullPointerException e){
+			//Si los getParent fallan
+		}
 		tablaTitulos.setPrefWidth(root.getWidth() - 33);
 		tablaTitulos.autosize();
 

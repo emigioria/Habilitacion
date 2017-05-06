@@ -85,6 +85,7 @@ public class VTareasController extends ControladorRomano {
 
 		//Quito las pestañas viejas, cargo los operarios en pestañas y guardo sus controladores
 		operarioBox.getTabs().clear();
+		pararRelojes.clear();
 		List<VTareasOperarioTabController> tabControllers = new ArrayList<>();
 		try{
 			List<Operario> operarios = coordinador.listarOperarios(new FiltroOperario.Builder().build());
