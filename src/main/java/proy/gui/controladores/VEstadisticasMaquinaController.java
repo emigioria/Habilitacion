@@ -41,6 +41,9 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 	private TableView<Proceso> tablaProcesos;
 
 	@FXML
+	private TableColumn<Proceso, String> columnaParteProceso;
+
+	@FXML
 	private TableColumn<Proceso, String> columnaNombreProceso;
 
 	@FXML
@@ -93,6 +96,9 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 
 	@FXML
 	private TableView<Pieza> tablaProcesosPieza;
+
+	@FXML
+	private TableColumn<Pieza, String> columnaPartePieza;
 
 	@FXML
 	private TableColumn<Pieza, String> columnaNombrePieza;
@@ -149,6 +155,13 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 
 	@Override
 	protected void inicializar() {
+		columnaParteProceso.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getParte().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
 		columnaNombreProceso.setCellValueFactory(param -> {
 			try{
 				return new SimpleStringProperty(param.getValue().toString());
@@ -331,6 +344,13 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 				return new SimpleStringProperty("");
 			}
 		});
+		columnaPartePieza.setCellValueFactory(param -> {
+			try{
+				return new SimpleStringProperty(param.getValue().getParte().toString());
+			} catch(NullPointerException e){
+				return new SimpleStringProperty("");
+			}
+		});
 		columnaNombrePieza.setCellValueFactory(param -> {
 			try{
 				return new SimpleStringProperty(param.getValue().toString());
@@ -416,7 +436,7 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 				if(tiempoPromedio > 0){
 					Double porcentajeTTT = tiempoPromedio.doubleValue() / tiempoPromedioTotal;
 					Double porcentajeRedondeado = ((long) (porcentajeTTT * 10000)) / 100.0;
-					datos.add(new Data(pro.toString(), porcentajeRedondeado));
+					datos.add(new Data(pro.getParte() + ": " + pro.toString(), porcentajeRedondeado));
 				}
 			}
 		}
@@ -458,7 +478,7 @@ public class VEstadisticasMaquinaController extends ControladorRomano {
 				if(tiempoPromedio > 0){
 					Double porcentajeTTT = tiempoPromedio.doubleValue() / tiempoPromedioTotal;
 					Double porcentajeRedondeado = ((long) (porcentajeTTT * 10000)) / 100.0;
-					datos.add(new Data(p.toString(), porcentajeRedondeado));
+					datos.add(new Data(p.getParte() + ": " + p.toString(), porcentajeRedondeado));
 				}
 			}
 		}
