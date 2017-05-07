@@ -6,6 +6,7 @@
  */
 package proy.comun;
 
+import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -37,7 +38,11 @@ public class EncriptadorPassword {
 	 * @return String
 	 */
 	public String encriptar(char[] palabra, String sal) {
-		return bytesToString(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes(), ITERATIONS, KEY_LENGTH));
+		try{
+			return bytesToString(hashPassword(palabra, (sal + SAL_GLOBAL).getBytes("UTF-8"), ITERATIONS, KEY_LENGTH));
+		} catch(UnsupportedEncodingException e){
+			throw new RuntimeException(e);
+		}
 	}
 
 	private String bytesToString(byte[] data) {
