@@ -174,12 +174,16 @@ public class Proceso {
 	}
 
 	public Long getTiempoPromedioProceso() {
-		Long suma = 0L;
-		Integer cantidadTareas = 0;
+		Long suma = 0L, tiempoTotalEjecutando, tiempoTeoricoPreparacion, tiempoSinPreparacionEjecutando;
+		Integer cantidadTareas = 0, cantidadRealizada;
 		for(Tarea t: this.getTareas()){
 			if(EstadoTareaStr.FINALIZADA.equals(t.getEstado().getNombre())){
-				suma += t.getTiempoEjecutando();
-				cantidadTareas += t.getCantidadReal();
+				tiempoTotalEjecutando = t.getTiempoEjecutando();
+				tiempoTeoricoPreparacion = getTiempoTeoricoPreparacion();
+				tiempoSinPreparacionEjecutando = tiempoTotalEjecutando - tiempoTeoricoPreparacion;
+				cantidadRealizada = t.getCantidadReal();
+				cantidadTareas += cantidadRealizada;
+				suma += tiempoSinPreparacionEjecutando + tiempoTeoricoPreparacion * cantidadRealizada;
 			}
 		}
 		if(cantidadTareas > 1){
