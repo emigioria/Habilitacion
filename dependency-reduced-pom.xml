@@ -3,16 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Habilitacion</groupId>
   <artifactId>RomanoTP</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1-RELEASE</version>
   <inceptionYear>2016</inceptionYear>
   <developers>
     <developer>
       <name>Emiliano Gioria</name>
-      <email>https://github.com/emigioria</email>
+      <url>https://github.com/emigioria</url>
     </developer>
     <developer>
       <name>Andres Leonel Rico</name>
-      <email>https://github.com/andresleonelrico</email>
+      <url>https://github.com/andresleonelrico</url>
     </developer>
   </developers>
   <licenses>
